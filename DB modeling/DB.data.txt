@@ -1,0 +1,98 @@
+-- team
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_1', '/image/FC_1.png', '서울시 서대문구', '연세대학교', '', '0', '2017-01-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_2', '/image/FC_1.png', '서울시 마포구', '월드컵 경기장', '주황', '1', '2018-01-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_3', '/image/FC_1.png', '서울시 관악구', '서울대학교', '파랑', '2', '2018-01-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_4', '/image/FC_1.png', '서울시 동작구', '보라매 공원 운동장', '검정', '1', '2019-01-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_5', '/image/FC_1.png', '서울시 서초구', '방배 유수지', '하얀', '1', '2020-01-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_6', '/image/FC_1.png', '서울시 강남구', '빨강', '2', '2017-02-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_7', '/image/FC_1.png', '서울시 송파구', '올림픽 공원 운동장', '검정', '1', '2017-03-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_8', '/image/FC_1.png', '서울시 성동구', '서울숲공원 운동장', '파랑', '2', '2017-08-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `stadium_info`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_9', '/image/FC_1.png', '서울시 구로구', '고척돔 운동장', '', '1', '2018-01-01', '2020-08-27');
+INSERT INTO `soccerproject`.`team` (`team_name`, `emblem`, `area`, `uniform_color`, `uniform_type`, `founding_date`, `team_reg_date`) VALUES ('FC 바르셀로나_9', '/image/FC_1.png', '서울시 동대문구', '파랑', '1', '2018-01-05', '2020-08-27');
+
+
+
+-- teamMember
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '2', '9', '1', '1', '1@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '1', '9', '1', '1', '2@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '9', '1', '1', '3@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '9', '1', '1', '4@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '9', '1', '1', '5@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '9', '1', '1', '6@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '9', '1', '1', '7@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '8', '1', '1', '8@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '8', '1', '1', '9@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '8', '1', '1', '10@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '8', '1', '1', '11@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '7', '1', '1', '12@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '7', '1', '1', '13@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '7', '1', '1', '14@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '6', '1', '1', '15@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '6', '1', '1', '16@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '6', '1', '1', '17@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '5', '0', '1', '18@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '5', '0', '1', '19@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-08-28', '0', '5', '0', '1', '20@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '2', '5', '1', '2', '21@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '1', '5', '1', '2', '22@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '1', '5', '1', '2', '23@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '4', '1', '2', '24@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '4', '1', '2', '25@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '4', '1', '2', '26@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '3', '1', '2', '27@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '3', '1', '2', '28@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '3', '1', '2', '29@gmail.com');
+INSERT INTO `soccerproject`.`team_member` (`member_reg_date`, `member_level`, `participation_count`, `reg_status`, `team_id`, `email`) VALUES ('2019-07-28', '0', '0', '0', '2', '30@gmail.com');
+
+-- team_manner_score
+INSERT INTO `soccerproject`.`team_manner_score` (`team_id`, `manner_promise`, `manner_contact`, `manner_rule`, `manner_body_fight`, `manner_slang`, `manner_smoking`, `manner_uniform`, `manner_payment`, `manner_arrangement`) VALUES ('1', '5', '4.8', '4.8', '5', '3', '4', '4', '3', '1');
+INSERT INTO `soccerproject`.`team_manner_score` (`team_id`, `manner_promise`, `manner_contact`, `manner_rule`, `manner_body_fight`, `manner_slang`, `manner_smoking`, `manner_uniform`, `manner_payment`, `manner_arrangement`) VALUES ('2', '4', '4.8', '4.8', '4', '3', '5', '4', '3', '2');
+
+-- match_info
+INSERT INTO `soccerproject`.`match_info` (`schedule`, `away_id`, `stadium`, `stadium_type`, `team_id`) VALUES ('2020-07-01', '2', '서울숲 운동장', '11:11', '1');
+INSERT INTO `soccerproject`.`match_info` (`schedule`, `away_id`, `stadium`, `stadium_type`, `team_id`) VALUES ('2020-07-08', '2', '고척돔 풋살장', '6:6', '1');
+INSERT INTO `soccerproject`.`match_info` (`schedule`, `away_id`, `stadium`, `stadium_type`, `team_id`) VALUES ('2020-07-09', '1', '영등포 공원 풋살장', '6:6', '2');
+INSERT INTO `soccerproject`.`match_info` (`schedule`, `away_id`, `stadium`, `stadium_type`, `team_id`) VALUES ('2020-08-30', '1', '월드컵 경기장', '6:6', '2');
+
+-- vote
+INSERT INTO `soccerproject`.`vote` (`due_date`, `team_id`, `writer`, `match_info_id`, `vote_status`, `vote_reg_date`) VALUES ('2020-06-28', '1', '1@gmail.com', '1', '1', '2020-06-27');
+INSERT INTO `soccerproject`.`vote` (`due_date`, `team_id`, `writer`, `match_info_id`, `vote_status`, `vote_reg_date`) VALUES ('2020-07-05', '1', '1@gmail.com', '2', '1', '2020-07-03');
+INSERT INTO `soccerproject`.`vote` (`due_date`, `team_id`, `writer`, `match_info_id`, `vote_status`, `vote_reg_date`) VALUES ('2020-07-07', '2', '21@gmail.com', '3', '1', '2020-07-05');
+INSERT INTO `soccerproject`.`vote` (`due_date`, `team_id`, `writer`, `match_info_id`, `vote_status`, `vote_reg_date`) VALUES ('2020-08-27', '2', '21@gmail.com', '4', '0', '2020-08-25');
+
+
+-- employment
+INSERT INTO `soccerproject`.`employment` (`team_id_giver`, `team_member_id_giver`, `employeement_status`, `email`, `match_info_id`) VALUES ('1', '24', '2', '31@gmail.com', '1');
+INSERT INTO `soccerproject`.`employment` (`team_id_giver`, `team_member_id_giver`, `employeement_status`, `email`, `match_info_id`) VALUES ('1', '24', '2', '31@gmail.com', '2');
+INSERT INTO `soccerproject`.`employment` (`team_id_giver`, `team_member_id_giver`, `employeement_status`, `email`, `match_info_id`) VALUES ('2', '44', '2', '31@gmail.com', '3');
+INSERT INTO `soccerproject`.`employment` (`team_id_giver`, `team_member_id_giver`, `employeement_status`, `email`, `match_info_id`) VALUES ('2', '44', '1', '31@gmail.com', '4');
+
+-- match_schedule
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('1', '1');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('2', '1');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('1', '2');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('2', '2');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('1', '3');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('2', '3');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('1', '4');
+INSERT INTO `soccerproject`.`match_schedule` (`team_id`, `match_info_id`) VALUES ('2', '4');
+
+-- attendant
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '24');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '25');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '26');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '27');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '28');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '29');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '30');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '31');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '32');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('1', '33');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '44');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '45');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '46');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '47');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '48');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '49');
+INSERT INTO `soccerproject`.`attendant` (`match_schedule_id`, `team_member_id`) VALUES ('2', '50');
+

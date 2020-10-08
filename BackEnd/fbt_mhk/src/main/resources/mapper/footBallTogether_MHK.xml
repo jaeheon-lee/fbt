@@ -1,0 +1,1131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sql.footBAllTogether.mapper2">
+	<!--dto select 관련 query -->
+	<!-- 1. 회원: user -->
+	<!-- 회원 select sql -->
+	<sql id="select-user">
+		SELECT email, pass, name,
+		phone_num, user_reg_date,
+		recent_login,main_foot, position
+		FROM user
+	</sql>
+	<!-- 회원 resultMap -->
+	<resultMap type="user" id="userSelectRM">
+		<result property="email" column="email" />
+		<result property="pass" column="pass" />
+		<result property="name" column="name" />
+		<result property="phoneNum" column="phone_num" />
+		<result property="userRegDate" column="user_reg_date" />
+		<result property="recentLogin" column="recent_login" />
+		<result property="mainFoot" column="main_foot" />
+		<result property="position" column="position" />
+	</resultMap>
+	<!--회원 select -->
+	<!-- 1. email로 회원 찾기 2. email와 pass로 회원 정보로 로그인하기 -->
+	<!-- <select id="selectUser" parameterType="user" resultType="user" resultMap="userSelectRM"> 
+		<include refid="select-user" /> WHERE email=#{email} <if test="pass!=null"> 
+		AND pass=#{pass} </if> </select> -->
+	<select id="selectUser" parameterType="user" resultType="user"
+		resultMap="userSelectRM">
+		<include refid="select-user" />
+		<where>
+			<if test="email !=null and pass!=null">
+				email=#{email} AND pass=#{pass}
+			</if>
+			<if test="email !=null and pass == null">
+				email=#{email}
+			</if>
+		</where>
+	</select>
+
+	<!--2.팀멤버 : teamMember -->
+	<!-- 팀멤버 select sql -->
+	<sql id="select-teamMember">
+		SELECT team_member_id, member_reg_date, member_level,
+		participation_count,
+		reg_status, team_id, email, sincerity
+		FROM
+		team_member
+	</sql>
+	<!-- 팀멤버 result map -->
+	<resultMap type="teamMember" id="teamMemberSelectRM">
+		<id column="team_member_id" property="teamMemberId" />
+		<result column="member_reg_date" property="memberRegDate" />
+		<result column="member_level" property="memberLevel" />
+		<result column="participation_count"
+			property="participationCount" />
+		<result column="reg_status" property="regStatus" />
+		<result column="team_id" property="teamId" />
+		<result column="email" property="email" />
+		<result column="sincerity" property="sincerity" />
+	</resultMap>
+	<!--팀멤버 select -->
+	<!-- 1. 팀멤버 아이디로 찾기 2. 팀권한으로(teamMemberLevel) 찾기 (1:매니저, 2:부매니저, 3: 일반팀원) 
+		3. 등록 상태(1:대기, 2:등록, 3: 탈퇴) 4. 등록된 팀 ID로 찾기 -->
+	<select id="selectTeamMembers" parameterType="teamMember"
+		resultType="teamMember" resultMap="teamMemberSelectRM">
+		<include refid="select-teamMember" />
+		<where>
+			<if test="teamMemberId !=0">
+				team_member_id=#{teamMemberId}
+			</if>
+			<if test="memberLevel !=0">
+				member_level=#{memberLevel}
+			</if>
+			<if test="regStatus !=0">
+				reg_status=#{regStatus}
+			</if>
+			<if test="teamId !=0">
+				team_id=#{teamId}
+			</if>
+		</where>
+	</select>
+
+	<!--3. 팀 : team -->
+	<!-- 팀select sql -->
+	<sql id="select-team">
+		SELECT team_id, team_name, emblem,
+		area,stadium_info,
+		uniform_color, uniform_type,
+		founding_date, team_reg_date
+		FROM
+		team
+	</sql>
+	<!-- 팀 result map -->
+	<resultMap type="team" id="teamSelectRM">
+		<id column="team_id" property="teamId" />
+		<result column="team_name" property="teamName" />
+		<result column="emblem" property="emblem" />
+		<result column="area" property="area" />
+		<result column="stadium_info" property="stadiumInfo" />
+		<result column="uniform_color" property="uniformColor" />
+		<result column="uniform_type" property="uniformType" />
+		<result column="founding_date" property="foundingDate" />
+		<result column="team_reg_date" property="teamRegDate" />
+	</resultMap>
+
+	<!--팀 select -->
+	<!-- 1. 팀 ID로 찾기 2. 팀이름으로 찾기 3. 지역으로 찾기 4. 경기장 이름으로 찾기 -->
+	<select id="selectTeams" parameterType="team" resultType="team"
+		resultMap="teamSelectRM">
+		<include refid="select-team" />
+		<where>
+			<if test="teamId !=0">
+				team_id=#{teamId}
+			</if>
+			<if test="teamName !=null">
+				team_name=#{teamName}
+			</if>
+			<if test="area !=null">
+				area LIKE '%' #{area} '%'
+			</if>
+			<if test="stadiumInfo !=null">
+				stadium_info LIKE '%' #{stadiumInfo} '%'
+			</if>
+		</where>
+	</select>
+
+	<!-- 4. 팀매너점수: TeamScore -->
+	<!-- 팀매너점수 select sql -->
+	<sql id="select-teamScore">
+		SELECT
+		team_id,
+		manner_promise, manner_contact, manner_rule,
+		manner_body_fight, manner_slang, manner_smoking,
+		manner_uniform,
+		manner_payment, manner_arrangement, manner_referee, manner_tackle, team_ability, counter
+		FROM
+		team_score
+	</sql>
+	<!-- 팀매너점수 select resultMap -->
+	<resultMap type="teamScore"
+		id="teamScoreSelectRM">
+		<id column="team_id" property="teamId" />
+		<result column="manner_promise" property="mannerPromise" />
+		<result column="manner_contact" property="mannerContact" />
+		<result column="manner_rule" property="mannerRule" />
+		<result column="manner_body_fight" property="mannerBodyFight" />
+		<result column="manner_slang" property="mannerSlang" />
+		<result column="manner_smoking" property="mannerSmoking" />
+		<result column="manner_uniform" property="mannerUniform" />
+		<result column="manner_payment" property="mannerPayment" />
+		<result column="manner_arrangement"
+			property="mannerArrangement" />
+		<result column="manner_tackle" property="mannerTackle"/>
+		<result column="manner_referee" property="mannerReferee"/>
+		<result column="team_ability" property="teamAbility"/>
+		<result column="counter" property="counter"/>
+	</resultMap>
+	<!-- 팀매너점수 select -->
+	<select id="selectTeamScore"
+		parameterType="teamScore" resultMap="teamScoreSelectRM"
+		resultType="teamScore">
+		<include refid="select-teamScore" />
+		<where>
+			<if test="teamId != 0">
+				team_id = #{teamId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 5.투표: Vote -->
+	<!-- 투표 select sql -->
+	<sql id="select-vote">
+		SELECT
+		vote_id, contents, due_date, vote_reg_date, writer,
+		vote_status, team_id, match_info_id
+		FROM
+		vote
+	</sql>
+	<!-- 투표 select resultMap -->
+	<resultMap type="vote" id="voteSelectRM">
+		<result column="vote_id" property="voteId" />
+		<result column="contents" property="contents" />
+		<result column="due_date" property="dueDate" />
+		<result column="vote_reg_date" property="voteRegDate" />
+		<result column="writer" property="writer" />
+		<result column="vote_status" property="voteStatus" />
+		<result column="team_id" property="teamId" />
+		<result column="match_info_id" property="matchInfoId" />
+	</resultMap>
+	<!-- 투표 select -->
+	<!-- 1. 투표 ID로 찾기, 2. 투표 완료여부에 따라 찾기(1:투표진행중, 2: 투표완료) 3.팀 ID로 찾기, 4.매치정보 
+		ID로 찾기 -->
+	<select id="selectVotes" parameterType="vote" resultType="vote"
+		resultMap="voteSelectRM">
+		<include refid="select-vote" />
+		<where>
+			<if test="voteId != 0">
+				vote_id = #{voteId}
+			</if>
+			<if test="voteStatus != 0">
+				vote_status = #{voteStatus}
+			</if>
+			<if test="teamId != 0">
+				team_id = #{teamId}
+			</if>
+			<if test="matchInfoId != 0">
+				match_info_id = #{matchInfoId}
+			</if>
+		</where>
+	</select>
+
+	<!--6.투표결과:voteResult -->
+	<!--투표결과 select sql -->
+	<sql id="select-voteResult">
+		SELECT
+		vote_id, team_member_id, attendance
+		FROM
+		vote_result
+	</sql>
+	<!--투표결과 select resultMap -->
+	<resultMap type="voteResult" id="voteResultRM">
+		<result column="vote_id" property="voteId" />
+		<result column="team_member_id" property="teamMemberId" />
+		<result column="attendance" property="attendance" />
+	</resultMap>
+
+	<!--투표결과 select -->
+	<!--1. 투표 Id를 통해 찾기, 2. 팀멤버ID를 통해 찾기 3.참석여부로 찾기 -->
+	<select id="selectVoteResults" parameterType="voteResult"
+		resultType="voteResult" resultMap="voteResultRM">
+		<include refid="select-voteResult" />
+		<where>
+			<if test="voteId != 0">
+				vote_id = #{voteId}
+			</if>
+			<if test="teamMemberId != 0">
+				team_member_id = #{teamMemberId}
+			</if>
+			<if test="attendance != 0">
+				attendance = #{attendance}
+			</if>
+		</where>
+	</select>
+
+	<!-- 7. 매치 정보 : matchInfo -->
+	<!-- 매치 정보 select sql -->
+	<sql id="select-matchInfo">
+		SELECT
+		match_info_id, home_team_id, schedule, stadium,
+		stadium_type, cost
+		FROM
+		match_info
+	</sql>
+	<!--매치 정보 select resultMap -->
+	<resultMap type="matchInfo" id="matchInfoRM">
+		<result column="match_info_id" property="matchInfoId" />
+		<result column="home_team_id" property="homeTeamId" />
+		<result column="schedule" property="schedule" />
+		<result column="stadium" property="stadium" />
+		<result column="stadium_type" property="stadiumType" />
+		<result column="cost" property="cost" />
+	</resultMap>
+	<!--매치정보 select -->
+	<!--1.매치정보 ID로 찾기, 2. 홈팀 ID로 찾기 -->
+	<select id="selectMatchInfo" parameterType="matchInfo"
+		resultType="matchInfo" resultMap="matchInfoRM">
+		<include refid="select-matchInfo" />
+		<where>
+			<if test="matchInfoId != 0">
+				match_info_id = #{matchInfoId}
+			</if>
+			<if test="homeTeamId != 0">
+				home_team_id = #{homeTeamId}
+			</if>
+		</where>
+	</select>
+
+	<!--8.양도:assignment -->
+	<!--양도 select sql -->
+	<sql id="select-assignment"> 
+		SELECT assignment_id, team_id_giver,
+		team_id_taker,
+		team_member_id_giver, team_member_id_taker, assignment_status,
+		match_info_id 
+		FROM assignment
+	</sql>
+	<!--양도 select resultMap -->
+	<resultMap type="assignment" id="assignmentSelectRM">
+		<result property="assignmentId" column="assignment_id" />
+		<result property="teamIdGiver" column="team_id_giver" />
+		<result property="teamIdTaker" column="team_id_taker" />
+		<result property="teamMemberIdGiver"
+			column="team_member_id_giver" />
+		<result property="teamMemberIdTaker"
+			column="team_member_id_taker" />
+		<result property="assignmentStatus" column="assignment_status" />
+		<result property="matchInfoId" column="match_info_id" />
+	</resultMap>
+	
+	<!--양도 select -->
+	<!--1. 양도 ID 2. 경기장 제공 팀 ID 3. 경기장 제공 받는 팀 ID 4. 경기장 제공 매니저의 팀멤버 ID 5. 경기장 
+		제공 받는 팀 매니저의 팀멤버 ID 6. 양도 상태(1=양도중, 2=양도 예약, 3=양도 완료) 5. 매치정보 ID -->
+	<select id="selectAssignment" parameterType="assignment"
+		resultType="assignment" resultMap="assignmentSelectRM">
+		<include refid="select-assignment" />
+		<where>
+			<if test="assignmentId != 0 ">
+				assignment_id = #{assignmentId}
+			</if>
+			<if test="teamIdGiver != 0 ">
+				team_id_giver = #{teamIdGiver} OR team_id_taker =
+				#{teamIdGiver}
+			</if>
+			<if test="teamMemberIdGiver != 0 ">
+				team_member_id_giver = #{teamMemberIdGiver}
+				OR
+				team_member_id_taker = #{teamMemberIdGiver}
+			</if>
+			<if test="assignmentStatus != 0 ">
+				assignment_status = #{assignmentStatus}
+			</if>
+			<if test="matchInfoId != 0 ">
+				match_info_id = #{matchInfoId}
+			</if>
+		</where>
+	</select>
+	
+	<!--8-1.양도 예약:assignmentResult -->
+	<!--양도 예약 select sql -->
+	<sql id="select-assignmentReservation"> 
+		SELECT 
+		assignment_result_id,
+		team_id_taker, team_member_id_taker, reservation_status,
+		FROM assignment_reservation
+	</sql>
+	
+	<!--양도 예약 select resultMap -->
+	<resultMap type="assignment_reservation" id="assignmentReservationSelectRM">
+		<result property="assignmentId" column="assignment_id" />
+		<result property="teamIdTaker" column="team_id_taker" />
+		<result property="teamMemberIdTaker"
+			column="team_member_id_taker" />
+		<result property="reservationStatus" column="reservation_status" />
+	</resultMap>
+	
+	<!--양도 결과 select -->
+	<!--1. 양도결과 ID 2. 양도 ID 3. 용병이메일  4. 양도결과  상태(1=신청, 2=용병선택 완료) -->
+	<select id="selectAssignmentReservation" parameterType="assignmentReservation"
+		resultType="assignmentReservation" resultMap="assignmentReservationSelectRM">
+		<include refid="select-assignmentReservation" />
+		<where>
+			<if test="assignmentId != 0 ">
+				assignment_id = #{assignmentId}
+			</if>
+			<if test="teamIdTaker != 0 ">
+				team_id_taker = #{teamIdTaker} 
+			</if>
+			<if test="teamMemberIdTaker != 0 ">
+				team_member_id_taker = #{teamMemberIdTaker} 
+			</if>
+			<if test="reservationStatus != 0 ">
+				reservation_status = #{reservationStatus}
+			</if>
+		</where>
+	</select>
+	
+
+	<!-- 9.용벙:employment -->
+	<!-- 용병 select sql -->
+	<sql id="select-employment">
+		SELECT employment_id, team_id_giver, team_member_id_giver,
+		employeement_status,
+		email, match_info_id FROM employment
+	</sql>
+	<!-- 용병 resultMap -->
+	<resultMap type="employment" id="employmentSelectRM">
+		<result property="employmentId" column="employment_id" />
+		<result property="teamIdGiver" column="team_id_giver" />
+		<result property="teamMemberIdGiver"
+			column="team_member_id_giver" />
+		<result property="employmentStatus"
+			column="employeement_status" />
+		<result property="email" column="email" />
+		<result property="matchInfoId" column="match_info_id" />
+	</resultMap>
+
+	<!--용병 select -->
+	<!--1. 용병 ID 2. 용병 찾는 팀 ID 3. 용병 찾는 팀 매니저의 팀멤버 ID 4. 용병 찾기 상태(1=찾는 중, 2=용병 
+		예약, 3=용병 찾기 완료) 5. 매치정보 ID -->
+	<select id="selectEmployments" parameterType="employment"
+		resultType="employment" resultMap="employmentSelectRM">
+		<include refid="select-employment" />
+		<where>
+			<if test="teamIdGiver !=0">
+				team_id_giver=#{teamIdGiver}
+			</if>
+			<if test="teamMemberIdGiver !=0">
+				team_member_id_giver=#{teamMemberIdGiver}
+			</if>
+			<if test="employmentStatus !=0">
+				employeement_status=#{employmentStatus}
+			</if>
+			<if test="email !=null">
+				email=#{email}
+			</if>
+			<if test="matchInfoId !=0">
+				match_info_id=#{matchInfoId}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 9-1.용벙 결과:employmentResult -->
+	<!-- 용병결과 select sql -->
+	<sql id="select-employmentResult">
+		SELECT employment_result_id, employment_id,
+		email, emp_result_status 
+		FROM employment_result
+	</sql>
+	<!-- 용병 resultMap -->
+	<resultMap type="employmentResult" id="employmentResultSelectRM">
+		<result property="employmentResultId" column="employment_result_id" />
+		<result property="employmentId" column="employment_id" />
+		<result property="email"
+			column="email" />
+		<result property="empResultStatus"
+			column="emp_result_status" />
+	</resultMap>
+	
+	<!--용병 결과 select -->
+	<!--1. 용병 결과 ID 2. 양도 ID 3. 용병이메일  4. 양도결과  상태(1=신청, 2=용병선택 완료) -->
+	<select id="selectEmploymentResult" parameterType="employmentResult"
+		resultType="employmentResult" resultMap="employmentResultSelectRM">
+		<include refid="select-employmentResult" />
+		<where>
+			<if test="employmentResultId != 0 ">
+				employment_result_id = #{employmentResultId}
+			</if>
+			<if test="employmentId != 0 ">
+				employment_id = #{employmentId} 
+			</if>
+			<if test="empResultStatus != 0 ">
+				emp_result_status = #{empResultStatus}
+			</if>
+		</where>
+	</select>
+
+	<!-- 10. 상대팀 찾기 :search -->
+	<!-- 상대팀 찾기 select sql -->
+	<sql id="select-search">
+		SELECT
+		search_id, team_id_giver, team_id_taker,
+		team_member_id_giver,
+		team_member_id_taker,
+		search_status, match_info_id, search_reg_date, waiting_time
+		FROM search
+	</sql>
+	<!-- 상대팀 찾기 select sql -->
+	<resultMap type="search" id="searchSelectRM">
+		<id property="searchId" column="search_id" />
+		<result property="teamIdGiver" column="team_id_giver" />
+		<result property="teamIdTaker" column="team_id_taker" />
+		<result property="teamMemberIdGiver"
+			column="team_member_id_giver" />
+		<result property="teamMemberIdTaker"
+			column="team_member_id_taker" />
+		<result property="searchStatus" column="search_status" />
+		<result property="matchInfoId" column="match_info_id" />
+		<result property="searchRegDate" column="search_reg_date" />
+		<result property="waitingTime" column="waiting_time" />
+	</resultMap>
+
+	<!--상대팀 찾기 select -->
+	<!--1. 상대팀 찾기 ID 2. 상대팀 찾는 팀 ID 3. 성사된 상대팀 ID 4. 상대팀 찾는 팀 매니저의 팀멤버 ID 5. 
+		성사된 상대팀 매니저의 팀멤버 ID 6. 양도 상태(1=상대팀 구하는 중, 2=경기 예약, 3=상대팀 찾기 완료) 5. 매치정보 ID -->
+	<select id="selectSearch" parameterType="search"
+		resultType="search" resultMap="searchSelectRM">
+		<include refid="select-search" />
+		<where>
+			<if test="searchId != 0 ">
+				search_id = #{searchId}
+			</if>
+			<if test="teamIdGiver != 0 ">
+				team_id_giver = #{teamIdGiver} OR team_id_taker =
+				#{teamIdGiver}
+			</if>
+			<if test="teamMemberIdGiver != 0 ">
+				team_member_id_giver = #{teamMemberIdGiver}
+				OR
+				team_member_id_taker = #{teamMemberIdGiver}
+			</if>
+			<if test="searchStatus != 0 ">
+				search_status = #{searchStatus}
+			</if>
+			<if test="matchInfoId != 0 ">
+				match_info_id = #{matchInfoId}
+			</if>
+			
+		</where>
+	</select>
+
+	<!-- 10-1. 상대팀 찾기 예약 :search_reservation -->
+	<!-- 상대팀 찾기 예약 select sql -->
+	<sql id="select-searchReservation">
+		SELECT
+		search_id, team_id_taker,
+		team_member_id_taker, reservation_status
+		FROM search_reservation
+	</sql>
+	<!-- 상대팀 예약 찾기 select sql -->
+	<resultMap type="searchReservation" id="searchReservationSelectRM">
+		<id property="searchId" column="search_id" />
+		<result property="teamIdTaker" column="team_id_taker" />
+		<result property="teamMemberIdTaker"
+			column="team_member_id_taker" />
+		<result property="reservationStatus" column="reservation_status" />
+
+	</resultMap>
+
+	<!--상대팀 찾기 예약 select -->
+	<!--1. 상대팀 찾기 ID 2. 상대팀 찾는 팀 ID 3. 성사된 상대팀 ID 4. 상대팀 찾는 팀 매니저의 팀멤버 ID 5. 
+		성사된 상대팀 매니저의 팀멤버 ID 6. 양도 상태(1=상대팀 구하는 중, 2=경기 예약, 3=상대팀 찾기 완료) 5. 매치정보 ID -->
+	<select id="selectSearchReservation" parameterType="searchReservation"
+		resultType="searchReservation" resultMap="searchSelectRM">
+		<include refid="select-searchReservation" />
+		<where>
+			<if test="searchId != 0 ">
+				search_id = #{searchId}
+			</if>
+			<if test="teamIdTaker != 0 ">
+				team_id_taker = #{teamIdTaker}
+			</if>
+			<if test="teamMemberIdTaker != 0 ">
+				team_member_id_taker = #{teamMemberIdTaker}
+			</if>
+			<if test="reservationStatus != 0 ">
+				reservation_status = #{reservationStatus}
+			</if>			
+		</where>
+	</select>
+
+
+	<!-- 11.매치스케줄 :matchSchedule -->
+	<!-- 매치스케줄 select sql -->
+	<sql id="select-matchSchedule">
+		SELECT match_schedule_id, home_team_id,
+		match_info_id,away_team_id
+
+		FROM
+		match_schedule
+	</sql>
+	
+	<!-- 매치스케줄 select resultMap -->
+	<resultMap type="matchSchedule" id="matchScheduleSelectRM">
+		<id property="matchScheduleId" column="match_schedule_id" />
+		<result property="homeTeamId" column="home_team_id" />
+		<result property="matchInfoId" column="match_info_id" />
+		<result property="awayTeamId" column="away_team_id" />
+	</resultMap>
+	
+	<!-- 매치스케줄 select -->
+	<!--1. 매치스케줄 ID로 찾기 2. 홈팀 ID를 받아와서, 홈팀 또는 어웨이팀에 있는 매치스케줄 모두 찾기 3. 매치정보 ID로 
+		찾기 -->
+	<select id="selectMatchSchedules" parameterType="matchSchedule"
+		resultMap="matchScheduleSelectRM">
+		<include refid="select-matchSchedule" />
+		<where>
+			<if test="matchScheduleId != 0">
+				match_schedule_id=#{matchScheduleId}
+			</if>
+			<if test="homeTeamId != 0">
+				home_team_id=#{homeTeamId} OR away_team_id=#{homeTeamId}
+			</if>
+			<if test="matchInfoId != 0">
+				match_info_id=#{matchInfoId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 12.참석자: attendant -->
+	<!-- 참석자 select sql -->
+	<sql id="select-attendant"> SELECT attendant_id, match_schedule_id,
+		team_member_id, attendance, employment_result_id
+		FROM attendant
+	</sql>
+	<!-- 참석자 select resultMap -->
+	<resultMap type="attendant" id="attendantSelectRM">
+		<id property="attendantId" column="attendant_id" />
+		<result property="matchScheduleId" column="match_schedule_id" />
+		<result property="teamMemberId" column="team_member_id" />
+		<result property="attendance" column="attendance" />
+		<result property="employmentResultId" column="employment_result_id" />
+	</resultMap>
+	<!-- 참석자 select -->
+	<!--1. 참석자 ID로 찾기 2. 매치일정ID로 찾기 3. 팀멤버ID로 찾기 4.참석한다고 한후 실제 참석 여부로 찾기 -->
+	<select id="selectAttendants" parameterType="attendant"
+		resultType="attendant" resultMap="attendantSelectRM">
+		<include refid="select-attendant" />
+		<where>
+			<if test="attendantId !=0">
+				attendant_id=#{attendantId}
+			</if>
+			<if test="matchScheduleId !=0">
+				match_schedule_id=#{matchScheduleId}
+			</if>
+			<if test="teamMemberId !=0">
+				team_member_id=#{teamMemberId}
+			</if>
+			<if test="attendance !=0">
+				attendance = #{attendance}
+			</if>
+			<if test="employmentResultId !=0">
+				employment_result_id = #{employmentResultId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 13.매치 리뷰: reviewFromTeam -->
+	<!-- 매치 리뷰 select sql -->
+	<sql id="select-reviewFromTeam">
+		SELECT attendant_id, manner_promise, manner_contact,
+		manner_rule,
+		manner_body_fight,
+		manner_slang,manner_smoking,manner_uniform,manner_payment,
+		manner_arrangement, manner_referee, manner_tackle, team_ability
+		FROM review_from_team
+	</sql>
+	
+	<!-- 매치 리뷰 select resultMap -->
+	<resultMap type="reviewFromTeam" id="reviewFromTeamSelectRM">
+		<id property="attendantId" column="attendant_id" />
+		<result property="mannerPromise" column="manner_promise" />
+		<result property="mannerContact" column="manner_contact" />
+		<result property="mannerRule" column="manner_rule" />
+		<result property="mannerBodyFight" column="manner_body_fight" />
+		<result property="mannerSlang" column="manner_slang" />
+		<result property="mannerSmoking" column="manner_smoking" />
+		<result property="mannerUniform" column="manner_uniform" />
+		<result property="mannerPayment" column="manner_payment" />
+		<result property="mannerArrangement"
+			column="manner_arrangement" />
+		<result property="mannerReferee" column="manner_referee" />
+		<result property="mannerTackle" column="manner_tackle" />
+		<result property="teamAbility" column="team_ability" />
+	</resultMap>
+	
+	<!-- 매치 리뷰 select -->
+	<!-- 1. 참석자 ID로 찾기 -->
+	<select id="selectReviewFromTeam" parameterType="reviewFromTeam"
+		resultType="reviewFromTeam" resultMap="reviewFromTeamSelectRM">
+		<include refid="select-reviewFromTeam" />
+		<where>
+			<if test="attendantId">
+				attendant_id = #{attendantId}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 14. 용병의 고용팀 평가(review_from_employee) -->
+	<sql id="select-reviewFromEmployee">
+		SELECT 
+			attendant_id, 
+			manner_promise, manner_contact,
+			manner_rule, manner_body_fight, manner_slang, 
+			manner_smoking,manner_uniform,manner_payment,
+			manner_arrangement, manner_referee, manner_tackle, 
+			team_ability
+		FROM review_from_employee
+	</sql>
+	
+	<resultMap type="reviewFromEmployee" id="reviewFromEmployeeSelectRM">
+		<id property="attendantId" column="attendant_id" />
+		<result property="mannerPromise" column="manner_promise" />
+		<result property="mannerContact" column="manner_contact" />
+		<result property="mannerRule" column="manner_rule" />
+		<result property="mannerBodyFight" column="manner_body_fight" />
+		<result property="mannerSlang" column="manner_slang" />
+		<result property="mannerSmoking" column="manner_smoking" />
+		<result property="mannerUniform" column="manner_uniform" />
+		<result property="mannerPayment" column="manner_payment" />
+		<result property="mannerArrangement"
+			column="manner_arrangement" />
+		<result property="mannerReferee" column="manner_referee" />
+		<result property="mannerTackle" column="manner_tackle" />
+		<result property="teamAbility" column="team_ability" />
+	</resultMap>
+	
+	<!-- 용병의 고용팀 평가 select 쿼리 -->
+	<!-- 참석자 id로  찾기-->
+	<select id="selectReviewFromEmployee" parameterType="reviewFromEmployee" 
+		resultType="reviewFromEmployee" resultMap="reviewFromEmployeeSelectRM">
+		<include refid="select-reviewFromEmployee"/>
+		<where>
+			<if test="attendantId != 0">
+				attendant_id = #{attendantId}
+			</if>
+		</where>
+	
+	</select>
+	
+	
+	<!-- 15. 고용팀의 용병 평가(review_from_employer) -->
+	<sql id="select-reviewFromEmployer">
+		SELECT 
+			attendant_id, 
+			manner_promise, manner_contact,
+			manner_rule, manner_body_fight, manner_slang, 
+			manner_smoking,manner_uniform,manner_payment,
+			manner_arrangement, manner_referee, manner_tackle, 
+			emp_ability, team_id
+		FROM review_from_employer
+	</sql>
+	
+	<resultMap type="reviewFromEmployer" id="reviewFromEmployerSelectRM">
+		<id property="attendantId" column="attendant_id" />
+		<result property="mannerPromise" column="manner_promise" />
+		<result property="mannerContact" column="manner_contact" />
+		<result property="mannerRule" column="manner_rule" />
+		<result property="mannerBodyFight" column="manner_body_fight" />
+		<result property="mannerSlang" column="manner_slang" />
+		<result property="mannerSmoking" column="manner_smoking" />
+		<result property="mannerUniform" column="manner_uniform" />
+		<result property="mannerPayment" column="manner_payment" />
+		<result property="mannerArrangement"
+			column="manner_arrangement" />
+		<result property="mannerReferee" column="manner_referee" />
+		<result property="mannerTackle" column="manner_tackle" />
+		<result property="empAbility" column="emp_ability" />
+		<result property="teamId" column="team_id" />
+	</resultMap>
+	
+	<!-- 용병의 고용팀 평가 select 쿼리 -->
+	<!-- (1) 참석자 id (2) 팀 아이디로  찾기-->
+	<select id="selectReviewFromEmployer" parameterType="reviewFromEmployer" 
+		resultType="reviewFromEmployer" resultMap="reviewFromEmployerSelectRM">
+		<include refid="select-reviewFromEmployer"/>
+		<where>
+			<if test="attendantId != 0">
+				attendant_id = #{attendantId}
+			</if>
+			<if test="teamId != 0">
+				team_id = #{teamId}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 16. 개인의 용병 점수 (emp_stat) -->
+	<sql id="select-empStat">
+		SELECT 
+			email, 
+			manner_promise, manner_contact,
+			manner_rule, manner_body_fight, manner_slang, 
+			manner_smoking,manner_uniform,manner_payment,
+			manner_arrangement, manner_referee, manner_tackle, 
+			emp_ability, counter
+		FROM emp_stat
+	</sql>
+	
+	<resultMap type="empStat" id="emtStatSelectRM">
+		<id column="email" property="email"/>
+		<result property="mannerPromise" column="manner_promise" />
+		<result property="mannerContact" column="manner_contact" />
+		<result property="mannerRule" column="manner_rule" />
+		<result property="mannerBodyFight" column="manner_body_fight" />
+		<result property="mannerSlang" column="manner_slang" />
+		<result property="mannerSmoking" column="manner_smoking" />
+		<result property="mannerUniform" column="manner_uniform" />
+		<result property="mannerPayment" column="manner_payment" />
+		<result property="mannerArrangement"
+			column="manner_arrangement" />
+		<result property="mannerReferee" column="manner_referee" />
+		<result property="mannerTackle" column="manner_tackle" />
+		<result property="empAbility" column="emp_ability" />
+		<result property="counter" column="counter" />
+	</resultMap>
+	
+	<!-- (1) email 로 찾기  -->
+	<select id="selectEmpStat" parameterType="empStat" resultType="empStat" resultMap="emtStatSelectRM">
+		<include refid="select-empStat"/>
+		<where>
+			<if test="email != 0">
+				email = #{email}
+			</if>
+		</where>
+	</select>
+	
+	
+	<!--dto select 관련 query 끝 -->
+
+
+	<!--=========================기능=================================== -->
+	<!--========================= 기본 기능=================================== -->
+	<!-- 1. 회원 가입 -->
+	<insert id="insertUser" parameterType="user">
+		INSERT INTO
+		user (email, pass, name, phone_num, main_foot, position)
+		VALUES (#{email}, #{pass}, #{name}, #{phoneNum}, #{mainFoot}, #{position})
+	</insert>
+	<!-- 회원 가입 끝 -->
+
+	<!-- 2. 회원정보 수정 -->
+	<update id="updateUser" parameterType="user">
+		UPDATE
+		user
+		SET
+		pass =
+		#{pass},
+		name = #{name},
+		phone_num = #{phoneNum},
+		main_foot =
+		#{mainFoot},
+		position = #{position}
+		WHERE email = #{email}
+	</update>
+	<!-- 회원정보 수정 끝 -->
+
+	<!-- 3. 회원 탈퇴 -->
+	<delete id="deleteUser" parameterType="user">
+		DELETE FROM
+		user
+		WHERE
+		email = #{email}
+	</delete>
+	<!-- 회원 탈퇴 끝 -->
+<!--========================= 기본 기능 끝=================================== -->
+<!--========================= 팀 생성 및 관리 기능=================================== -->
+	<!-- 4.팀 생성 -->
+	<insert id="insertTeam" parameterType="team" useGeneratedKeys="true" keyProperty="teamId">
+		INSERT INTO
+		team
+		(team_name, emblem, area, stadium_info, uniform_color, uniform_type,
+		founding_date)
+		VALUES (#{teamName}, #{emblem}, #{area},
+		#{stadiumInfo},
+		#{uniformColor}, #{uniformType}, #{foundingDate})
+	</insert>
+	<!-- 팀 생성 끝 -->
+
+	<!-- 5. 팀 멤버 추가하기 -->
+	<insert id="insertTeamMember" parameterType="teamMember">
+		INSERT INTO
+		team_member (team_id, email
+		<if test="memberLevel == 1">
+			, member_level
+			, reg_status
+		</if>
+		)
+		VALUES (#{teamId}, #{email}
+		<if test="memberLevel == 1">
+			, #{memberLevel}
+			, #{regStatus}
+		</if>
+		)
+	</insert>
+	<!-- 팀 멤버 추가하기 끝 -->
+
+
+	<!-- 6. 팀멤버 가입 수락 -->
+	<update id="updateTeamMember_allow" parameterType="teamMember">
+		UPDATE
+		team_member
+		SET
+		reg_status = 2
+		WHERE
+		team_id = #{teamId} AND email =
+		#{email}
+	</update>
+	<!-- 팀멤버 가입 수락 끝 -->
+
+	<!-- 7. 팀멤버 가입 거절 : 가입 보류 중(reg_status = 1)인 회원만을 대상으로 -->
+	<delete id="deleteTeamMember" parameterType="teamMember">
+		DELETE
+		FROM
+		team_member
+		WHERE
+		team_id = #{teamId} AND email = #{email}
+		AND reg_status
+		= 1
+	</delete>
+	<!-- 팀멤버 가입 거절 : 가입 보류 중(reg_status = 1)인 회원만을 대상으로 끝 -->
+
+	<!-- 8. 일반회원의 팀 탈퇴 및 매니저 팀원 강퇴 -->
+	<update id="updateTeamMember_quit" parameterType="teamMember">
+		UPDATE
+		team_member
+		SET
+		reg_status = 3
+		WHERE
+		team_id = #{teamId} AND email =
+		#{email}
+	</update>
+	<!-- 일반회원의 팀 탈퇴 및 매니저 팀원 강퇴 끝 -->
+
+	<!-- 9.부매니저 권한 임명, 탈퇴 회원이나 가입 보류중인 회원은 제외해야함 -->
+	<update id="updateTeamMember_appoint" parameterType="teamMember">
+		UPDATE
+		team_member
+		SET
+		member_level = 2
+		WHERE
+		team_id = #{teamId} AND email =
+		#{email}
+		AND reg_status = 2
+	</update>
+	<!-- 부매니저 권한 임명, 탈퇴 회원이나 가입 보류중인 회원은 제외해야함 끝 -->
+		<!--=========================팀 생성 및 관리 기능 끝=================================== -->
+<!--==========================경기 후 상대팀 평가, 후기================================== -->
+	<!-- 상대편 평가 등록하기 (태클, 심판 평가 항목 추가)-->
+	<insert id="insertReviewFromTeam" parameterType="reviewFromTeam">
+		INSERT INTO
+			review_from_team (attendant_id, manner_promise, manner_contact, manner_rule, manner_body_fight,
+							manner_slang, manner_smoking, manner_uniform, manner_payment, manner_arrangement,
+							manner_tackle, manner_referee, team_ability)
+		VALUES (#{attendantId}, #{mannerPromise}, #{mannerContact}, #{mannerRule}, #{mannerBodyFight},
+				#{mannerSlang}, #{mannerSmoking}, #{mannerUniform}, #{mannerPayment}, #{mannerArrangement},
+				#{mannerTackle}, #{mannerReferee}, #{teamAbility})
+	</insert>
+	
+	<!-- team_score 평균 리뷰 업데이트 :: upsert -->
+	<insert id="upsertReviewFromTeam" parameterType="teamScore">
+		INSERT INTO
+			team_score (team_id, manner_promise, manner_contact, manner_rule, manner_body_fight,
+							manner_slang, manner_smoking, manner_uniform, manner_payment, manner_arrangement,
+							manner_tackle, manner_referee, team_ability, counter)
+		VALUES (#{teamId}, #{mannerPromise}, #{mannerContact}, #{mannerRule}, #{mannerBodyFight},
+				#{mannerSlang}, #{mannerSmoking}, #{mannerUniform}, #{mannerPayment}, #{mannerArrangement},
+				#{mannerTackle}, #{mannerReferee}, #{teamAbility}, 1)
+		ON DUPLICATE KEY UPDATE
+			manner_promise = #{mannerPromise},
+			manner_contact = #{mannerContact},
+			manner_rule = #{mannerRule},
+			manner_body_fight = #{mannerBodyFight},
+			manner_slang = #{mannerSlang},
+			manner_smoking = #{mannerSmoking},
+			manner_uniform = #{mannerUniform},
+			manner_payment = #{mannerPayment},
+			manner_arrangement = #{mannerArrangement},
+			manner_tackle = #{mannerTackle},
+			manner_referee = #{mannerReferee},
+			team_ability = #{teamAbility},
+			counter = counter + 1
+	</insert>
+	<!--==========================경기 후 상대팀 평가, 후기 끝================================== -->
+		<!--=========================.매치 정보 작성=================================== -->
+	<!--1. matchInfo 작성하기 -->
+	<insert id="insertMatchInfo" parameterType="matchInfo"
+		useGeneratedKeys="true" keyProperty="matchInfoId">
+		INSERT INTO
+		match_info
+		(home_team_id, schedule, stadium, stadium_type)
+		VALUES (#{homeTeamId},
+		#{schedule}, #{stadium}, #{stadiumType})
+	</insert>
+	<update id="updateVoteResult" parameterType="voteResult">
+		UPDATE
+		match_info
+		SET
+		<if test="schedule !=null">
+			schedule = #{schedule}
+		</if>
+		<if test="stadium !=null">
+			stadium = #{stadium}
+		</if>
+		v
+		<if test="stadium_type !=null">
+			stadium_type = #{stadium_type}
+		</if>
+		WHERE
+		match_info_id = #{matchInfoId}
+	</update>
+	<!--=========================매치 정보 작성 끝=================================== -->
+	<!--==========================매치 관련 기능 - 스케줄================================== -->
+	<!-- 팀의 모든 매치스케쥴 가져오기 : 홈경기인지 어웨이경기인지 나누는 건 프론트에서? -->
+	<!-- 위의 selectMatchSchedules 사용 -->
+	
+	<!-- 선택한 소속팀의 모든 매치스케쥴과 내 참석 여부 함께 가져오기 -->
+	<resultMap type="matchSchedule" id="myTeamMatchScheduleRM">
+		<id column="match_schedule_id" property="matchScheduleId"/>
+		<result column="home_team_id" property="homeTeamId"/>
+		<result column="away_team_id" property="awayTeamId"/>
+		<result column="match_info_id" property="matchInfoId"/>
+		<collection property="attendants" ofType="attendant">
+			<id column="attendant_id" property="attendantId"/>
+			<result column="attendance" property="attendance"/>
+			<result column="at_match_schedule_id" property="matchScheduleId"/>
+			<result column="team_member_id" property="teamMemberId"/>
+		</collection>
+	</resultMap>
+	
+	<select id="getMyTeamMatchSchedules" parameterType="matchSchedule" resultMap="myTeamMatchScheduleRM">
+		SELECT
+			ms.match_schedule_id match_schedule_id,
+			ms.home_team_id home_team_id,
+			ms.away_team_id away_team_id,
+			ms.match_info_id match_info_id,
+			at.attendant_id attendant_id,
+			at.attendance attendance,
+			at.match_schedule_id at_match_schedule_id,
+			at.team_member_id team_member_id
+		FROM
+			match_schedule ms
+		INNER JOIN
+			attendant at
+		ON
+			ms.match_schedule_id = at.match_schedule_id
+		WHERE
+			((ms.home_team_id = #{homeTeamId}) OR (ms.away_team_id) = #{homeTeamId}) 
+	</select>
+
+
+	<!-- 팀매칭, 양도, 용병 관련 insert -->
+	<insert id="insertMatchInfo" parameterType="matchInfo" useGeneratedKeys="true" keyProperty="matchInfoId">
+		INSERT INTO
+			match_info (schedule, stadium, stadium_type, home_team_id)
+		VALUES
+			(#{schedule}, #{stadium}, #{stadiumType}, #{homeTeamId})
+	</insert>
+	<insert id="upsertSearch" parameterType="search" useGeneratedKeys="true" keyProperty="searchId">
+		INSERT INTO
+			search (search_id, team_id_giver, team_member_id_giver, match_info_id)
+		VALUES
+			(
+			<choose>
+				<when test="searchId==0">
+					null
+				</when>
+				<otherwise>
+					#{searchId}
+				</otherwise>	
+			</choose>
+			, #{teamIdGiver}, #{teamMemberIdGiver}, #{matchInfoId})
+		ON DUPLICATE KEY UPDATE
+			team_id_taker = #{teamIdTaker},
+			team_member_id_taker = #{teamMemberIdTaker},
+			search_status = #{searchStatus}
+	</insert>
+	
+	
+	
+	<!-- 등록매치현황 가져오기(match_info와 조인해야 함) -->
+	<resultMap type="matchInfo" id="getSearchsRM">
+		<result column="s_match_info_id" property="matchInfoId" />
+		<result column="home_team_id" property="homeTeamId" />
+		<result column="schedule" property="schedule" />
+		<result column="stadium" property="stadium" />
+		<result column="stadium_type" property="stadiumType" />
+		<collection property="searchs" ofType="search">
+			<id column="search_id" property="searchId"/>
+			<result column="team_id_giver" property="teamIdGiver"/>
+			<result column="team_id_taker" property="teamIdTaker"/>
+			<result column="team_member_id_giver" property="teamMemberIdGiver"/>
+			<result column="team_member_id_taker" property="teamMemberIdTaker"/>
+			<result column="search_status" property="searchStatus"/>
+			<result column="mi_match_info_id" property="matchInfoId"/>
+		</collection>
+	</resultMap>
+	
+	<select id="getSearchs" resultMap="getSearchsRM" resultType="matchInfo">
+		SELECT
+			mi.match_info_id as mi_match_info_id,
+			mi.home_team_id as home_team_id,
+			mi.schedule as schedule,
+			mi.stadium as stadium,
+			mi.stadium_type as stadium_type,
+			s.match_info_id as s_match_info_id,
+			s.team_id_giver as team_id_giver,
+			s.team_id_taker as team_id_taker,
+			s.team_member_id_giver as team_member_id_giver,
+			s.team_member_id_taker as team_member_id_taker,
+			s.search_status as search_status 
+		FROM
+			search s
+		INNER JOIN
+			match_info mi
+		ON
+			s.match_info_id = mi.match_info_id
+	</select>
+	
+	<!--==========================매치 관련 기능 - 스케줄 끝================================== -->
+	<!--=========================경기 참석 투표 기능=================================== -->
+	<!-- 1. 투표 추가하기 -->
+	<insert id="insertVote" parameterType="vote"
+		useGeneratedKeys="true" keyProperty="voteId">
+		INSERT INTO
+		vote(contents, due_date,team_id, writer, match_info_id)
+		VALUES(#{contents},#{dueDate}, #{teamId}, #{writer}, #{matchInfoId}
+		)
+		<!-- <selectKey resultType="int" keyProperty="voteId" order="AFTER"> SELECT 
+			LAST_INSERT_ID() </selectKey> -->
+	</insert>
+	<!-- 투표 추가하기 끝 -->
+
+	<!-- 2. 투표 결과 추가하기 -->
+	<insert id="insertVoteResult" parameterType="voteResult">
+		INSERT INTO
+		vote_result(attendance, vote_id,team_member_id)
+		VALUES(#{attendance},#{voteId}, #{teamMemberId})
+	</insert>
+	<!-- 투표 결과 추가하기 끝 -->
+
+	<!-- 3. 투표 결과 수정하기 -->
+	<update id="updateVoteResult" parameterType="voteResult">
+		UPDATE
+		vote_result
+		SET
+		attendance = #{attendance}
+		WHERE
+		vote_id = #{voteId} AND
+		team_member_id =
+		#{teamMemberId}
+	</update>
+	<!-- 투표 결과 추가하기 끝 -->
+	<!--=========================경기 참석 투표 기능 끝=================================== -->
+
+
+	
+	
+<!--=========================기능 끝=================================== -->
+</mapper>
+
+
+
+
+
+
+
+

@@ -18,14 +18,14 @@
 			<result column="cost" property="cost"/>
 			<result column="stadium_parking" property="stadiumParking"/>
 		</association>
-	</resultMap>
-	
-	<resultMap type="voteMatchResult" id="VoteMatchResultRM" extends="VoteMatchRM">
-		<result column="attendance" property="attendance"/>
-		<result column="totalNum" property="totalNum"/>
-		<association property="teamMember" javaType="teamMember">
-			<id column="team_member_id" property="teamMemberId"/>
+		<association property="voteMatchSetting" javaType="voteMatchSetting">
+			<result column="friend_emp" property="friendEmp"/>
 		</association>
+		<collection property="VoteMatchResults" ofType="VoteMatchResult">
+			<result column="attendance" property="attendance"/>
+			<result column="team_member_id" property="attendance"/>
+			<result column="total_num" property="totalNum"/>
+		</collection>
 	</resultMap>
 	<!-- 투표 관련 일정 정보 -->
 	<!-- <select id="showVoteMatchInfoByTeam" parameterType="integer" resultMap="VoteMatchRM">
@@ -59,12 +59,12 @@
 		AND v.team_id = #{value}
 	</select> -->
 	<!-- 투표 관련 일정|인원 정보 -->
-	<select id="showVoteMatchInfoByTeam" parameterType="Integer" resultMap="VoteMatchResultRM" >
+	<select id="showVoteMatchInfoByTeam" parameterType="Integer" resultMap="VoteMatchRM" >
 		SELECT 
 		v.vote_match_id, v.vote_reg_date, v.due_date,  
 		m.start_time, m.duration, m.stadium_address, m.match_type,
 		m.cost, m.stadium_parking, m.content,
-		vr.attendance, vr.team_member_id, tm.totalNum,
+		vr.attendance, vr.team_member_id, tm.total_num,
 		vs.type, vs.friend_emp
 		FROM match_schedule m
 		JOIN vote_match v
@@ -72,9 +72,9 @@
 		LEFT OUTER join vote_match_result vr
 		on v.vote_match_id = vr.vote_match_id
 		join (
-		select team_id, count(team_id) totalNum
+		select team_id, count(team_id) total_num
 		from team_member
-		where team_id =1
+		where team_id =#{value}
 		) tm
 		on tm.team_id=v.team_id
 		join vote_match_setting vs

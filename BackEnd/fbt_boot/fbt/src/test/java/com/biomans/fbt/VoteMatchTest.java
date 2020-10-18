@@ -1,5 +1,6 @@
 package com.biomans.fbt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -23,7 +24,7 @@ class VoteMatchTest {
 
 	@Test
 	void contextLoads() {
-		VoteMatchSetting vm = new VoteMatchSetting();
+		VoteMatch vm = new VoteMatch();
 		String voteMatchId = "1"+"-"+"1";
 		vm.setVoteMatchId(voteMatchId);
 		vm.setContents("늦지 마시오");
@@ -36,11 +37,14 @@ class VoteMatchTest {
 		MatchSchedule ms = new MatchSchedule();
 		ms.setMatchScheduleId(1);
 		vm.setMatchSchedule(ms);
-		vm.setType(0);
-		vm.setCancelNumber(11);
-		vm.setIsFirst(1);
-		vm.setWaiting(1);
-		vm.setFriendEmp(1);
+		VoteMatchSetting vms = new VoteMatchSetting();
+		vms.setType(0);
+		vms.setCancelNumber(11);
+		vms.setIsFirst(1);
+		vms.setWaiting(1);
+		vms.setFriendEmp(1);
+		vm.setVoteMatchSetting(vms);
+
 		
 //		sqlSession.insert(ns+"addVoteMatch", vm);
 //		sqlSession.insert(ns+"addVoteMatchSetting", vm);
@@ -49,8 +53,18 @@ class VoteMatchTest {
 //		
 //		System.out.println(sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 2));
 		List<VoteMatch> list = sqlSession.selectList(ns+"showVoteMatchInfoByTeam", 1);
+		int attendNum = 0;
+		int abscentNum = 0;
+		
+		for(VoteMatch voteMatch : list) {
+			ArrayList<VoteMatchResult> vmrlist = voteMatch.getVoteMatchResults();
+			for(VoteMatchResult vmr : vmrlist) {
+				vmr.setVotedNum(vmrlist.size());
+				
+			}
+		}
 //		List<VoteMatch> list2 = sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 1);
-		for(VoteMatch vms : list) System.out.println(vms);
+		for(VoteMatch vm2 : list) System.out.println(vm2);
 //		for(VoteMatch vmr : list2) System.out.println(vmr);
 	}
 

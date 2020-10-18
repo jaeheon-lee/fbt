@@ -53,16 +53,25 @@ class VoteMatchTest {
 //		
 //		System.out.println(sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 2));
 		List<VoteMatch> list = sqlSession.selectList(ns+"showVoteMatchInfoByTeam", 1);
+		int votedNum = 0;
 		int attendNum = 0;
 		int abscentNum = 0;
+		int friendNum = 0;
 		
 		for(VoteMatch voteMatch : list) {
 			ArrayList<VoteMatchResult> vmrlist = voteMatch.getVoteMatchResults();
 			for(VoteMatchResult vmr : vmrlist) {
-				vmr.setVotedNum(vmrlist.size());
-				
+				if(vmr.getUser() != null) friendNum++;
+				if(vmr.getAttendance()==1) attendNum++;
+				if(vmr.getAttendance()==0) abscentNum++;
 			}
+			voteMatch.setVotedNum(vmrlist.size());
+//			voteMatch.set
 		}
+		System.out.println("votedNum : "+ list.get(0).getVotedNum());
+		System.out.println("attendNum : "+attendNum);
+		System.out.println("abscentNum : "+attendNum);
+		System.out.println("friendNum : "+friendNum);
 //		List<VoteMatch> list2 = sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 1);
 		for(VoteMatch vm2 : list) System.out.println(vm2);
 //		for(VoteMatch vmr : list2) System.out.println(vmr);

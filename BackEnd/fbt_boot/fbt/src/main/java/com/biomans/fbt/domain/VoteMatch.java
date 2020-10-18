@@ -14,12 +14,18 @@ public class VoteMatch {
 	private MatchSchedule matchSchedule;
 	private VoteMatchSetting voteMatchSetting;
 	private ArrayList<VoteMatchResult> VoteMatchResults;
+	private int totalNum;
+	private int votedNum;
+	private int abscentNum;
+	private int attendNum;
+	private int friendNum;
 	
 	public VoteMatch() {}
 
 	public VoteMatch(String voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
 			String writer, int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
-			ArrayList<VoteMatchResult> voteMatchResults) {
+			ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum, int abscentNum, int attendNum,
+			int friendNum) {
 		super();
 		this.voteMatchId = voteMatchId;
 		this.contents = contents;
@@ -32,6 +38,11 @@ public class VoteMatch {
 		this.matchSchedule = matchSchedule;
 		this.voteMatchSetting = voteMatchSetting;
 		VoteMatchResults = voteMatchResults;
+		this.totalNum = totalNum;
+		this.votedNum = votedNum;
+		this.abscentNum = abscentNum;
+		this.attendNum = attendNum;
+		this.friendNum = friendNum;
 	}
 
 	public String getVoteMatchId() {
@@ -122,11 +133,53 @@ public class VoteMatch {
 		VoteMatchResults = voteMatchResults;
 	}
 
+	public int getTotalNum() {
+		return totalNum;
+	}
+
+	public void setTotalNum(int totalNum) {
+		this.totalNum = totalNum;
+	}
+
+	public int getVotedNum() {
+		return votedNum;
+	}
+
+	public void setVotedNum(int votedNum) {
+		this.votedNum = votedNum;
+	}
+
+	public int getAbscentNum() {
+		return abscentNum;
+	}
+
+	public void setAbscentNum(int abscentNum) {
+		this.abscentNum = abscentNum;
+	}
+
+	public int getAttendNum() {
+		return attendNum;
+	}
+
+	public void setAttendNum(int attendNum) {
+		this.attendNum = attendNum;
+	}
+
+	public int getFriendNum() {
+		return friendNum;
+	}
+
+	public void setFriendNum(int friendNum) {
+		this.friendNum = friendNum;
+	}
+
 	@Override
 	public String toString() {
 		return "VoteMatch [voteMatchId=" + voteMatchId + ", contents=" + contents + ", dueDate=" + dueDate
 				+ ", voteStatus=" + voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", friendEmp="
 				+ friendEmp + ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting="
-				+ voteMatchSetting + ", VoteMatchResults=" + VoteMatchResults + "]";
+				+ voteMatchSetting + ", VoteMatchResults=" + VoteMatchResults + ", totalNum=" + totalNum + ", votedNum="
+				+ votedNum + ", abscentNum=" + abscentNum + ", attendNum=" + attendNum + ", friendNum=" + friendNum
+				+ "]";
 	}
 }

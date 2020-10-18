@@ -62,9 +62,10 @@ VALUES('1-2', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null
 -- vote_result
 insert into vote_match_result(attendance, vote_match_id, team_member_id) values(1,'1-1',1);
 insert into vote_match_result(attendance, vote_match_id, team_member_id) values(0,'1-1',2);
+insert into vote_match_result(attendance, email, vote_match_id) values(1,'bioman17@gmail.com','1-1');
+insert into vote_match_result(attendance, email, vote_match_id) values(1,'bioman16@gmail.com','1-1');
 
--- vote_match_friend
-insert into vote_match_friend(attendance, email, vote_match_id) values(1,'bioman17@gmail.com','1-1');
+
 
 
 

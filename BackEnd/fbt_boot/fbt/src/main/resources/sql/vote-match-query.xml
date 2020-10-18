@@ -10,6 +10,7 @@
 		<result column="vote_reg_date" property="voteRegDate"/>
 		<result column="due_date" property="dueDate"/>
 		<result column="contents" property="contents"/>
+		<result column="total_num" property="totalNum"/>
 		<association property="matchSchedule" javaType="matchSchedule">
 			<result column="start_time" property="startTime"/>
 			<result column="duration" property="duration"/>
@@ -23,8 +24,12 @@
 		</association>
 		<collection property="VoteMatchResults" ofType="VoteMatchResult">
 			<result column="attendance" property="attendance"/>
-			<result column="team_member_id" property="attendance"/>
-			<result column="total_num" property="totalNum"/>
+			<association property="teamMember" javaType="teamMember">
+				<id column="team_member_id" property="teamMemberId"/>
+			</association>
+			<association property="user" javaType="user">
+				<id column="email" property="email"/>
+			</association>
 		</collection>
 	</resultMap>
 	<!-- 투표 관련 일정 정보 -->
@@ -64,7 +69,7 @@
 		v.vote_match_id, v.vote_reg_date, v.due_date,  
 		m.start_time, m.duration, m.stadium_address, m.match_type,
 		m.cost, m.stadium_parking, m.content,
-		vr.attendance, vr.team_member_id, tm.total_num,
+		vr.attendance, vr.team_member_id, vr.email , tm.total_num,
 		vs.type, vs.friend_emp
 		FROM match_schedule m
 		JOIN vote_match v

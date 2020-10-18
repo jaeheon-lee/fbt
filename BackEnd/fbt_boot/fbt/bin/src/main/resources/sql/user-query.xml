@@ -9,7 +9,7 @@
 		 main_foot, position, api_key, height, weight, was_pro, gender, born_date)
 		VALUES(#{email}, #{pass}, #{name}, #{phoneNum}, sysdate(), sysdate(),
 		#{mainFoot},#{position},#{apiKey}, #{height}, #{weight}, #{wasPro},
-		#{gender}, #{bornDate})
+		#{gender}, #{recentLogin})
 	</insert>
 
 </mapper>

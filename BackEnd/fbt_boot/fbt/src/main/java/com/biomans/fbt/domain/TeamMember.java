@@ -11,8 +11,6 @@ public class TeamMember extends User {
 	
 	public TeamMember() {}
 	
-	
-	
 	public TeamMember(String email, String pass, String name, String phoneNum, String userRegDate, String recentLogin,
 			String mainFoot, String position, String apiKey, int height, int weight, int wasPro, int gender,
 			String born_date, int teamMemberId, String memberRegDate, int memberLevel, int regStatus, String nickName,

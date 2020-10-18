@@ -5,11 +5,12 @@
 <mapper namespace="MatchScheduleMapper">
 	<insert id="addMatchSchedule" parameterType="matchSchedule">
 		INSERT INTO
-		match_schedule(team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type,
-		stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, is_home)
-		VALUES(#{team.teamId}, #{startTime}, #{duration}, #{cost}, #{writer},
+		match_schedule(home_team_id, away_team_id, start_time, duration, cost, writer,
+		reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y,
+		stadium_parking, stadium_shower, match_type)
+		VALUES(#{homeTeam.teamId}, #{awayTeam.teamId}, #{startTime}, #{duration}, #{cost}, #{writer},
 		sysdate(), #{content}, #{stadiumName}, #{stadiumType}, #{stadiumAddress}, #{stadiumX}, #{stadiumY},
-		#{stadiumParking}, #{stadiumShower}, #{matchType}, #{isHome})
+		#{stadiumParking}, #{stadiumShower}, #{matchType})
 	</insert>
 
 </mapper>

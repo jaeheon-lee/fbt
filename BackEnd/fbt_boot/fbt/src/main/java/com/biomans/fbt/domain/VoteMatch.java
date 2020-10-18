@@ -1,19 +1,25 @@
 package com.biomans.fbt.domain;
 
+import java.util.ArrayList;
+
 public class VoteMatch {
-	private int voteMatchId;
+	private String voteMatchId;
 	private String contents;
 	private String dueDate;
 	private int voteStatus;
 	private String voteRegDate;
 	private String writer;
+	private int friendEmp;
 	private Team team;
 	private MatchSchedule matchSchedule;
+	private VoteMatchSetting voteMatchSetting;
+	private ArrayList<VoteMatchResult> VoteMatchResults;
 	
 	public VoteMatch() {}
-	
-	public VoteMatch(int voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
-			String writer, Team team, MatchSchedule matchSchedule) {
+
+	public VoteMatch(String voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
+			String writer, int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
+			ArrayList<VoteMatchResult> voteMatchResults) {
 		super();
 		this.voteMatchId = voteMatchId;
 		this.contents = contents;
@@ -21,15 +27,18 @@ public class VoteMatch {
 		this.voteStatus = voteStatus;
 		this.voteRegDate = voteRegDate;
 		this.writer = writer;
+		this.friendEmp = friendEmp;
 		this.team = team;
 		this.matchSchedule = matchSchedule;
+		this.voteMatchSetting = voteMatchSetting;
+		VoteMatchResults = voteMatchResults;
 	}
 
-	public int getVoteMatchId() {
+	public String getVoteMatchId() {
 		return voteMatchId;
 	}
 
-	public void setVoteMatchId(int voteMatchId) {
+	public void setVoteMatchId(String voteMatchId) {
 		this.voteMatchId = voteMatchId;
 	}
 
@@ -73,6 +82,14 @@ public class VoteMatch {
 		this.writer = writer;
 	}
 
+	public int getFriendEmp() {
+		return friendEmp;
+	}
+
+	public void setFriendEmp(int friendEmp) {
+		this.friendEmp = friendEmp;
+	}
+
 	public Team getTeam() {
 		return team;
 	}
@@ -89,10 +106,27 @@ public class VoteMatch {
 		this.matchSchedule = matchSchedule;
 	}
 
+	public VoteMatchSetting getVoteMatchSetting() {
+		return voteMatchSetting;
+	}
+
+	public void setVoteMatchSetting(VoteMatchSetting voteMatchSetting) {
+		this.voteMatchSetting = voteMatchSetting;
+	}
+
+	public ArrayList<VoteMatchResult> getVoteMatchResults() {
+		return VoteMatchResults;
+	}
+
+	public void setVoteMatchResults(ArrayList<VoteMatchResult> voteMatchResults) {
+		VoteMatchResults = voteMatchResults;
+	}
+
 	@Override
 	public String toString() {
 		return "VoteMatch [voteMatchId=" + voteMatchId + ", contents=" + contents + ", dueDate=" + dueDate
-				+ ", voteStatus=" + voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", team="
-				+ team + ", matchSchedule=" + matchSchedule + "]";
+				+ ", voteStatus=" + voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", friendEmp="
+				+ friendEmp + ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting="
+				+ voteMatchSetting + ", VoteMatchResults=" + VoteMatchResults + "]";
 	}
 }

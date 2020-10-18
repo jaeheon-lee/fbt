@@ -1,6 +1,6 @@
 package com.biomans.fbt.domain;
 
-public class VoteMatchResult extends VoteMatch{
+public class VoteMatchResult {
 	private int attendance;
 	private TeamMember teamMember;
 	private int totalNum;
@@ -42,7 +42,7 @@ public class VoteMatchResult extends VoteMatch{
 
 	@Override
 	public String toString() {
-		return "VoteMatchResult [attendance=" + attendance + ", teamMember=" + teamMember + ", totalNum=" + totalNum
+		return super.toString()+", "+ "VoteMatchResult [attendance=" + attendance + ", teamMember=" + teamMember + ", totalNum=" + totalNum
 				+ "]";
 	}
 

@@ -16,14 +16,14 @@ public class MatchSchedule {
 	private int stadiumParking;
 	private int stadiumShower;
 	private int matchType;
-	private Team homeTeam;
-	private Team awayTeam;
+	private int isHome;
+	private Team team;
 	
 	public MatchSchedule() {}
 
 	public MatchSchedule(int matchScheduleId, String startTime, int duration, int cost, String writer, String regDate,
 			String content, String stadiumName, String stadiumType, String stadiumAddress, int stadiumX, int stadiumY,
-			int stadiumParking, int stadiumShower, int matchType, Team homeTeam, Team awayTeam) {
+			int stadiumParking, int stadiumShower, int matchType, int isHome, Team team) {
 		super();
 		this.matchScheduleId = matchScheduleId;
 		this.startTime = startTime;
@@ -40,8 +40,8 @@ public class MatchSchedule {
 		this.stadiumParking = stadiumParking;
 		this.stadiumShower = stadiumShower;
 		this.matchType = matchType;
-		this.homeTeam = homeTeam;
-		this.awayTeam = awayTeam;
+		this.isHome = isHome;
+		this.team = team;
 	}
 
 	public int getMatchScheduleId() {
@@ -164,20 +164,20 @@ public class MatchSchedule {
 		this.matchType = matchType;
 	}
 
-	public Team getHomeTeam() {
-		return homeTeam;
+	public int getIsHome() {
+		return isHome;
 	}
 
-	public void setHomeTeam(Team homeTeam) {
-		this.homeTeam = homeTeam;
+	public void setIsHome(int isHome) {
+		this.isHome = isHome;
 	}
 
-	public Team getAwayTeam() {
-		return awayTeam;
+	public Team getTeam() {
+		return team;
 	}
 
-	public void setAwayTeam(Team awayTeam) {
-		this.awayTeam = awayTeam;
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class MatchSchedule {
 				+ duration + ", cost=" + cost + ", writer=" + writer + ", regDate=" + regDate + ", content=" + content
 				+ ", stadiumName=" + stadiumName + ", stadiumType=" + stadiumType + ", stadiumAddress=" + stadiumAddress
 				+ ", stadiumX=" + stadiumX + ", stadiumY=" + stadiumY + ", stadiumParking=" + stadiumParking
-				+ ", stadiumShower=" + stadiumShower + ", matchType=" + matchType + ", homeTeam=" + homeTeam
-				+ ", awayTeam=" + awayTeam + "]";
+				+ ", stadiumShower=" + stadiumShower + ", matchType=" + matchType + ", isHome=" + isHome + ", team="
+				+ team + "]";
 	}
 }

@@ -1,7 +1,7 @@
 package com.biomans.fbt.domain;
 
-public class VoteSetting extends VoteMatch{
-	private int status;
+public class VoteMatchSetting {
+	private int type;
 	private int cancelNumber;
 	private int isFirst;
 	private int waiting;
@@ -16,16 +16,15 @@ public class VoteSetting extends VoteMatch{
 	private int empCost;
 	private int searchCost;
 	
-	public VoteSetting() {
+	public VoteMatchSetting() {
 		super();
 	}
 
-	public VoteSetting(int voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
-			String writer, Team team, MatchSchedule matchSchedule, int status, int cancelNumber, int isFirst, int waiting, int friendEmp, int selfMinNumber,
+	public VoteMatchSetting(int type, int cancelNumber, int isFirst, int waiting, int friendEmp, int selfMinNumber,
 			int selfMaxNumber, String empDueDate, int empMinNumber, int awayMinNumber, String awayDueDate,
 			int assgignCost, int empCost, int searchCost) {
-		super(voteMatchId, contents, dueDate, voteStatus, voteRegDate, writer, team, matchSchedule);
-		this.status = status;
+		super();
+		this.type = type;
 		this.cancelNumber = cancelNumber;
 		this.isFirst = isFirst;
 		this.waiting = waiting;
@@ -41,12 +40,12 @@ public class VoteSetting extends VoteMatch{
 		this.searchCost = searchCost;
 	}
 
-	public int getStatus() {
-		return status;
+	public int getType() {
+		return type;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	public int getCancelNumber() {
@@ -155,10 +154,10 @@ public class VoteSetting extends VoteMatch{
 
 	@Override
 	public String toString() {
-		return "VoteSetting [status=" + status + ", cancelNumber=" + cancelNumber + ", isFirst=" + isFirst
-				+ ", waiting=" + waiting + ", friendEmp=" + friendEmp + ", selfMinNumber=" + selfMinNumber
-				+ ", selfMaxNumber=" + selfMaxNumber + ", empDueDate=" + empDueDate + ", empMinNumber=" + empMinNumber
-				+ ", awayMinNumber=" + awayMinNumber + ", awayDueDate=" + awayDueDate + ", assgignCost=" + assgignCost
-				+ ", empCost=" + empCost + ", searchCost=" + searchCost + "]";
+		return "VoteSetting [type=" + type + ", cancelNumber=" + cancelNumber + ", isFirst=" + isFirst + ", waiting="
+				+ waiting + ", friendEmp=" + friendEmp + ", selfMinNumber=" + selfMinNumber + ", selfMaxNumber="
+				+ selfMaxNumber + ", empDueDate=" + empDueDate + ", empMinNumber=" + empMinNumber + ", awayMinNumber="
+				+ awayMinNumber + ", awayDueDate=" + awayDueDate + ", assgignCost=" + assgignCost + ", empCost="
+				+ empCost + ", searchCost=" + searchCost + "]";
 	}
 }

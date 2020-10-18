@@ -18,13 +18,10 @@ class MatchScheduleTest {
 	@Test
 	void contextLoads() {
 		MatchSchedule matchSchedule = new MatchSchedule();
-		Team home = new Team();
-		Team away = new Team();
-		home.setTeamId(2);
-//		away.setTeamId(3);
-//		matchSchedule.setAwayTeam(away);
-		matchSchedule.setHomeTeam(home);
-		matchSchedule.setStartTime("2020-09-15 09:00");
+		Team team = new Team();
+		team.setTeamId(1);
+		matchSchedule.setTeam(team);
+		matchSchedule.setStartTime("2020-10-15 09:00");
 		matchSchedule.setDuration(2);
 		matchSchedule.setCost(10);
 		matchSchedule.setWriter("왕십리FC 구단주");

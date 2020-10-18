@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="NoticeMapper">
+	<insert id="addNotice" parameterType="notice">
+		INSERT INTO
+		notice(content, date, team_id, team_member_id)
+		VALUES
+		<foreach collection="teamMembers" item="Integer" separator=",">
+			(#{content}, #{date}, #{team.teamId}, #{Integer})
+		</foreach>
+	</insert>
+
+</mapper>

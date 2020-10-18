@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TeamMapper">
+	<insert id="addTeam" parameterType="team">
+		INSERT INTO
+		team(team_name, emblem, area, stadium_info, 
+		uniform_color, uniform_type, founding_date, team_reg_date, account, bank)
+		VALUES(#{teamName}, #{emblem}, #{area}, #{stadiumInfo}, #{uniformColor}, #{uniformType},
+		#{foundingDate}, #{teamRegDate}, #{account}, #{bank})
+	</insert>
+	
+</mapper>

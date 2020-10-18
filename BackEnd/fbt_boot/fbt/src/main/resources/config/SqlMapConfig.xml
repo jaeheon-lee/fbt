@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>	
+
+	 <settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+
+	<typeAliases>
+		<package name="com.biomans.fbt.domain"/>
+		<package name="com.biomans.fbt.util"/>
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="sql/team-query.xml"/>
+		<mapper resource="sql/user-query.xml"/>
+		<mapper resource="sql/team-member-query.xml"/>
+		<mapper resource="sql/vote-match-query.xml"/>
+		<mapper resource="sql/match-schedule-query.xml"/>
+		<mapper resource="sql/notice-query.xml"/>
+		
+	</mappers>
+</configuration>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

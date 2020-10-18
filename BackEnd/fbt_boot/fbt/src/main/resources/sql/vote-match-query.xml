@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="VoteMatchMapper">
+	<!-- V001 : 진행 중인 투표 출력 -->
+	<!-- 정보를 받기 위한 RM -->
+	<resultMap type="voteMatch" id="VoteMatchRM">
+		<id column="vote_match_id" property="voteMatchId"/>
+		<result column="vote_reg_date" property="voteRegDate"/>
+		<result column="due_date" property="dueDate"/>
+		<result column="contents" property="contents"/>
+		<association property="matchSchedule" javaType="matchSchedule">
+			<result column="start_time" property="startTime"/>
+			<result column="duration" property="duration"/>
+			<result column="stadium_address" property="stadiumAddress"/>
+			<result column="match_type" property="matchType"/>
+			<result column="cost" property="cost"/>
+			<result column="stadium_parking" property="stadiumParking"/>
+		</association>
+	</resultMap>
+	
+	<resultMap type="voteMatchResult" id="VoteMatchResultRM" extends="VoteMatchRM">
+		<result column="attendance" property="attendance"/>
+		<result column="totalNum" property="totalNum"/>
+		<association property="teamMember" javaType="teamMember">
+			<id column="team_member_id" property="teamMemberId"/>
+		</association>
+	</resultMap>
+	<!-- 투표 관련 일정 정보 -->
+	<select id="showVoteMatchInfoByTeam" parameterType="integer" resultMap="VoteMatchRM">
+		SELECT 
+		v.vote_match_id, v.vote_reg_date, v.due_date, v.contents,
+		m.start_time, m.duration, m.stadium_address, m.match_type,
+		m.cost, m.stadium_parking
+		FROM match_schedule m
+		JOIN vote_match v
+		ON v.match_schedule_id = m.match_schedule_id
+		WHERE v.vote_status = 0
+		AND v.team_id = #{value}
+	</select>
+	<!-- 투표 관련 인원 정보 -->
+	<select id="showVoteMatchStatusByTeam" parameterType="integer" resultMap="VoteMatchResultRM">
+		SELECT vr.attendance, vr.team_member_id, tm.totalNum
+		FROM vote_match v
+		JOIN vote_match_result vr
+		ON v.vote_match_id = vr.vote_match_id
+		JOIN (
+		select count(team_id) totalNum
+		from team_member
+		where team_id =2
+		) tm
+		WHERE v.vote_status = 0
+		AND v.team_id = 2
+	</select>
+	
+<!-- 	<select id="a" parameterType="Integer" resultMap="VoteMatchResultRM">
+		SELECT 
+		v.vote_match_id, v.vote_reg_date, v.due_date,  
+		m.start_time, m.duration, m.stadium_address, m.match_type,
+		m.cost, m.stadium_parking, m.content,
+		vr.attendance, vr.team_member_id, tm.totalNum
+		FROM match_schedule m
+		JOIN vote_match v
+		ON v.match_schedule_id = m.match_schedule_id
+		join vote_match_result vr
+		on v.vote_match_id = vr.vote_match_id
+		join (
+		select count(team_id) totalNum
+		from team_member
+		where team_id =2
+		) tm
+		where v.vote_status = 0
+		and v.team_id = #{value}
+	</select> -->
+	
+	<!-- V003 : 참불 입력하기 -->
+	<insert id="" ></insert>
+
+	<!-- V005 : 투표 생성하기 -->
+	<insert id="addVoteMatch" parameterType="voteMatch">
+		INSERT INTO
+		vote_match(contents, due_date, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
+		VALUES(#{contents}, #{dueDate}, #{voteStatus}, sysdate(), #{writer}, #{team.teamId}, 
+		#{matchSchedule.matchScheduleId})
+	</insert>
+	
+</mapper>

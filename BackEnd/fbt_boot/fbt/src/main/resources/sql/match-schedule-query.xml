@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MatchScheduleMapper">
+	<insert id="addMatchSchedule" parameterType="matchSchedule">
+		INSERT INTO
+		match_schedule(home_team_id, away_team_id, start_time, duration, cost, writer,
+		reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y,
+		stadium_parking, stadium_shower, match_type)
+		VALUES(#{homeTeam.teamId}, #{awayTeam.teamId}, #{startTime}, #{duration}, #{cost}, #{writer},
+		sysdate(), #{content}, #{stadiumName}, #{stadiumType}, #{stadiumAddress}, #{stadiumX}, #{stadiumY},
+		#{stadiumParking}, #{stadiumShower}, #{matchType})
+	</insert>
+
+</mapper>

@@ -22,46 +22,17 @@
 		<association property="voteMatchSetting" javaType="voteMatchSetting">
 			<result column="friend_emp" property="friendEmp"/>
 		</association>
-		<collection property="VoteMatchResults" ofType="VoteMatchResult">
+		<collection property="voteMatchResults" ofType="VoteMatchResult">
+			<id column="vote_match_result_id" property="voteMatchResultId"/>
 			<result column="attendance" property="attendance"/>
+			<association property="teamMember" javaType="teamMember">
+				<id column="team_member_id" property="teamMemberId"/>
+			</association>
+			<association property="user" javaType="user">
+				<id column="email" property="email"/>
+			</association>
 		</collection>
 	</resultMap>
-	<!-- 투표 관련 일정 정보 -->
-	<!-- <select id="showVoteMatchInfoByTeam" parameterType="integer" resultMap="VoteMatchRM">
-		SELECT 
-		v.vote_match_id, v.vote_reg_date, v.due_date, v.contents,
-		m.start_time, m.duration, m.stadium_address, m.match_type,
-		m.cost, m.stadium_parking
-		FROM match_schedule m
-		JOIN vote_match v
-		ON v.match_schedule_id = m.match_schedule_id
-		WHERE v.vote_status = 0
-		AND v.team_id = #{value}
-	</select> -->
-	<!-- 투표 관련 인원 정보 -->
-	<!-- <select id="showVoteMatchStatusByTeam" parameterType="integer" resultMap="VoteMatchResultRM">
-		SELECT 
-		v.vote_match_id, vr.attendance, vr.team_member_id, 
-		tm.totalNum,
-		vs.type, vs.friend_emp
-		FROM vote_match v
-		JOIN vote_match_result vr
-		ON v.vote_match_id = vr.vote_match_id
-		JOIN (
-		select count(team_id) totalNum
-		from team_member
-		where team_id = #{value}
-		) tm
-		join vote_match_setting vs
-		on v.vote_match_id = vs.vote_match_id
-		WHERE v.vote_status = 0
-		AND v.team_id = #{value}
-	</select> -->
-	
-	<!-- 투표 관련 일정 -->
-	<select id="test1" parameterType="integer" >
-	
-	</select>
 	
 	<!-- 투표 관련 일정|인원 정보 -->
 	<select id="showVoteMatchInfoByTeam" parameterType="Integer" resultMap="VoteMatchRM" >
@@ -76,20 +47,47 @@
 		ON v.match_schedule_id = m.match_schedule_id
 		LEFT OUTER join vote_match_result vr
 		on v.vote_match_id = vr.vote_match_id
-		join (
-		select team_id, count(team_id) total_num
-		from team_member
-		where team_id =#{value}
+		JOIN (
+		SELECT team_id, count(team_id) total_num
+		FROM team_member
+<!-- 		WHERE team_id =#{value} -->
 		) tm
-		on tm.team_id=v.team_id
-		join vote_match_setting vs
-		on v.vote_match_id = vs.vote_match_id
-		where v.vote_status = 0
-		and v.team_id = #{value};
+		ON tm.team_id=v.team_id
+		JOIN vote_match_setting vs
+		ON v.vote_match_id = vs.vote_match_id
+		WHERE v.vote_status = 0
+		AND v.team_id = #{value}
 	</select>
 	
+	<!-- V002 : 투표 수정하기 -->
+	<update id="updateVoteMatchResult" parameterType="voteMatchResult">
+		UPDATE vote_match_result
+		SET attendance = #{attendance}
+		WHERE vote_match_id = #{voteMatchId}
+		AND (team_member_id = #{teamMember.teamMemberId}
+		OR email = #{user.email})
+	</update>
+	
 	<!-- V003 : 참불 입력하기 -->
-	<insert id="" ></insert>
+	<insert id="addAttendance" parameterType="voteMatchResult">
+		INSERT INTO
+		<if test="voteMatchResult.teamMember != null">
+			vote_match_result(vote_match_id, team_member_id, attendance)
+			VALUES(#{voteMatchId}, #{teamMember.teamMemberId}, #{attendance})
+		</if>
+		<if test="voteMatchResult.user != null">
+			vote_match_result(vote_match_id, email, attendance)
+			VALUES(#{voteMatchId}, #{user.email}, #{attendance})
+		</if>
+		
+	</insert>
+	
+	<!-- V004 : 지인초청하기 -->
+	<insert id="inviteFriend" parameterType="invite">
+		INSERT INTO
+		invite(team_member_id, email, vote_match_id)
+		VALUES(#{teamMember.teamMemberId}, #{user.email}, #{voteMatch.voteMatchId})
+	</insert>
 
 	<!-- V005 : 투표 생성하기 -->
 	<insert id="addVoteMatch" parameterType="voteMatch">
@@ -108,5 +106,35 @@
 		#{selfMaxNumber}, #{empDueDate}, #{empMinNumber}, #{awayMinNumber}, #{awayDueDate}, #{assgignCost}, 
 		#{empCost}, #{searchCost})
 	</insert>
+	
+	<!-- V007 : 투표 마감하기 -->
+	<update id="endVoteMatch" parameterType="voteMatch">
+		UPDATE vote_match
+		SET vote_status = 1
+		WHERE vote_match_id = #{voteMatchId}
+	</update>
+	
+	<!-- V008 : 투표 내용 수정 -->
+	<update id="updateVoteMatch" parameterType="voteMatch">
+		UPDATE vote_match
+		SET contents = #{contents}, due_date = #{dueDate}
+		WHERE vote_match_id = #{voteMatchId}
+	</update>
+	
+	<!-- V009 : 투표 삭제 -->
+	<delete id="deleteVoteMatch" parameterType="string">
+		DELETE FROM vote_match
+		WHERE vote_match_id = #{value}
+	</delete>
+	
+	<!-- V010 : 투표 설정 수정 -->
+	<update id="updateVoteMatchSetting" parameterType="voteMatchSetting">
+		UPDATE vote_match_setting
+		SET type = #{type}, cancel_number = #{cancelNumber}, is_first = #{isFirst}, waiting = #{waiting}, 
+		friend_emp = #{friendEmp}, self_min_number = #{selfMinNumber}, self_max_number = #{selfMaxNumber},
+		emp_due_date = #{empDueDate}, emp_min_number = #{empMinNumber}, away_min_number = #{awayMinNumber},
+		away_due_date = #{awayDueDate}, assign_cost = #{assignCost}, emp_cost = #{empCost}, search_cost = #{searchCost}
+		WHERE vote_match_id = #{voteMatchId}
+	</update>
 	
 </mapper>

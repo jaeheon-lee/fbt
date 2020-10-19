@@ -13,7 +13,8 @@ public class VoteMatch {
 	private Team team;
 	private MatchSchedule matchSchedule;
 	private VoteMatchSetting voteMatchSetting;
-	private ArrayList<VoteMatchResult> VoteMatchResults;
+	private VoteMatchResult voteMatchResult;
+	private ArrayList<VoteMatchResult> voteMatchResults;
 	private int totalNum;
 	private int votedNum;
 	private int abscentNum;
@@ -24,8 +25,8 @@ public class VoteMatch {
 
 	public VoteMatch(String voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
 			String writer, int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
-			ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum, int abscentNum, int attendNum,
-			int friendNum) {
+			VoteMatchResult voteMatchResult, ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum,
+			int abscentNum, int attendNum, int friendNum) {
 		super();
 		this.voteMatchId = voteMatchId;
 		this.contents = contents;
@@ -37,7 +38,8 @@ public class VoteMatch {
 		this.team = team;
 		this.matchSchedule = matchSchedule;
 		this.voteMatchSetting = voteMatchSetting;
-		VoteMatchResults = voteMatchResults;
+		this.voteMatchResult = voteMatchResult;
+		this.voteMatchResults = voteMatchResults;
 		this.totalNum = totalNum;
 		this.votedNum = votedNum;
 		this.abscentNum = abscentNum;
@@ -125,12 +127,20 @@ public class VoteMatch {
 		this.voteMatchSetting = voteMatchSetting;
 	}
 
+	public VoteMatchResult getVoteMatchResult() {
+		return voteMatchResult;
+	}
+
+	public void setVoteMatchResult(VoteMatchResult voteMatchResult) {
+		this.voteMatchResult = voteMatchResult;
+	}
+
 	public ArrayList<VoteMatchResult> getVoteMatchResults() {
-		return VoteMatchResults;
+		return voteMatchResults;
 	}
 
 	public void setVoteMatchResults(ArrayList<VoteMatchResult> voteMatchResults) {
-		VoteMatchResults = voteMatchResults;
+		this.voteMatchResults = voteMatchResults;
 	}
 
 	public int getTotalNum() {
@@ -178,8 +188,8 @@ public class VoteMatch {
 		return "VoteMatch [voteMatchId=" + voteMatchId + ", contents=" + contents + ", dueDate=" + dueDate
 				+ ", voteStatus=" + voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", friendEmp="
 				+ friendEmp + ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting="
-				+ voteMatchSetting + ", VoteMatchResults=" + VoteMatchResults + ", totalNum=" + totalNum + ", votedNum="
-				+ votedNum + ", abscentNum=" + abscentNum + ", attendNum=" + attendNum + ", friendNum=" + friendNum
-				+ "]";
+				+ voteMatchSetting + ", voteMatchResult=" + voteMatchResult + ", voteMatchResults=" + voteMatchResults
+				+ ", totalNum=" + totalNum + ", votedNum=" + votedNum + ", abscentNum=" + abscentNum + ", attendNum="
+				+ attendNum + ", friendNum=" + friendNum + "]";
 	}
 }

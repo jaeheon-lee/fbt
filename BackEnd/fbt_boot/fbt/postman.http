@@ -1,0 +1,2 @@
+GET http://localhost:7777/vote-match/1
+Content-Type: application/json

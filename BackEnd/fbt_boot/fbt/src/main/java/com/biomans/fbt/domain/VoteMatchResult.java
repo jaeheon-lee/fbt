@@ -1,6 +1,8 @@
 package com.biomans.fbt.domain;
 
 public class VoteMatchResult {
+	private String voteMatchId;
+	private int voteMatchResultId;
 	private int attendance;
 	private TeamMember teamMember;
 	private User user;
@@ -9,11 +11,29 @@ public class VoteMatchResult {
 		super();
 	}
 
-	public VoteMatchResult(int attendance, TeamMember teamMember, User user) {
+	public VoteMatchResult(String voteMatchId, int voteMatchResultId, int attendance, TeamMember teamMember, User user) {
 		super();
+		this.voteMatchId = voteMatchId;
+		this.voteMatchResultId = voteMatchResultId;
 		this.attendance = attendance;
 		this.teamMember = teamMember;
 		this.user = user;
+	}
+
+	public String getVoteMatchId() {
+		return voteMatchId;
+	}
+
+	public void setVoteMatchId(String voteMatchId) {
+		this.voteMatchId = voteMatchId;
+	}
+
+	public int getVoteMatchResultId() {
+		return voteMatchResultId;
+	}
+
+	public void setVoteMatchResultId(int voteMatchResultId) {
+		this.voteMatchResultId = voteMatchResultId;
 	}
 
 	public int getAttendance() {
@@ -42,6 +62,7 @@ public class VoteMatchResult {
 
 	@Override
 	public String toString() {
-		return "VoteMatchResult [attendance=" + attendance + ", teamMember=" + teamMember + ", user=" + user + "]";
+		return "VoteMatchResult [voteMatchId=" + voteMatchId + ", voteMatchResultId=" + voteMatchResultId
+				+ ", attendance=" + attendance + ", teamMember=" + teamMember + ", user=" + user + "]";
 	}
 }

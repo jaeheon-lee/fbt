@@ -1,6 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class VoteMatchSetting {
+	private String voteMatchId;
 	private int type;
 	private int cancelNumber;
 	private int isFirst;
@@ -12,7 +13,7 @@ public class VoteMatchSetting {
 	private int empMinNumber;
 	private int awayMinNumber;
 	private String awayDueDate;
-	private int assgignCost;
+	private int assignCost;
 	private int empCost;
 	private int searchCost;
 	
@@ -20,10 +21,11 @@ public class VoteMatchSetting {
 		super();
 	}
 
-	public VoteMatchSetting(int type, int cancelNumber, int isFirst, int waiting, int friendEmp, int selfMinNumber,
-			int selfMaxNumber, String empDueDate, int empMinNumber, int awayMinNumber, String awayDueDate,
-			int assgignCost, int empCost, int searchCost) {
+	public VoteMatchSetting(String voteMatchId, int type, int cancelNumber, int isFirst, int waiting, int friendEmp,
+			int selfMinNumber, int selfMaxNumber, String empDueDate, int empMinNumber, int awayMinNumber,
+			String awayDueDate, int assignCost, int empCost, int searchCost) {
 		super();
+		this.voteMatchId = voteMatchId;
 		this.type = type;
 		this.cancelNumber = cancelNumber;
 		this.isFirst = isFirst;
@@ -35,9 +37,17 @@ public class VoteMatchSetting {
 		this.empMinNumber = empMinNumber;
 		this.awayMinNumber = awayMinNumber;
 		this.awayDueDate = awayDueDate;
-		this.assgignCost = assgignCost;
+		this.assignCost = assignCost;
 		this.empCost = empCost;
 		this.searchCost = searchCost;
+	}
+
+	public String getVoteMatchId() {
+		return voteMatchId;
+	}
+
+	public void setVoteMatchId(String voteMatchId) {
+		this.voteMatchId = voteMatchId;
 	}
 
 	public int getType() {
@@ -128,12 +138,12 @@ public class VoteMatchSetting {
 		this.awayDueDate = awayDueDate;
 	}
 
-	public int getAssgignCost() {
-		return assgignCost;
+	public int getAssignCost() {
+		return assignCost;
 	}
 
-	public void setAssgignCost(int assgignCost) {
-		this.assgignCost = assgignCost;
+	public void setAssignCost(int assignCost) {
+		this.assignCost = assignCost;
 	}
 
 	public int getEmpCost() {
@@ -154,10 +164,10 @@ public class VoteMatchSetting {
 
 	@Override
 	public String toString() {
-		return "VoteSetting [type=" + type + ", cancelNumber=" + cancelNumber + ", isFirst=" + isFirst + ", waiting="
-				+ waiting + ", friendEmp=" + friendEmp + ", selfMinNumber=" + selfMinNumber + ", selfMaxNumber="
-				+ selfMaxNumber + ", empDueDate=" + empDueDate + ", empMinNumber=" + empMinNumber + ", awayMinNumber="
-				+ awayMinNumber + ", awayDueDate=" + awayDueDate + ", assgignCost=" + assgignCost + ", empCost="
-				+ empCost + ", searchCost=" + searchCost + "]";
+		return "VoteMatchSetting [voteMatchId=" + voteMatchId + ", type=" + type + ", cancelNumber=" + cancelNumber
+				+ ", isFirst=" + isFirst + ", waiting=" + waiting + ", friendEmp=" + friendEmp + ", selfMinNumber="
+				+ selfMinNumber + ", selfMaxNumber=" + selfMaxNumber + ", empDueDate=" + empDueDate + ", empMinNumber="
+				+ empMinNumber + ", awayMinNumber=" + awayMinNumber + ", awayDueDate=" + awayDueDate + ", assignCost="
+				+ assignCost + ", empCost=" + empCost + ", searchCost=" + searchCost + "]";
 	}
 }

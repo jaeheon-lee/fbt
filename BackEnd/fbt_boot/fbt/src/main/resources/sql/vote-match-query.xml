@@ -24,12 +24,6 @@
 		</association>
 		<collection property="VoteMatchResults" ofType="VoteMatchResult">
 			<result column="attendance" property="attendance"/>
-			<association property="teamMember" javaType="teamMember">
-				<id column="team_member_id" property="teamMemberId"/>
-			</association>
-			<association property="user" javaType="user">
-				<id column="email" property="email"/>
-			</association>
 		</collection>
 	</resultMap>
 	<!-- 투표 관련 일정 정보 -->
@@ -63,6 +57,12 @@
 		WHERE v.vote_status = 0
 		AND v.team_id = #{value}
 	</select> -->
+	
+	<!-- 투표 관련 일정 -->
+	<select id="test1" parameterType="integer" >
+	
+	</select>
+	
 	<!-- 투표 관련 일정|인원 정보 -->
 	<select id="showVoteMatchInfoByTeam" parameterType="Integer" resultMap="VoteMatchRM" >
 		SELECT 

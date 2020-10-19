@@ -74,7 +74,10 @@ class VoteMatchTest {
 		System.out.println("friendNum : "+friendNum);
 //		List<VoteMatch> list2 = sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 1);
 		for(VoteMatch vm2 : list) System.out.println(vm2);
+		for(VoteMatch vm3 : list) System.out.println(vm3.getVoteMatchResults().size());
 //		for(VoteMatch vmr : list2) System.out.println(vmr);
+		
+		System.out.println(sqlSession.selectList(ns+"aa", 1).size());
 	}
 
 }

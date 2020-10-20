@@ -27,10 +27,19 @@ on v.vote_match_id = vs.vote_match_id
 where v.vote_status = 0
 and v.team_id = 1;
 
-
+select * from match_schedule;
 select * from vote_match_result;
 select * from vote_match_setting;
 select * from vote_match;
 select * from invite;
 
+delete from invite where invite_id = 2;
+update vote_match set vote_status = 0 where vote_match_id = '1-1';
+
+select * from vote_match vm
+join vote_match_setting vs
+on vm.vote_match_id = vs.vote_match_id
+where vm.vote_match_id = '1-2';
+
+delete from vote_match where vote_match_id = '1-2';
 

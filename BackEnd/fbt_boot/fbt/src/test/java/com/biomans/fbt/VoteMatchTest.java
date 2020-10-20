@@ -42,15 +42,26 @@ class VoteMatchTest {
 		ms.setMatchScheduleId(1);
 		vm.setMatchSchedule(ms);
 		VoteMatchSetting vms = new VoteMatchSetting();
+		vms.setVoteMatchId("1-2");
 		vms.setType(0);
 		vms.setCancelNumber(11);
 		vms.setIsFirst(1);
 		vms.setWaiting(1);
 		vms.setFriendEmp(1);
+		vms.setSelfMinNumber(-1);
+		vms.setSelfMaxNumber(-1);
+		vms.setEmpDueDate("-1");
+		vms.setEmpMinNumber(-1);
+		vms.setAwayMinNumber(-1);
+		vms.setAwayDueDate("-1");
+		vms.setEmpCost(-1);
+		vms.setAssignCost(-1);
+		vms.setSearchCost(-1);
 		vm.setVoteMatchSetting(vms);
+		
 
 //		sqlSession.insert(ns+"addVoteMatch", vm);
-//		sqlSession.insert(ns+"addVoteMatchSetting", vm);
+		sqlSession.insert(ns+"addVoteMatchSetting", vms);
 		
 		//---------------------------------------//
 		
@@ -161,6 +172,14 @@ class VoteMatchTest {
 //		vms10.setFriendEmp(1);
 //		vms10.setAssignCost(10);
 //		sqlSession.update(ns+"updateVoteMatchSetting",vms10);
+		
+		//V011 : 투표 결과 삭제
+//		VoteMatchResult vmr11 = new VoteMatchResult();
+//		vmr11.setVoteMatchId("1-1");
+//		User u11 = new User();
+//		u11.setEmail("bioman16@gmail.com");
+//		vmr11.setUser(u11);
+//		sqlSession.delete(ns+"deleteVoteMatchResult", vmr11);
 		
 	}
 }

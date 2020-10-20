@@ -20,7 +20,7 @@ public interface VoteMatchDAO {
 	//V005 : 투표 생성
 	public void addVoteMatch(VoteMatch voteMatch) throws SQLException;
 	//V006 : 투표 설정 등록
-	public void addVoteMatchSetting(VoteMatch voteMatch) throws SQLException;
+	public void addVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
 	//V007 : 투표 마감
 	public void endVoteMatch(VoteMatch voteMatch) throws SQLException;
 	//V008 : 투표 내용 수정
@@ -29,5 +29,7 @@ public interface VoteMatchDAO {
 	public void deleteVoteMatch(String voteMatchId) throws SQLException;
 	//V010: 투표 설정 수정
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
+	//V011 : 투표 결과 삭제
+	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	
 }

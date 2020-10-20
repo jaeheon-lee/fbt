@@ -71,11 +71,11 @@
 	<!-- V003 : 참불 입력하기 -->
 	<insert id="addAttendance" parameterType="voteMatchResult">
 		INSERT INTO
-		<if test="voteMatchResult.teamMember != null">
+		<if test="teamMember != null">
 			vote_match_result(vote_match_id, team_member_id, attendance)
 			VALUES(#{voteMatchId}, #{teamMember.teamMemberId}, #{attendance})
 		</if>
-		<if test="voteMatchResult.user != null">
+		<if test="user != null">
 			vote_match_result(vote_match_id, email, attendance)
 			VALUES(#{voteMatchId}, #{user.email}, #{attendance})
 		</if>
@@ -93,7 +93,7 @@
 	<insert id="addVoteMatch" parameterType="voteMatch">
 		INSERT INTO
 		vote_match(vote_match_id, contents, due_date, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-		VALUES(#{voteMatchId}, #{contents}, #{dueDate}, #{voteStatus}, sysdate(), #{writer}, #{team.teamId}, 
+		VALUES(#{voteMatchId}, #{contents}, #{dueDate}, 0, sysdate(), #{writer}, #{team.teamId}, 
 		#{matchSchedule.matchScheduleId})
 	</insert>
 	
@@ -103,7 +103,7 @@
 		vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, 
 		self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 		VALUES(#{voteMatchId}, #{type}, #{cancelNumber}, #{isFirst}, #{waiting}, #{friendEmp}, #{selfMinNumber},
-		#{selfMaxNumber}, #{empDueDate}, #{empMinNumber}, #{awayMinNumber}, #{awayDueDate}, #{assgignCost}, 
+		#{selfMaxNumber}, #{empDueDate}, #{empMinNumber}, #{awayMinNumber}, #{awayDueDate}, #{assignCost}, 
 		#{empCost}, #{searchCost})
 	</insert>
 	
@@ -136,5 +136,12 @@
 		away_due_date = #{awayDueDate}, assign_cost = #{assignCost}, emp_cost = #{empCost}, search_cost = #{searchCost}
 		WHERE vote_match_id = #{voteMatchId}
 	</update>
+	
+	<!-- V011: 투표 결과 삭제 -->
+	<delete id="deleteVoteMatchResult" parameterType="voteMatchResult">
+		DELETE FROM vote_match_result
+		WHERE vote_match_id = #{voteMatchId}
+		AND email = #{user.email}
+	</delete>
 	
 </mapper>

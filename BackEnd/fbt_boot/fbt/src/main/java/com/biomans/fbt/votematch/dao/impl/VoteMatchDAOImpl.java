@@ -49,8 +49,8 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 
 	@Override
-	public void addVoteMatchSetting(VoteMatch voteMatch) throws SQLException {
-		sqlSession.insert(ns+"addVoteMatchSetting", voteMatch);
+	public void addVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
+		sqlSession.insert(ns+"addVoteMatchSetting", voteMatchSetting);
 		
 	}
 
@@ -68,13 +68,19 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 
 	@Override
 	public void deleteVoteMatch(String voteMatchId) throws SQLException {
-		sqlSession.delete(ns+"deleteVoteMatch", "1-1");
+		sqlSession.delete(ns+"deleteVoteMatch", voteMatchId);
 		
 	}
 
 	@Override
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatchSetting",voteMatchSetting);
+	}
+
+	@Override
+	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
+		sqlSession.delete(ns+"deleteVoteMatchResult", voteMatchResult);
+		
 	}
 	
 	

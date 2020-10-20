@@ -66,7 +66,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Transactional
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException {
 		voteMatchDAO.addVoteMatch(voteMatch);
-		voteMatchDAO.addVoteMatchSetting(voteMatch);
+		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
 		
 	}
 
@@ -91,6 +91,12 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		voteMatchDAO.updateVoteMatchSetting(voteMatchSetting);
+		
+	}
+
+	@Override
+	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
+		voteMatchDAO.deleteVoteMatchResult(voteMatchResult);
 		
 	}
 

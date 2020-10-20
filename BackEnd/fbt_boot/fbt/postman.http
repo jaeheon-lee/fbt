@@ -1,2 +1,78 @@
-GET http://localhost:7777/vote-match/1
+# GET http://localhost:7777/vote-match/1
+# Content-Type: application/json
+
+# PUT http://localhost:7777/vote-match-result
+# Content-Type: application/json
+
+# {
+#     "voteMatchId" : "1-1",
+#     "attendance" : 1,
+#     "teamMember" : {
+#         "teamMemberId" : 1
+#     }
+# }
+
+# POST http://localhost:7777/vote-match-result
+# Content-Type: application/json
+
+# {
+#     "voteMatchId" : "1-1",
+#     "attendance" : 1,
+#     "teamMember" : {
+#         "teamMemberId" : 3
+#     }
+# }
+
+# POST http://localhost:7777/vote-match/invite
+# Content-Type: application/json
+
+# {
+#     "teamMember" : {
+#         "teamMemberId" : 1
+#     },
+#     "user" : {
+#         "email" : "bioman17@gmail.com"
+#     },
+#     "voteMatch" : {
+#         "voteMatchId" : "1-1"
+#     }
+# }
+
+POST http://localhost:7777/vote-match
 Content-Type: application/json
+
+{
+    "voteMatchId" : "1-2",
+    "contents" : "네버 늦지마시오",
+    "dueDate" : "2020-10-21 21:00",
+    "writer" : "왕십리FC 구단주",
+    "team" : {
+        "teamId" : 1
+    },
+    "matchSchedule" : {
+        "matchScheduleId" : 2
+    },
+    "voteMatchSetting" : {
+        "voteMatchId" : "1-2",
+        "type" : 0,
+        "cancelNumber" : 11,
+        "isFirst" : 1,
+        "waiting" : 1,
+        "friendEmp" : 1,
+        "selfMinNumber" : -1,
+        "selfMaxNumber" : -1,
+        "empMinNumber" : -1,
+        "awayMinNumber" : -1,
+        "assignCost" : -1,
+        "empCost" : -1,
+        "searchCost" : -1
+    }
+}
+
+# PUT http://localhost:7777/vote-match/1
+# Content-Type: application/json
+
+# {
+#     "voteMatchId" : "1-1"
+# }
+

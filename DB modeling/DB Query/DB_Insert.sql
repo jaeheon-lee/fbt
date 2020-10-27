@@ -40,11 +40,14 @@ INSERT INTO team_member(member_reg_date, member_level, reg_status, team_id, emai
 INSERT INTO team_member(member_reg_date, member_level, reg_status, team_id, email, nick_name)VALUES(sysdate(),0,1,3,'bioman15@gmail.com','nick5');
 
 -- match_schedule
-INSERT INTO match_schedule(match_schedule_id, team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, is_home)
-VALUES('1', '1', '2020-10-15 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11', '1'
+INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
+VALUES('1', '1', '2020-10-15 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
 );
-INSERT INTO match_schedule(match_schedule_id, team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, is_home)
-VALUES('2', '1', '2020-10-22 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11', '1'
+INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
+VALUES('2', '1', '2020-10-22 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
+);
+INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
+VALUES(3, 2, '2020-10-22 09:00:00', '2', '10', '답십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '응봉 유수지 축구장1', '흙', '서울특별시 서초구 응봉동 599 방배 유수지', '0', '0', '1', '0', '11'
 );
 
 -- vote_match
@@ -52,18 +55,24 @@ INSERT INTO vote_match(vote_match_id, due_date, contents, vote_status, vote_reg_
 VALUES('1-1', '2020-10-14 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 1);
 INSERT INTO vote_match(vote_match_id, due_date, contents, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 VALUES('1-2', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 2);
+INSERT INTO vote_match(vote_match_id, due_date, contents, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
+VALUES('2-3', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 2, 3);
 
 -- vote_setting
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('1-1', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null);
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('1-2', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null);
+INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
+VALUES('2-3', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null);
 
 -- vote_result
 insert into vote_match_result(attendance, vote_match_id, team_member_id) values(1,'1-1',1);
 insert into vote_match_result(attendance, vote_match_id, team_member_id) values(0,'1-1',2);
 insert into vote_match_result(attendance, email, vote_match_id) values(1,'bioman17@gmail.com','1-1');
 insert into vote_match_result(attendance, email, vote_match_id) values(1,'bioman16@gmail.com','1-1');
+insert into vote_match_result(attendance, vote_match_id, team_member_id) values(1,'2-3',6);
+
 
 -- invite
 insert into invite(team_member_id, email, vote_match_id) values(1, 'bioman16@gmail.com', '1-1');

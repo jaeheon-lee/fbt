@@ -59,6 +59,8 @@
 		AND v.team_id = #{value}
 	</select>
 	
+	<!-- 팀 엠블렘과 이름 정보 가져오기 -->
+	
 	<!-- V002 : 투표 수정하기 -->
 	<update id="updateVoteMatchResult" parameterType="voteMatchResult">
 		UPDATE vote_match_result

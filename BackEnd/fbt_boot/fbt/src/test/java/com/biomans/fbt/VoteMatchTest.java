@@ -61,7 +61,7 @@ class VoteMatchTest {
 		
 
 //		sqlSession.insert(ns+"addVoteMatch", vm);
-		sqlSession.insert(ns+"addVoteMatchSetting", vms);
+//		sqlSession.insert(ns+"addVoteMatchSetting", vms);
 		
 		//---------------------------------------//
 		
@@ -69,32 +69,48 @@ class VoteMatchTest {
 //		System.out.println(sqlSession.selectList(ns+"showVoteMatchInfoByTeam", 2));
 //		
 //		System.out.println(sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 2));
-		List<VoteMatch> list = sqlSession.selectList(ns+"showVoteMatchInfoByTeam", 1);
-		
-		
-		for(VoteMatch voteMatch : list) {
-			int votedNum = 0;
-			int attendNum = 0;
-			int friendNum = 0;
-			ArrayList<VoteMatchResult> vmrlist = voteMatch.getVoteMatchResults();
-			for(VoteMatchResult vmr : vmrlist) {
-				if(vmr.getUser() != null) friendNum++;
-				if(vmr.getUser() == null) {
-					votedNum++;
-					if(vmr.getAttendance()==1) attendNum++;
+		List<VoteMatch> voteMatchList = sqlSession.selectList(ns+"showVoteMatchInfoByTeam", 1);
+		List<VoteMatch> numList = sqlSession.selectList(ns+"showVoteMatchNumByVote", 1);
+		for(VoteMatch vm00 : voteMatchList) {
+			for(VoteMatch vm01 : numList) {
+				if(vm00.getVoteMatchId().equals(vm01.getVoteMatchId())) {
+					vm00.setTotalNum(vm01.getTotalNum());
+					vm00.setAttendNum(vm01.getAttendNum());
+					vm00.setAbscentNum(vm01.getAbscentNum());
 				}
 			}
-			voteMatch.setVotedNum(votedNum);
-			voteMatch.setFriendNum(friendNum);
-			System.out.println("frn : "+friendNum);
-			voteMatch.setAttendNum(attendNum);
-			voteMatch.setAbscentNum(votedNum-attendNum);
-			System.out.println(voteMatch.getVoteMatchResults());
 		}
-		System.out.println("votedNum : "+ list.get(0).getVotedNum());
-		System.out.println("attendNum : "+ list.get(0).getAttendNum());
-		System.out.println("abscentNum : "+ list.get(0).getAbscentNum());
-		System.out.println("friendNum : "+ list.get(0).getFriendNum());
+		for(VoteMatch vm00 : voteMatchList) {
+			System.out.println(vm00);
+		}
+		
+		
+		
+		
+		
+//		for(VoteMatch voteMatch : list) {
+//			int votedNum = 0;
+//			int attendNum = 0;
+//			int friendNum = 0;
+//			ArrayList<VoteMatchResult> vmrlist = voteMatch.getVoteMatchResults();
+//			for(VoteMatchResult vmr : vmrlist) {
+//				if(vmr.getUser() != null) friendNum++;
+//				if(vmr.getUser() == null) {
+//					votedNum++;
+//					if(vmr.getAttendance()==1) attendNum++;
+//				}
+//			}
+//			voteMatch.setVotedNum(votedNum);
+//			voteMatch.setFriendNum(friendNum);
+//			System.out.println("frn : "+friendNum);
+//			voteMatch.setAttendNum(attendNum);
+//			voteMatch.setAbscentNum(votedNum-attendNum);
+//			System.out.println(voteMatch.getVoteMatchResults());
+//		}
+//		System.out.println("votedNum : "+ list.get(0).getVotedNum());
+//		System.out.println("attendNum : "+ list.get(0).getAttendNum());
+//		System.out.println("abscentNum : "+ list.get(0).getAbscentNum());
+//		System.out.println("friendNum : "+ list.get(0).getFriendNum());
 //		List<VoteMatch> list2 = sqlSession.selectList(ns+"showVoteMatchStatusByTeam", 1);
 		
 		//V003 : 투표 입력

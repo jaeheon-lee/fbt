@@ -28,7 +28,8 @@
 			<result column="friend_emp" property="friendEmp"/>
 		</association>
 		<association property="team" javaType="team">
-		
+			<result column="team_name" property="teamName"/>
+			<result column="emblem" property="emblem"/>
 		</association>
 	</resultMap>
 	
@@ -61,12 +62,15 @@
 		count(vr.email) friend_num,
 		tm.total_num
 		FROM vote_match_result vr
+		JOIN vote_match v
+		ON vr.vote_match_id = v.vote_match_id
 		JOIN(
 		SELECT 
 		team_id, count(team_member_id) total_num
 		FROM team_member
 		WHERE team_id = #{value}
 		) tm
+		ON v.team_id = tm.team_id
 		GROUP BY vr.vote_match_id
 	</select>
 	

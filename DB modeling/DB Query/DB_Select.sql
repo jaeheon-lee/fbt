@@ -35,6 +35,7 @@ select * from vote_match;
 select * from invite;
 select * from match_schedule;
 
+update match_schedule set away_team_id = 3 where match_schedule_id = 2;
 update vote_match set match_schedule_id = 3 where vote_match_id = '2-3';
 
 SELECT 
@@ -50,7 +51,7 @@ JOIN vote_match_setting vs
 ON vs.vote_match_id = v.vote_match_id
 JOIN team t 
 ON m.home_team_id = t.team_id
-WHERE t.team_id = 1
+WHERE (m.home_team_id = 2 OR m.away_team_id = 2)
 AND v.vote_status =0
 ;
 
@@ -62,12 +63,15 @@ count(if(vr.attendance = 0 and team_member_id > 0, 1, null)) abscent_num,
 count(vr.email) friend_num,
 tm.total_num
 FROM vote_match_result vr
+JOIN vote_match v
+ON vr.vote_match_id = v.vote_match_id
 JOIN(
 SELECT 
 team_id, count(team_member_id) total_num
 FROM team_member
 WHERE team_id = 1
 ) tm
+ON v.team_id = tm.team_id
 GROUP BY vr.vote_match_id
 ;
 

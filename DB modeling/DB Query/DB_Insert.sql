@@ -43,8 +43,8 @@ INSERT INTO team_member(member_reg_date, member_level, reg_status, team_id, emai
 INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
 VALUES('1', '1', '2020-10-15 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
 );
-INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
-VALUES('2', '1', '2020-10-22 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
+INSERT INTO match_schedule(match_schedule_id, home_team_id, away_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
+VALUES('2', '1', 2,'2020-10-22 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
 );
 INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
 VALUES(3, 2, '2020-10-22 09:00:00', '2', '10', '답십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '응봉 유수지 축구장1', '흙', '서울특별시 서초구 응봉동 599 방배 유수지', '0', '0', '1', '0', '11'

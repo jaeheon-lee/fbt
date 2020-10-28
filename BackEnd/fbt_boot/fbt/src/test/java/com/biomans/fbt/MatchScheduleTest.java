@@ -20,7 +20,7 @@ class MatchScheduleTest {
 		MatchSchedule matchSchedule = new MatchSchedule();
 		Team team = new Team();
 		team.setTeamId(1);
-		matchSchedule.setTeam(team);
+		matchSchedule.setHomeTeam(team);
 		matchSchedule.setStartTime("2020-10-15 09:00");
 		matchSchedule.setDuration(2);
 		matchSchedule.setCost(10);

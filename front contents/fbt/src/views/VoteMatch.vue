@@ -56,14 +56,7 @@
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <v-expansion-panels focusable hover color="red">
-            <v-row
-              class="ma-0 pa-0"
-              style="background-color:#121212;font-size: 0.75rem;color:rgba(255, 255, 255, 0.9)"
-            >
-              <v-col cols="5" class="text-center ma-0 pa-2">투표 기간</v-col>
-              <v-col cols="3" class="text-center ma-0 pa-2">경기일시</v-col>
-              <v-col cols="4" class="text-center ma-0 pa-2">경기장소</v-col>
-            </v-row>
+            <!-- 각 투표 리스트 출력 부분 -->
             <v-expansion-panel v-for="(vote, i) in votes" :key="i">
               <v-expansion-panel-header
                 hide-actions
@@ -71,59 +64,64 @@
                 style="min-height:12px!important;background-color:#121212;font-size: 0.65rem;line-height:100%;color:rgba(255, 255, 255, 0.7)"
               >
                 <v-row class="ma-0 pa-0">
-                  <v-col cols="5" class="text-center"
-                    >{{ vote.reg_date }} ~ {{ vote.due_date.split("-")[1] }}-{{
-                      vote.due_date.split("-")[2]
-                    }}</v-col
-                  >
-
-                  <v-col cols="3" class="text-center">
-                    {{ vote.match_date }}
+                  <!-- 경기 날짜 -->
+                  <v-col cols="12">
+                    {{ vote.matchSchedule.startTime.split(" ")[0] }}
                   </v-col>
-                  <v-col cols="4" class="text-center">
-                    {{ vote.match_place }}
+                  <!-- 홈팀 이름 -->
+                  <v-col
+                    offset="1"
+                    cols="2"
+                    class="pt-6 text-center"
+                    style="font-size: 0.8rem"
+                  >
+                    {{ vote.matchSchedule.homeTeam.teamName }}
+                  </v-col>
+                  <!-- 홈팀 엠블럼 -->
+                  <v-col cols="2">
+                    <v-img
+                      :src="getEmbUrl(vote.matchSchedule.homeTeam)"
+                      aspect-ratio="2"
+                      contain
+                    />
+                  </v-col>
+                  <!-- VS -->
+                  <v-col
+                    cols="2"
+                    class="pt-6 text-center"
+                    style="font-size:1rem"
+                  >
+                    vs
+                  </v-col>
+                  <!-- 어웨이 엠블럼 -->
+                  <v-col cols="2">
+                    <v-img
+                      :src="getEmbUrl(vote.matchSchedule.awayTeam)"
+                      aspect-ratio="2"
+                      contain
+                    />
+                  </v-col>
+                  <!-- 어웨이 팀이름 -->
+                  <v-col
+                    cols="2"
+                    class="pt-6 text-center"
+                    style="font-size: 0.8rem"
+                  >
+                    {{ vote.matchSchedule.awayTeam.teamName }}
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
-
+              <!-- 토글 부분 -->
               <v-expansion-panel-content
                 style="background-color:#121212;font-size: 0.75rem;line-height:100%;color:rgba(255, 255, 255, 0.9)"
               >
                 <v-row class="ma-0 pa-0">
-                  <v-col cols="4" class="mx-0 px-0">투표하기</v-col>
+                  <v-col cols="4"></v-col>
                   <v-col cols="8" class="text-right mx-0 px-0"
-                    >투표 마감일시 {{ vote.due_date }}</v-col
+                    >투표 마감일시 : {{ vote.dueDate }}</v-col
                   >
                 </v-row>
                 <v-divider></v-divider>
-                <!--팀-->
-                <v-row class="mx-0 px-0">
-                  <v-col cols="6" class="textc-left mx-0 pl-0 pr-1 pb-2"
-                    >홈팀</v-col
-                  >
-                  <v-col cols="6" class="text-left mx-0 pr-0 pl-1 pb-2"
-                    >어웨이팀</v-col
-                  >
-                </v-row>
-                <v-row class="mx-0 px-0">
-                  <v-col cols="6" class="pa-0 pr-1"
-                    ><v-row
-                      class="ma-0 pa-3"
-                      justify="center"
-                      style="border:2px solid #AD1457;border-radius:25px;"
-                      >FC답십리</v-row
-                    ></v-col
-                  >
-                  <v-col cols="6" class="pa-0 pl-1"
-                    ><v-row
-                      class="ma-0 pa-3"
-                      justify="center"
-                      style="border:2px solid #AD1457;border-radius:25px;"
-                      >미정</v-row
-                    ></v-col
-                  >
-                </v-row>
-                <!--팀 끝-->
                 <!--경기 일시-->
                 <v-row class="mx-0 px-0">
                   <v-col cols="12" class="text-left mx-0 px-0 pb-2"
@@ -131,14 +129,15 @@
                   >
                 </v-row>
                 <v-row class="mx-0 px-0">
-                  <v-col cols="12" class="text-left pa-0"
-                    ><v-row
+                  <v-col cols="12" class="text-left pa-0">
+                    <v-row
                       class="ma-0 pa-3"
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
-                      >2020-09-30 09:00 ~ 11:00 2시간 경기</v-row
-                    ></v-col
-                  >
+                    >
+                      {{ vote.matchSchedule.startTime }}
+                    </v-row>
+                  </v-col>
                 </v-row>
                 <!-- 경기 일시 끝 -->
                 <!-- 경기장 정보-->
@@ -261,4 +260,5 @@
     </v-container>
   </div>
 </template>
-<script scoped src="@/assets/js/VoteMatch/VoteList.js"></script>
+<style scroped src="@/assets/css/vote-match/VoteMatch.css"></style>
+<script scoped src="@/assets/js/vote-match/VoteMatch.js"></script>

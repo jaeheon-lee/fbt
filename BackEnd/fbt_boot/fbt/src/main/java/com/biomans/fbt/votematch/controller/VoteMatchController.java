@@ -39,7 +39,7 @@ public class VoteMatchController {
 	}
 	
 	//V002
-	@PutMapping("/vote-match-result")
+	@PutMapping("/vote-match-result")	
 	public ResponseEntity updateVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {
 			voteMatchService.updateVoteMatchResult(voteMatchResult);

@@ -26,6 +26,11 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 	
 	@Override
+	public List<VoteMatch> showVoteMatchNumByVote(int teamId) throws SQLException {
+		return sqlSession.selectList(ns+"showVoteMatchNumByVote", teamId);
+	}
+	
+	@Override
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatchResult", voteMatchResult);
 	}

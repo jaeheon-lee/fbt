@@ -11,6 +11,7 @@ import com.biomans.fbt.domain.VoteMatchSetting;
 public interface VoteMatchDAO {
 	//V001 : 투표 정보 출력
 	public List<VoteMatch> showVoteMatchInfoByTeam(int teamId) throws SQLException;
+	public List<VoteMatch> showVoteMatchNumByVote(int teamId) throws SQLException;
 	//V002 : 투표 결과 수정
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	//V003 : 투표 입력

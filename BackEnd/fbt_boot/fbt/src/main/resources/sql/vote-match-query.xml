@@ -22,14 +22,20 @@
 			<result column="match_type" property="matchType"/>
 			<result column="cost" property="cost"/>
 			<result column="stadium_parking" property="stadiumParking"/>
+			<association property="homeTeam" javaType="team">
+				<id column="home_team_id" property="teamId"/>
+				<result column="home_team_name" property="teamName"/>
+				<result column="home_emblem" property="emblem"/>
+			</association>
+			<association property="awayTeam" javaType="team">
+				<id column="away_team_id" property="teamId"/>
+				<result column="away_team_name" property="teamName"/>
+				<result column="away_emblem" property="emblem"/>
+			</association>
 		</association>
 		<association property="voteMatchSetting" javaType="voteMatchSetting">
 			<result column="type" property="type"/>
 			<result column="friend_emp" property="friendEmp"/>
-		</association>
-		<association property="team" javaType="team">
-			<result column="team_name" property="teamName"/>
-			<result column="emblem" property="emblem"/>
 		</association>
 	</resultMap>
 	
@@ -38,9 +44,10 @@
 		SELECT 
 		v.vote_match_id, v.vote_reg_date, v.due_date,  
 		m.start_time, m.duration, m.stadium_address, m.match_type,
-		m.cost, m.stadium_parking, m.content, m.home_team_id,
+		m.cost, m.stadium_parking, m.content, m.home_team_id, m.away_team_id,
 		vs.type, vs.friend_emp,
-		t.emblem, t.team_name, t.team_id
+		t.emblem home_emblem, t.team_name home_team_name,
+		t2.emblem away_emblem, t2.team_name away_team_name
 		FROM match_schedule m
 		JOIN vote_match v
 		ON m.match_schedule_id = v.match_schedule_id
@@ -48,6 +55,8 @@
 		ON vs.vote_match_id = v.vote_match_id
 		JOIN team t 
 		ON m.home_team_id = t.team_id
+		LEFT OUTER JOIN team t2
+		ON m.away_team_id = t2.team_id
 		WHERE t.team_id = #{value}
 		AND v.vote_status =0
 	</select>

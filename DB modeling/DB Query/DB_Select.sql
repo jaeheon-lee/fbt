@@ -41,9 +41,10 @@ update vote_match set match_schedule_id = 3 where vote_match_id = '2-3';
 SELECT 
 v.vote_match_id, v.vote_reg_date, v.due_date,  
 m.start_time, m.duration, m.stadium_address, m.match_type,
-m.cost, m.stadium_parking, m.content, m.home_team_id,
+m.cost, m.stadium_parking, m.content, m.home_team_id, m.away_team_id,
 vs.type, vs.friend_emp,
-t.emblem, t.team_name, t.team_id
+t.emblem home_emblem, t.team_name home_team_name,
+t2.emblem away_emblem, t2.team_name away_team_name
 FROM match_schedule m
 JOIN vote_match v
 ON m.match_schedule_id = v.match_schedule_id
@@ -51,7 +52,9 @@ JOIN vote_match_setting vs
 ON vs.vote_match_id = v.vote_match_id
 JOIN team t 
 ON m.home_team_id = t.team_id
-WHERE (m.home_team_id = 2 OR m.away_team_id = 2)
+LEFT OUTER JOIN team t2
+ON m.away_team_id = t2.team_id
+WHERE t.team_id = 1
 AND v.vote_status =0
 ;
 

@@ -1,6 +1,7 @@
 package com.biomans.fbt.votematch.service.impl;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
@@ -22,26 +24,32 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 
 	@Override
 	public List<VoteMatch> showVoteMatchInfoByTeam(int teamId) throws SQLException {
-		List<VoteMatch> list = voteMatchDAO.showVoteMatchInfoByTeam(teamId);
-		for(VoteMatch voteMatch : list) {
-			int votedNum = 0;
-			int attendNum = 0;
-			int friendNum = 0;
-			ArrayList<VoteMatchResult> vmrlist = voteMatch.getVoteMatchResults();
-			for(VoteMatchResult vmr : vmrlist) {
-				if(vmr.getUser() != null) friendNum++;
-				if(vmr.getUser() == null) {
-					votedNum++;
-					if(vmr.getAttendance()==1) attendNum++;
+		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(teamId);
+		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByVote(teamId);
+		for(VoteMatch voteMatch1 : voteMatchList) {
+//			투표 인원 정보 넣기
+			for(VoteMatch voteMatch2 : numList) {
+				if(voteMatch1.getVoteMatchId().equals(voteMatch2.getVoteMatchId())) {
+					voteMatch1.setTotalNum(voteMatch2.getTotalNum());
+					voteMatch1.setAttendNum(voteMatch2.getAttendNum());
+					voteMatch1.setAbscentNum(voteMatch2.getAbscentNum());
 				}
 			}
-			voteMatch.setVotedNum(votedNum);
-			voteMatch.setFriendNum(friendNum);
-			voteMatch.setAttendNum(attendNum);
-			voteMatch.setAbscentNum(votedNum-attendNum);
+//			away팀이 미정인 경우 미정 결과 넣기
+			if(voteMatch1.getMatchSchedule().getAwayTeam() == null) {
+				Team awayTeam = new Team();
+				awayTeam.setTeamName("미정");
+				voteMatch1.getMatchSchedule().setAwayTeam(awayTeam);
+			}
+//			경기 시간 넣기
+			String startTime = voteMatch1.getMatchSchedule().getStartTime();
+			int duration = voteMatch1.getMatchSchedule().getDuration();
+			Timestamp modTime = Timestamp.valueOf(startTime);
+			modTime.after(when)
+			
+			
 		}
-		
-		return list;
+		return voteMatchList;
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.biomans.fbt.domain;
 public class MatchSchedule {
 	private int matchScheduleId;
 	private String startTime;
+	private String endTime;
 	private int duration;
 	private int cost;
 	private String writer;
@@ -21,12 +22,13 @@ public class MatchSchedule {
 	
 	public MatchSchedule() {}
 
-	public MatchSchedule(int matchScheduleId, String startTime, int duration, int cost, String writer, String regDate,
-			String content, String stadiumName, String stadiumType, String stadiumAddress, int stadiumX, int stadiumY,
-			int stadiumParking, int stadiumShower, int matchType, Team homeTeam, Team awayTeam) {
+	public MatchSchedule(int matchScheduleId, String startTime, String endTime, int duration, int cost, String writer,
+			String regDate, String content, String stadiumName, String stadiumType, String stadiumAddress, int stadiumX,
+			int stadiumY, int stadiumParking, int stadiumShower, int matchType, Team homeTeam, Team awayTeam) {
 		super();
 		this.matchScheduleId = matchScheduleId;
 		this.startTime = startTime;
+		this.endTime = endTime;
 		this.duration = duration;
 		this.cost = cost;
 		this.writer = writer;
@@ -58,6 +60,14 @@ public class MatchSchedule {
 
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 
 	public int getDuration() {
@@ -182,11 +192,11 @@ public class MatchSchedule {
 
 	@Override
 	public String toString() {
-		return "MatchSchedule [matchScheduleId=" + matchScheduleId + ", startTime=" + startTime + ", duration="
-				+ duration + ", cost=" + cost + ", writer=" + writer + ", regDate=" + regDate + ", content=" + content
-				+ ", stadiumName=" + stadiumName + ", stadiumType=" + stadiumType + ", stadiumAddress=" + stadiumAddress
-				+ ", stadiumX=" + stadiumX + ", stadiumY=" + stadiumY + ", stadiumParking=" + stadiumParking
-				+ ", stadiumShower=" + stadiumShower + ", matchType=" + matchType + ", homeTeam=" + homeTeam
-				+ ", awayTeam=" + awayTeam + "]";
+		return "MatchSchedule [matchScheduleId=" + matchScheduleId + ", startTime=" + startTime + ", endTime=" + endTime
+				+ ", duration=" + duration + ", cost=" + cost + ", writer=" + writer + ", regDate=" + regDate
+				+ ", content=" + content + ", stadiumName=" + stadiumName + ", stadiumType=" + stadiumType
+				+ ", stadiumAddress=" + stadiumAddress + ", stadiumX=" + stadiumX + ", stadiumY=" + stadiumY
+				+ ", stadiumParking=" + stadiumParking + ", stadiumShower=" + stadiumShower + ", matchType=" + matchType
+				+ ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + "]";
 	}
 }

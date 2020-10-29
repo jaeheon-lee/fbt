@@ -20,13 +20,14 @@ public class VoteMatch {
 	private int abscentNum;
 	private int attendNum;
 	private int friendNum;
+	private int totalAttend;
 	
 	public VoteMatch() {}
 
 	public VoteMatch(String voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
 			String writer, int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
 			VoteMatchResult voteMatchResult, ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum,
-			int abscentNum, int attendNum, int friendNum) {
+			int abscentNum, int attendNum, int friendNum, int totalAttend) {
 		super();
 		this.voteMatchId = voteMatchId;
 		this.contents = contents;
@@ -45,6 +46,7 @@ public class VoteMatch {
 		this.abscentNum = abscentNum;
 		this.attendNum = attendNum;
 		this.friendNum = friendNum;
+		this.totalAttend = totalAttend;
 	}
 
 	public String getVoteMatchId() {
@@ -183,6 +185,14 @@ public class VoteMatch {
 		this.friendNum = friendNum;
 	}
 
+	public int getTotalAttend() {
+		return totalAttend;
+	}
+
+	public void setTotalAttend(int totalAttend) {
+		this.totalAttend = totalAttend;
+	}
+
 	@Override
 	public String toString() {
 		return "VoteMatch [voteMatchId=" + voteMatchId + ", contents=" + contents + ", dueDate=" + dueDate
@@ -190,6 +200,8 @@ public class VoteMatch {
 				+ friendEmp + ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting="
 				+ voteMatchSetting + ", voteMatchResult=" + voteMatchResult + ", voteMatchResults=" + voteMatchResults
 				+ ", totalNum=" + totalNum + ", votedNum=" + votedNum + ", abscentNum=" + abscentNum + ", attendNum="
-				+ attendNum + ", friendNum=" + friendNum + "]";
+				+ attendNum + ", friendNum=" + friendNum + ", totalAttend=" + totalAttend + "]";
 	}
+
+	
 }

@@ -2,7 +2,6 @@ package com.biomans.fbt.votematch.service.impl;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,11 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 //			투표 인원 정보 넣기
 			for(VoteMatch voteMatch2 : numList) {
 				if(voteMatch1.getVoteMatchId().equals(voteMatch2.getVoteMatchId())) {
-					voteMatch1.setTotalNum(voteMatch2.getTotalNum());
+					voteMatch1.setVotedNum(voteMatch2.getVotedNum());
 					voteMatch1.setAttendNum(voteMatch2.getAttendNum());
 					voteMatch1.setAbscentNum(voteMatch2.getAbscentNum());
+					voteMatch1.setFriendNum(voteMatch2.getFriendNum());
+					voteMatch1.setTotalAttend(voteMatch2.getAttendNum()+voteMatch2.getFriendNum());
 				}
 			}
 //			away팀이 미정인 경우 미정 결과 넣기
@@ -41,12 +42,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 				awayTeam.setTeamName("미정");
 				voteMatch1.getMatchSchedule().setAwayTeam(awayTeam);
 			}
-//			경기 시간 넣기
-			String startTime = voteMatch1.getMatchSchedule().getStartTime();
-			int duration = voteMatch1.getMatchSchedule().getDuration();
-			System.out.println(startTime.substring(10, 16).split(":")[0]);
-			
-			
 		}
 		return voteMatchList;
 	}

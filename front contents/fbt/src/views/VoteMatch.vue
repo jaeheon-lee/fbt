@@ -135,7 +135,8 @@
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
                     >
-                      {{ vote.matchSchedule.startTime }}
+                      {{ vote.matchSchedule.startTime }}  ~ {{ vote.matchSchedule.endTime | showOnlyTime }}
+                      {{ vote.matchSchedule.duration }}시간
                     </v-row>
                   </v-col>
                 </v-row>
@@ -152,7 +153,7 @@
                       class="ma-0 pa-3"
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
-                      >서울시 성동구 서울숲 공원</v-row
+                      >{{ vote.matchSchedule.stadiumAddress }}</v-row
                     ></v-col
                   >
                 </v-row>
@@ -173,14 +174,16 @@
                   >
                 </v-row>
                 <v-row class="mx-0 px-0">
+                  <!-- 경기 타입 -->
                   <v-col cols="4" class="pa-0 pr-1"
                     ><v-row
                       class="ma-0 pa-3"
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
-                      >11:11</v-row
+                      >{{ vote.matchSchedule.matchType | showMatchType }}</v-row
                     ></v-col
                   >
+                  <!-- 경기 비용 -->
                   <v-col
                     cols="4"
                     class="py-0"
@@ -189,19 +192,20 @@
                       class="ma-0 pa-3"
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
-                      >9만원</v-row
+                      >{{ vote.matchSchedule.cost }}만원</v-row
                     ></v-col
                   >
+                  <!-- 경기장 주차여부 -->
                   <v-col cols="4" class="pa-0 pl-1"
                     ><v-row
                       class="ma-0 pa-3"
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
-                      >주차가능</v-row
+                      >{{ vote.matchSchedule.stadiumParking | showParking }}</v-row
                     ></v-col
                   >
                 </v-row>
-                <!--경기타입비용주차-->
+                <!--경기타입비용주차 끝-->
                 <!--내용-->
                 <v-row class="mx-0 px-0">
                   <v-col cols="12" class="text-left mx-0 px-0 pb-2">내용</v-col>
@@ -212,29 +216,34 @@
                       class="ma-0 pa-3"
                       justify="center"
                       style="border:2px solid #AD1457;border-radius:25px;"
-                      >늦지 마세요.</v-row
+                      >{{ vote.contents }}</v-row
                     ></v-col
                   >
                 </v-row>
                 <!--내용 끝 -->
                 <!--투표내용-->
                 <v-row class="justify-space-between ma-0 pa-0 mt-4">
-                  <div>총인원: 30명</div>
-                  <div>투표인원:15명</div>
-                  <div>불참: 8명</div>
-                  <div>참여: 7명</div>
+                  <div>총인원: {{ vote.totalNum }}명</div>
+                  <div>투표인원: {{ vote.votedNum }}명</div>
+                  <div>불참: {{ vote.abscentNum }}명</div>
+                  <div>참여: {{ vote.attendNum }}명</div>
                 </v-row>
                 <v-row justify="end" class="ma-0 pa-0 my-3">
-                  <div>지인: 1명</div>
+                  <div>지인: {{ vote.friendNum }}명</div>
                 </v-row>
                 <v-divider></v-divider>
                 <v-row justify="end" class="ma-0 pa-0 my-3">
-                  <div>경기참석 인원: 8명</div>
+                  <div>경기참석 인원: {{ vote.totalAttend }}명</div>
                 </v-row>
                 <!--투표내용 끝-->
                 <!--투표버튼-->
                 <v-row class="justify-center ma-0 pa-0 mt-4">
-                  <v-btn small width="35px" color="#AD1457" class="mr-1"
+                  <v-btn
+                    small
+                    width="35px"
+                    color="#AD1457"
+                    class="mr-1"
+                    @click="addVote(vote.voteMatchId, 1)"
                     >참 석</v-btn
                   >
                   <v-btn

@@ -44,8 +44,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 //			경기 시간 넣기
 			String startTime = voteMatch1.getMatchSchedule().getStartTime();
 			int duration = voteMatch1.getMatchSchedule().getDuration();
-			Timestamp modTime = Timestamp.valueOf(startTime);
-			modTime.after(when)
+			System.out.println(startTime.substring(10, 16).split(":")[0]);
 			
 			
 		}

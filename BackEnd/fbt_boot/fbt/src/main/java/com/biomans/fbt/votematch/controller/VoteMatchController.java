@@ -51,12 +51,15 @@ public class VoteMatchController {
 	
 	//V003
 	@PostMapping("/vote-match-result")
-	public ResponseEntity addAttendance(@RequestBody VoteMatchResult voteMatchResult) throws SQLException{
+	public ResponseEntity addAttendance(@RequestBody VoteMatchResult voteMatchResult) {
 		try {
 			System.out.println(voteMatchResult);
 			voteMatchService.addAttendance(voteMatchResult);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}catch(SQLException sqle) {
+			System.out.println(sqle);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

@@ -2,7 +2,7 @@ package com.biomans.fbt.domain;
 
 public class VoteMatchResult {
 	private String voteMatchId;
-	private int voteMatchResultId;
+	private String voteMatchResultId;
 	private int attendance;
 	private TeamMember teamMember;
 	private User user;
@@ -11,7 +11,7 @@ public class VoteMatchResult {
 		super();
 	}
 
-	public VoteMatchResult(String voteMatchId, int voteMatchResultId, int attendance, TeamMember teamMember, User user) {
+	public VoteMatchResult(String voteMatchId, String voteMatchResultId, int attendance, TeamMember teamMember, User user) {
 		super();
 		this.voteMatchId = voteMatchId;
 		this.voteMatchResultId = voteMatchResultId;
@@ -28,11 +28,11 @@ public class VoteMatchResult {
 		this.voteMatchId = voteMatchId;
 	}
 
-	public int getVoteMatchResultId() {
+	public String getVoteMatchResultId() {
 		return voteMatchResultId;
 	}
 
-	public void setVoteMatchResultId(int voteMatchResultId) {
+	public void setVoteMatchResultId(String voteMatchResultId) {
 		this.voteMatchResultId = voteMatchResultId;
 	}
 

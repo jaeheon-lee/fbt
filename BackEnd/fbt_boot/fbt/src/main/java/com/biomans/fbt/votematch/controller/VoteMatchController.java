@@ -38,29 +38,19 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V002
-	@PutMapping("/vote-match-result")	
-	public ResponseEntity updateVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
-		try {
-			voteMatchService.updateVoteMatchResult(voteMatchResult);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	//V003
+	//V002, V003
 	@PostMapping("/vote-match-result")
-	public ResponseEntity addAttendance(@RequestBody VoteMatchResult voteMatchResult) {
+	public ResponseEntity addAttendance(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {
-			System.out.println(voteMatchResult);
 			voteMatchService.addAttendance(voteMatchResult);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}catch(SQLException sqle) {
-			System.out.println(sqle);
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			try {
+				voteMatchService.updateVoteMatchResult(voteMatchResult);
+				return new ResponseEntity(HttpStatus.OK);
+			}catch(Exception e1) {
+				return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			}
 		}
 	}
 	
@@ -134,9 +124,18 @@ public class VoteMatchController {
 	@DeleteMapping("/vote-match-result")
 	public ResponseEntity deleteVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {
-			System.out.println(voteMatchResult);
 			voteMatchService.deleteVoteMatchResult(voteMatchResult);
 			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//V012
+	@GetMapping("/vote-match-result/{voteMatchId}")
+	public ResponseEntity showVoteMatchResult(@PathVariable String voteMatchId) throws SQLException {
+		try {
+			return new ResponseEntity(voteMatchService.showVoteMatchResult(voteMatchId), HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}

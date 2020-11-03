@@ -102,4 +102,9 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		
 	}
 
+	@Override
+	public List<VoteMatchResult> showVoteMatchResult(String voteMatchId) throws SQLException {
+		return voteMatchDAO.showVoteMatchResult(voteMatchId);
+	}
+
 }

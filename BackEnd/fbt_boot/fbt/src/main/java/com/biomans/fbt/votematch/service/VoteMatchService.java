@@ -29,4 +29,6 @@ public interface VoteMatchService {
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
 	//V011 : 투표 결과 삭제
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
+	//V012 : 투표 결과 출력
+	public List<VoteMatchResult> showVoteMatchResult(String voteMatchId) throws SQLException;
 }

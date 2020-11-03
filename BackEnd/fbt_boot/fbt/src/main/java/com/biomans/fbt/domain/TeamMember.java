@@ -1,7 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class TeamMember extends User {
-	private int teamMemberId;
+	private String teamMemberId;
 	private String memberRegDate;
 	private int memberLevel;
 	private int regStatus;
@@ -13,7 +13,7 @@ public class TeamMember extends User {
 	
 	public TeamMember(String email, String pass, String name, String phoneNum, String userRegDate, String recentLogin,
 			String mainFoot, String position, String apiKey, int height, int weight, int wasPro, int gender,
-			String born_date, int teamMemberId, String memberRegDate, int memberLevel, int regStatus, String nickName,
+			String born_date, String teamMemberId, String memberRegDate, int memberLevel, int regStatus, String nickName,
 			Team team, User user) {
 		super(email, pass, name, phoneNum, userRegDate, recentLogin, mainFoot, position, apiKey, height, weight, wasPro, gender,
 				born_date);
@@ -26,11 +26,11 @@ public class TeamMember extends User {
 		this.user = user;
 	}
 
-	public int getTeamMemberId() {
+	public String getTeamMemberId() {
 		return teamMemberId;
 	}
 
-	public void setTeamMemberId(int teamMemberId) {
+	public void setTeamMemberId(String teamMemberId) {
 		this.teamMemberId = teamMemberId;
 	}
 

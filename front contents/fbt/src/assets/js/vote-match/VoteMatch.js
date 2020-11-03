@@ -9,11 +9,15 @@ export default {
       voteMatchResult: {
         voteMatchId: null,
         teamMember: {
-          teamMemberId: 5
+          teamMemberId: 5,
+          user: {
+            email: null
+          }
         },
         email: null,
         attendance: null
       },
+      voteMatchResults: [],
 
       //기본 변수
       errored: false,
@@ -21,9 +25,9 @@ export default {
 
       //로그인 변수
       userInfo: {
-        email: "bioman5@gmail.com",
+        email: "bioman2@gmail.com",
         teamId: 1,
-        teamMemberId: 5
+        teamMemberId: "1-bioman2@gmail.com"
       }
     }
   },
@@ -55,18 +59,31 @@ export default {
         return require("@/assets/image/emblem/emptyFC.png");
       }
     },
-    // 투표 참석하기
-    addVote(voteMatchId, result) {
+    // 투표하기 (생성, 수정) V002 | V003
+    doVote(voteMatchId, result) {
       this.voteMatchResult.voteMatchId = voteMatchId;
       this.voteMatchResult.teamMember.teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
       this.voteMatchResult.attendance = result;
-      alert(JSON.stringify(this.voteMatchResult));
       axios
         .post("/vote-match-result", this.voteMatchResult)
         .then(alert("투표가 완료되었습니다."))
         .catch(() => {
           alert("투표 진행 중 오류가 발생했습니다.");
         });
+    },
+    // 투표 결과 출력 V012
+    showVotedMembers(voteMatchId) {
+      axios
+        .get("/vote-match-result/"+ voteMatchId)
+        .then(response => {
+          this.voteMatchResult = response.data;
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        })
     },
     /*------- 추후 사라질 메소드 ------------ */
     // 로그인
@@ -75,11 +92,20 @@ export default {
     }
   },
   filters: {
+    extrackSecond(value) {
+      return value.slice(0, 16);
+    },
     showOnlyTime(value) {
       return value.slice(11, 16);
     },
     showMatchType(value) {
-      return value + " : " + value;
+      let matchType = "축구";
+      if (value < 11) matchType = "풋살";
+      return value + " : " + value + " " + matchType + " 경기";
+    },
+    isEmp(value) {
+      if (value.empDueDate) return "용병 경기";
+      else return "팀 경기";
     },
     showParking(value) {
       if (value == 1) return "주차가능";

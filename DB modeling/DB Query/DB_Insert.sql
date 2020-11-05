@@ -62,7 +62,7 @@ VALUES('2-3', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('1-1', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null);
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
-VALUES('1-2', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null);
+VALUES('1-2', 0, 11, 1, 1, 0, null, null, null, null, null, null, 10, null, null);
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('2-3', 0, 11, 1, 1, 1, null, null, null, null, null, null, 10, null, null);
 

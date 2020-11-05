@@ -1,6 +1,7 @@
 package com.biomans.fbt.votematch.controller;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Invite;
@@ -29,9 +31,13 @@ public class VoteMatchController {
 	
 	//V001
 	@GetMapping("/vote-match/{teamId}")
-	public ResponseEntity showVoteMatchInfoByTeam(@PathVariable int teamId) throws SQLException {
+	public ResponseEntity showVoteMatchInfoByTeam(@PathVariable int teamId,
+			@RequestParam(value="voteStatus") int voteStauts) throws SQLException {
 		try {
-			List<VoteMatch> list = voteMatchService.showVoteMatchInfoByTeam(teamId);
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("teamId", teamId);
+			searchCon.put("voteStatus", voteStauts);
+			List<VoteMatch> list = voteMatchService.showVoteMatchInfoByTeam(searchCon);
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -54,10 +60,11 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V004
+	//V004 : 지인 초대하기
 	@PostMapping("/vote-match/invite")
 	public ResponseEntity inviteFriend(@RequestBody Invite invite) throws SQLException{
 		try {
+			System.out.println(invite);
 			voteMatchService.inviteFriend(invite);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -120,7 +127,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V011
+	//V011: 투표 결과 삭제(지인 투표 불참 시)
 	@DeleteMapping("/vote-match-result")
 	public ResponseEntity deleteVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {
@@ -131,13 +138,17 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V012
-	@GetMapping("/vote-match-result/{voteMatchId}")
-	public ResponseEntity showVoteMatchResult(@PathVariable String voteMatchId) throws SQLException {
+	//V013: 지인 검색하기
+	@GetMapping("/user/1")
+	public ResponseEntity searchFriend(@RequestParam(value="email") String email, 
+			@RequestParam(value="teamId") String teamId) throws SQLException {
 		try {
-			return new ResponseEntity(voteMatchService.showVoteMatchResult(voteMatchId), HttpStatus.OK);
+			HashMap<String, String> searchCon = new HashMap<String, String>();
+			searchCon.put("email", email);
+			searchCon.put("teamId", teamId);
+			return new ResponseEntity(voteMatchService.searchFriend(searchCon), HttpStatus.OK);
 		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
 	

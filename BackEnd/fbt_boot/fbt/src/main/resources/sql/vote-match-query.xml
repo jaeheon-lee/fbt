@@ -42,7 +42,7 @@
 	</resultMap>
 	
 	<!-- 진행 중인 투표 관련 일정 | 팀 정보 -->
-	<select id="showVoteMatchInfoByTeam" parameterType="Integer" resultMap="VoteMatchRM" >
+	<select id="showVoteMatchInfoByTeam" parameterType="hashMap" resultMap="VoteMatchRM" >
 		SELECT 
 		v.vote_match_id, v.vote_reg_date, v.due_date, v.contents,
 		m.start_time, m.duration, m.stadium_address, m.stadium_name, m.match_type,
@@ -59,7 +59,7 @@
 		SELECT 
 		team_id, count(team_member_id) total_num
 		FROM team_member
-		WHERE team_id = #{value}
+		WHERE team_id = #{teamId}
 		) tm
 		ON v.team_id = tm.team_id
 		JOIN vote_match_setting vs
@@ -68,7 +68,7 @@
 		ON m.home_team_id = t.team_id
 		LEFT OUTER JOIN team t2
 		ON m.away_team_id = t2.team_id
-		WHERE v.vote_status =0
+		WHERE v.vote_status = #{voteStatus}
 	</select>
 	
 	<!-- 진행 중인 투표의 인원 정보 -->
@@ -82,6 +82,7 @@
 		FROM vote_match_result vr
 		JOIN vote_match v
 		ON vr.vote_match_id = v.vote_match_id
+		WHERE v.team_id = #{value}
 		GROUP BY vr.vote_match_id
 	</select>
 	
@@ -176,28 +177,45 @@
 		<result column="attendance" property="attendance"/>
 		<association property="user" javaType="user">
 			<id column="friend_email" property="email"/>
+			<result column="name" property="name"/>
 		</association>
 		<association property="teamMember" javaType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
 			<association property="user" javaType="user">
 				<id column="member_email" property="email"/>
+				<result column="name" property="name"/>
 			</association>
 		</association>
 	</resultMap>
 	
 	<!-- V012: 투표 결과 보기 -->
-	<select id="showVoteMatchResult" parameterType="string" resultMap="voteMatchResultRM">
-		select
+	<select id="showVoteMatchResult" parameterType="integer" resultMap="voteMatchResultRM">
+		SELECT
 		vr.vote_match_result_id, vr.vote_match_id, vr.attendance, vr.email friend_email,
-		tm.team_member_id, tm.email member_email,
+		tm.email member_email,
 		u.name
-		from vote_match_result vr
-		left outer join team_member tm
-		on vr.team_member_id = tm.team_member_id
-		join user u 
-		on (u.email = vr.email
-		or u.email = tm.email)
-		where vr.vote_match_id = #{value}
+		FROM vote_match_result vr
+		JOIN vote_match v 
+		ON v.vote_match_id = vr.vote_match_id
+		LEFT OUTER JOIN team_member tm
+		ON vr.team_member_id = tm.team_member_id
+		JOIN user u 
+		ON (u.email = vr.email
+		OR u.email = tm.email)
+		WHERE v.team_id = #{value}
+	</select>
+	
+	<!-- V013: 지인 찾기 -->
+	<select id="searchFriend" parameterType="hashMap" resultType="user">
+		SELECT u.email, u.name
+		FROM user u
+		WHERE not exists (
+		SELECT distinct email
+		FROM team_member tm
+		WHERE u.email = tm.email
+		AND team_id = #{teamId}
+		)
+		AND u.email like '%${email}%'
 	</select>
 	
 </mapper>

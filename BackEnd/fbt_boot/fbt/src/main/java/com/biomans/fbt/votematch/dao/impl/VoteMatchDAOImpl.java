@@ -1,6 +1,8 @@
 package com.biomans.fbt.votematch.dao.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
@@ -21,8 +24,8 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	private SqlSession sqlSession;
 
 	@Override
-	public List<VoteMatch> showVoteMatchInfoByTeam(int teamId) throws SQLException {
-		return sqlSession.selectList(ns+"showVoteMatchInfoByTeam", teamId);
+	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showVoteMatchInfoByTeam", searchCon);
 	}
 	
 	@Override
@@ -89,8 +92,15 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 
 	@Override
-	public List<VoteMatchResult> showVoteMatchResult(String voteMatchId) throws SQLException {
-		return sqlSession.selectList(ns+"showVoteMatchResult", voteMatchId);
+	public ArrayList<VoteMatchResult> showVoteMatchResult(int teamId) throws SQLException {
+		ArrayList<VoteMatchResult> voteMatchResults = new ArrayList<VoteMatchResult>();
+		voteMatchResults.addAll(sqlSession.selectList(ns+"showVoteMatchResult", teamId));
+		return voteMatchResults;
+	}
+
+	@Override
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"searchFriend", searchCon);
 	}
 	
 	

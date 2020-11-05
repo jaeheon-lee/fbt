@@ -197,11 +197,15 @@ class VoteMatchTest {
 //		vmr11.setUser(u11);
 //		sqlSession.delete(ns+"deleteVoteMatchResult", vmr11);
 		
-		//V012 : 투표 결과 출력
-		String voteMatchId12 = "1-1";
-		List<VoteMatchResult> list12 = sqlSession.selectList(ns+"showVoteMatchResult", voteMatchId12);
-		for(VoteMatchResult vmr12 : list12) {
-			System.out.println(vmr12);
-		}
+//		//V012 : 투표 결과 출력
+//		String voteMatchId12 = "1-1";
+//		List<VoteMatchResult> list12 = sqlSession.selectList(ns+"showVoteMatchResult", voteMatchId12);
+//		for(VoteMatchResult vmr12 : list12) {
+//			System.out.println(vmr12);
+//		}
+		//V013 : 지인 찾기
+		String email = "bioman1";
+		List<User> user = sqlSession.selectList(ns+"searchFriend", email);
+		System.out.println(user);
 	}
 }

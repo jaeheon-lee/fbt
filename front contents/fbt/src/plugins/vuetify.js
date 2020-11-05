@@ -8,6 +8,9 @@ export default new Vuetify({
   icons: {
     iconfont: "md"
   },
+  values: {
+    magnify: 'mdi-magnify'
+  },
   theme: {
     dark: true
   }

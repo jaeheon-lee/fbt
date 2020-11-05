@@ -2,6 +2,8 @@ package com.biomans.fbt.votematch.service.impl;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.Invite;
 import com.biomans.fbt.domain.Team;
+import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
@@ -22,11 +25,18 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	private VoteMatchDAO voteMatchDAO;
 
 	@Override
-	public List<VoteMatch> showVoteMatchInfoByTeam(int teamId) throws SQLException {
-		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(teamId);
-		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByVote(teamId);
+	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
+		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(searchCon);
+		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByVote(searchCon.get("teamId"));
+		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResult(searchCon.get("teamId")); 
+//		투표 인원 명단 정보 가공하기
+		for(VoteMatchResult voteMatchResult : voteMatchResults) {
+			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
+				voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
+			}
+		}
 		for(VoteMatch voteMatch1 : voteMatchList) {
-//			투표 인원 정보 넣기
+//			투표 인원 정보 넣기 & 투표 인원 명단 넣기
 			for(VoteMatch voteMatch2 : numList) {
 				if(voteMatch1.getVoteMatchId().equals(voteMatch2.getVoteMatchId())) {
 					voteMatch1.setVotedNum(voteMatch2.getVotedNum());
@@ -34,6 +44,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 					voteMatch1.setAbscentNum(voteMatch2.getAbscentNum());
 					voteMatch1.setFriendNum(voteMatch2.getFriendNum());
 					voteMatch1.setTotalAttend(voteMatch2.getAttendNum()+voteMatch2.getFriendNum());
+					voteMatch1.setVoteMatchResults(voteMatchResults);
 				}
 			}
 //			away팀이 미정인 경우 미정 결과 넣기
@@ -103,8 +114,8 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	}
 
 	@Override
-	public List<VoteMatchResult> showVoteMatchResult(String voteMatchId) throws SQLException {
-		return voteMatchDAO.showVoteMatchResult(voteMatchId);
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
+		return voteMatchDAO.searchFriend(searchCon);
 	}
 
 }

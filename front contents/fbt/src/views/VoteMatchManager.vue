@@ -40,18 +40,6 @@
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <v-divider></v-divider>
-          <!-- 경기 종류 Label -->
-          <v-row class="mx-0 px-0">
-            <v-col cols="12" class="textc-left mx-0 pl-0 pr-1 pb-2">
-              경기 종류
-            </v-col>
-          </v-row>
-          <!-- 경기 종류 Radio -->
-          <v-row class="mx-0 px-0">
-            <v-col cols="4">
-              자체 경기<input type="radio" name="typeSelf" id="typeSelf">
-            </v-col>
-          </v-row>
           <!--홈 | 어웨이 팀 Label-->
           <v-row class="mx-0 px-0">
             <v-col cols="6" class="textc-left mx-0 pl-0 pr-1 pb-2">홈팀</v-col>
@@ -76,15 +64,9 @@
                     disabled
                   />
                 </v-col>
-                <!-- <v-dialog v-model="dialog" max-width="290px">
-                  <v-card>
-                    <v-card-title class="headline"
-                      >Use Google's location service?</v-card-title
-                    >
-                  </v-card>
-                </v-dialog> -->
               </v-row>
             </v-col>
+            <!-- 상대팀 input[text] -->
             <v-col cols="6" class="pa-0 pl-1">
               <v-row
                 class="ma-0 pa-3"
@@ -93,17 +75,98 @@
               >
                 <v-col cols="12" class="ma-0 pa-0">
                   <input
-                    @click.stop="dialog = true"
+                    @click.stop="dialogAwayTeam = true"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
                     type="text"
-                    v-model="awayTeam"
+                    v-model="matchSchedule.awayTeam.teamName"
+                    readonly
                   />
                 </v-col>
-                <v-dialog v-model="dialog" max-width="290px">
+                <v-dialog v-model="dialogAwayTeam" max-width="330px">
                   <v-card>
                     <v-card-title class="headline"
-                      >Use Google's location service?</v-card-title
+                      >상대팀의 유형은 무엇입니까?</v-card-title
                     >
+                    <v-card-text>
+                      <v-row>
+                        <v-col>
+                          <v-radio-group
+                            v-model="awayTeamType"
+                            @change="chooseAwayTeamTypeByRadio"
+                            row
+                          >
+                            <v-radio label="미정" value="0" />
+                            <v-radio label="자체" value="1" />
+                            <v-radio label="상대팀" value="2" />
+                          </v-radio-group>
+                        </v-col>
+                      </v-row>
+                      <v-row v-if="awayTeamType == 2">
+                        <v-col>
+                          <v-row>
+                            <v-col cols="11">
+                              <v-text-field
+                                placeholder="상대팀명을 입력해주세요."
+                                v-model="inputTeamName"
+                                @keydown.enter="searchTeams"
+                              />
+                            </v-col>
+                            <v-col id="magnify" cols="1" class="ma-0 mt-9 pa-0">
+                              <i
+                                class="material-icons md-18"
+                                @click.stop="searchTeams"
+                                >search</i
+                              >
+                            </v-col>
+                          </v-row>
+                          <v-row class="text-center">
+                            <v-col cols="7">
+                              팀명
+                            </v-col>
+                          </v-row>
+                          <v-divider></v-divider>
+                          <v-row
+                            id="friend-list"
+                            class="text-center"
+                            v-for="(awayTeam, i) in awayTeams"
+                            :key="i"
+                          >
+                            <v-col cols="7">
+                              {{ awayTeam.teamName }}
+                            </v-col>
+                            <v-col
+                              cols="1"
+                              class="ma-0 mt-2 mb-3 pa-0 text-center"
+                            >
+                              <v-btn
+                                class="ma-0 ml-8 pa-0"
+                                elevation="2"
+                                color="#6920A3"
+                                small
+                                @click="
+                                  selectAwayTeam(
+                                    awayTeam.teamId,
+                                    awayTeam.teamName
+                                  )
+                                "
+                                style="font-size: 0.65em"
+                                >선택</v-btn
+                              >
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                      <v-btn
+                        class="ma-0 ml-8 pa-0"
+                        elevation="2"
+                        color="#6920A3"
+                        @click="dialogAwayTeam = false"
+                        style="font-size: 0.65em"
+                        >확인</v-btn
+                      >
+                    </v-card-actions>
                   </v-card>
                 </v-dialog>
               </v-row>
@@ -111,11 +174,14 @@
           </v-row>
           <!--팀 끝-->
           <!--경기 일시-->
+          <!-- 경기 일시 라벨 -->
           <v-row class="mx-0 px-0">
-            <v-col cols="12" class="text-left mx-0 px-0 pb-2">경기 일시</v-col>
+            <v-col cols="8" class="text-left mx-0 px-0 pb-2">경기 일시</v-col>
+            <v-col cols="4" class="text-left mx-0 px-0 pb-2">경기 시간</v-col>
           </v-row>
           <v-row class="mx-0 px-0">
-            <v-col cols="12" class="text-left pa-0">
+            <!-- 경기 일시 input -->
+            <v-col cols="8" class="pa-0 pr-2">
               <v-row
                 class="ma-0 pa-3"
                 justify="center"
@@ -123,17 +189,30 @@
               >
                 <v-col cols="12" class="ma-0 pa-0">
                   <input
-                    v-if="matchDateTime == ''"
-                    v-model="matchDateTime"
-                    style="display:inline-block;width:100%;text-align:center;color:#ffffff80"
                     type="datetime-local"
-                  />
-                  <input
-                    v-else
                     v-model="matchDateTime"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                    type="datetime-local"
                   />
+                </v-col>
+              </v-row>
+            </v-col>
+            <!-- 경기 시간 input -->
+            <v-col cols="4" class="pa-0 pr-1">
+              <v-row
+                class="ma-0 pa-3"
+                justify="center"
+                style="border:2px solid #AD1457;border-radius:25px;"
+              >
+                <v-col offset="2" cols="5" class="ma-0 pa-0">
+                  <input
+                    id="match-hour"
+                    type="text"
+                    style="display:inline-block;width:100%;text-align:center;color:#ffffff"
+                    v-model="duration"
+                  />
+                </v-col>
+                <v-col cols="3" class="ma-0 pa-0 text-center">
+                  시간
                 </v-col>
                 <v-dialog v-model="dialog" max-width="290px">
                   <v-card>
@@ -888,3 +967,4 @@
   </div>
 </template>
 <script scroped src="@/assets/js/vote-match/VoteMatchManager.js"></script>
+<style scoped src="@/assets/css/vote-match/VoteMatchManager.css"></style>

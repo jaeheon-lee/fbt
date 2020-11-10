@@ -3,6 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="TeamMapper">
+	<!-- T004: 팀 등록 -->
 	<insert id="addTeam" parameterType="team">
 		INSERT INTO
 		team(team_name, emblem, area, stadium_info, 
@@ -10,5 +11,14 @@
 		VALUES(#{teamName}, #{emblem}, #{area}, #{stadiumInfo}, #{uniformColor}, #{uniformType},
 		#{foundingDate}, #{teamRegDate}, #{account}, #{bank})
 	</insert>
+	
+	<!-- T006: 팀 검색 -->
+	<select id="searchTeams" parameterType="hashMap" resultType="team">
+		SELECT 
+		team_name, team_id
+		FROM team
+		WHERE team_id != #{teamId}
+		AND team_name LIKE '%${teamName}%'
+	</select>
 	
 </mapper>

@@ -10,11 +10,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "home" */ "../views/Home.vue")
   },
   {
-    path: "/voteManager",
-    name: "voteManager",
+    path: "/voteMatchManager",
+    name: "voteMatchManager",
 
     component: () =>
-      import(/* webpackChunkName: "voteManager" */ "../views/VoteManager.vue")
+      import(/* webpackChunkName: "voteManager" */ "../views/VoteMatchManager.vue")
   },
   {
     path: "/voteMatch",

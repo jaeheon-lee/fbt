@@ -1,7 +1,9 @@
 import axios from "axios";
 export default {
   name: "voteMatchOn",
-  components: {},
+  props: {
+    isEnd: Boolean
+  },
   data() {
     return {
       // 투표 변수
@@ -19,12 +21,16 @@ export default {
       },
       voteMatchResults: [],
 
+      // 상세 정보 관련 변수
+      activeDetail: null, // 해당 인덱스면 해당 인덱스를 가진 카드의 상세 정보 창을 연다.
+
       // 지인 초대 관련 변수
       inputEmail: null, //검색할 이메일
       friends: [],
 
       activeMemberList: null, //해당 인덱스이면 토글 연다
       activeFriendList: null, //해당 인덱스이면 토글 연다
+      openType: -1, // 0이면 명단만을 연다 , 1이면 초대만을 연다
 
       //기본 변수
       errored: false,
@@ -34,12 +40,17 @@ export default {
   mounted() {
     this.showVoteInfo();
   },
+  watch: {
+    changeVoteinfo: function(isEnd) {
+      alert(isEnd);
+    }
+  },
   methods: {
     // 진행 중인 투표 출력 (V001)
     showVoteInfo() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let voteStatus = 0;
-      // eslint-disable-next-line prettier/prettier
+      if (this.isEnd) voteStatus = 1;
       axios
         .get("/vote-match/" + teamId + "?voteStatus=" + voteStatus)
         .then(response => {
@@ -61,7 +72,7 @@ export default {
       }
     },
     // 투표하기 (생성, 수정) V002 | V003
-    doVote(voteMatchId, result) {
+    doVote(voteMatchId, result, i) {
       this.voteMatchResult.voteMatchId = voteMatchId;
       this.voteMatchResult.teamMember.teamMemberId = JSON.parse(
         sessionStorage.getItem("userInfo")
@@ -69,7 +80,24 @@ export default {
       this.voteMatchResult.attendance = result;
       axios
         .post("/vote-match-result", this.voteMatchResult)
-        .then(alert("투표가 완료되었습니다."))
+        .then(response => {
+          alert("투표가 완료되었습니다.");
+          if (response.data == 1) {
+            // 수정이면 객체 수정하여 동적으로 반영하기
+            let voteMatchResultId =
+              this.voteMatchResult.voteMatchId +
+              "-" +
+              this.voteMatchResult.teamMember.teamMemberId;
+            for (var j = 0; j < this.votes[i].voteMatchResults.length; j++) {
+              if (
+                this.votes[i].voteMatchResults[j].voteMatchResultId ==
+                voteMatchResultId
+              ) {
+                this.votes[i].voteMatchResults[j].attendance = result;
+              }
+            }
+          }
+        })
         .catch(() => {
           alert("투표 진행 중 오류가 발생했습니다.");
         });
@@ -117,15 +145,33 @@ export default {
           alert("초대에 실패했습니다.");
         });
     },
+    // 상세정보 창 여닫기
+    openDetail(i) {
+      if (this.activeDetail == i) this.activeDetail = null;
+      else this.activeDetail = i;
+    },
     // 명단보기 창 여닫기
     openMemberList(i) {
-      this.activeMemberList = i;
+      if (this.activeMemberList == i) this.activeMemberList = null;
+      // 명단이 열려있다면 명단 닫기
+      else {
+        if (this.activeFriendList == i) this.activeFriendList = null; // 명단도 열려 있다면 명단 닫기
+        this.activeMemberList = i;
+        this.openType = 0;
+      }
     },
     closeMemberList() {
       this.activeMemberList = null;
     },
+    // 지인 초대 창 여닫기
     openFriendList(i) {
-      this.activeFriendList = i;
+      if (this.activeFriendList == i) this.activeFriendList = null;
+      // 초대가 열려있다면 초대 닫기
+      else {
+        if (this.activeMemberList == i) this.activeMemberList = null; // 명단도 열려 있다면 명단 닫기
+        this.activeFriendList = i;
+        this.openType = 1;
+      }
     },
     closeFriendList() {
       this.activeFriendList = null;

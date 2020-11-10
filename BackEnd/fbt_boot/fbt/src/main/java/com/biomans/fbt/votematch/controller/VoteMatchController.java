@@ -49,11 +49,11 @@ public class VoteMatchController {
 	public ResponseEntity addAttendance(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {
 			voteMatchService.addAttendance(voteMatchResult);
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity(0, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			try {
 				voteMatchService.updateVoteMatchResult(voteMatchResult);
-				return new ResponseEntity(HttpStatus.OK);
+				return new ResponseEntity(1, HttpStatus.OK);
 			}catch(Exception e1) {
 				return new ResponseEntity(HttpStatus.BAD_REQUEST);
 			}

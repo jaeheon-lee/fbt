@@ -38,8 +38,8 @@
         </v-col>
       </v-row>
     </v-container>
-    <vote-match-body :is-end="isEnd"></vote-match-body>
+    <vote-match-body v-if="!isEnd"></vote-match-body>
   </div>
 </template>
-<style scroped src="@/assets/css/vote-match/VoteMatch.css"></style>
-<script scoped src="@/assets/js/vote-match/VoteMatch.js"></script>
+<style scroped src="@/assets/css/vote-match/VoteMatchBody.css"></style>
+<script scoped src="@/assets/js/vote-match/VoteMatchBody.js"></script>

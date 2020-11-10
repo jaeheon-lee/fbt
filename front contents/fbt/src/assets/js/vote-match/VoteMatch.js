@@ -12,7 +12,8 @@ export default {
       userInfo: {
         email: "bioman2@gmail.com",
         teamId: 1,
-        teamMemberId: "1-bioman2@gmail.com"
+        teamMemberId: "1-bioman2@gmail.com",
+        teamName: "왕십리FC"
       }
     };
   },

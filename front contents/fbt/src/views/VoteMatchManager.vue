@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 투표 현황 | 생성 버튼 -->
     <v-container fluid class="py-0 my-7 px-0 mx-0">
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
@@ -28,7 +29,8 @@
           </v-row>
         </v-col>
       </v-row>
-    </v-container>  
+    </v-container>
+    <!-- 투표 생성 section -->
     <v-container fluid class="py-0 my-7 px-0 mx-0">
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0 mb-2">
@@ -38,13 +40,26 @@
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <v-divider></v-divider>
-          <!--팀-->
+          <!-- 경기 종류 Label -->
+          <v-row class="mx-0 px-0">
+            <v-col cols="12" class="textc-left mx-0 pl-0 pr-1 pb-2">
+              경기 종류
+            </v-col>
+          </v-row>
+          <!-- 경기 종류 Radio -->
+          <v-row class="mx-0 px-0">
+            <v-col cols="4">
+              자체 경기<input type="radio" name="typeSelf" id="typeSelf">
+            </v-col>
+          </v-row>
+          <!--홈 | 어웨이 팀 Label-->
           <v-row class="mx-0 px-0">
             <v-col cols="6" class="textc-left mx-0 pl-0 pr-1 pb-2">홈팀</v-col>
             <v-col cols="6" class="text-left mx-0 pr-0 pl-1 pb-2"
               >어웨이팀</v-col
             >
           </v-row>
+          <!-- 홈 | 어웨이 Input[text] -->
           <v-row class="mx-0 px-0">
             <v-col cols="6" class="pa-0 pr-1">
               <v-row
@@ -54,19 +69,20 @@
               >
                 <v-col cols="12" class="ma-0 pa-0">
                   <input
-                    @click.stop="dialog = true"
+                    name="HomeTeamName"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
                     type="text"
-                    v-model="team"
+                    v-model="userInfo.teamName"
+                    disabled
                   />
                 </v-col>
-                <v-dialog v-model="dialog" max-width="290px">
+                <!-- <v-dialog v-model="dialog" max-width="290px">
                   <v-card>
                     <v-card-title class="headline"
                       >Use Google's location service?</v-card-title
                     >
                   </v-card>
-                </v-dialog>
+                </v-dialog> -->
               </v-row>
             </v-col>
             <v-col cols="6" class="pa-0 pl-1">

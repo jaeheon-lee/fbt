@@ -8,6 +8,10 @@ export default {
   },
   data() {
     return {
+      openDialog: null,
+
+
+
       dialog: false,
       team: "FC답십리",
       friendInvite: false,
@@ -73,8 +77,25 @@ export default {
       ],
       selectedMatchType: "",
       selectedCost: "",
-      selectedPark: ""
+      selectedPark: "",
+
+      //로그인 변수 -- 임시 변수
+      userInfo: {
+        email: "bioman2@gmail.com",
+        teamId: 1,
+        teamMemberId: "1-bioman2@gmail.com",
+        teamName: "왕십리FC"
+      }
     };
+  },
+  created() {
+    this.login();
+  },
+  methods: {
+    // 로그인 -- 임시 메소드
+    login() {
+      sessionStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+    }
   },
   watch: {
     completeresult: function(newValue) {

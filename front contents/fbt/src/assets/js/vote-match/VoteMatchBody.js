@@ -41,8 +41,10 @@ export default {
     this.showVoteInfo();
   },
   watch: {
-    changeVoteinfo: function(isEnd) {
-      alert(isEnd);
+    // 투표 진행 중 or 마감을 눌렀을 때 해당 리스트 출력
+    isEnd: function() {
+      this.showVoteInfo();
+      this.activeDetail = null;
     }
   },
   methods: {

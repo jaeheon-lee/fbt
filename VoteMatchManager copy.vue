@@ -82,7 +82,6 @@
                     readonly
                   />
                 </v-col>
-                <!-- 상대팀 검색 Dialog -->
                 <v-dialog v-model="dialogAwayTeam" max-width="330px">
                   <v-card>
                     <v-card-title class="headline"
@@ -215,6 +214,13 @@
                 <v-col cols="3" class="ma-0 pa-0 text-center">
                   시간
                 </v-col>
+                <v-dialog v-model="dialog" max-width="290px">
+                  <v-card>
+                    <v-card-title class="headline"
+                      >Use Google's location service?</v-card-title
+                    >
+                  </v-card>
+                </v-dialog>
               </v-row>
             </v-col>
           </v-row>
@@ -232,41 +238,53 @@
                 justify="center"
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
-                <!-- 경기장 input -->
                 <v-col class="ma-0 pa-0">
                   <input
                     v-if="completeresult.address == ''"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff80"
                     type="text"
-                    v-model="targetStadium"
+                    v-model="completeresult.address"
                     @click="dialogStadium = true"
-                    placeholder="경기장을 검색하세요."
+                    placeholder="경기장 주소를 입력하세요."
+                  />
+                  <input
+                    v-else
+                    style="display:inline-block;width:100%;text-align:center;color:#ffffff"
+                    type="text"
+                    v-model="completeresult.address"
+                    @click="dialogStadium = true"
+                    placeholder="경기장 주소를 입력하세요."
                   />
                 </v-col>
-                <!-- 경기장 Dialog : Map.vue -->
-                <v-dialog v-model="dialogStadium">
-                  <v-row fluid justify="center">
-                    <v-col xl="6" lg="8" cols="12">
-                      <v-card>
-                        <v-card-title class="headline"
-                          >원하시는 장소를 목록에서 클릭해주세요</v-card-title
-                        >
-                        <v-card-text>
-                          <map-vue @target="setTargetStadium"></map-vue>
-                        </v-card-text>
-                        <v-card-actions class="justify-end">
-                          <v-btn
-                            class="ma-0 ml-8 pa-0"
-                            elevation="2"
-                            color="#6920A3"
-                            @click="dialogStadium = false"
-                            style="font-size: 0.85em"
-                            >확인</v-btn
-                          >
-                        </v-card-actions>
-                      </v-card>
-                    </v-col>
-                  </v-row>
+                <v-dialog
+                  v-model="dialogStadium"
+                  style="background-color:#162525;"
+                >
+                  <vue-daum-postcode
+                    @complete="completeresult = $event"
+                    :q="completeresult.address"
+                    :auto-close="true"
+                    :animation="true"
+                    :no-shorthand="true"
+                    :no-auto-mapping="true"
+                    :please-read-guide="3"
+                    :please-read-guide-timer="2"
+                    :max-suggest-items="3"
+                    :show-more-h-name="true"
+                    :hide-map-btn="true"
+                    :hide-eng-btn="true"
+                    :always-show-eng-addr="true"
+                    :zonecode-only="true"
+                    :theme="{
+                      bgColor: '#162525',
+                      searchBgColor: '#162525',
+                      contentBgColor: '#162525',
+                      pageBgColor: '#162525',
+                      textColor: '#FFFFFF',
+                      queryTextColor: '#FFFFFF',
+                      outlineColor: '#44444'
+                    }"
+                  />
                 </v-dialog>
               </v-row>
             </v-col>
@@ -274,7 +292,6 @@
           <!--경기장 정보 끝 -->
           <!--경기타입비용주차-->
           <v-row class="mx-0 px-0">
-            <!-- 경기타입비용주차 Label -->
             <v-col cols="4" class="text-left mx-0 pl-0 pr-1 px-0 pb-2"
               >경기타입</v-col
             >
@@ -288,9 +305,8 @@
               >주차</v-col
             >
           </v-row>
-          <!-- 경기타입비용주차 Input -->
+
           <v-row class="mx-0 px-0">
-            <!-- 경기타입 input -->
             <v-col cols="4" class="pa-0 pr-1">
               <v-row
                 class="ma-0 pa-3"
@@ -298,27 +314,33 @@
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
                 <select
-                  v-model="matchSchedule.matchType"
-                  :class="{
-                    'before-selected': !matchTypeSelected,
-                    'after-selected': matchTypeSelected
-                  }"
-                  @change="matchTypeSelected = true"
+                  v-model="selectedMatchType"
+                  v-if="selectedMatchType == ''"
+                  style="color:rgb(255, 255, 255, 0.5);vertical-align:middle;text-align-last:center;"
                 >
-                  <option class="options" disabled selected value="null"
-                    >경기타입</option
-                  >
+                  <option disabled value>경기타입</option>
                   <option
-                    class="options"
+                    style="text-align-last:center;color:#ffffff;"
                     v-for="matchType in matchTypes"
                     v-bind:key="matchType"
-                    :value="matchType"
+                    >{{ matchType }}</option
+                  >
+                </select>
+                <select
+                  v-else
+                  v-model="selectedMatchType"
+                  style="color:#ffffff;vertical-align:middle;text-align-last:center;"
+                >
+                  <option disabled value>경기타입</option>
+                  <option
+                    style="text-align-last:center;color:#ffffff;"
+                    v-for="matchType in matchTypes"
+                    v-bind:key="matchType"
                     >{{ matchType }}</option
                   >
                 </select>
               </v-row>
             </v-col>
-            <!-- 비용 Input -->
             <v-col
               cols="4"
               class="py-0"
@@ -329,17 +351,32 @@
                 justify="center"
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
-                <v-col offset="2" cols="5" class="ma-0 pa-0">
-                  <input
-                    id="cost"
-                    type="text"
-                    style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                    v-model="matchSchedule.cost"
-                  />
-                </v-col>
-                <v-col cols="3" class="ma-0 pa-0 text-center">
-                  만원
-                </v-col>
+                <select
+                  v-model="selectedCost"
+                  v-if="selectedCost == ''"
+                  style="color:rgb(255, 255, 255, 0.5);vertical-align:middle;text-align-last:center;"
+                >
+                  <option disabled value>경기비용</option>
+                  <option
+                    style="text-align-last:center;color:#ffffff;"
+                    v-for="matchCost in matchCosts"
+                    v-bind:key="matchCost"
+                    >{{ matchCost }}만원</option
+                  >
+                </select>
+                <select
+                  v-else
+                  v-model="selectedCost"
+                  style="color:#ffffff;vertical-align:middle;text-align-last:center;"
+                >
+                  <option disabled value>경기비용</option>
+                  <option
+                    style="text-align-last:center;color:#ffffff;"
+                    v-for="matchCost in matchCosts"
+                    v-bind:key="matchCost"
+                    >{{ matchCost }}만원</option
+                  >
+                </select>
               </v-row>
             </v-col>
 
@@ -350,16 +387,22 @@
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
                 <select
-                  v-model="matchSchedule.stadiumParking"
-                  :class="{
-                    'before-selected': !parkingSelected,
-                    'after-selected': parkingSelected
-                  }"
-                  @change="parkingSelected = true"
+                  v-model="selectedPark"
+                  v-if="selectedPark == ''"
+                  style="color:rgb(255, 255, 255, 0.5);vertical-align:middle;text-align-last:center;"
                 >
-                  <option class="options" disabled selected value=null>주차</option>
-                  <option class="options" value="1">주차가능</option>
-                  <option class="options" value="0">주차불가</option>
+                  <option disabled value>주차</option>
+                  <option style="text-align-last:center;">주차가능</option>
+                  <option style="text-align-last:center;">주차불가</option>
+                </select>
+                <select
+                  v-else
+                  v-model="selectedPark"
+                  style="color:#ffffff;vertical-align:middle;text-align-last:center;"
+                >
+                  <option disabled value>주차</option>
+                  <option style="text-align-last:center;">주차가능</option>
+                  <option style="text-align-last:center;">주차불가</option>
                 </select>
               </v-row>
             </v-col>

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class VoteMatch {
 	private String voteMatchId;
-	private String contents;
+	private String memo;
 	private String dueDate;
 	private int voteStatus;
 	private String voteRegDate;
@@ -24,13 +24,13 @@ public class VoteMatch {
 	
 	public VoteMatch() {}
 
-	public VoteMatch(String voteMatchId, String contents, String dueDate, int voteStatus, String voteRegDate,
-			String writer, int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
+	public VoteMatch(String voteMatchId, String memo, String dueDate, int voteStatus, String voteRegDate, String writer,
+			int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
 			VoteMatchResult voteMatchResult, ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum,
 			int abscentNum, int attendNum, int friendNum, int totalAttend) {
 		super();
 		this.voteMatchId = voteMatchId;
-		this.contents = contents;
+		this.memo = memo;
 		this.dueDate = dueDate;
 		this.voteStatus = voteStatus;
 		this.voteRegDate = voteRegDate;
@@ -57,12 +57,12 @@ public class VoteMatch {
 		this.voteMatchId = voteMatchId;
 	}
 
-	public String getContents() {
-		return contents;
+	public String getMemo() {
+		return memo;
 	}
 
-	public void setContents(String contents) {
-		this.contents = contents;
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 
 	public String getDueDate() {
@@ -195,13 +195,11 @@ public class VoteMatch {
 
 	@Override
 	public String toString() {
-		return "VoteMatch [voteMatchId=" + voteMatchId + ", contents=" + contents + ", dueDate=" + dueDate
-				+ ", voteStatus=" + voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", friendEmp="
-				+ friendEmp + ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting="
-				+ voteMatchSetting + ", voteMatchResult=" + voteMatchResult + ", voteMatchResults=" + voteMatchResults
-				+ ", totalNum=" + totalNum + ", votedNum=" + votedNum + ", abscentNum=" + abscentNum + ", attendNum="
-				+ attendNum + ", friendNum=" + friendNum + ", totalAttend=" + totalAttend + "]";
+		return "VoteMatch [voteMatchId=" + voteMatchId + ", memo=" + memo + ", dueDate=" + dueDate + ", voteStatus="
+				+ voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", friendEmp=" + friendEmp
+				+ ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting=" + voteMatchSetting
+				+ ", voteMatchResult=" + voteMatchResult + ", voteMatchResults=" + voteMatchResults + ", totalNum="
+				+ totalNum + ", votedNum=" + votedNum + ", abscentNum=" + abscentNum + ", attendNum=" + attendNum
+				+ ", friendNum=" + friendNum + ", totalAttend=" + totalAttend + "]";
 	}
-
-	
 }

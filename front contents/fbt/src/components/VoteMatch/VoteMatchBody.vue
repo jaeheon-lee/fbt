@@ -155,7 +155,7 @@
                       <v-col
                         cols="12"
                         class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >내용</v-col
+                        >투표 메모</v-col
                       >
                     </v-row>
                     <!-- 내용 본문 -->
@@ -165,7 +165,7 @@
                           class="ma-0 pa-3"
                           justify="center"
                           style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ vote.contents }}</v-row
+                          >{{ vote.memo }}</v-row
                         ></v-col
                       >
                     </v-row>

@@ -12,19 +12,20 @@ public class MatchSchedule {
 	private String stadiumName;
 	private String stadiumType;
 	private String stadiumAddress;
-	private int stadiumX;
-	private int stadiumY;
+	private double stadiumX;
+	private double stadiumY;
 	private int stadiumParking;
 	private int stadiumShower;
-	private int matchType;
+	private String matchType;
 	private Team homeTeam;
 	private Team awayTeam;
 	
 	public MatchSchedule() {}
 
 	public MatchSchedule(int matchScheduleId, String startTime, String endTime, int duration, int cost, String writer,
-			String regDate, String content, String stadiumName, String stadiumType, String stadiumAddress, int stadiumX,
-			int stadiumY, int stadiumParking, int stadiumShower, int matchType, Team homeTeam, Team awayTeam) {
+			String regDate, String content, String stadiumName, String stadiumType, String stadiumAddress,
+			double stadiumX, double stadiumY, int stadiumParking, int stadiumShower, String matchType, Team homeTeam,
+			Team awayTeam) {
 		super();
 		this.matchScheduleId = matchScheduleId;
 		this.startTime = startTime;
@@ -134,19 +135,19 @@ public class MatchSchedule {
 		this.stadiumAddress = stadiumAddress;
 	}
 
-	public int getStadiumX() {
+	public double getStadiumX() {
 		return stadiumX;
 	}
 
-	public void setStadiumX(int stadiumX) {
+	public void setStadiumX(double stadiumX) {
 		this.stadiumX = stadiumX;
 	}
 
-	public int getStadiumY() {
+	public double getStadiumY() {
 		return stadiumY;
 	}
 
-	public void setStadiumY(int stadiumY) {
+	public void setStadiumY(double stadiumY) {
 		this.stadiumY = stadiumY;
 	}
 
@@ -166,11 +167,11 @@ public class MatchSchedule {
 		this.stadiumShower = stadiumShower;
 	}
 
-	public int getMatchType() {
+	public String getMatchType() {
 		return matchType;
 	}
 
-	public void setMatchType(int matchType) {
+	public void setMatchType(String matchType) {
 		this.matchType = matchType;
 	}
 

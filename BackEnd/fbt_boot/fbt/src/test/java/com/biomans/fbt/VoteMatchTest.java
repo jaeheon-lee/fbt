@@ -29,9 +29,9 @@ class VoteMatchTest {
 	void contextLoads() {
 		// V005 & V006
 		VoteMatch vm = new VoteMatch();
-		String voteMatchId = "1"+"-"+"1";
+		String voteMatchId = "1"+"-"+"9";
 		vm.setVoteMatchId(voteMatchId);
-		vm.setContents("늦지 마시오");
+		vm.setMemo("늦지 마시오");
 		vm.setDueDate("2020-10-14 21:00");
 		vm.setVoteStatus(0);
 		vm.setWriter("왕십리FC 구단주");
@@ -39,29 +39,18 @@ class VoteMatchTest {
 		team.setTeamId(1);
 		vm.setTeam(team);
 		MatchSchedule ms = new MatchSchedule();
-		ms.setMatchScheduleId(1);
+		ms.setMatchScheduleId(9);
 		vm.setMatchSchedule(ms);
 		VoteMatchSetting vms = new VoteMatchSetting();
-		vms.setVoteMatchId("1-2");
+		vms.setVoteMatchId("1-9");
 		vms.setType(0);
-		vms.setCancelNumber(11);
-		vms.setIsFirst(1);
-		vms.setWaiting(1);
-		vms.setFriendEmp(1);
-		vms.setSelfMinNumber(-1);
-		vms.setSelfMaxNumber(-1);
-		vms.setEmpDueDate("-1");
-		vms.setEmpMinNumber(-1);
-		vms.setAwayMinNumber(-1);
-		vms.setAwayDueDate("-1");
-		vms.setEmpCost(-1);
-		vms.setAssignCost(-1);
-		vms.setSearchCost(-1);
+		vms.setIsFirst(true);
+		vms.setWaiting(false);
+		vms.setFriendEmp(true);
 		vm.setVoteMatchSetting(vms);
 		
-
-//		sqlSession.insert(ns+"addVoteMatch", vm);
-//		sqlSession.insert(ns+"addVoteMatchSetting", vms);
+		sqlSession.insert(ns+"addVoteMatch", vm);
+		sqlSession.insert(ns+"addVoteMatchSetting", vms);
 		
 		//---------------------------------------//
 		

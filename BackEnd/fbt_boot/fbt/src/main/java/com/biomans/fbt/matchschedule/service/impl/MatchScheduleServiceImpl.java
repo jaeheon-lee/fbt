@@ -1,0 +1,30 @@
+package com.biomans.fbt.matchschedule.service.impl;
+
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
+import com.biomans.fbt.matchschedule.service.MatchScheduleService;
+
+@Service
+public class MatchScheduleServiceImpl implements MatchScheduleService {
+	@Autowired
+	private MatchScheduleDAO matchScheduleDAO;
+	
+	//S001: 일정 등록
+	@Override
+	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
+		matchScheduleDAO.addMatchSchedule(matchSchedule);
+		
+	}
+	
+	// S002: 방금 동록한 일정 ID 출력
+	@Override
+	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
+		return matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
+	}
+
+}

@@ -41,21 +41,21 @@ INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_statu
 
 -- match_schedule
 INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
-VALUES(1, '1', '2020-10-15 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
+VALUES(1, '1', '2020-10-15 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11:11'
 );
 INSERT INTO match_schedule(match_schedule_id, home_team_id, away_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
-VALUES(2, '1', 2,'2020-10-22 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11'
+VALUES(2, '1', 2,'2020-10-22 09:00:00', '2', '10', '왕십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '방배 유수지 축구장1', '흙', '서울특별시 서초구 방배동 599 방배 유수지', '0', '0', '1', '0', '11:11'
 );
 INSERT INTO match_schedule(match_schedule_id, home_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type)
-VALUES(3, 2, '2020-10-22 09:00:00', '2', '10', '답십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '응봉 유수지 축구장1', '흙', '서울특별시 서초구 응봉동 599 방배 유수지', '0', '0', '1', '0', '11'
+VALUES(3, 2, '2020-10-22 09:00:00', '2', '10', '답십리FC 구단주', '2020-10-18 14:18:06', '늦지 마시오', '응봉 유수지 축구장1', '흙', '서울특별시 서초구 응봉동 599 방배 유수지', '0', '0', '1', '0', '11:11'
 );
 
 -- vote_match
-INSERT INTO vote_match(vote_match_id, due_date, contents, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
+INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 VALUES('1-1', '2020-10-14 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 1);
-INSERT INTO vote_match(vote_match_id, due_date, contents, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
+INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 VALUES('1-2', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 2);
-INSERT INTO vote_match(vote_match_id, due_date, contents, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
+INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 VALUES('2-3', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 2, 3);
 
 -- vote_match_setting

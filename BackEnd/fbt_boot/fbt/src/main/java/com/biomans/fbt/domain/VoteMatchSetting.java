@@ -4,9 +4,9 @@ public class VoteMatchSetting {
 	private String voteMatchId;
 	private int type;
 	private int cancelNumber;
-	private int isFirst;
-	private int waiting;
-	private int friendEmp;
+	private boolean isFirst;
+	private boolean waiting;
+	private boolean friendEmp;
 	private int selfMinNumber;
 	private int selfMaxNumber;
 	private String empDueDate;
@@ -21,7 +21,7 @@ public class VoteMatchSetting {
 		super();
 	}
 
-	public VoteMatchSetting(String voteMatchId, int type, int cancelNumber, int isFirst, int waiting, int friendEmp,
+	public VoteMatchSetting(String voteMatchId, int type, int cancelNumber, boolean isFirst, boolean waiting, boolean friendEmp,
 			int selfMinNumber, int selfMaxNumber, String empDueDate, int empMinNumber, int awayMinNumber,
 			String awayDueDate, int assignCost, int empCost, int searchCost) {
 		super();
@@ -66,27 +66,27 @@ public class VoteMatchSetting {
 		this.cancelNumber = cancelNumber;
 	}
 
-	public int getIsFirst() {
+	public boolean getIsFirst() {
 		return isFirst;
 	}
 
-	public void setIsFirst(int isFirst) {
+	public void setIsFirst(boolean isFirst) {
 		this.isFirst = isFirst;
 	}
 
-	public int getWaiting() {
+	public boolean getWaiting() {
 		return waiting;
 	}
 
-	public void setWaiting(int waiting) {
+	public void setWaiting(boolean waiting) {
 		this.waiting = waiting;
 	}
 
-	public int getFriendEmp() {
+	public boolean getFriendEmp() {
 		return friendEmp;
 	}
 
-	public void setFriendEmp(int friendEmp) {
+	public void setFriendEmp(boolean friendEmp) {
 		this.friendEmp = friendEmp;
 	}
 

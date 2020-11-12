@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
+import com.biomans.fbt.matchschedule.service.MatchScheduleService;
 import com.biomans.fbt.votematch.service.VoteMatchService;
 
 @RestController
@@ -28,6 +30,9 @@ import com.biomans.fbt.votematch.service.VoteMatchService;
 public class VoteMatchController {
 	@Autowired
 	private VoteMatchService voteMatchService;
+	
+	@Autowired
+	private MatchScheduleService matchScheduleService;
 	
 	//V001
 	@GetMapping("/vote-match/{teamId}")
@@ -72,11 +77,26 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V005 | V006
+	//V005 | V006 | S001 | S002: 투표 등록하기, 투표 설정 등록하기, 일정 등록
 	@PostMapping("/vote-match")
 	public ResponseEntity addVoteMatchAndSetting(@RequestBody VoteMatch voteMatch) throws SQLException{
 		try {
-			voteMatchService.addVoteMatchAndSetting(voteMatch);;
+			//S001
+			MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
+			if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);;
+			System.out.println(matchSchedule);
+			matchScheduleService.addMatchSchedule(matchSchedule);
+			//S002
+			int teamId = voteMatch.getTeam().getTeamId();
+			int matchScheduleId = matchScheduleService.showLatestMatchScheduleIdById(teamId);
+			System.out.println(matchScheduleId);
+			String voteMatchId = String.valueOf(teamId) + "-" + String.valueOf(matchScheduleId);
+			voteMatch.getMatchSchedule().setMatchScheduleId(matchScheduleId);
+			System.out.println(voteMatchId);
+			voteMatch.setVoteMatchId(voteMatchId);
+			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);;
+			System.out.println(voteMatch);
+			voteMatchService.addVoteMatchAndSetting(voteMatch);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);

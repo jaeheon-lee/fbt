@@ -87,8 +87,53 @@ GROUP BY vr.vote_match_id
 select * from team;
 update team set emblem = '답십리FC201018.png' where team_id =2;
 
-select * from vote_match_result vr
-where vr.vote_match_id ='1-1';
+select
+vr.vote_match_result_id, vr.vote_match_id, vr.attendance, vr.email friend_email,
+tm.email member_email,
+u.name
+from vote_match_result vr
+JOIN vote_match v 
+ON v.vote_match_id = vr.vote_match_id
+left outer join team_member tm
+on vr.team_member_id = tm.team_member_id
+join user u 
+on (u.email = vr.email
+or u.email = tm.email)
+where v.team_id = 2
+;
+select * from team;
+update team set emblem = '왕십리FC201018.png' where team_id = 1;
 
-select * from user;
+select u.email, u.name
+from user u
+where not exists (
+select distinct email
+from team_member tm
+where u.email = tm.email
+AND team_id = "1"
+) 
+AND u.email like '%10%';
 
+select * from invite;
+delete from invite where invite_id =3;
+
+SELECT 
+		vr.vote_match_id,
+		count(if(vr.team_member_id > 0, 1, null)) voted_num,
+		count(if(vr.attendance > 0 and team_member_id > 0, 1, null)) attend_num, 
+		count(if(vr.attendance = 0 and team_member_id > 0, 1, null)) abscent_num, 
+		count(vr.email) friend_num
+		FROM vote_match_result vr
+		JOIN vote_match v
+		ON vr.vote_match_id = v.vote_match_id
+        where v.team_id = 1
+		GROUP BY vr.vote_match_id
+        ;
+select * from vote_match_result;
+update vote_match set vote_status = 1 where vote_match_id = '1-2';
+
+SELECT 
+team_name, area
+FROM team
+WHERE team_name LIKE '%FC%'
+AND team_id = 1;

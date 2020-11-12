@@ -9,7 +9,7 @@
 		<id column="vote_match_id" property="voteMatchId"/>
 		<result column="vote_reg_date" property="voteRegDate"/>
 		<result column="due_date" property="dueDate"/>
-		<result column="contents" property="contents"/>
+		<result column="memo" property="memo"/>
 		<result column="total_num" property="totalNum"/>
 		<result column="voted_num" property="votedNum"/>
 		<result column="abscent_num" property="abscentNum"/>
@@ -44,7 +44,7 @@
 	<!-- 진행 중인 투표 관련 일정 | 팀 정보 -->
 	<select id="showVoteMatchInfoByTeam" parameterType="hashMap" resultMap="VoteMatchRM" >
 		SELECT 
-		v.vote_match_id, v.vote_reg_date, v.due_date, v.contents,
+		v.vote_match_id, v.vote_reg_date, v.due_date, v.memo,
 		m.start_time, m.duration, m.stadium_address, m.stadium_name, m.match_type,
 		date_add(m.start_time, interval m.duration hour) end_time,
 		m.cost, m.stadium_parking, m.content, m.home_team_id, m.away_team_id,
@@ -119,8 +119,8 @@
 	<!-- V005 : 투표 생성하기 -->
 	<insert id="addVoteMatch" parameterType="voteMatch">
 		INSERT INTO
-		vote_match(vote_match_id, contents, due_date, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-		VALUES(#{voteMatchId}, #{contents}, #{dueDate}, 0, sysdate(), #{writer}, #{team.teamId}, 
+		vote_match(vote_match_id, memo, due_date, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
+		VALUES(#{voteMatchId}, #{memo}, #{dueDate}, 0, sysdate(), #{writer}, #{team.teamId}, 
 		#{matchSchedule.matchScheduleId})
 	</insert>
 	
@@ -144,7 +144,7 @@
 	<!-- V008 : 투표 내용 수정 -->
 	<update id="updateVoteMatch" parameterType="voteMatch">
 		UPDATE vote_match
-		SET contents = #{contents}, due_date = #{dueDate}
+		SET memo = #{memo}, due_date = #{dueDate}
 		WHERE vote_match_id = #{voteMatchId}
 	</update>
 	

@@ -21,13 +21,6 @@ export default {
     this.login();
   },
   methods: {
-    //투표 중 파트 열기
-    openVoteOn() {
-      this.isEnd = false;
-    },
-    openVoteDone() {
-      this.isEnd = true;
-    },
     // 로그인 -- 임시 메소드
     login() {
       sessionStorage.setItem("userInfo", JSON.stringify(this.userInfo));

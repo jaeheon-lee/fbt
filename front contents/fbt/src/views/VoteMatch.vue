@@ -16,7 +16,7 @@
                 large
                 width="100%"
                 class="mx-0 px-0"
-                @click="openVoteOn"
+                @click="isEnd = false"
                 :class="{ 'btn-on': !isEnd }"
                 >투표중</v-btn
               >
@@ -29,7 +29,7 @@
                 width="100%"
                 class="mx-0 px-0"
                 style="border:0px;"
-                @click="openVoteDone"
+                @click="isEnd = true"
                 :class="{ 'btn-on': isEnd }"
                 >투표완료</v-btn
               >
@@ -41,5 +41,5 @@
     <vote-match-body :is-end="isEnd"></vote-match-body>
   </div>
 </template>
-<style scroped src="@/assets/css/vote-match/VoteMatch.css"></style>
+<style scroped src="@/assets/css/common/barButton.css"></style>
 <script scoped src="@/assets/js/vote-match/VoteMatch.js"></script>

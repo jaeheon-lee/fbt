@@ -78,8 +78,11 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	@Transactional
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException {
+		System.out.println(1);
 		voteMatchDAO.addVoteMatch(voteMatch);
+		System.out.println(2);
 		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
+		System.out.println(3);
 		
 	}
 

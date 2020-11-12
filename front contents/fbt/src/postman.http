@@ -1,2 +1,2 @@
-GET http://localhost:7777/vote-match/1?voteStatus=0
+GET http://localhost:7777/team/FC?homeTeamId=1
 Content-Type: application/json

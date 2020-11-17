@@ -52,6 +52,12 @@ const routes = [
     name: "privateMenu",
     component: () =>
       import(/* webpackChunkName: "privateMenu" */ "../views/PrivateMenu.vue")
+  },
+  {
+    path: "/schedule",
+    name: "schedule",
+    component: () =>
+      import(/* webpackChunkName: "privateMenu" */ "../views/Schedule.vue")
   }
 ];
 

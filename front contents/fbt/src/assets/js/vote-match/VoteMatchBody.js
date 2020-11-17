@@ -189,7 +189,7 @@ export default {
     showMatchType(value) {
       let matchType = "축구";
       if (value < 11) matchType = "풋살";
-      return value + " : " + value + " " + matchType + " 경기";
+      return value + " " + matchType + " 경기";
     },
     isEmp(value) {
       if (value.empDueDate) return "용병 경기";

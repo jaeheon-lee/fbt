@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
+import com.biomans.fbt.util.SearchKey;
 
 @Repository
 public class MatchScheduleDAOImpl implements MatchScheduleDAO{
@@ -28,6 +29,12 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
 		return sqlSession.selectOne(ns+"showLatestMatchScheduleIdById", teamId);
 		
+	}
+	
+	// S005: 등록된 팀 경기 일정 출력 
+	@Override
+	public MatchSchedule showMatchSchduleByTeam(SearchKey searchKey) throws SQLException {
+		return null;
 	}
 	
 	

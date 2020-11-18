@@ -25,13 +25,13 @@
 		DESC limit 1;
 	</select>
 	
-	<!-- S005: 등록된 팀 경기 일정 출력 -->
-	<select id="showMatchSchduleByTeam" parameterType="searchKey" resultType="matchSchedule">
+	<!-- S005: 등록된 팀 경기 일정 기간 별 출력 -->
+	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultType="matchSchedule">
 		SELECT
-		match_schedule_id, start_time, match_type
+		match_schedule_id, start_time, match_type,
+		date_add(start_time, interval duration hour) end_time
 		FROM match_schedule
 		WHERE (home_team_id = #{teamId} OR away_team_id = #{teamId})
-		AND start_time LIKE #{startTime};
-	
+		AND (start_time >= #{startTime} AND #{endTime} >= start_time)
 	</select>
 </mapper>

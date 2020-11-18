@@ -1,6 +1,7 @@
 package com.biomans.fbt.matchschedule.service.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
+import com.biomans.fbt.util.SearchKey;
 
 @Service
 public class MatchScheduleServiceImpl implements MatchScheduleService {
@@ -25,6 +27,11 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	@Override
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
 		return matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
+	}
+
+	@Override
+	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException {
+		return matchScheduleDAO.showMatchSchduleByTeamPeriod(searchKey);
 	}
 
 }

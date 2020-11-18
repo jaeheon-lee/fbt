@@ -9,5 +9,8 @@ module.exports = {
         "@": path.join(__dirname, "src/")
       }
     }
+  },
+  devServer: {
+    host: "localhost"
   }
 };

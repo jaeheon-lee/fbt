@@ -15,6 +15,7 @@
 		<result column="abscent_num" property="abscentNum"/>
 		<result column="attend_num" property="attendNum"/>
 		<result column="friend_num" property="friendNum"/>
+		<result column="vote_status" property="voteStatus"/>
 		<association property="matchSchedule" javaType="matchSchedule">
 			<result column="start_time" property="startTime"/>
 			<result column="end_time" property="endTime"/>
@@ -41,10 +42,10 @@
 		</association>
 	</resultMap>
 	
-	<!-- 진행 중인 투표 관련 일정 | 팀 정보 -->
-	<select id="showVoteMatchInfoByTeam" parameterType="hashMap" resultMap="VoteMatchRM" >
+	<!-- V001 & V014 공통SQL -->
+	<sql id="showVoteMatchInfo">
 		SELECT 
-		v.vote_match_id, v.vote_reg_date, v.due_date, v.memo,
+		v.vote_match_id, v.vote_reg_date, v.due_date, v.memo, v.vote_status,
 		m.start_time, m.duration, m.stadium_address, m.stadium_name, m.match_type,
 		date_add(m.start_time, interval m.duration hour) end_time,
 		m.cost, m.stadium_parking, m.content, m.home_team_id, m.away_team_id,
@@ -59,7 +60,6 @@
 		SELECT 
 		team_id, count(team_member_id) total_num
 		FROM team_member
-		WHERE team_id = #{teamId}
 		) tm
 		ON v.team_id = tm.team_id
 		JOIN vote_match_setting vs
@@ -68,11 +68,9 @@
 		ON m.home_team_id = t.team_id
 		LEFT OUTER JOIN team t2
 		ON m.away_team_id = t2.team_id
-		WHERE v.vote_status = #{voteStatus}
-	</select>
+	</sql>
 	
-	<!-- 진행 중인 투표의 인원 정보 -->
-	<select id="showVoteMatchNumByVote" parameterType="integer" resultMap="VoteMatchRM">
+	<sql id="showVoteMatchNum">
 		SELECT 
 		vr.vote_match_id,
 		count(if(vr.team_member_id > 0, 1, null)) voted_num,
@@ -82,7 +80,33 @@
 		FROM vote_match_result vr
 		JOIN vote_match v
 		ON vr.vote_match_id = v.vote_match_id
+	</sql>
+	
+	<!-- 팀별 투표 관련 일정 | 팀 정보 -->
+	<select id="showVoteMatchInfoByTeam" parameterType="hashMap" resultMap="VoteMatchRM" >
+		<include refid="showVoteMatchInfo"/>
+		WHERE v.vote_status = #{voteStatus}
+		AND tm.team_id = #{teamId}
+	</select>
+	
+	<!-- 팀별 투표의 인원 정보 -->
+	<select id="showVoteMatchNumByTeam" parameterType="integer" resultMap="VoteMatchRM">
+		<include refid="showVoteMatchNum"/>
 		WHERE v.team_id = #{value}
+		GROUP BY vr.vote_match_id
+	</select>
+	
+	<!-- V014 -->
+	<!-- 팀별 투표 관련 일정 | 팀 정보 -->
+	<select id="showVoteMatchInfoByScheduleId" parameterType="integer" resultMap="VoteMatchRM" >
+		<include refid="showVoteMatchInfo"/>
+		WHERE m.match_schedule_id = #{value}
+	</select>
+	
+	<!-- 팀별 투표의 인원 정보 -->
+	<select id="showVoteMatchNumByScheduleId" parameterType="integer" resultMap="VoteMatchRM">
+		<include refid="showVoteMatchNum"/>
+		WHERE v.match_schedule_id = #{value}
 		GROUP BY vr.vote_match_id
 	</select>
 	
@@ -188,10 +212,10 @@
 		</association>
 	</resultMap>
 	
-	<!-- V012: 투표 결과 보기 -->
-	<select id="showVoteMatchResult" parameterType="integer" resultMap="voteMatchResultRM">
+	<!-- V012, V015 공통 SQL -->
+	<sql id="showVoteMatchResult">
 		SELECT
-		vr.vote_match_result_id, vr.vote_match_id, vr.attendance, vr.email friend_email,
+		vr.vote_match_result_id, vr.vote_match_id, vr.attendance, vr.email friend_email, vr.team_member_id,
 		tm.email member_email,
 		u.name
 		FROM vote_match_result vr
@@ -202,7 +226,24 @@
 		JOIN user u 
 		ON (u.email = vr.email
 		OR u.email = tm.email)
+	</sql>
+	
+	<!-- V012: 팀별 투표 결과 보기 -->
+	<select id="showVoteMatchResultByTeam" parameterType="integer" resultMap="voteMatchResultRM">
+		<include refid="showVoteMatchResult"/>
 		WHERE v.team_id = #{value}
+	</select>
+	
+	<!-- V012-1: 투표별 결과 보기 -->
+	<select id="showVoteMatchResultByVote" parameterType="String" resultMap="voteMatchResultRM">
+		<include refid="showVoteMatchResult"/>
+		WHERE v.vote_match_id = #{value}
+	</select>
+	
+	<!-- V015: -->
+	<select id="showVoteMatchResultByScheduleId" parameterType="integer" resultMap="voteMatchResultRM">
+		<include refid="showVoteMatchResult"/>
+		WHERE v.match_schedule_id = #{value}
 	</select>
 	
 	<!-- V013: 지인 찾기 -->
@@ -217,5 +258,4 @@
 		)
 		AND u.email like '%${email}%'
 	</select>
-	
 </mapper>

@@ -28,13 +28,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(searchCon);
 		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByVote(searchCon.get("teamId"));
-		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResult(searchCon.get("teamId")); 
-//		투표 인원 명단 정보 가공하기
-		for(VoteMatchResult voteMatchResult : voteMatchResults) {
-			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
-				voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
-			}
-		}
 		for(VoteMatch voteMatch1 : voteMatchList) {
 //			투표 인원 정보 넣기 & 투표 인원 명단 넣기
 			for(VoteMatch voteMatch2 : numList) {
@@ -44,9 +37,19 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 					voteMatch1.setAbscentNum(voteMatch2.getAbscentNum());
 					voteMatch1.setFriendNum(voteMatch2.getFriendNum());
 					voteMatch1.setTotalAttend(voteMatch2.getAttendNum()+voteMatch2.getFriendNum());
-					voteMatch1.setVoteMatchResults(voteMatchResults);
 				}
 			}
+			ArrayList<VoteMatchResult> voteMatchResults = 
+					(ArrayList<VoteMatchResult>) voteMatchDAO.showVoteMatchResultByVote(voteMatch1.getVoteMatchId()); 
+			voteMatch1.setVoteMatchResults(voteMatchResults);
+			
+//			투표 인원 명단 정보 가공하기
+			for(VoteMatchResult voteMatchResult : voteMatchResults) {
+				if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
+					voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
+				}
+			}
+			
 //			away팀이 미정인 경우 미정 결과 넣기
 			if(voteMatch1.getMatchSchedule().getAwayTeam() == null) {
 				Team awayTeam = new Team();
@@ -119,6 +122,42 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
 		return voteMatchDAO.searchFriend(searchCon);
+	}
+
+	@Override
+	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
+		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(matchScheduleId);
+		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(matchScheduleId);
+		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
+		System.out.println(voteMatchResults);
+		// 각각의 정보를 삽입
+		if(num != null) {
+			voteMatch.setVotedNum(num.getVotedNum());
+			voteMatch.setAttendNum(num.getAttendNum());
+			voteMatch.setAbscentNum(num.getAbscentNum());
+			voteMatch.setFriendNum(num.getFriendNum());
+			voteMatch.setTotalAttend(num.getAttendNum()+num.getFriendNum());
+		}
+		
+//		away팀이 미정인 경우 미정 결과 넣기
+		if(voteMatch.getMatchSchedule().getAwayTeam() == null) {
+			Team awayTeam = new Team();
+			awayTeam.setTeamName("미정");
+			voteMatch.getMatchSchedule().setAwayTeam(awayTeam);
+		}
+//		투표 인원 명단 정보 가공하기
+		for(VoteMatchResult voteMatchResult : voteMatchResults) {
+			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
+				voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
+			}
+		}
+		voteMatch.setVoteMatchResults(voteMatchResults);
+		return voteMatch;
+	}
+
+	@Override
+	public List<VoteMatchResult> showVoteMatchResultByVote(String voteMatchId) throws SQLException {
+		return voteMatchDAO.showVoteMatchResultByVote(voteMatchId);
 	}
 
 }

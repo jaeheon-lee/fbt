@@ -39,7 +39,7 @@
       </v-row>
     </v-container>
     <vote-match-insert v-if="isInsert"></vote-match-insert>
-    <vote-match v-else></vote-match>
+    <vote-match :isManager="isManager" v-else></vote-match>
   </div>
 </template>
 <script scroped src="@/assets/js/vote-match/VoteMatchManager.js"></script>

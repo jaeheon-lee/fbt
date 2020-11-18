@@ -5,15 +5,17 @@ public class SearchKey {
 	private int teamId;
 	private int voteStatus;
 	private String startTime;
+	private String endTime;
 	
 	public SearchKey() {}
 
-	public SearchKey(String email, int teamId, int voteStatus, String startTime) {
+	public SearchKey(String email, int teamId, int voteStatus, String startTime, String endTime) {
 		super();
 		this.email = email;
 		this.teamId = teamId;
 		this.voteStatus = voteStatus;
 		this.startTime = startTime;
+		this.endTime = endTime;
 	}
 
 	public String getEmail() {
@@ -48,9 +50,17 @@ public class SearchKey {
 		this.startTime = startTime;
 	}
 
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
 	@Override
 	public String toString() {
-		return "searchKey [email=" + email + ", teamId=" + teamId + ", voteStatus=" + voteStatus + ", startTime="
-				+ startTime + "]";
-	}	
+		return "SearchKey [email=" + email + ", teamId=" + teamId + ", voteStatus=" + voteStatus + ", startTime="
+				+ startTime + ", endTime=" + endTime + "]";
+	}
 }

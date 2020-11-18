@@ -1,0 +1,66 @@
+    #vote-list {
+        margin-bottom: 1em;
+        min-height:12px!important;
+        background-color:#121212;
+        font-size: 0.65em;
+        line-height:100%;
+        color:rgba(255, 255, 255, 0.7);
+    }
+    
+    #homeTeamName {
+        text-align: center;
+    }
+
+    #divider-vote {
+        border-color: #C4C4C4 !important;;
+    }
+
+    #match-info #match-type {
+        font-size: 1.3em;
+    }
+    
+    #match-info p {
+        margin-bottom: 0.5em;
+    }
+
+    #match-score {
+        margin: 3.5rem 0rem;
+    }
+
+    #match-info #match-info-simple p {
+        margin-bottom: 0.3rem;
+        font-size: 0.7rem;
+        color: #FFFFFF;
+    }
+
+    #match-info .match-type {
+        color: #3FDC9D !important;
+    }
+
+    #vote-btn span, #match-info-detail-btn {
+        cursor: pointer;
+    }
+
+    #member-invite {
+        background-color:#121212;
+        font-size: 0.75em;
+        line-height:100%;
+        color:rgba(255, 255, 255, 0.9);
+    }
+
+    .material-icons.md-18 {
+        cursor: pointer;
+    }
+
+    #friend-list * {
+        vertical-align: text-bottom;
+    }
+
+    #member-close {
+        margin-top: 0.27em;
+        font-size: 2.5em;
+    }
+
+    .display-none {
+        display: none;
+    }

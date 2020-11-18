@@ -54,7 +54,7 @@ VALUES(3, 2, '2020-10-22 09:00:00', '2', '10', '답십리FC 구단주', '2020-10
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 VALUES('1-1', '2020-10-14 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 1);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES('1-2', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 2);
+VALUES('1-2', '2020-10-21 21:00','늦지 마시오', 1, sysdate(), '왕십리FC 구단주', 1, 2);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 VALUES('2-3', '2020-10-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 2, 3);
 

@@ -30,7 +30,7 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	
 	@Override
 	public List<VoteMatch> showVoteMatchNumByVote(int teamId) throws SQLException {
-		return sqlSession.selectList(ns+"showVoteMatchNumByVote", teamId);
+		return sqlSession.selectList(ns+"showVoteMatchNumByTeam", teamId);
 	}
 	
 	@Override
@@ -92,16 +92,40 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 
 	@Override
-	public ArrayList<VoteMatchResult> showVoteMatchResult(int teamId) throws SQLException {
+	public ArrayList<VoteMatchResult> showVoteMatchResultByTeam(int teamId) throws SQLException {
 		ArrayList<VoteMatchResult> voteMatchResults = new ArrayList<VoteMatchResult>();
-		voteMatchResults.addAll(sqlSession.selectList(ns+"showVoteMatchResult", teamId));
+		voteMatchResults.addAll(sqlSession.selectList(ns+"showVoteMatchResultByTeam", teamId));
 		return voteMatchResults;
 	}
+	
+	@Override
+	public List<VoteMatchResult> showVoteMatchResultByVote(String voteMatchId) throws SQLException {
+		return sqlSession.selectList(ns+"showVoteMatchResultByVote", voteMatchId);
+	}
+	
 
 	@Override
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"searchFriend", searchCon);
 	}
+
+	@Override
+	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
+		return sqlSession.selectOne(ns+"showVoteMatchInfoByScheduleId", matchScheduleId);
+	}
+
+	@Override
+	public VoteMatch showVoteMatchNumByScheduleId(int matchScheduleId) throws SQLException {
+		return sqlSession.selectOne(ns+"showVoteMatchNumByScheduleId", matchScheduleId);
+	}
+
+	@Override
+	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(int matchScheduleId) throws SQLException {
+		ArrayList<VoteMatchResult> voteMatchResults = new ArrayList<VoteMatchResult>();
+		voteMatchResults.addAll(sqlSession.selectList(ns+"showVoteMatchResultByScheduleId", matchScheduleId));
+		return voteMatchResults;
+	}
+
 	
 	
 }

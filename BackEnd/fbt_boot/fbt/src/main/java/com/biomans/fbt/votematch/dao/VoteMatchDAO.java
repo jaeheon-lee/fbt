@@ -36,8 +36,15 @@ public interface VoteMatchDAO {
 	//V011 : 투표 결과 삭제
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	//V012 : 투표 결과 출력
-	public ArrayList<VoteMatchResult> showVoteMatchResult(int teamId) throws SQLException;
+	public ArrayList<VoteMatchResult> showVoteMatchResultByTeam(int teamId) throws SQLException;
+	//V012-1: 투표별 투표 결과 출력
+	public List<VoteMatchResult> showVoteMatchResultByVote(String voteMatchId) throws SQLException;
 	//V013 : 지인 검색하기
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
+	//V014:
+	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException;
+	public VoteMatch showVoteMatchNumByScheduleId(int matchScheduleId) throws SQLException;
+	//V015
+	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(int matchScheduleId)throws SQLException;
 	
 }

@@ -38,11 +38,14 @@
             <v-list-item
               v-for="subItem in item.items"
               :key="subItem.title"
-              @click="$router.push({ name: item.target })"
               style="font-family:nexon"
             >
               <v-list-item-content>
-                <v-list-item-title v-text="subItem.title"></v-list-item-title>
+                <v-list-item-title
+                  v-text="subItem.title"
+                  @click="$router.push({ name: subItem.target })"
+                  style="cursor: pointer;"
+                ></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
@@ -81,7 +84,7 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-            <div col cols="2" class="footerWrap">
+            <div col cols="2" class="footerWrap" @click="$router.push({ name: 'schedule' })">
               <div class="footerIcon">
                 <img src="./assets/image/일정.svg" />
               </div>
@@ -168,7 +171,7 @@ export default {
         title: "관리자 메뉴",
         target: "managerMenu",
         items: [
-          { title: "투표" },
+          { title: "투표", target: "voteMatchManager" },
           { title: "매치" },
           { title: "용병" },
           { title: "양도" },
@@ -182,8 +185,8 @@ export default {
         title: "팀 메뉴",
         items: [
           { title: "팀홈" },
-          { title: "투표" },
-          { title: "일정" },
+          { title: "투표", target: "voteMatch" },
+          { title: "일정", target: "schedule" },
           { title: "활동" },
           { title: "알림" }
         ]

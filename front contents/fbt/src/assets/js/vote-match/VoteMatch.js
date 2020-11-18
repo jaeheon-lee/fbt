@@ -1,8 +1,11 @@
-import VoteMatchBody from "@/components/VoteMatch/VoteMatchBody.vue";
+import VoteMatchList from "@/components/VoteMatch/VoteMatchList.vue";
 export default {
   name: "voteMatch",
   components: {
-    "vote-match-body": VoteMatchBody
+    "vote-match-list": VoteMatchList
+  },
+  props: {
+    isManager: Boolean
   },
   data() {
     return {
@@ -13,7 +16,8 @@ export default {
         email: "bioman2@gmail.com",
         teamId: 1,
         teamMemberId: "1-bioman2@gmail.com",
-        teamName: "왕십리FC"
+        teamName: "왕십리FC",
+        nickName: "nick2"
       }
     };
   },

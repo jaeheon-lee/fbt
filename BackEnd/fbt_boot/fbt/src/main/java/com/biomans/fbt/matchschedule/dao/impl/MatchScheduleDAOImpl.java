@@ -1,6 +1,7 @@
 package com.biomans.fbt.matchschedule.dao.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,8 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	
 	// S005: 등록된 팀 경기 일정 출력 
 	@Override
-	public MatchSchedule showMatchSchduleByTeam(SearchKey searchKey) throws SQLException {
-		return null;
+	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException {
+		return sqlSession.selectList(ns+"showMatchSchduleByTeamPeriod", searchKey);
 	}
 	
 	

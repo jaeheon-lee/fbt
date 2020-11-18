@@ -38,8 +38,28 @@
         </v-col>
       </v-row>
     </v-container>
-    <vote-match-body :is-end="isEnd"></vote-match-body>
+    <v-container fluid class="py-0 my-7 px-0 mx-0">
+      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5" v-if="!isEnd">
+        <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0 mb-2">
+          <span>진행중인 투표</span>
+          <v-divider id="divider-vote"> inset </v-divider>
+        </v-col>
+      </v-row>
+      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5" v-else>
+        <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0 mb-2">
+          <span>마감된 투표</span>
+          <v-divider id="divider-vote"> inset </v-divider>
+        </v-col>
+      </v-row>
+      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
+        <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
+          <!-- 각 투표 리스트 출력 부분 -->
+          <vote-match-list :isManager="isManager" :isEnd="isEnd"></vote-match-list>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 <style scroped src="@/assets/css/common/barButton.css"></style>
+<style scroped src="@/assets/css/vote-match/VoteMatch.css"></style>
 <script scoped src="@/assets/js/vote-match/VoteMatch.js"></script>

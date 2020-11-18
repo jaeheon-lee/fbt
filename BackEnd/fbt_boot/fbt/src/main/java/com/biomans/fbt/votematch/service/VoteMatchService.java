@@ -31,6 +31,10 @@ public interface VoteMatchService {
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
 	//V011 : 투표 결과 삭제
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
+	//V012-1
+	public List<VoteMatchResult> showVoteMatchResultByVote(String voteMatchId) throws SQLException;
 	//V013 : 지인 검색하기
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
+	//V014
+	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException;
 }

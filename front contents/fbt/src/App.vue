@@ -84,7 +84,12 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-            <div col cols="2" class="footerWrap" @click="$router.push({ name: 'schedule' })">
+            <div
+              col
+              cols="2"
+              class="footerWrap"
+              @click="$router.push({ name: 'schedule' })"
+            >
               <div class="footerIcon">
                 <img src="./assets/image/일정.svg" />
               </div>
@@ -172,10 +177,10 @@ export default {
         target: "managerMenu",
         items: [
           { title: "투표", target: "voteMatchManager" },
-          { title: "매치" },
+          { title: "매치", target: "search" },
           { title: "용병" },
           { title: "양도" },
-          { title: "일정" },
+          { title: "일정", target: "scheduleManager" },
           { title: "관리" }
         ]
       },

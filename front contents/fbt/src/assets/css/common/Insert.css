@@ -1,0 +1,19 @@
+#magnify i {
+  cursor: pointer;
+}
+
+.options {
+  background-color: #121212;
+}
+
+.before-selected {
+  color:rgb(255, 255, 255, 0.5);
+  vertical-align:middle;
+  text-align-last:center;
+}
+
+.after-selected {
+  color:#ffffff;
+  vertical-align:middle;
+  text-align-last:center;
+}

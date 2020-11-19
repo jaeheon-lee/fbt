@@ -19,6 +19,7 @@
 		<mapper resource="sql/vote-match-query.xml"/>
 		<mapper resource="sql/match-schedule-query.xml"/>
 		<mapper resource="sql/notice-query.xml"/>
+		<mapper resource="sql/search-query.xml"/>
 		
 	</mappers>
 </configuration>

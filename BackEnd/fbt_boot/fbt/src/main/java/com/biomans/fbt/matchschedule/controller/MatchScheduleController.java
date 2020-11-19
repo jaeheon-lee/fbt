@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +27,21 @@ public class MatchScheduleController {
 	@Autowired
 	private MatchScheduleService matchScheduleService;
 	
-	//S001 | S002: 일정 등록과 방금 등록된 일정 ID 가져오기
+	//S001: 일정 등록
 	@PostMapping("/match-schedule")
 	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {
 		try {
 			matchScheduleService.addMatchSchedule(matchSchedule);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	// S004: 일정 삭제
+	@DeleteMapping("/match-schedule/{matchScheduleId}")
+	public ResponseEntity deleteMatchSchedule(@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			matchScheduleService.deleteMatchSchedule(matchScheduleId);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -49,6 +60,17 @@ public class MatchScheduleController {
 			searchKey.setEndTime(endTime);
 			List<MatchSchedule> list = matchScheduleService.showMatchSchduleByTeamPeriod(searchKey);
 			return new ResponseEntity(list,HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//S005: 팀에 등록된 일정 기간 별로 불러오기
+	@GetMapping("/match-schedule/2/{matchScheduleId}")
+	public ResponseEntity showMatchScheduleById(@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleById(matchScheduleId);
+			return new ResponseEntity(matchSchedule,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}

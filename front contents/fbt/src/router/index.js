@@ -14,13 +14,16 @@ const routes = [
     name: "voteMatchManager",
 
     component: () =>
-      import(/* webpackChunkName: "voteManager" */ "../views/VoteMatchManager.vue")
+      import(
+        /* webpackChunkName: "voteManager" */ "../views/VoteMatchManager.vue"
+      )
   },
   {
     path: "/voteMatch",
     name: "voteMatch",
 
-    component: () => import(/* webpackChunkName: "vote" */ "../views/VoteMatch.vue")
+    component: () =>
+      import(/* webpackChunkName: "vote" */ "../views/VoteMatch.vue")
   },
   {
     path: "/",
@@ -58,6 +61,17 @@ const routes = [
     name: "schedule",
     component: () =>
       import(/* webpackChunkName: "privateMenu" */ "../views/Schedule.vue")
+  },
+  {
+    path: "/scheduleManager",
+    name: "scheduleManager",
+    component: () => import("../views/ScheduleManager.vue")
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: () => import("../views/Search.vue"),
+    props: true
   }
 ];
 

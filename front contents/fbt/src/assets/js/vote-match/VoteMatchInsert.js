@@ -128,12 +128,12 @@ export default {
     },
     // 받은 date값 변환
     dateFomatter(i, event) {
-      let datetime = this.$moment(event.target.value).format(
+      let dateTime = this.$moment(event.target.value).format(
         "YYYY-MM-DD HH:mm:ss"
       );
-      if (i == 0) this.matchSchedule.startTime = datetime;
+      if (i == 0) this.matchSchedule.startTime = dateTime;
       // 경기일시이면
-      else this.voteMatch.dueDate = datetime; // 마감일시면
+      else this.voteMatch.dueDate = dateTime; // 마감일시면
     },
 
     // T006: 팀 검색

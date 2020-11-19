@@ -162,11 +162,7 @@
           <!--투표 & 명단, 지인, 대기버튼-->
           <div>
             <!-- 투표 버튼 -->
-            <v-row
-              class="justify-center ma-0 pa-0 mt-4"
-              v-if="!isEnd"
-              :class="{ 'display-none': isEndedVote }"
-            >
+            <v-row class="justify-center ma-0 pa-0 mt-4" v-if="attendBtnActive">
               <v-btn
                 small
                 width="35px"
@@ -188,15 +184,14 @@
             <!-- 대기하기, 참석취소 버튼 -->
             <v-row
               class="justify-center ma-0 pa-0 mt-4"
-              v-if="!isEnd"
-              :class="{ 'display-none': !isEndedVote }"
+              v-if="selectedEvent && !attendBtnActive"
             >
               <v-btn
                 small
                 width="35px"
                 color="#AD1457"
                 class="mr-1"
-                :class="{ 'display-none': isAttended }"
+                v-if="waitBtnActive"
                 @click.stop="doVote(vote.voteMatchId, 2, i)"
                 >대기하기</v-btn
               >
@@ -205,7 +200,7 @@
                 width="75px"
                 color="#AD1457"
                 class="mr-1"
-                :class="{ 'display-none': !isAttended }"
+                v-if="cancelBtnActive"
                 @click.stop="doVote(vote.voteMatchId, 0, i)"
                 >참석취소하기</v-btn
               >
@@ -225,156 +220,67 @@
                 class="text-right"
                 v-if="vote.voteMatchSetting.friendEmp == 1"
               >
-                <span
-                  @click="openFriendList(i)"
-                  v-if="!isEnd"
-                  :class="{ 'display-none': isEndedVote }"
-                  >지인 초대하기</span
-                >
+                <span @click="openFriendList(i)">지인 초대하기</span>
               </v-col>
             </v-row>
           </div>
           <!-- 관리자 버튼 영역 -->
           <div v-if="isManager">
             <v-row class="ma-0 pa-0">
+              <v-col class="justify-center" v-if="vote.voteStatus == 0">
+                <v-btn
+                  elevation="3"
+                  width="100%"
+                  small
+                  class="justify-center"
+                  @click="endVote(vote.voteMatchId)"
+                  >투표마감하기</v-btn
+                >
+              </v-col>
+              <v-col class="justify-center" v-if="controlAdditionBtn(vote)">
+                <v-btn
+                  elevation="3"
+                  width="100%"
+                  small
+                  class="justify-center"
+                  @click="updateSetting('setWaiting', vote)"
+                  >추가인원받기</v-btn
+                >
+              </v-col>
               <v-col class="justify-center">
                 <v-btn
                   elevation="3"
                   width="100%"
-                  @click="endVote(vote.voteMatchId)"
-                  v-if="!isEnd"
-                  >투표마감하기</v-btn
+                  small
+                  @click="deleteVoteMatch(vote)"
+                  >경기취소하기</v-btn
                 >
               </v-col>
               <v-col class="justify-center">
-                <v-btn elevation="3" width="100%">용병구하기</v-btn>
+                <v-btn elevation="3" width="100%" small>용병찾기</v-btn>
+              </v-col>
+              <v-col class="justify-center" v-if="controlSearchBtn(vote)">
+                <v-btn
+                  elevation="3"
+                  width="100%"
+                  small
+                  @click="searchTeam(vote)"
+                  >상대팀찾기</v-btn
+                >
               </v-col>
               <v-col class="justify-center">
-                <v-btn elevation="3" width="100%">상대팀 구하기</v-btn>
-              </v-col>
-              <v-col class="justify-center">
-                <v-btn elevation="3" width="100%">양도하기</v-btn>
+                <v-btn
+                  elevation="3"
+                  width="100%"
+                  small
+                  v-if="controlAssignmentBtn(vote)"
+                  >양도하기</v-btn
+                >
               </v-col>
             </v-row>
           </div>
         </v-col>
       </v-row>
-      <!-- 명단 | 지인 초대 부분 -->
-      <div id="member-invite">
-        <!-- 칸 띄우기 -->
-        <v-row class="ma-0 pa-0">
-          <v-col cols="12"></v-col>
-        </v-row>
-        <v-divider></v-divider>
-        <!-- 명단 -->
-        <v-expand-transition>
-          <div
-            id="voted-Member-list"
-            v-if="activeMemberList == i && openType == 0"
-          >
-            <v-row class="text-center">
-              <v-col offset="2" cols="3">
-                아이디
-              </v-col>
-              <v-col cols="3">
-                이름
-              </v-col>
-              <v-col cols="2">
-                참/불
-              </v-col>
-              <v-col cols="1" class="ma-0 pa-0">
-                <i
-                  id="member-close"
-                  class="material-icons md-18"
-                  @click="closeMemberList()"
-                  >close</i
-                >
-              </v-col>
-            </v-row>
-            <v-divider></v-divider>
-            <v-row
-              v-for="(result, i) in vote.voteMatchResults"
-              :key="i"
-              class="text-center"
-            >
-              <v-col offset="2" cols="3">
-                {{ result.teamMember.user.email }}
-              </v-col>
-              <v-col cols="3">
-                {{ result.user.name }}
-              </v-col>
-              <v-col cols="2">
-                {{ result.attendance | attendanceFliter }}
-              </v-col>
-            </v-row>
-          </div>
-        </v-expand-transition>
-        <!-- 지인 초대 -->
-        <v-divider></v-divider>
-        <v-expand-transition>
-          <div
-            class="ml-6"
-            id="invite-friend"
-            v-if="activeFriendList == i && openType == 1"
-          >
-            <v-row>
-              <v-col offset="2" cols="7">
-                <v-text-field
-                  v-model="inputEmail"
-                  placeholder="검색할 이메일을 입력해주세요."
-                  @keydown.enter="searchFriend"
-                />
-              </v-col>
-              <v-col cols="1" class="ma-0 mt-9 pa-0">
-                <i class="material-icons md-18" @click.stop="searchFriend"
-                  >search</i
-                >
-              </v-col>
-              <v-col>
-                <v-col cols="1" class="ma-0 pa-0">
-                  <i
-                    id="member-close"
-                    class="material-icons md-18"
-                    @click="closeFriendList()"
-                    >close</i
-                  >
-                </v-col>
-              </v-col>
-            </v-row>
-            <v-row class="text-center">
-              <v-col offset="2" cols="3">
-                e-mail
-              </v-col>
-              <v-col cols="2">
-                이름
-              </v-col>
-            </v-row>
-            <v-row
-              id="friend-list"
-              class="text-center"
-              v-for="(friend, j) in friends"
-              :key="j"
-            >
-              <v-col offset="2" cols="3">
-                {{ friend.email }}
-              </v-col>
-              <v-col cols="2">
-                {{ friend.name }}
-              </v-col>
-              <v-col cols="1" class="ma-0 mb-3 pa-0 text-center">
-                <v-btn
-                  class="ma-0 ml-8 pa-0"
-                  elevation="2"
-                  color="#6920A3"
-                  @click="inviteFriend(friend.email, vote.voteMatchId)"
-                  style="font-size: 0.65em"
-                  >초대하기</v-btn
-                >
-              </v-col>
-            </v-row>
-          </div>
-        </v-expand-transition>
-      </div>
     </v-card>
   </div>
 </template>

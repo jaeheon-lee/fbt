@@ -17,7 +17,7 @@
                 width="100%"
                 class="mx-0 px-0"
                 @click="isEnd = false"
-                :class="{ 'btn-on': !isEnd }"
+                :class="{ 'btn-on-red': !isEnd }"
                 >투표중</v-btn
               >
             </v-col>
@@ -30,7 +30,7 @@
                 class="mx-0 px-0"
                 style="border:0px;"
                 @click="isEnd = true"
-                :class="{ 'btn-on': isEnd }"
+                :class="{ 'btn-on-red': isEnd }"
                 >투표완료</v-btn
               >
             </v-col>

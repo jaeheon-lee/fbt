@@ -81,11 +81,8 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	@Transactional
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException {
-		System.out.println(1);
 		voteMatchDAO.addVoteMatch(voteMatch);
-		System.out.println(2);
 		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
-		System.out.println(3);
 		
 	}
 
@@ -127,9 +124,9 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
 		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(matchScheduleId);
+		System.out.println("1: "+voteMatch );
 		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(matchScheduleId);
 		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
-		System.out.println(voteMatchResults);
 		// 각각의 정보를 삽입
 		if(num != null) {
 			voteMatch.setVotedNum(num.getVotedNum());

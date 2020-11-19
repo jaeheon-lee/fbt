@@ -32,10 +32,22 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		
 	}
 	
+	// S00N: 일정 삭제
+	@Override
+	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
+		sqlSession.delete(ns+"deleteMatchSchedule", matchScheduleId);
+	}
+	
 	// S005: 등록된 팀 경기 일정 출력 
 	@Override
 	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException {
 		return sqlSession.selectList(ns+"showMatchSchduleByTeamPeriod", searchKey);
+	}
+	
+	// S006
+	@Override
+	public MatchSchedule showMatchScheduleById(int matchScheduleId) throws SQLException {
+		return sqlSession.selectOne(ns+"showMatchScheduleById", matchScheduleId);
 	}
 	
 	

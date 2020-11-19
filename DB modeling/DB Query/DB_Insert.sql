@@ -72,12 +72,17 @@ insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, te
 insert into vote_match_result(vote_match_result_id,attendance, email, vote_match_id) values('1-1-bioman17@gmail.com', 1,'bioman17@gmail.com','1-1');
 insert into vote_match_result(vote_match_result_id,attendance, email, vote_match_id) values('1-1-bioman16@gmail.com', 1,'bioman16@gmail.com','1-1');
 insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, team_member_id) values('2-3-2-bioman6@gmail.com', 1,'2-3','2-bioman6@gmail.com');
+insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values('1-1-1-bioman3@gmail.com', 2,'1-1','1-bioman3@gmail.com');
 
 
 -- invite
 insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman16@gmail.com', '1-1');
 insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman17@gmail.com', '1-1');
 
+-- search
+INSERT INTO
+search(team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date)
+VALUES(1, 1, '1-bioman1@gmail.com', sysdate(), 3, 11, '2020-10-13 21:00');
 
 
 

@@ -28,10 +28,21 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
 		return matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
 	}
+	
+	// S00N: 일정 삭제
+	@Override
+	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
+		matchScheduleDAO.deleteMatchSchedule(matchScheduleId);
+	}
 
 	@Override
 	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException {
 		return matchScheduleDAO.showMatchSchduleByTeamPeriod(searchKey);
+	}
+
+	@Override
+	public MatchSchedule showMatchScheduleById(int matchScheduleId) throws SQLException {
+		return matchScheduleDAO.showMatchScheduleById(matchScheduleId);
 	}
 
 }

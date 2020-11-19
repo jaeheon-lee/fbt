@@ -17,7 +17,7 @@
                 large
                 width="100%"
                 class="mx-0 px-0"
-                :class="{ 'btn-on': !isInsert }"
+                :class="{ 'btn-on-red': !isInsert }"
                 @click="isInsert = false"
                 >투표현황</v-btn
               >
@@ -29,7 +29,7 @@
                 large
                 width="100%"
                 class="mx-0 px-0"
-                :class="{ 'btn-on': isInsert }"
+                :class="{ 'btn-on-red': isInsert }"
                 @click="isInsert = true"
                 >투표생성</v-btn
               >

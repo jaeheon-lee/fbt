@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SearchMapper">
+	<!-- M001: 매치 등록 -->
+	<insert id="addSearch" parameterType="search">
+		INSERT INTO
+		search(team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date, content)
+		VALUES(#{teamGiver.teamId}, #{matchSchedule.matchScheduleId}, #{teamMember.teamMemberId},
+		 sysdate(), #{waitingTime}, #{minNumber}, #{dueDate}, #{content})
+	</insert>
+	
+	
+	<!-- M002-1: 팀별 등록된 매치 출력 -->
+	<!-- RM -->
+	<resultMap type="search" id="searchRM">
+		<id column="search_id" property="searchId"/>
+		<result column="search_reg_date" property="searchRegDate"/>
+		<result column="waiting_time" property="waitingTime"/>
+		<result column="min_number" property="minNumber"/>
+		<result column="due_date" property="dueDate"/>
+		<association property="teamGiver" javaType="team">
+			<id column="team_id" property="teamId"/>
+			<result column="team_name" property="teamName"/>
+			<result column="emblem" property="emblem"/>
+		</association>
+		<association property="matchSchedule" javaType="matchSchedule">
+			<id column="match_schedule_id" property="matchScheduleId"/>
+			<result column="start_time" property="startTime"/>
+			<result column="duration" property="duration"/>
+			<result column="stadium_address" property="stadiumAddress"/>
+			<result column="stadium_name" property="stadiumName"/>
+			<result column="match_type" property="matchType"/>
+			<result column="stadium_shower" property="stadiumShower"/>
+			<result column="stadium_type" property="stadiumType"/>
+			<result column="end_time" property="endTime"/>
+			<result column="cost" property="cost"/>
+			<result column="stadium_parking" property="stadiumParking"/>
+		</association>
+		
+	</resultMap>
+	
+	<!-- 공통쿼리 -->
+	<sql id="showSearch">
+		SELECT
+		s.search_id, s.search_reg_date, s.waiting_time, s.min_number, s.due_date,
+		m.match_schedule_id, m.start_time, m.duration, m.stadium_address, m.stadium_name, 
+		m.match_type, m.stadium_shower, m.stadium_type,
+		date_add(m.start_time, interval m.duration hour) end_time,
+		m.cost, m.stadium_parking,
+		t.team_id, t.team_name, t.emblem
+		FROM search s
+		JOIN match_schedule m
+		ON s.match_schedule_id = m.match_schedule_id
+		JOIN team t
+		ON s.team_id_giver = t.team_id
+	</sql>
+	<!-- 쿼리 -->
+	<select id="showSearchByTeam" parameterType="integer" resultMap="searchRM">
+		<include refid="showSearch"/>
+		WHERE team_id_giver = #{value}
+		AND s.search_id NOT IN (
+			SELECT search_id FROM search_reservation
+		)
+	</select>
+	
+	<!-- M009: 매치글 삭제 -->
+	<delete id="deleteSearch" parameterType="integer">
+		DELETE FROM search WHERE search_id = #{value} 
+	</delete>
+	
+	<!-- M010: 매치글 끌어올리기 -->
+	<update id="renewSearch" parameterType="integer">
+		UPDATE search
+		SET search_reg_date = sysdate()
+		WHERE search_id = #{value}
+	</update>
+</mapper>

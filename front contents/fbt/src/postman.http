@@ -1,2 +1,2 @@
-GET http://localhost:7777/team/FC?homeTeamId=1
+GET http://localhost:7777/search/1/1
 Content-Type: application/json

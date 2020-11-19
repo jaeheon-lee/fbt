@@ -8,32 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.biomans.fbt.domain.Notice;
+import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 
 @SpringBootTest
-class NoticeTest {
+class CommonTest {
 	
-	final String ns = "NoticeMapper.";
+	final String ns = "SearchMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
 	void contextLoads() {
-		Notice notice = new Notice();
-		notice.setContent("경기 투표가 열렸습니다. 참여해주세요");
-		notice.setDate("2020-10-15 09:00");
-		Team team = new Team();
-		team.setTeamId(2);
-		notice.setTeam(team);
-		List<Integer> tmids = sqlSession.selectList("TeamMemberMapper.showAllMembers", 2);
-		System.out.println(tmids);
-		notice.setTeamMembers(tmids);
-		
-		
-		
-		sqlSession.insert(ns+"addNotice", notice);
+		List<Search> list = sqlSession.selectList(ns+"showSearchByTeam", 1);
+		System.out.println(list.size());
 	}
 
 }

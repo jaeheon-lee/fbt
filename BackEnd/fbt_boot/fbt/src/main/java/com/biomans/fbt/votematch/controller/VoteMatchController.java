@@ -93,7 +93,7 @@ public class VoteMatchController {
 		try {
 			//S001
 			MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
-			if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);;
+			if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);
 			matchScheduleService.addMatchSchedule(matchSchedule);
 			//S002
 			int teamId = voteMatch.getTeam().getTeamId();
@@ -104,7 +104,7 @@ public class VoteMatchController {
 			String voteMatchId = String.valueOf(teamId) + "-" + String.valueOf(matchScheduleId);
 			voteMatch.getMatchSchedule().setMatchScheduleId(matchScheduleId);
 			voteMatch.setVoteMatchId(voteMatchId);
-			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);;
+			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);
 			// 로직 실행
 			voteMatchService.addVoteMatchAndSetting(voteMatch);
 			return new ResponseEntity(HttpStatus.OK);
@@ -187,8 +187,10 @@ public class VoteMatchController {
 	public ResponseEntity showVoteMatchInfoByScheduleId(@PathVariable int matchScheduleId) throws SQLException {
 		try {
 			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(matchScheduleId);
+			System.out.println(voteMatch);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
 		}catch(RuntimeException e) {
+			System.out.println(e);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}

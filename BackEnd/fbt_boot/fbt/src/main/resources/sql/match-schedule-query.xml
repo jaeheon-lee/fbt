@@ -25,6 +25,13 @@
 		DESC limit 1;
 	</select>
 	
+	<!-- S004: 일정 삭제 -->
+	<delete id="deleteMatchSchedule" parameterType="integer">
+		DELETE
+		FROM match_schedule
+		WHERE match_schedule_id = #{value}
+	</delete>
+	
 	<!-- S005: 등록된 팀 경기 일정 기간 별 출력 -->
 	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultType="matchSchedule">
 		SELECT
@@ -33,5 +40,14 @@
 		FROM match_schedule
 		WHERE (home_team_id = #{teamId} OR away_team_id = #{teamId})
 		AND (start_time >= #{startTime} AND #{endTime} >= start_time)
+	</select>
+	
+	<!-- S006 -->
+	<select id="showMatchScheduleById" parameterType="integer" resultType="matchSchedule">
+		SELECT
+		match_schedule_id, stadium_name, stadium_address, match_type, cost,
+		start_time, duration, stadium_type, stadium_shower, stadium_parking
+		FROM match_schedule
+		WHERE match_schedule_id = #{value}
 	</select>
 </mapper>

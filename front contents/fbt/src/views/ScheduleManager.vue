@@ -6,7 +6,7 @@
           <!-- Page Label -->
           <v-row class="py-0 my-0 px-0 mx-5">
             <v-col cols="12" class="pa-0 ma-0 mb-2">
-              <span>팀 일정</span>
+              <span>팀 일정(관리자)</span>
               <v-divider style="border-color: #C4C4C4 !important;">
                 inset
               </v-divider>
@@ -15,7 +15,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <schedule-body></schedule-body>
+    <schedule-body :isManager="isManager"></schedule-body>
   </div>
 </template>
-<script scoped src="@/assets/js/schedule/Schedule.js"></script>
+<script scoped src="@/assets/js/schedule/ScheduleManager.js"></script>

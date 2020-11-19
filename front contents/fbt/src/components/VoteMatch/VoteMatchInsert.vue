@@ -534,4 +534,4 @@
   </div>
 </template>
 <script scroped src="@/assets/js/vote-match/VoteMatchInsert.js"></script>
-<style scoped src="@/assets/css/vote-match/VoteMatchInsert.css"></style>
+<style scoped src="@/assets/css/common/Insert.css"></style>

@@ -1,18 +1,13 @@
-import VoteMatchInsert from "@/components/VoteMatch/VoteMatchInsert.vue";
-import VoteMatch from "@/views/VoteMatch.vue";
+import ScheduleBody from "@/components/Schedule/ScheduleBody.vue";
 
 export default {
-  name: "vote-match-manager",
+  name: "schedule-manager",
   components: {
-    // eslint-disable-next-line prettier/prettier
-    'vote-match-insert': VoteMatchInsert,
-    "vote-match": VoteMatch
+    "schedule-body": ScheduleBody
   },
   data() {
     return {
-      // 투표 현황과 투표 생성 구분 변수 동시에 버튼에 색 입히기
-      isInsert: false,
-      // 관리자 계정일 때만 볼 수 있도록
+      // 관리자 선언 변수
       isManager: false,
 
       //로그인 변수 -- 임시 변수
@@ -27,9 +22,6 @@ export default {
   },
   created() {
     this.login();
-    this.isManager = true;
-  },
-  mounted() {
     this.isManager = true;
   },
   destroyed() {

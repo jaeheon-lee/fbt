@@ -3,13 +3,59 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="UserMapper">
+	<!-- U001 -->
 	<insert id="addUser" parameterType="user">
 		INSERT INTO
 		user(email, pass, name, phone_num, user_reg_date, recent_login,
-		 main_foot, position, api_key, height, weight, was_pro, gender, born_date)
+		 main_foot, position, height, weight, was_pro, gender, born_date, area, api_key, api_type)
 		VALUES(#{email}, #{pass}, #{name}, #{phoneNum}, sysdate(), sysdate(),
-		#{mainFoot},#{position},#{apiKey}, #{height}, #{weight}, #{wasPro},
-		#{gender}, #{bornDate})
+		#{mainFoot},#{position}, #{height}, #{weight}, #{wasPro},
+		#{gender}, #{bornDate}, #{area}, #{apiKey}, #{apiType})
 	</insert>
+	
+	<!-- U002 -->
+	<select id="checkDuple" parameterType="string" resultType="string">
+		SELECT
+		email
+		FROM user
+		WHERE email = #{value}
+	</select>
+	
+	<!-- U003 -->
+	<resultMap type="user" id="UserRM">
+		<id column="email" property="email"/>
+		<result column="image" property="image"/>
+		<result column="name" property="name"/>
+		<collection property="teamMembers" javaType="list" ofType="teamMember">
+			<id column="team_member_id" property="teamMemberId"/>
+			<result column="nick_name" property="nickName"/>
+			<association property="team" javaType="team">
+				<id column="team_id" property="teamId"/>
+				<result column="team_name" property="teamName"/>
+			</association>
+		</collection>
+	</resultMap>
+	<!-- U003-1 -->
+	<sql id="Login">
+		SELECT
+		u.email, u.image, u.name,
+		t.team_id, t.team_name,
+		tm.team_member_id, tm.nick_name
+		FROM user u
+		LEFT OUTER JOIN team_member tm
+		ON u.email = tm.email
+		LEFT OUTER JOIN team t
+		ON t.team_id = tm.team_id
+	</sql>
+	<select id="LoginByApi" parameterType="hashMap" resultMap="UserRM">
+		<include refid="Login"/>
+		WHERE u.api_type = #{apiType}
+		AND u.api_key = #{apiKey}
+	</select>
+	<select id="LoginByEmail" parameterType="hashMap" resultMap="UserRM">
+		<include refid="Login"/>
+		WHERE u.email = #{email}
+		AND u.pass = #{pass}
+	</select>
 
 </mapper>

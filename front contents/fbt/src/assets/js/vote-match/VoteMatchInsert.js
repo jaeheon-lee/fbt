@@ -1,10 +1,16 @@
 import axios from "axios";
 import MapVue from "@/components/Map/Map.vue";
+import KakaoLink from "@/components/Common/KakaoLink.vue";
 
 export default {
   name: "vote-match-insert",
+  props: {
+    matchScheduleProps: Object,
+    searchId: Number
+  },
   components: {
-    "map-vue": MapVue
+    "map-vue": MapVue,
+    "kakao-link": KakaoLink
   },
   data() {
     return {
@@ -30,7 +36,8 @@ export default {
         awayTeam: {
           teamId: null,
           teamName: null
-        }
+        },
+        searchId: null
       },
       // VoteMatch VO 받기 위한 정보
       voteMatch: {
@@ -94,14 +101,27 @@ export default {
 
       // 투표 기타 설정 관련 변수
 
+      // 카카오공유하기 관련 변수
+      dialogKakao: false,
+
       // 에러 | 로딩 변수
       submitting: false,
       errored: false
     };
   },
   created() {
-    this.insertInfoFromSession();
+    if (!this.matchScheduleProps) this.insertInfoFromSession();
+    if (this.matchScheduleProps) {
+      this.matchSchedule = this.matchScheduleProps;
+      this.targetStadium =
+        // eslint-disable-next-line prettier/prettier
+        this.matchSchedule.stadiumAddress + " " + this.matchSchedule.stadiumName;
+      // eslint-disable-next-line prettier/prettier
+        this.voteMatch.writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
+    }
   },
+  mounted() {},
+  computed: {},
   methods: {
     // Session 내용 중 Insert에 필요한 정보 받기
     insertInfoFromSession() {
@@ -177,10 +197,25 @@ export default {
       this.voteMatch.matchSchedule = this.matchSchedule;
       this.voteMatch.voteMatchSetting = this.voteMatchSetting;
       this.submitting = true;
+      let searchRes = null;
+      if (this.searchId) {
+        searchRes = {
+          searchId: this.searchId,
+          reservationStatus: 2,
+          teamTaker: {
+            teamId: this.matchSchedule.awayTeam.teamId
+          }
+        };
+      }
+      let voteMatchRes = {
+        voteMatch: this.voteMatch,
+        searchReservation: searchRes
+      };
       axios
-        .post("/vote-match", this.voteMatch)
+        .post("/vote-match", voteMatchRes)
         .then(() => {
           alert("등록이 완료됐습니다.");
+          this.dialogKakao = true;
         })
         .catch(() => {
           alert("등록에 실패했습니다.");
@@ -189,6 +224,10 @@ export default {
         .finally(() => {
           this.submitting = false;
         });
+    },
+    closeKaokao() {
+      this.dialogKakao = false;
+      this.$emit("close");
     }
   }
 };

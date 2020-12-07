@@ -62,16 +62,16 @@
 		t2.emblem away_emblem, t2.team_name away_team_name,
 		tm.total_num
 		FROM match_schedule m
-		JOIN vote_match v
+		LEFT OUTER JOIN vote_match v
 		ON m.match_schedule_id = v.match_schedule_id
-		JOIN(
+		LEFT OUTER JOIN(
 		SELECT 
 		team_id, count(team_member_id) total_num
 		FROM team_member
 		GROUP BY team_id
 		) tm
 		ON v.team_id = tm.team_id
-		JOIN vote_match_setting vs
+		LEFT OUTER JOIN vote_match_setting vs
 		ON vs.vote_match_id = v.vote_match_id
 		JOIN team t 
 		ON m.home_team_id = t.team_id
@@ -106,13 +106,13 @@
 	</select>
 	
 	<!-- V014 -->
-	<!-- 팀별 투표 관련 일정 | 팀 정보 -->
+	<!-- id 별 투표 관련 일정 | 팀 정보 -->
 	<select id="showVoteMatchInfoByScheduleId" parameterType="integer" resultMap="VoteMatchRM" >
 		<include refid="showVoteMatchInfo"/>
 		WHERE m.match_schedule_id = #{value}
 	</select>
 	
-	<!-- 팀별 투표의 인원 정보 -->
+	<!-- id별 투표의 인원 정보 -->
 	<select id="showVoteMatchNumByScheduleId" parameterType="integer" resultMap="VoteMatchRM">
 		<include refid="showVoteMatchNum"/>
 		WHERE v.match_schedule_id = #{value}
@@ -177,7 +177,15 @@
 	<!-- V008 : 투표 내용 수정 -->
 	<update id="updateVoteMatch" parameterType="voteMatch">
 		UPDATE vote_match
-		SET memo = #{memo}, due_date = #{dueDate}
+		SET
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="memo != null">
+				memo = #{memo},
+			</if> 
+			<if test="dueDate != null">
+				due_date = #{dueDate}
+			</if>
+		</trim>
 		WHERE vote_match_id = #{voteMatchId}
 	</update>
 	

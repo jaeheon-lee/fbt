@@ -9,10 +9,46 @@
 		VALUES(sysdate(), #{memberLevel}, #{regStatus}, #{team.teamId}, #{user.email}, #{nickName})
 	</insert>
 	
-	<select id="showAllMembers" parameterType="integer" resultType="integer">
-		SELECT team_member_id
-		FROM team_member
+	<!-- TM002: 팀원 출력 -->
+	<resultMap type="teamMember" id="teamMemberRM">
+		<id column="team_member_id" property="teamMemberId"/>
+		<result column="member_reg_date" property="memberRegDate"/>
+		<result column="member_level" property="memberLevel"/>
+		<result column="reg_status" property="regStatus"/>
+		<result column="nick_name" property="nickName"/>
+		<association property="user" javaType="user">
+			<id column="email" property="email"/>
+			<result column="name" property="name"/>
+		</association>
+	</resultMap>
+	<sql id="showMemberFactorBasic">
+		SELECT 
+		tm.team_member_id, tm.member_reg_date, tm.member_level, tm.reg_status, tm.nick_name,
+		u.email, u.name
+	</sql>
+	<sql id="showMemberJoinBasic">
+		From team_member tm
+		JOIN user u
+		ON tm.email = u.email
+	</sql>
+	<sql id="votedMemberByMatch">
+		JOIN vote_match_result vr
+		ON 	
+	</sql>
+	<!-- TM002-1: 팀별 팀원 출력 -->
+	<select id="showMembersByTeamId" parameterType="integer" resultType="integer" resultMap="teamMemberRM">
+		<include refid="showMemberFactorBasic"/>
+		<include refid="showMemberJoinBasic"/>
 		WHERE team_id = #{value}
+		AND tm.reg_status > 0
 	</select>
-
+	
+	<!-- TM002-2: 팀별, 이름별 팀원출력 -->
+	<select id="showMembersByTeamIdName" parameterType="hashMap" resultMap="teamMemberRM">
+		<include refid="showMemberFactorBasic"/>
+		<include refid="showMemberJoinBasic"/>
+		WHERE team_id = #{teamId}
+		AND u.name Like "%${name}%"
+		AND tm.reg_status > 0
+	</select>
 </mapper>

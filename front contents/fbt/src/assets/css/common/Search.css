@@ -1,0 +1,12 @@
+.filter-input {
+  display:inline-block;
+  text-align:center;
+  color:white;
+  border: 1px solid white;
+  border-radius: 5px;
+  height: 2em;
+}
+
+#tilde {
+  font-size: 14px;
+}

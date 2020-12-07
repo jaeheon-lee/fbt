@@ -11,11 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
+import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
+import com.biomans.fbt.search.dao.SearchDAO;
+import com.biomans.fbt.util.Attendance;
+import com.biomans.fbt.util.VoteMatchRes;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 import com.biomans.fbt.votematch.service.VoteMatchService;
 
@@ -23,6 +29,12 @@ import com.biomans.fbt.votematch.service.VoteMatchService;
 public class VoteMatchServiceImpl implements VoteMatchService {
 	@Autowired
 	private VoteMatchDAO voteMatchDAO;
+	
+	@Autowired
+	private MatchScheduleDAO matchScheduleDAO;
+	
+	@Autowired
+	private SearchDAO searchDAO;
 
 	@Override
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
@@ -49,13 +61,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 					voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
 				}
 			}
-			
-//			away팀이 미정인 경우 미정 결과 넣기
-			if(voteMatch1.getMatchSchedule().getAwayTeam() == null) {
-				Team awayTeam = new Team();
-				awayTeam.setTeamName("미정");
-				voteMatch1.getMatchSchedule().setAwayTeam(awayTeam);
-			}
 		}
 		return voteMatchList;
 	}
@@ -80,9 +85,36 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 
 	@Override
 	@Transactional
-	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException {
+	public void addVoteMatchAndSetting(VoteMatchRes voteMatchRes) throws SQLException {
+		VoteMatch voteMatch = voteMatchRes.getVoteMatch();
+		SearchReservation searchRes = voteMatchRes.getSearchReservation();
+		//S001
+		MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
+		if(matchSchedule.getMatchScheduleId() == 0) { //신규 투표 생성이라면
+			if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);
+			matchScheduleDAO.addMatchSchedule(matchSchedule);
+			//S002
+			int teamId = voteMatch.getTeam().getTeamId();
+			int matchScheduleId = matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
+			// voteMatchId 설정
+			String voteMatchId = String.valueOf(teamId) + "-" + String.valueOf(matchScheduleId);
+			voteMatch.getMatchSchedule().setMatchScheduleId(matchScheduleId);
+			voteMatch.setVoteMatchId(voteMatchId);
+			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);
+		} else { // 매칭을 통한 투표 생성이라면
+			// matchSchedule에서 상대팀으로 등록하지 않는다
+			// voteMatchId 설정2
+			int teamId = voteMatch.getMatchSchedule().getAwayTeam().getTeamId();
+			int matchScheduleId = voteMatch.getMatchSchedule().getMatchScheduleId();
+			String voteMatchId = String.valueOf(teamId) + "-" + String.valueOf(matchScheduleId);
+			voteMatch.getTeam().setTeamId(teamId);
+			voteMatch.setVoteMatchId(voteMatchId);
+			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);
+			searchDAO.updateResStatus(searchRes);
+		}
 		voteMatchDAO.addVoteMatch(voteMatch);
 		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
+		
 		
 	}
 
@@ -124,7 +156,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
 		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(matchScheduleId);
-		System.out.println("1: "+voteMatch );
 		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(matchScheduleId);
 		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
 		// 각각의 정보를 삽입
@@ -136,12 +167,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 			voteMatch.setTotalAttend(num.getAttendNum()+num.getFriendNum());
 		}
 		
-//		away팀이 미정인 경우 미정 결과 넣기
-		if(voteMatch.getMatchSchedule().getAwayTeam() == null) {
-			Team awayTeam = new Team();
-			awayTeam.setTeamName("미정");
-			voteMatch.getMatchSchedule().setAwayTeam(awayTeam);
-		}
 //		투표 인원 명단 정보 가공하기
 		for(VoteMatchResult voteMatchResult : voteMatchResults) {
 			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
@@ -155,6 +180,32 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	public List<VoteMatchResult> showVoteMatchResultByVote(String voteMatchId) throws SQLException {
 		return voteMatchDAO.showVoteMatchResultByVote(voteMatchId);
+	}
+	
+	//
+	//
+	public void checkMinNum(String voteMatchId) throws SQLException {
+		String[] arr = voteMatchId.split("-");
+		HashMap<String, String> con = new HashMap<String, String>();
+		con.put("voteMatchId", voteMatchId);
+		con.put("matchScheduleId", arr[1]);
+		con.put("takerTeamId", arr[0]);
+		Attendance attendance = searchDAO.checkMinNum(con);
+		if(attendance != null) {
+			int minNumber = attendance.getMinNumber();
+			int totalNumber = attendance.getTotalFriend() + attendance.getTotalMember();
+			int resStatus = attendance.getReservationStatus();
+			con.put("searchId", attendance.getSearchId()+"");
+			if(minNumber <= totalNumber && resStatus != -1) {
+				// 해당 신청 매치 완료
+				searchDAO.completeSearch(con);
+				// 나머지 신청 매치 실패
+				searchDAO.failSearch(con);
+				// 일정에서 awayTeam으로 등록
+				matchScheduleDAO.addAwayTeam(con);
+			}
+		}
+		
 	}
 
 }

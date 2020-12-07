@@ -9,6 +9,7 @@
             align="center"
             class="py-0 my-0 px-0 mx-0"
           >
+            <!-- 매치 등록: page = 1 -->
             <v-col cols="6" class="py-0 my-0 px-0 mx-0" justify="center">
               <v-btn
                 tile
@@ -21,6 +22,7 @@
                 >매치 등록</v-btn
               >
             </v-col>
+            <!-- 매치 검색: page = 2 -->
             <v-col cols="6" class="py-0 my-0 px-0 mx-0" justify="center">
               <v-btn
                 tile
@@ -41,6 +43,7 @@
             align="center"
             class="py-0 my-0 px-0 mx-0"
           >
+            <!-- 등록 매치 현황: page = 3 -->
             <v-col cols="6" class="py-0 my-0 px-0 mx-0" justify="center">
               <v-btn
                 tile
@@ -53,6 +56,7 @@
                 >등록 매치 현황</v-btn
               >
             </v-col>
+            <!-- 신청 매치 현황: page = 4 -->
             <v-col cols="6" class="py-0 my-0 px-0 mx-0" justify="center">
               <v-btn
                 tile
@@ -67,11 +71,12 @@
               >
             </v-col>
           </v-row>
+          <!-- 등록매치 5단계 버튼: page = 3 -->
           <v-row
             fluid
             justify="center"
             class="ma-0 mt-1 pa-0 text-center"
-            v-if="page > 2"
+            v-if="page == 3"
           >
             <v-col offset="1" cols="2" class="ma-0 pa-0">
               <v-btn
@@ -79,8 +84,8 @@
                 dark
                 width="100%"
                 class="ma-0 pa-0"
-                :class="{ 'btn-on-purple': stage == 1 }"
-                @click="stage = 1"
+                :class="{ 'btn-on-purple': registeredStage == 1 }"
+                @click="registeredStage = 1"
                 >매치중</v-btn
               >
             </v-col>
@@ -90,8 +95,8 @@
                 dark
                 width="100%"
                 class="ma-0 pa-0"
-                :class="{ 'btn-on-purple': stage == 2 }"
-                @click="stage = 2"
+                :class="{ 'btn-on-purple': registeredStage == 2 }"
+                @click="registeredStage = 2"
                 >인원파악신청</v-btn
               >
             </v-col>
@@ -101,8 +106,8 @@
                 dark
                 width="100%"
                 class="ma-0 pa-0"
-                :class="{ 'btn-on-purple': stage == 3 }"
-                @click="stage = 3"
+                :class="{ 'btn-on-purple': registeredStage == 3 }"
+                @click="registeredStage = 3"
                 >인원파악중</v-btn
               >
             </v-col>
@@ -112,8 +117,8 @@
                 dark
                 width="100%"
                 class="ma-0 pa-0"
-                :class="{ 'btn-on-purple': stage == 4 }"
-                @click="stage = 4"
+                :class="{ 'btn-on-purple': registeredStage == 4 }"
+                @click="registeredStage = 4"
                 >매치실패</v-btn
               >
             </v-col>
@@ -123,21 +128,85 @@
                 dark
                 width="100%"
                 class="ma-0 pa-0"
-                :class="{ 'btn-on-purple': stage == 5 }"
-                @click="stage = 5"
+                :class="{ 'btn-on-purple': registeredStage == 5 }"
+                @click="registeredStage = 5"
                 >매치완료</v-btn
               >
             </v-col>
           </v-row>
+          <!-- 등록 매치 5단계 버튼 끝 -->
+          <!-- 신청매치 5단계 버튼: page = 4 -->
+          <v-row
+            fluid
+            justify="center"
+            class="ma-0 mt-1 pa-0 text-center"
+            v-if="page == 4"
+          >
+            <v-col offset="1" cols="2" class="ma-0 pa-0">
+              <v-btn
+                tile
+                dark
+                width="100%"
+                class="ma-0 pa-0"
+                :class="{ 'btn-on-purple': appliedStage == 1 }"
+                @click="appliedStage = 1"
+                >신청</v-btn
+              >
+            </v-col>
+            <v-col cols="2" class="ma-0 pa-0">
+              <v-btn
+                tile
+                dark
+                width="100%"
+                class="ma-0 pa-0"
+                :class="{ 'btn-on-purple': appliedStage == 2 }"
+                @click="appliedStage = 2"
+                >인원파악중</v-btn
+              >
+            </v-col>
+            <v-col cols="2" class="ma-0 pa-0">
+              <v-btn
+                tile
+                dark
+                width="100%"
+                class="ma-0 pa-0"
+                :class="{ 'btn-on-purple': appliedStage == 3 }"
+                @click="appliedStage = 3"
+                >매치실패</v-btn
+              >
+            </v-col>
+            <v-col cols="2" class="ma-0 pa-0">
+              <v-btn
+                tile
+                dark
+                width="100%"
+                class="ma-0 pa-0"
+                :class="{ 'btn-on-purple': appliedStage == 4 }"
+                @click="appliedStage = 4"
+                >매치성공</v-btn
+              >
+            </v-col>
+          </v-row>
+          <!-- 신청 매치 5단계 버튼 끝 -->
         </v-col>
       </v-row>
     </v-container>
     <search-insert
       :matchScheduleId="matchScheduleId"
       v-if="page == 1"
+      @close="page = 3"
     ></search-insert>
-    <div v-if="page == 2">2</div>
-    <registered-search :stage="stage" v-if="page == 3"></registered-search>
+    <search-search v-if="page == 2"></search-search>
+    <registered-search
+      :registeredStage="registeredStage"
+      :appliedStage="null"
+      v-if="page == 3"
+    ></registered-search>
+    <applied-search
+      :registeredStage="null"
+      :appliedStage="appliedStage"
+      v-if="page == 4"
+    ></applied-search>
   </div>
 </template>
 <script scoped src="@/assets/js/search/Search.js"></script>

@@ -20,7 +20,8 @@
 		<mapper resource="sql/match-schedule-query.xml"/>
 		<mapper resource="sql/notice-query.xml"/>
 		<mapper resource="sql/search-query.xml"/>
-		
+		<mapper resource="sql/assignment-query.xml"/>
+		<mapper resource="sql/employ-query.xml"/>
 	</mappers>
 </configuration>
 

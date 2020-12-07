@@ -26,10 +26,10 @@ const routes = [
       import(/* webpackChunkName: "vote" */ "../views/VoteMatch.vue")
   },
   {
-    path: "/",
-    name: "login",
+    path: "/loginSignin",
+    name: "loginSignin",
     component: () =>
-      import(/* webpackChunkName: "login" */ "../views/Login.vue")
+      import(/* webpackChunkName: "login" */ "../views/LoginSignin.vue")
   },
   {
     path: "/team",
@@ -71,6 +71,54 @@ const routes = [
     path: "/search",
     name: "search",
     component: () => import("../views/Search.vue"),
+    props: true
+  },
+  {
+    path: "/voteMatchInsert",
+    name: "voteMatchInsert",
+    component: () => import("@/components/VoteMatch/VoteMatchInsert.vue"),
+    props: true
+  },
+  {
+    path: "/assign",
+    name: "assign",
+    component: () => import("@/views/Assign.vue"),
+    props: true
+  },
+  {
+    path: "/employManager",
+    name: "employManager",
+    component: () => import("@/views/EmployManager.vue"),
+    props: true
+  },
+  {
+    path: "/employ",
+    name: "employ",
+    component: () => import("@/views/Employ.vue"),
+    props: true
+  },
+  {
+    path: "/signin",
+    name: "signin",
+    component: () => import("@/views/Signin.vue"),
+    props: true
+  },
+  {
+    path: "/naver",
+    name: "callback-naver",
+    component: () => import("@/views/callback/Naver.vue"),
+    props: true
+  },
+  {
+    path: "/scheduleUser",
+    name: "scheduleUser",
+    component: () => import("@/views/ScheduleUser.vue"),
+    props: true
+  },
+  {
+    path: "/teamManage",
+    name: "teamManage",
+    component: () => import("@/views/TeamManage.vue"),
     props: true
   }
 ];

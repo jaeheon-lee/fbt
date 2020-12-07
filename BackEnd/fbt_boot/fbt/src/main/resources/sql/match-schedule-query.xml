@@ -32,7 +32,7 @@
 		WHERE match_schedule_id = #{value}
 	</delete>
 	
-	<!-- S005: 등록된 팀 경기 일정 기간 별 출력 -->
+	<!-- S005-1: 등록된 팀 경기 일정 기간 별 출력 -->
 	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultType="matchSchedule">
 		SELECT
 		match_schedule_id, start_time, match_type,
@@ -40,6 +40,32 @@
 		FROM match_schedule
 		WHERE (home_team_id = #{teamId} OR away_team_id = #{teamId})
 		AND (start_time >= #{startTime} AND #{endTime} >= start_time)
+	</select>
+	
+	<!-- S005-2: 등록된 개인 경기 일정 기간 별 출력 -->
+	<!-- 1. 자신이 속한 팀의 모든 경기 일정 -->
+	<select id="showMatchSchduleByUserPeriod" parameterType="hashMap" resultType="matchSchedule">
+		SELECT
+		distinct m.match_schedule_id, m.start_time, m.match_type
+		FROM team_member tm
+		JOIN team t
+		ON t.team_id = tm.team_id
+		JOIN match_schedule m
+		ON (m.home_team_id = t.team_id or m.away_team_id = t.team_id)
+		WHERE tm.email = #{email}
+		AND (start_time >= #{startTime} AND #{endTime} >= start_time)
+	</select>
+	<!-- 2. 용병으로 뛰고 있는 모든 경기 일정 -->
+	<select id="showMatchScheduleByEmployPeriod" parameterType="string" resultType="matchSchedule">
+		SELECT
+		m.match_schedule_id, m.start_time, m.match_type
+		FROM match_schedule m
+		JOIN employ e
+		ON e.match_schedule_id = m.match_schedule_id
+		JOIN employ_result er
+		ON e.employ_id = er.employ_id
+		WHERE er.email = #{value}
+		AND er.emp_result_status != -1
 	</select>
 	
 	<!-- S006 -->
@@ -50,4 +76,191 @@
 		FROM match_schedule
 		WHERE match_schedule_id = #{value}
 	</select>
+	
+	<!-- S007 -->
+	<!-- 참여 누른 맴버들 불러오기 -->
+	<select id="showAttendVotedMember" parameterType="string" resultType="teamMember">
+		SELECT 
+		tm.team_member_id, tm.nick_name
+		FROM vote_match_result vr
+		JOIN team_member tm
+		ON tm.team_member_id = vr.team_member_id
+		WHERE vote_match_id = #{voteMatchId}
+		AND attendance = 1
+		AND tm.team_member_id is not null
+	</select>
+	
+	<!-- S008 -->
+	<!-- 참여하기로 한 지인 불러오기 -->
+	<select id="showAttendVotedFriend" parameterType="string" resultType="user">
+		SELECT 
+		u.email, u.name
+		FROM vote_match_result vr
+		JOIN user u
+		ON u.email = vr.email
+		WHERE vote_match_id = #{voteMatchId}
+		AND attendance = 1
+		AND u.email is not null
+	</select>
+	<!-- 참여하기로 한 용병 불러오기 -->
+	<select id="showAcceptedEmploy" parameterType="integer" resultType="user">
+		SELECT 
+		u.email, u.name
+		FROM employ e
+		JOIN employ_result er
+		ON e.employ_id = er.employ_id
+		JOIN user u
+		ON u.email = er.email
+		WHERE e.match_schedule_id = #{value}
+	</select>
+	
+	<!-- S009 -->
+	<!-- entry 입력 -->
+	<insert id="addEntry" parameterType="entry">
+		INSERT INTO
+		entry(team_member_id, match_schedule_id, email, attendance, type, match_score, goal, assist)
+		VALUES(#{teamMember.teamMemberId}, #{matchSchedule.matchScheduleId}, #{user.email},
+		#{attendance}, #{type}, #{matchScore}, #{goal}, #{assist})
+	</insert>
+	<!-- matchResult 입력 -->
+	<insert id="addMatchResult" parameterType="matchResult">
+		INSERT INTO
+		match_result(isSet, home_result, away_result, home_score, away_score, match_schedule_id)
+		VALUES(#{isSet}, #{homeResult}, #{awayResult}, #{homeScore}, #{awayScore}, #{matchSchedule.matchScheduleId})
+	</insert>
+	<!-- empScore 입력 -->
+	<insert id="addEmpScore" parameterType="empScore">
+		INSERT INTO
+		emp_score(manner_promise, manner_contact, manner_rule, manner_body_fight, manner_slang, manner_smoking,
+		 manner_uniform, manner_payment, manner_arrangement, manner_referee, manner_tackle, 
+		 forward, middle, defence, match_schedule_id, team_giver_id, emp_email)
+		VALUE(#{mannerPromise},#{mannerContact},#{mannerRule},#{mannerBodyFight},#{mannerSlang},#{mannerSmoking},
+		#{mannerUniform},#{mannerPayment},#{mannerArrangement},#{mannerReferee},#{mannerTackle},
+		#{forward},#{middle},#{defence},#{matchSchedule.matchScheduleId},
+		#{teamGiver.teamId},#{user.email})
+	</insert>
+	<!-- teamScore 입력 -->
+	<insert id="addTeamScore" parameterType="teamScore">
+		INSERT INTO
+		team_score(manner_promise, manner_contact, manner_rule, manner_body_fight, manner_slang, manner_smoking, 
+		manner_uniform, manner_payment, manner_arrangement, manner_referee, manner_tackle,
+		 forward, middle, defence, team_taker_id, match_schedule_id, team_giver_id, emp_email)
+		VALUES(#{mannerPromise},#{mannerContact},#{mannerRule},#{mannerBodyFight},#{mannerSlang},#{mannerSmoking},
+		#{mannerUniform},#{mannerPayment},#{mannerArrangement},#{mannerReferee},#{mannerTackle},
+		#{forward},#{middle},#{defence},#{teamTaker.teamId},#{matchSchedule.matchScheduleId},
+		#{teamGiver.teamId},#{user.email})
+	</insert>
+	<!-- awayTeam 확인 -->
+	<select id="checkAwayTeam" parameterType="integer" resultType="integer">
+		SELECT 
+		ifnull(away_team_id, 0)
+		FROM match_schedule
+		WHERE match_schedule_id = #{value}
+	</select>
+	
+	<!-- S010 -->
+	<resultMap type="matchSchedule" id="matchScheduleRM">
+		<id column="match_schedule_id" property="matchScheduleId"/>
+		<result column="start_time" property="startTime"/>
+		<result column="match_type" property="matchType"/>
+		<result column="stadium_name" property="stadiumName"/>
+		<result column="duration" property="duration"/>
+		<result column="end_time" property="endTime"/>
+		<association property="homeTeam" javaType="team">
+			<id column="home_team_id" property="teamId"/>
+			<result column="home_emblem" property="emblem"/>
+			<result column="home_team_name" property="teamName"/>
+		</association>
+		<association property="awayTeam" javaType="team">
+			<id column="away_team_id" property="teamId"/>
+			<result column="away_emblem" property="emblem"/>
+			<result column="away_team_name" property="teamName"/>
+		</association>
+		<association property="matchResult" javaType="matchResult">
+			<result column="home_score" property="homeScore"/>
+			<result column="away_score" property="awayScore"/>
+		</association>
+		<collection property="entries" javaType="list" ofType="entry">
+			<id column="entry_id" property="entryId"/>
+			<result column="attendance" property="attendance"/>
+			<result column="type" property="type"/>
+			<association property="user" javaType="user">
+				<id column="email" property="email"/>
+			</association>
+			<association property="teamMember" javaType="teamMember">
+				<id column="team_member_id" property="teamMemberId"/>
+				<result column="nick_name" property="nickName"/>
+			</association>
+		</collection>
+		<collection property="teamScores" javaType="list" ofType="teamScore">
+			<result column="manner_promise" property="mannerPromise"/>
+			<result column="manner_contact" property="mannerContact"/>
+			<result column="manner_rule" property="mannerRule"/>
+			<result column="manner_body_fight" property="mannerBodyFight"/>
+			<result column="manner_slang" property="mannerSlang"/>
+			<result column="manner_smoking" property="mannerSmoking"/>
+			<result column="manner_uniform" property="mannerUniform"/>
+			<result column="manner_payment" property="mannerPayment"/>
+			<result column="manner_arrangement" property="mannerArrangement"/>
+			<result column="manner_referee" property="mannerReferee"/>
+			<result column="manner_tackle" property="mannerTackle"/>
+			<result column="forward" property="forward"/>
+			<result column="middle" property="middle"/>
+			<result column="defence" property="defence"/>
+			<association property="teamTaker" javaType="team">
+				<id column="team_taker_id" property="teamId"/>
+			</association>
+			<association property="teamGiver" javaType="team">
+				<id column="team_giver_id" property="teamId"/>
+				<result column="team_giver_name" property="teamName"/>
+			</association>
+			<association property="user" javaType="user">
+				<id column="emp_email" property="email"/>			
+			</association>
+		</collection>
+	</resultMap>
+	<select id="showMatchScheduleResult" parameterType="integer" resultMap="matchScheduleRM">
+		SELECT
+		m.match_schedule_id, m.start_time, m.match_type, m.stadium_name, m.duration,
+		date_add(m.start_time, interval m.duration hour) end_time,
+		t.team_id home_team_id, t.emblem home_emblem, t.team_name home_team_name,
+		t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name,
+		ent.entry_id, ent.email, ent.attendance, ent.type,
+		tm.team_member_id, tm.nick_name,
+		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
+		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
+		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
+		ts.defence, ts.emp_email, ts.team_taker_id,
+		t3.team_id team_giver_id, t3.team_name team_giver_name,
+		mr.home_score, mr.away_score
+		FROM match_schedule m
+		JOIN team t
+		ON t.team_id = m.home_team_id
+		LEFT OUTER JOIN team t2
+		ON t2.team_id = m.away_team_id
+		LEFT OUTER JOIN entry ent
+		ON ent.match_schedule_id = m.match_schedule_id
+		LEFT OUTER JOIN team_member tm
+		ON ent.team_member_id = tm.team_member_id
+		LEFT OUTER JOIN team_score ts
+		ON ts.match_schedule_id = m.match_schedule_id
+		LEFT OUTER JOIN team t3
+		ON t3.team_id = ts.team_giver_id
+		LEFT OUTER JOIN match_result mr
+		ON mr.match_schedule_id = m.match_schedule_id
+		WHERE m.match_schedule_id = #{value}
+	</select>
+	
+	<!-- :awayTeam 등록 -->
+	<update id="addAwayTeam" parameterType="hashMap">
+		UPDATE match_schedule
+		SET away_team_id = #{takerTeamId}
+		WHERE match_schedule_id = #{matchScheduleId}
+	</update>
+	<!-- :homeTeam 변경 -->
+	<update id="changeHomeTeam" parameterType="hashMap">
+		UPDATE match_schedule
+		SET home_team_id = #{takerTeamId}
+		WHERE match_schedule_id = #{matchScheduleId}
+	</update>
 </mapper>

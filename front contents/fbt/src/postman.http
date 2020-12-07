@@ -1,2 +1,2 @@
-GET http://localhost:7777/search/1/1
+GET http://localhost:7777/team/2/2/bioman7@gmail.com
 Content-Type: application/json

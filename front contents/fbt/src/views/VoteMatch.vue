@@ -54,7 +54,11 @@
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <!-- 각 투표 리스트 출력 부분 -->
-          <vote-match-list :isManager="isManager" :isEnd="isEnd"></vote-match-list>
+          <vote-match-list
+            :header="sendingHeader"
+            :isEnd="isEnd"
+            :votes="votes"
+          ></vote-match-list>
         </v-col>
       </v-row>
     </v-container>

@@ -1,5 +1,7 @@
 package com.biomans.fbt.domain;
 
+import java.util.List;
+
 public class User {
 	private String email;
 	private String pass;
@@ -14,13 +16,19 @@ public class User {
 	private int weight;
 	private int wasPro; //0=비선출, 1=선출
 	private int gender; //0=남자, 1= 여자
-	private String born_date;
+	private String bornDate;
+	private String area;
+	private String image;
+	private int apiType;
+	private ApiCategory apiCategory;
+	private List<TeamMember> teamMembers;
 	
 	public User() {}
 
 	public User(String email, String pass, String name, String phoneNum, String userRegDate, String recentLogin,
 			String mainFoot, String position, String apiKey, int height, int weight, int wasPro, int gender,
-			String born_date) {
+			String bornDate, String area, String image, int apiType, ApiCategory apiCategory,
+			List<TeamMember> teamMembers) {
 		super();
 		this.email = email;
 		this.pass = pass;
@@ -35,7 +43,12 @@ public class User {
 		this.weight = weight;
 		this.wasPro = wasPro;
 		this.gender = gender;
-		this.born_date = born_date;
+		this.bornDate = bornDate;
+		this.area = area;
+		this.image = image;
+		this.apiType = apiType;
+		this.apiCategory = apiCategory;
+		this.teamMembers = teamMembers;
 	}
 
 	public String getEmail() {
@@ -142,12 +155,52 @@ public class User {
 		this.gender = gender;
 	}
 
-	public String getBorn_date() {
-		return born_date;
+	public String getBornDate() {
+		return bornDate;
 	}
 
-	public void setBorn_date(String born_date) {
-		this.born_date = born_date;
+	public void setBornDate(String bornDate) {
+		this.bornDate = bornDate;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public int getApiType() {
+		return apiType;
+	}
+
+	public void setApi_type(int apiType) {
+		this.apiType = apiType;
+	}
+
+	public ApiCategory getApiCategory() {
+		return apiCategory;
+	}
+
+	public void setApiCategory(ApiCategory apiCategory) {
+		this.apiCategory = apiCategory;
+	}
+
+	public List<TeamMember> getTeamMembers() {
+		return teamMembers;
+	}
+
+	public void setTeamMembers(List<TeamMember> teamMembers) {
+		this.teamMembers = teamMembers;
 	}
 
 	@Override
@@ -155,8 +208,10 @@ public class User {
 		return "User [email=" + email + ", pass=" + pass + ", name=" + name + ", phoneNum=" + phoneNum
 				+ ", userRegDate=" + userRegDate + ", recentLogin=" + recentLogin + ", mainFoot=" + mainFoot
 				+ ", position=" + position + ", apiKey=" + apiKey + ", height=" + height + ", weight=" + weight
-				+ ", wasPro=" + wasPro + ", gender=" + gender + ", born_date=" + born_date + "]";
+				+ ", wasPro=" + wasPro + ", gender=" + gender + ", bornDate=" + bornDate + ", area=" + area + ", image="
+				+ image + ", apiType=" + apiType + ", apiCategory=" + apiCategory + ", teamMembers=" + teamMembers
+				+ "]";
 	}
-	
+
 	
 }

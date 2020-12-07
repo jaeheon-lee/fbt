@@ -15,10 +15,62 @@
 	<!-- T006: 팀 검색 -->
 	<select id="searchTeams" parameterType="hashMap" resultType="team">
 		SELECT 
-		team_name, team_id
+		team_name, team_id, emblem
 		FROM team
 		WHERE team_id != #{teamId}
 		AND team_name LIKE '%${teamName}%'
+	</select>
+	
+	<!-- TNNN: 자동완성을 위한 정보 가져오기 -->
+	<resultMap type="team" id="TeamInfoRM">
+		<id column="team_id" property="teamId"/>
+		<result column="team_name" property="teamName"/>
+		<result column="area" property="area"/>
+		<result column="uniform_color" property="uniformColor"/>
+		<result column="uniform_type" property="uniformType"/>
+		<result column="founding_date" property="foundingDate"/>
+		<collection property="teamMembers" javaType="list" ofType="teamMember">
+			<id column="team_member_id" property="teamMemberId"/>
+			<association property="user" javaType="user">
+				<id column="email" property="email"/>
+				<result column="phone_num" property="phoneNum"/>
+			</association>
+		</collection>
+		<collection property="teamScores" javaType="list" ofType="teamScore">
+			<result column="manner_promise" property="mannerPromise"/>
+			<result column="manner_contact" property="mannerContact"/>
+			<result column="manner_rule" property="mannerRule"/>
+			<result column="manner_body_fight" property="mannerBodyFight"/>
+			<result column="manner_slang" property="mannerSlang"/>
+			<result column="manner_smoking" property="mannerSmoking"/>
+			<result column="manner_uniform" property="mannerUniform"/>
+			<result column="manner_payment" property="mannerPayment"/>
+			<result column="manner_arrangement" property="mannerArrangement"/>
+			<result column="manner_referee" property="mannerReferee"/>
+			<result column="manner_tackle" property="mannerTackle"/>
+			<result column="forward" property="forward"/>
+			<result column="middle" property="middle"/>
+			<result column="defence" property="defence"/>
+		</collection>
+	</resultMap>
+	<select id="showTeamInfoForAutoWrite" parameterType="hashMap" resultMap="TeamInfoRM">
+		SELECT
+		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type, t.founding_date,
+		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
+		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
+		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
+		ts.defence,
+		tm.team_member_id,
+		u.email, u.phone_num
+		FROM team t
+		LEFT OUTER join team_score ts
+		ON t.team_id = ts.team_taker_id
+		JOIN team_member tm
+		ON t.team_id = tm.team_id 
+		JOIN user u
+		ON u.email = tm.email
+		WHERE t.team_id = #{teamId}
+		AND u.email = #{email}
 	</select>
 	
 </mapper>

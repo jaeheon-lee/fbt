@@ -1,5 +1,7 @@
 package com.biomans.fbt.domain;
 
+import java.util.List;
+
 public class MatchSchedule {
 	private int matchScheduleId;
 	private String startTime;
@@ -19,13 +21,21 @@ public class MatchSchedule {
 	private String matchType;
 	private Team homeTeam;
 	private Team awayTeam;
+	private VoteMatch voteMatch;
+	private Search search;
+	private Assignment assignment;
+	private Employ employ;
+	private MatchResult matchResult;
+	private List<Entry> entries;
+	private List<TeamScore> teamScores;
 	
 	public MatchSchedule() {}
 
 	public MatchSchedule(int matchScheduleId, String startTime, String endTime, int duration, int cost, String writer,
 			String regDate, String content, String stadiumName, String stadiumType, String stadiumAddress,
 			double stadiumX, double stadiumY, int stadiumParking, int stadiumShower, String matchType, Team homeTeam,
-			Team awayTeam) {
+			Team awayTeam, VoteMatch voteMatch, Search search, Assignment assignment, Employ employ,
+			MatchResult matchResult, List<Entry> entries, List<TeamScore> teamScores) {
 		super();
 		this.matchScheduleId = matchScheduleId;
 		this.startTime = startTime;
@@ -45,6 +55,13 @@ public class MatchSchedule {
 		this.matchType = matchType;
 		this.homeTeam = homeTeam;
 		this.awayTeam = awayTeam;
+		this.voteMatch = voteMatch;
+		this.search = search;
+		this.assignment = assignment;
+		this.employ = employ;
+		this.matchResult = matchResult;
+		this.entries = entries;
+		this.teamScores = teamScores;
 	}
 
 	public int getMatchScheduleId() {
@@ -191,6 +208,62 @@ public class MatchSchedule {
 		this.awayTeam = awayTeam;
 	}
 
+	public VoteMatch getVoteMatch() {
+		return voteMatch;
+	}
+
+	public void setVoteMatch(VoteMatch voteMatch) {
+		this.voteMatch = voteMatch;
+	}
+
+	public Search getSearch() {
+		return search;
+	}
+
+	public void setSearch(Search search) {
+		this.search = search;
+	}
+
+	public Assignment getAssignment() {
+		return assignment;
+	}
+
+	public void setAssignment(Assignment assignment) {
+		this.assignment = assignment;
+	}
+
+	public Employ getEmploy() {
+		return employ;
+	}
+
+	public void setEmploy(Employ employ) {
+		this.employ = employ;
+	}
+
+	public MatchResult getMatchResult() {
+		return matchResult;
+	}
+
+	public void setMatchResult(MatchResult matchResult) {
+		this.matchResult = matchResult;
+	}
+
+	public List<Entry> getEntries() {
+		return entries;
+	}
+
+	public void setEntries(List<Entry> entries) {
+		this.entries = entries;
+	}
+
+	public List<TeamScore> getTeamScores() {
+		return teamScores;
+	}
+
+	public void setTeamScores(List<TeamScore> teamScores) {
+		this.teamScores = teamScores;
+	}
+
 	@Override
 	public String toString() {
 		return "MatchSchedule [matchScheduleId=" + matchScheduleId + ", startTime=" + startTime + ", endTime=" + endTime
@@ -198,6 +271,10 @@ public class MatchSchedule {
 				+ ", content=" + content + ", stadiumName=" + stadiumName + ", stadiumType=" + stadiumType
 				+ ", stadiumAddress=" + stadiumAddress + ", stadiumX=" + stadiumX + ", stadiumY=" + stadiumY
 				+ ", stadiumParking=" + stadiumParking + ", stadiumShower=" + stadiumShower + ", matchType=" + matchType
-				+ ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + "]";
+				+ ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", voteMatch=" + voteMatch + ", search="
+				+ search + ", assignment=" + assignment + ", employ=" + employ + ", matchResult=" + matchResult
+				+ ", entries=" + entries + ", teamScores=" + teamScores + "]";
 	}
+
+	
 }

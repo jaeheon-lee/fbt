@@ -1,6 +1,6 @@
 package com.biomans.fbt.domain;
 
-public class TeamMember extends User {
+public class TeamMember {
 	private String teamMemberId;
 	private String memberRegDate;
 	private int memberLevel;
@@ -15,8 +15,6 @@ public class TeamMember extends User {
 			String mainFoot, String position, String apiKey, int height, int weight, int wasPro, int gender,
 			String born_date, String teamMemberId, String memberRegDate, int memberLevel, int regStatus, String nickName,
 			Team team, User user) {
-		super(email, pass, name, phoneNum, userRegDate, recentLogin, mainFoot, position, apiKey, height, weight, wasPro, gender,
-				born_date);
 		this.teamMemberId = teamMemberId;
 		this.memberRegDate = memberRegDate;
 		this.memberLevel = memberLevel;

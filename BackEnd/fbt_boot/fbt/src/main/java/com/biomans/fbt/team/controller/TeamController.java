@@ -37,4 +37,19 @@ public class TeamController {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
+	
+	//TN
+	@GetMapping("/team/2/{teamId}/{email}")
+	public ResponseEntity showTeamInfoForAutoWrite(@PathVariable String teamId,
+			@PathVariable String email) throws SQLException {
+		try {
+			HashMap<String, String> searchCon = new HashMap<String, String>();
+			searchCon.put("email", email);
+			searchCon.put("teamId", teamId);
+			Team team = teamService.showTeamInfoForAutoWrite(searchCon);
+			return new ResponseEntity(team, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
 }

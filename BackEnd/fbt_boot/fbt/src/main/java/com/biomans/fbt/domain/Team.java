@@ -1,5 +1,7 @@
 package com.biomans.fbt.domain;
 
+import java.util.List;
+
 public class Team {
 	private int teamId;
 	private String teamName;
@@ -12,11 +14,16 @@ public class Team {
 	private String teamRegDate;
 	private String account;
 	private String bank;
-	
+	private List<TeamScore> teamScores;
+	private List<TeamMember> teamMembers;
+	private double teamManner;
+	private double teamAbility;
+
 	public Team() {}
 
 	public Team(int teamId, String teamName, String emblem, String area, String stadiumInfo, String uniformColor,
-			int uniformType, String foundingDate, String teamRegDate, String account, String bank) {
+			int uniformType, String foundingDate, String teamRegDate, String account, String bank,
+			List<TeamScore> teamScores, List<TeamMember> teamMembers, double teamManner, double teamAbility) {
 		super();
 		this.teamId = teamId;
 		this.teamName = teamName;
@@ -29,6 +36,10 @@ public class Team {
 		this.teamRegDate = teamRegDate;
 		this.account = account;
 		this.bank = bank;
+		this.teamScores = teamScores;
+		this.teamMembers = teamMembers;
+		this.teamManner = teamManner;
+		this.teamAbility = teamAbility;
 	}
 
 	public int getTeamId() {
@@ -119,11 +130,46 @@ public class Team {
 		this.bank = bank;
 	}
 
+	public List<TeamScore> getTeamScores() {
+		return teamScores;
+	}
+
+	public void setTeamScores(List<TeamScore> teamScores) {
+		this.teamScores = teamScores;
+	}
+
+	public List<TeamMember> getTeamMembers() {
+		return teamMembers;
+	}
+
+	public void setTeamMembers(List<TeamMember> teamMembers) {
+		this.teamMembers = teamMembers;
+	}
+
+	public double getTeamManner() {
+		return teamManner;
+	}
+
+	public void setTeamManner(double teamManner) {
+		this.teamManner = teamManner;
+	}
+
+	public double getTeamAbility() {
+		return teamAbility;
+	}
+
+	public void setTeamAbility(double teamAbility) {
+		this.teamAbility = teamAbility;
+	}
+
 	@Override
 	public String toString() {
 		return "Team [teamId=" + teamId + ", teamName=" + teamName + ", emblem=" + emblem + ", area=" + area
 				+ ", stadiumInfo=" + stadiumInfo + ", uniformColor=" + uniformColor + ", uniformType=" + uniformType
 				+ ", foundingDate=" + foundingDate + ", teamRegDate=" + teamRegDate + ", account=" + account + ", bank="
-				+ bank + "]";
+				+ bank + ", teamScores=" + teamScores + ", teamMembers=" + teamMembers + ", teamManner=" + teamManner
+				+ ", teamAbility=" + teamAbility + "]";
 	}
+
+			
 }

@@ -38,7 +38,10 @@
         </v-col>
       </v-row>
     </v-container>
-    <vote-match-insert v-if="isInsert"></vote-match-insert>
+    <vote-match-insert
+      v-if="isInsert"
+      @close="isInsert = false"
+    ></vote-match-insert>
     <vote-match :isManager="isManager" v-else></vote-match>
   </div>
 </template>

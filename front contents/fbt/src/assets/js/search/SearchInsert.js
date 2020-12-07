@@ -1,6 +1,7 @@
 // import axios from "axios";
 import MapVue from "@/components/Map/Map.vue";
 import Axios from "axios";
+import NaverLink from "@/components/Common/NaverLink.vue";
 
 export default {
   name: "search-insert",
@@ -8,7 +9,8 @@ export default {
     matchScheduleId: Number
   },
   components: {
-    "map-vue": MapVue
+    "map-vue": MapVue,
+    "naver-link": NaverLink
   },
   data() {
     return {
@@ -40,7 +42,8 @@ export default {
           awayTeam: {
             teamId: null,
             teamName: null
-          }
+          },
+          voteMatches: []
         },
         teamMember: {
           teamMemberId: null
@@ -72,7 +75,10 @@ export default {
       // 경기장 주차 관련 변수
       parkingSelected: false, //Class 적용 여부 결정
       // 직접 등록이면 일정등록까지 한다
-      isDirect: true
+      isDirect: true,
+
+      // 네이버 공유 관련 변수
+      dialogNaver: false
     };
   },
   mounted() {
@@ -190,6 +196,7 @@ export default {
         .post("/search", this.search)
         .then(() => {
           alert("매치등록이 완료됐습니다.");
+          this.dialogNaver = true;
         })
         .catch(() => {
           alert("매치등록에 실패했습니다.");
@@ -198,6 +205,10 @@ export default {
         .finally(() => {
 
         })
+    },
+    closeNaver() {
+      this.dialogNaver = false;
+      this.$emit("close");
     },
     // 불러왔을 때, Class 변수 true
     selectedOn() {

@@ -21,16 +21,10 @@ export default {
     };
   },
   created() {
-    this.login();
     this.isManager = true;
   },
   destroyed() {
     this.isManager = false;
   },
-  methods: {
-    // 로그인 -- 임시 메소드
-    login() {
-      sessionStorage.setItem("userInfo", JSON.stringify(this.userInfo));
-    }
-  }
+  methods: {}
 };

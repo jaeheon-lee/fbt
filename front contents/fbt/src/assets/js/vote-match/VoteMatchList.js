@@ -1,16 +1,23 @@
 import axios from "axios";
+import KakaoLink from "@/components/Common/KakaoLink.vue";
+
 export default {
   name: "voteMatchList",
   props: {
+    // 어느 부모페이지에서 왔는지
+    header: String,
+    // From VoteMatch
     isEnd: Boolean,
     isManager: Boolean,
-    selectedEvent: Object,
-    selectedOpen: Boolean
+    // From ScheduleBody & VoteMatch
+    votes: Array
+  },
+  components: {
+    "kakao-link": KakaoLink
   },
   data() {
     return {
       // 투표 변수
-      votes: [],
       voteMatchResults: [],
 
       // 상세 정보 관련 변수
@@ -32,32 +39,38 @@ export default {
       //관리자 버튼 관련 변수
       additionBtnActive: false, // 추가인원받기 버튼
 
+      //일정에서 정보 보기할 때 투표 관련 창을 숨기는 변수
+      isOnlySchedule: false, // true면 투표 관련된 UI를 숨긴다.
+
+      // 경기참여명단 관련 변수
+      activeAttendList: null,
+
+      // 받은 점수 관련 변수
+      activeScoreList: null,
+
+      // 카카오 공유하기 관련 변수
+      dialogKakao: null,
+      sendingVote: null,
+
       //기본 변수
       errored: false,
       loading: true
     };
   },
-  mounted() {
-    this.refresh();
-  },
+  mounted() {},
   computed: {
     votes2: function() {
       return this.votes;
     }
   },
   watch: {
-    // 투표 진행 중 or 마감을 눌렀을 때 해당 리스트 출력
+    // 진행 중, 마감으로 각각 넘어갈 때 상세보기 창이 열려 있으면 창 닫기
     isEnd: function() {
-      this.showVoteInfo();
       this.activeDetail = null;
-    },
-    selectedOpen: function() {
-      if (this.selectedOpen == true) this.showVoteInfoBySchedueId();
-      this.votes = [];
     }
   },
   methods: {
-    /* ------------------ 공통 메소드 --------------------------*/
+    // ========================== 버튼 눌렀을 때 메소드 ===============================//
     // 투표하기 (생성, 수정, 대기) V002 | V003
     doVote(voteMatchId, result) {
       let voteMatchResult = {
@@ -100,15 +113,17 @@ export default {
         });
     },
     // 투표 마감하기 V007
-    endVote(voteMatchId) {
+    endVote(vote) {
       let voteMatch = {
         voteMatchId: null
       };
-      voteMatch.voteMatchId = voteMatchId;
+      voteMatch.voteMatchId = vote.voteMatchId;
       axios
         .put("/vote-match/1", voteMatch)
         .then(() => {
           alert("투표가 마감됐습니다.");
+          this.sendingVote = vote;
+          this.dialogKakao = true;
         })
         .catch(() => {
           alert("투표 마감에 실패했습니다.");
@@ -210,22 +225,60 @@ export default {
           alert("취소에 실패했습니다.");
         })
         .finally(() => {});
-      // 창 닫기
-      this.$emit("close", vote.matchSchedule.matchScheduleId);
     },
     // 새로고침
     refresh() {
-      if (this.selectedEvent) this.showVoteInfoBySchedueId();
-      else this.showVoteInfo();
+      this.$parent.showVoteInfo();
     },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
-      if (team.emblem) {
+      if (team) {
         return require("@/assets/image/emblem/" + team.emblem);
       } else {
         return require("@/assets/image/emblem/emptyFC.png");
       }
     },
+    // 매칭 등록으로 넘어가기
+    moveToRegister(vote, i) {
+      const router = this.$router;
+      let name = "";
+      // 용병, 상대팀, 양도 등록페이지로 넘어가기
+      switch (i) {
+        case 0:
+          name = "employ";
+          break;
+        case 1:
+          name = "search";
+          break;
+        case 2:
+          name = "assign";
+          break;
+      }
+      router.push({
+        name: name,
+        params: {
+          menu: 1, // 등록페이지 인덱스
+          matchScheduleId: vote.matchSchedule.matchScheduleId // 불러오기할 때 필요한 것
+        }
+      });
+    },
+    // 이메일, 닉네임으로 구분
+    getAttendName(entry) {
+      if (entry.user) {
+        return entry.user.email;
+      } else {
+        return entry.teamMember.nickName;
+      }
+    },
+    // 점수 부여한 사람 이메일, 팀명으로 출력
+    getGiverName(teamScore) {
+      if (teamScore.teamGiver) {
+        return teamScore.teamGiver.teamName;
+      } else {
+        return teamScore.user.email;
+      }
+    },
+    // ========================== 창 컨트롤 메소드===============================//
     // 상세정보 창 여닫기
     openDetail(i) {
       if (this.activeDetail == i) this.activeDetail = null;
@@ -239,6 +292,22 @@ export default {
         if (this.activeFriendList == i) this.activeFriendList = null; // 명단도 열려 있다면 명단 닫기
         this.activeMemberList = i;
         this.openType = 0;
+      }
+    },
+    // 참여명단보기 창 여닫기
+    openAttendList(i) {
+      if (this.activeAttendList == i) this.activeAttendList = null;
+      // 명단이 열려있다면 명단 닫기
+      else {
+        this.activeAttendList = i;
+      }
+    },
+    // 받은점수보기 창 여닫기
+    openScoreList(i) {
+      if (this.activeScoreList == i) this.activeScoreList = null;
+      // 명단이 열려있다면 명단 닫기
+      else {
+        this.activeScoreList = i;
       }
     },
     closeMemberList() {
@@ -257,6 +326,74 @@ export default {
     closeFriendList() {
       this.activeFriendList = null;
     },
+    closeKaokao() {
+      this.dialogKakao = false;
+      this.$emit("close");
+    },
+    // ========================== 버튼 컨트롤 메소드===============================//
+    // 스케줄 페이지에서 참불 버튼 관리
+    controlAttendBtnOnSchedule(vote) {
+      //1. 투표 마감날이 지나면 표시 하지 않는다.
+      let today = new Date();
+      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
+      if (vote.dueDate < today) return false;
+
+      //2. 투표가 마감 되면 표시 하지 않는다.
+      if (vote.voteStatus == 1) return false;
+      else return true;
+    },
+    // 대기, 참석취소 버튼 관리
+    controlWaitBtn(vote) {
+      // 1. 투표 마감날 전 또는 경기 시작시간 지나면 표시하지 않는다.
+      let today = new Date();
+      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
+      if (vote.dueDate > today || vote.matchSchedule.startTime < today)
+        return false;
+
+      //2. 다음 로직 따른다
+      // eslint-disable-next-line prettier/prettier
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
+      // 로그인한 사람이 투표했는지, 했으면 해당 인덱스를 안 했으면 -1 리턴
+      let index = vote.voteMatchResults
+        .map(x => x.teamMember.teamMemberId)
+        .indexOf(teamMemberId);
+      // 참석을 눌렀는지
+      let attendance = -1;
+      if (index != -1) attendance = vote.voteMatchResults[index].attendance;
+      if (vote.voteMatchSetting.waiting == true && attendance != 1) {
+        // 대기 허용이고 참석을 누르지 않았다면 대기 버튼 출력
+        return true;
+      } else {
+        // 대기 불용이거나 참석을 누르지 않았다면 대기 버튼 숨기기
+        return false;
+      }
+    },
+    controlCancelBtn(vote) {
+      //1.
+      let today = new Date();
+      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
+      if (vote.dueDate > today || vote.matchSchedule.startTime < today)
+        return false;
+
+      //2. 다음 로직을 따른다
+      // eslint-disable-next-line prettier/prettier
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
+      // 로그인한 사람이 투표했는지, 했으면 해당 인덱스를 안 했으면 -1 리턴
+      let index = vote.voteMatchResults
+        .map(x => x.teamMember.teamMemberId)
+        .indexOf(teamMemberId);
+      // 참석을 눌렀는지
+      let attendance = -1;
+      if (index != -1) attendance = vote.voteMatchResults[index].attendance;
+      // 이미 투표 & 참석=>  취소 가능
+      if (attendance == 1) {
+        return true;
+      } else {
+        // 아니면 취소 불가
+        return false;
+      }
+    },
+    //추가인원받기 버튼 조절 메소드
     controlAdditionBtn(vote) {
       let cancelNumber = vote.voteMatchSetting.cancelNumber;
       let totalAttend = vote.totalAttend;
@@ -275,8 +412,8 @@ export default {
       let totalAttend = vote.totalAttend;
       let awayTeamId = vote.matchSchedule.awayTeam.teamId;
       // eslint-disable-next-line prettier/prettier
-      if (vote.voteStatus == 1 && totalAttend < cancelNumber && awayTeamId == 0){
-        // 마감되고 목표인원 도달하지 않았을 때 + 상대팀이 없을 때
+      if (vote.voteStatus == 0 && totalAttend < cancelNumber && awayTeamId == 0){
+        // 마감되지 않고 목표인원 도달하지 않았을 때 + 상대팀이 없을 때
         return true;
       } else {
         return false;
@@ -296,124 +433,43 @@ export default {
         return false;
       }
     },
-    // 매칭 등록으로 넘어가기
-    searchTeam(vote) {
-      const router = this.$router;
-      router.push({
-        name: "search",
-        params: {
-          menu: 1,
-          matchScheduleId: vote.matchSchedule.matchScheduleId
-        }
-      });
-    },
-    /* 투표 페이지 관련 메소드 -------------------------------------------*/
-    // 팀별 투표 출력 (V001)
-    showVoteInfo() {
-      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
-      let voteStatus = 0;
-      if (this.isEnd) voteStatus = 1; // 진행이냐 마감에 따라 다르게 출력하기
-      // 진행이냐 마감이냐에 따라 참불 버튼 조절
-      this.controlAttendBtnOnVote();
-      // 진행이냐 마감 & isFriendEmp 여부에 따라 지인투표 버튼 조절
-      axios
-        .get("/vote-match/1/" + teamId + "?voteStatus=" + voteStatus)
-        .then(response => {
-          this.votes = response.data;
-        })
-        .catch(() => {
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-
-    // 투표 페이지에서 진행이냐 마감이냐에 따라 참불 버튼 조절
-    controlAttendBtnOnVote() {
-      if (this.isEnd) this.attendBtnActive = false;
-      // 마김이면 안 보이기
-      else this.attendBtnActive = true; // 진행이면 보이기
-    },
-    /* ----------------------- 일정 페이지 관련 메소드 ------------------------------- */
-    // 스케쥴Id별 투표 출력(V014, V015)
-    showVoteInfoBySchedueId() {
-      let matchScheduleId = this.selectedEvent.matchScheduleId;
-      console.log("id: " + matchScheduleId);
-      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo"))
-        .teamMemberId;
-      axios
-        .get("/vote-match/2/" + matchScheduleId)
-        .then(response => {
-          if (this.votes.length > 0) this.votes = []; // 이미 있으면 없애기
-          this.votes.push(response.data);
-          let vote = this.votes[0];
-          console.log(vote);
-          // 참불 버튼 관리
-          this.controlAttendBtnOnSchedule(vote);
-          // 대기, 취소 버튼 관리
-          for (let i = 0; i < vote.voteMatchResults.length; i++) {
-            this.controlWaitBtn(vote, teamMemberId, i);
-            this.controlCancelBtn(vote, teamMemberId, i);
-          }
-        })
-        .catch(() => {
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    // 스케줄 페이지에서 참불 버튼 관리
-    controlAttendBtnOnSchedule(vote) {
-      if (vote.voteStatus == 1) this.attendBtnActive = false;
-      else this.attendBtnActive = true;
-    },
-    // 대기, 참석취소 버튼 관리
-    controlWaitBtn(vote, teamMemberId, i) {
-      if (vote.voteMatchSetting.waiting == true) {
-        // 대기 허용이면 대기 버튼 출력
-        this.waitBtnActive = true;
-        if (
-          teamMemberId == vote.voteMatchResults[i].teamMember.teamMemberId &&
-          vote.voteMatchResults[i].attendance == 1
-        ) {
-          // 단, 이미 참석을 눌렀으면 대기 버튼 숨기기
-          this.waitBtnActive = false;
-        }
-      } else {
-        // 대기 불용이면 대기 버튼 숨기기
-        this.waitBtnActive = false;
-      }
-    },
-    controlCancelBtn(vote, teamMemberId, i) {
-      if (
-        // 이미 투표 & 참석=>  취소 가능
-        teamMemberId == vote.voteMatchResults[i].teamMember.teamMemberId &&
-        vote.voteMatchResults[i].attendance == 1
-      ) {
-        this.cancelBtnActive = true;
-      } else {
-        // 아니면 취소 불가
-        this.cancelBtnActive = false;
-      }
+    // 경기 시작 시기에 따라 버튼 조절 메소드
+    controlManagerBtnByPeriod(vote) {
+      let today = new Date();
+      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
+      //1. 경기 시작 전이면 대안 버튼들을 출력한다
+      if (vote.matchSchedule.startTime > today) return true;
+      //2. 아니면 숨긴다.
+      else return false;
     }
+    /* 투표 페이지 관련 메소드 -------------------------------------------*/
   },
   filters: {
     extrackSecond(value) {
-      return value.slice(0, 16);
+      if (value) {
+        return value.slice(0, 16);
+      }
     },
     showOnlyTime(value) {
       return value.slice(11, 16);
     },
     showMatchType(value) {
       let matchType = "축구";
-      if (value < 11) matchType = "풋살";
+      if (value.split(":")[0] < 11) matchType = "풋살";
       return value + " " + matchType + " 경기";
     },
     isEmp(value) {
-      if (value.empDueDate) return "용병 경기";
-      else return "팀 경기";
+      if (value) {
+        if (value.empDueDate) return "용병 경기";
+        else return "팀 경기";
+      }
+    },
+    showAwayTeamName(value) {
+      if (value) {
+        return value.teamName;
+      } else {
+        return "미정";
+      }
     },
     showParking(value) {
       if (value == 1) return "주차가능";
@@ -428,6 +484,62 @@ export default {
         return "불";
       } else {
         return "대기";
+      }
+    },
+    // ================== 경기 참여 명단 ============================//
+    countTotalNum(entries) {
+      return entries.length;
+    },
+    countAttendNum(entries) {
+      return entries.filter(entry => entry.attendance == 2).length;
+    },
+    countLateNum(entries) {
+      return entries.filter(entry => entry.attendance == 1).length;
+    },
+    countAbsentNum(entries) {
+      return entries.filter(entry => entry.attendance == 0).length;
+    },
+    countMemberNum(entries) {
+      return entries.filter(entry => entry.type == 0).length;
+    },
+    countFriendNum(entries) {
+      return entries.filter(entry => entry.type == 1).length;
+    },
+    countEmpNum(entries) {
+      return entries.filter(entry => entry.type == 2).length;
+    },
+    entryTypeFilter(value) {
+      switch (value) {
+        case 0:
+          return "팀원";
+        case 1:
+          return "지인";
+        case 2:
+          return "용병";
+      }
+    },
+    entryAttendFilter(value) {
+      switch (value) {
+        case 0:
+          return "결석";
+        case 1:
+          return "지각";
+        case 2:
+          return "출석";
+      }
+    },
+    // ======================= 받은 점수 =========================//
+    showTeamScore(value) {
+      if (value < 2) {
+        return "하하";
+      } else if (value < 4) {
+        return "중하";
+      } else if (value < 6) {
+        return "중중";
+      } else if (value < 8) {
+        return "중상";
+      } else {
+        return "상상";
       }
     }
   }

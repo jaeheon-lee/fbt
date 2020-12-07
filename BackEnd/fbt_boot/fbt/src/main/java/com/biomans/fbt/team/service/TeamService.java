@@ -9,4 +9,6 @@ import com.biomans.fbt.domain.Team;
 public interface TeamService {
 	//T006: 팀 검색
 	public List<Team> searchTeams(HashMap<String, String> searchCon) throws SQLException;
+	//TNN :
+	public Team showTeamInfoForAutoWrite(HashMap<String, String> searchCon) throws SQLException;
 }

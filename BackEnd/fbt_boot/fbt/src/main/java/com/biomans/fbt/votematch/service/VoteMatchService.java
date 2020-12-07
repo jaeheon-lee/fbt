@@ -9,6 +9,7 @@ import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
+import com.biomans.fbt.util.VoteMatchRes;
 
 public interface VoteMatchService {
 	//V001 : 투표 정보 출력
@@ -20,7 +21,7 @@ public interface VoteMatchService {
 	//V004 : 지인 초청
 	public void inviteFriend(Invite invite) throws SQLException;
 	//V005 | V006 : 투표 생성 & 설정 등록
-	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException;
+	public void addVoteMatchAndSetting(VoteMatchRes voteMatchRes) throws SQLException;
 	//V007 : 투표 마감
 	public void endVoteMatch(VoteMatch voteMatch) throws SQLException;
 	//V008 : 투표 내용 수정
@@ -37,4 +38,6 @@ public interface VoteMatchService {
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
 	//V014
 	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException;
+	//
+	public void checkMinNum(String voteMatchId) throws SQLException;
 }

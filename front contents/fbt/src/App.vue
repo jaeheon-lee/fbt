@@ -3,24 +3,8 @@
     <div style="height:100%">
       <!-- 네비게이션 -->
       <v-navigation-drawer v-model="drawer" app>
-        <v-card height="64" @click="$router.push({ name: 'home' })">
-          <v-list-item height="64" link align-center>
-            <v-list-item height="64" justify-center pa-0>
-              <v-list-item-avatar>
-                <v-img src="./assets/image/손흥민.jpg"></v-img>
-              </v-list-item-avatar>
-              <v-list-item-content pa-0>
-                <v-list-item-title
-                  class="title"
-                  style="font-family:nexon!important"
-                  >손흥민</v-list-item-title
-                >
-                <v-list-item-subtitle>ggapdol2@gmail.com</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-          </v-list-item>
-        </v-card>
+        <login-banner v-if="!userInfo"></login-banner>
+        <profile-banner :userInfo="userInfo" v-else></profile-banner>
         <v-list dense>
           <v-list-group
             v-for="item in items"
@@ -43,7 +27,8 @@
               <v-list-item-content>
                 <v-list-item-title
                   v-text="subItem.title"
-                  @click="$router.push({ name: subItem.target })"
+                  @click="moveOrSet(item, subItem)"
+                  :class="teamClass(item, subItem)"
                   style="cursor: pointer;"
                 ></v-list-item-title>
               </v-list-item-content>
@@ -51,6 +36,8 @@
           </v-list-group>
         </v-list>
       </v-navigation-drawer>
+      <!-- 네비게이션 끝 -->
+      <!-- 헤더 -->
       <v-app-bar app color="#3D195B" dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>FootBall Together</v-toolbar-title>
@@ -58,7 +45,8 @@
       <v-main style="background-color:#34373a;height:100%;">
         <router-view></router-view>
       </v-main>
-
+      <!-- 헤더 끝 -->
+      <!-- 풋터 -->
       <v-footer app class="pa-0 mx-0">
         <v-container pa-0 mx-0 fluid>
           <v-row justify="center" class="ma-0">
@@ -130,6 +118,7 @@
           </v-row>
         </v-container>
       </v-footer>
+      <!-- 풋터  끝 -->
     </div>
   </v-app>
 </template>
@@ -137,12 +126,20 @@
 <style scoped src="./assets/css/footer.css"></style>
 
 <script>
+import ProfileBanner from "@/components/Main/ProfileBanner.vue";
+import LoginBanner from "@/components/Main/LoginBanner.vue";
 export default {
   name: "app",
   props: {
     source: String
   },
+  components: {
+    "profile-banner": ProfileBanner,
+    "login-banner": LoginBanner
+  },
   data: () => ({
+    // 로그인 관련 변수
+    userInfo: null,
     icons: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
     drawer: null,
     user: null,
@@ -156,20 +153,13 @@ export default {
       { title: "Click Me 2" }
     ],
     offset: true,
+    // 네이게이션 관련 변수
     items: [
       {
         action: "sports_soccer",
         target: "team",
         title: "팀 선택",
-        items: [
-          {
-            title: "FC 답십리"
-          },
-          {
-            title: "FC 왕십리"
-          },
-          { title: "FC 신답" }
-        ]
+        items: []
       },
       {
         action: "receipt_long",
@@ -178,10 +168,10 @@ export default {
         items: [
           { title: "투표", target: "voteMatchManager" },
           { title: "매치", target: "search" },
-          { title: "용병" },
-          { title: "양도" },
+          { title: "용병", target: "employManager" },
+          { title: "양도", target: "assign" },
           { title: "일정", target: "scheduleManager" },
-          { title: "관리" }
+          { title: "관리", target: "teamManage" }
         ]
       },
       {
@@ -202,19 +192,85 @@ export default {
         target: "privateMenu",
         items: [
           { title: "홈" },
-          { title: "개인 전체일정" },
+          { title: "개인 전체일정", target: "scheduleUser" },
           { title: "팀 찾기" },
           { title: "팀 만들기" },
-          { title: "용병" },
+          { title: "용병", target: "employ" },
           { title: "전체 알림" },
           { title: "개인정보" }
         ]
       }
     ]
   }),
-  mount() {
-    alert("1");
+  mounted() {
+    let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    if (userInfo) {
+      // SessionStorage로부터 userInfo 담기
+      this.userInfo = userInfo;
+      // 팀 목록 삽입
+      let teams = this.userInfo.teams;
+      if (teams) {
+        for (let i = 0; i < teams.length; i++) {
+          this.items[0].items.push({
+            title: teams[i].teamName,
+            teamId: teams[i].teamId,
+            teamMemberId: teams[i].teamMemberId,
+            nickName: teams[i].nickName,
+            index: i
+          });
+        }
+        // 팀 선택 기본 값: 첫 번째
+        this.userInfo.teamId = teams[0].teamId;
+        this.userInfo.teamMemberId = teams[0].teamMemberId;
+        this.userInfo.nickName = teams[0].nickName;
+        this.userInfo.teamName = teams[0].teamName;
+        sessionStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+      }
+    } else {
+      this.userInfo = null;
+    }
   },
-  methods: {}
+  methods: {
+    // 페이지 이동인지 팀세팅인지 가이드하는 메소드
+    moveOrSet(item, subItem) {
+      if (item.target == "team") {
+        this.setTeam(subItem);
+      } else {
+        this.movePage(subItem);
+      }
+    },
+    // 페이지 이동 메소드
+    movePage(subItem) {
+      this.$router.push({ name: subItem.target });
+    },
+    // 팀 세팅 메소드
+    setTeam(subItem) {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      userInfo.teamId = subItem.teamId;
+      userInfo.teamMemberId = subItem.teamMemberId;
+      userInfo.nickName = subItem.nickName;
+      userInfo.teamName = subItem.title;
+      sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+      this.$router.push("/").catch(error => {
+        if (error.name == "NavigationDuplicated") {
+          location.reload();
+        }
+      });
+    },
+    // 팀 선택 시 클래스 바인딩
+    teamClass(item, subItem) {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      if (userInfo != null) {
+        if (item.target == "team" && subItem.teamId == userInfo.teamId) {
+          return "teamChosen";
+        }
+      }
+    }
+  }
 };
 </script>
+<style scoped>
+.teamChosen {
+  opacity: 0.5;
+}
+</style>

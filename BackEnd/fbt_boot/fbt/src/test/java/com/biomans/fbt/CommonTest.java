@@ -1,5 +1,11 @@
 package com.biomans.fbt;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -7,23 +13,33 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.biomans.fbt.domain.Assignment;
+import com.biomans.fbt.domain.Employ;
+import com.biomans.fbt.domain.MatchResult;
+import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
+import com.biomans.fbt.domain.User;
+import com.biomans.fbt.util.Filter;
 
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "SearchMapper.";
+	final String ns = "UserMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
-	void contextLoads() {
-		List<Search> list = sqlSession.selectList(ns+"showSearchByTeam", 1);
-		System.out.println(list.size());
+	void contextLoads() throws ParseException {
+		HashMap<String, String> searchCon = new HashMap<String, String>();
+		searchCon.put("apiKey", "11");
+		searchCon.put("apiType", "1");
+		User user = sqlSession.selectOne(ns+"LoginByApi", searchCon);
+		System.out.println(user);
+		
 	}
 
 }

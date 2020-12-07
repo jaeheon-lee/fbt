@@ -530,6 +530,13 @@
           </v-row>
         </v-col>
       </v-row>
+      <v-dialog v-model="dialogKakao">
+        <kakao-link
+          :dialogKakao="dialogKakao"
+          :voteMatch="voteMatch"
+          @close="closeKaokao"
+        ></kakao-link>
+      </v-dialog>
     </v-container>
   </div>
 </template>

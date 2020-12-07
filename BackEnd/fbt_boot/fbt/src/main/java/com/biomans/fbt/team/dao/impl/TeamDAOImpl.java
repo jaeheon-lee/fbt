@@ -24,4 +24,10 @@ public class TeamDAOImpl implements TeamDAO{
 		return sqlSession.selectList(ns+"searchTeams", searchCon);
 	}
 	
+	//TNN :
+	@Override
+	public Team showTeamInfoForAutoWrite(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectOne(ns+"showTeamInfoForAutoWrite", searchCon);
+	}
+	
 }

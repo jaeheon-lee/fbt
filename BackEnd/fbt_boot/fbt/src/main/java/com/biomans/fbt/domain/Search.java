@@ -1,5 +1,7 @@
 package com.biomans.fbt.domain;
 
+import java.util.ArrayList;
+
 public class Search {
 	private int searchId;
 	private Team teamGiver;
@@ -10,11 +12,13 @@ public class Search {
 	private int minNumber;
 	private String dueDate;
 	private String content;
+	private ArrayList<SearchReservation> searchReservations;
 	
 	public Search() {}
 
 	public Search(int searchId, Team teamGiver, MatchSchedule matchSchedule, TeamMember teamMember,
-			String searchRegDate, int waitingTime, int minNumber, String dueDate, String content) {
+			String searchRegDate, int waitingTime, int minNumber, String dueDate, String content,
+			ArrayList<SearchReservation> searchReservations) {
 		super();
 		this.searchId = searchId;
 		this.teamGiver = teamGiver;
@@ -25,6 +29,7 @@ public class Search {
 		this.minNumber = minNumber;
 		this.dueDate = dueDate;
 		this.content = content;
+		this.searchReservations = searchReservations;
 	}
 
 	public int getSearchId() {
@@ -99,11 +104,22 @@ public class Search {
 		this.content = content;
 	}
 
+	public ArrayList<SearchReservation> getSearchReservations() {
+		return searchReservations;
+	}
+
+	public void setSearchReservations(ArrayList<SearchReservation> searchReservations) {
+		this.searchReservations = searchReservations;
+	}
+
 	@Override
 	public String toString() {
 		return "Search [searchId=" + searchId + ", teamGiver=" + teamGiver + ", matchSchedule=" + matchSchedule
 				+ ", teamMember=" + teamMember + ", searchRegDate=" + searchRegDate + ", waitingTime=" + waitingTime
-				+ ", minNumber=" + minNumber + ", dueDate=" + dueDate + ", content=" + content + "]";
+				+ ", minNumber=" + minNumber + ", dueDate=" + dueDate + ", content=" + content + ", searchReservations="
+				+ searchReservations + "]";
 	}
+
+	
 	
 }

@@ -1,0 +1,24 @@
+.score {
+  width: 5%;
+  color:white;
+  border-bottom: 1px solid white;
+}
+
+.table-select {
+  color:white;
+  border-bottom: 1px solid white;
+}
+
+.options {
+  background-color: #121212;
+}
+
+.table-input {
+  width: 50%;
+  color:white;
+  border-bottom: 1px solid white;
+}
+
+.display-none {
+  display: none;
+}

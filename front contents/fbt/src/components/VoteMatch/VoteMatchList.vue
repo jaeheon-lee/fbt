@@ -11,7 +11,7 @@
       <!-- 마감일시 -->
       <v-row class="ma-0 pa-0">
         <v-col cols="12" class="text-left" style="font-size: 0.75em">
-          <span>투표 마감일시 : {{ vote.dueDate | extrackSecond }}</span>
+          <span>투표 마감일시 : {{ vote.dueDate | extractSecond }}</span>
         </v-col>
       </v-row>
       <!-- 기본 정보 -->
@@ -183,7 +183,7 @@
               width="35px"
               color="#AD1457"
               class="mr-1"
-              @click.stop="doVote(vote.voteMatchId, 1, i)"
+              @click.stop="doVote(vote, 1)"
               >참 석</v-btn
             >
             <v-btn
@@ -191,7 +191,7 @@
               width="35px"
               color="rgba(235, 255, 0,0.7)"
               class="ml-1"
-              @click.stop="doVote(vote.voteMatchId, 0, i)"
+              @click.stop="doVote(vote, 0)"
               >불참석</v-btn
             >
           </v-row>
@@ -207,7 +207,7 @@
               color="#AD1457"
               class="mr-1"
               v-if="controlWaitBtn(vote)"
-              @click.stop="doVote(vote.voteMatchId, 2, i)"
+              @click.stop="doVote(vote, 2)"
               >대기하기</v-btn
             >
             <v-btn
@@ -216,7 +216,7 @@
               color="#AD1457"
               class="mr-1"
               v-if="controlCancelBtn(vote)"
-              @click.stop="doVote(vote.voteMatchId, 0, i)"
+              @click.stop="doVote(vote, 0)"
               >참석취소하기</v-btn
             >
           </v-row>
@@ -522,64 +522,60 @@
       <!-- 관리자 버튼 영역 -->
       <v-row v-if="header.slice(-7, header.length) == 'Manager'">
         <v-col offset="2" cols="8">
-          <v-row class="ma-0 pa-0" v-if="controlManagerBtnByPeriod(vote)">
-            <v-col class="justify-center" v-if="vote.voteStatus == 0">
-              <v-btn
-                elevation="3"
-                width="100%"
-                small
-                class="justify-center"
-                @click="endVote(vote)"
-                >투표마감하기</v-btn
-              >
-            </v-col>
-            <v-col class="justify-center" v-if="controlAdditionBtn(vote)">
-              <v-btn
-                elevation="3"
-                width="100%"
-                small
-                class="justify-center"
-                @click="updateSetting('setWaiting', vote)"
-                >추가인원받기</v-btn
-              >
-            </v-col>
-            <v-col class="justify-center">
-              <v-btn
-                elevation="3"
-                width="100%"
-                small
-                @click="deleteVoteMatch(vote)"
-                >경기취소하기</v-btn
-              >
-            </v-col>
-            <v-col class="justify-center">
-              <v-btn
-                elevation="3"
-                width="100%"
-                small
-                @click="moveToRegister(vote, 0)"
-                >용병찾기</v-btn
-              >
-            </v-col>
-            <v-col class="justify-center" v-if="controlSearchBtn(vote)">
-              <v-btn
-                elevation="3"
-                width="100%"
-                small
-                @click="moveToRegister(vote, 1)"
-                >상대팀찾기</v-btn
-              >
-            </v-col>
-            <v-col class="justify-center">
-              <v-btn
-                elevation="3"
-                width="100%"
-                small
-                @click="moveToRegister(vote, 2)"
-                v-if="controlAssignmentBtn(vote)"
-                >양도하기</v-btn
-              >
-            </v-col>
+          <v-row justify="center" class="ma-0 pa-0">
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="endVote(vote)"
+              v-if="vote.voteStatus == 0"
+              >투표마감하기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="updateSetting('setWaiting', vote)"
+              v-if="controlAdditionBtn(vote)"
+              >추가인원받기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="deleteVoteMatch(vote)"
+              >경기취소하기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="moveToRegister(vote, 0)"
+              v-if="controlEmployBtn(vote)"
+              >용병찾기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="moveToRegister(vote, 1)"
+              v-if="controlSearchBtn(vote)"
+              >상대팀찾기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="moveToRegister(vote, 2)"
+              v-if="controlAssignmentBtn(vote)"
+              >양도하기</v-btn
+            >
           </v-row>
         </v-col>
       </v-row>

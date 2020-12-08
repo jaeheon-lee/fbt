@@ -66,45 +66,42 @@ values('6', '2020-12-12 07:51:00', '0', '0', 'nick1', '2020-11-27 07:52:20', '�
 
 -- vote_match
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES('1-1', '2020-10-14 21:00','늦지 마시오', 1, sysdate(), '왕십리FC 구단주', 1, 1);
+VALUES(1, '2020-10-14 21:00','늦지 마시오', 1, sysdate(), '왕십리FC 구단주', 1, 1);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES('1-2', '2020-12-21 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 2);
+VALUES(2, '2020-12-21 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 2);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES('2-3', '2020-12-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 2, 3);
+VALUES(3, '2020-12-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 2, 3);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES('1-4', '2020-12-27 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 1, 4);
+VALUES(4, '2020-12-27 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 1, 4);
 
 -- vote_match_setting
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
-VALUES('1-1', 0, 11, 1, 1, 1, -1, -1, null, -1, -1, null, 10, -1, -1);
+VALUES(1, 0, 11, 1, 1, 1, -1, -1, null, -1, -1, null, 10, -1, -1);
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
-VALUES('1-2', 0, 11, 1, 1, 0, -1, -1, null, -1, -1, null, 10, -1, -1);
+VALUES(2, 0, 11, 1, 1, 0, -1, -1, null, -1, -1, null, 10, -1, -1);
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
-VALUES('2-3', 0, 11, 1, 1, 1, -1, -1, null, -1, -1, null, 10, -1, -1);
+VALUES(3, 0, 11, 1, 1, 1, -1, -1, null, -1, -1, null, 10, -1, -1);
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
-VALUES('1-4', 0, 11, 1, 1, 1, -1, -1, null, -1, -1, null, 10, -1, -1);
+VALUES(4, 0, 11, 1, 1, 1, -1, -1, null, -1, -1, null, 10, -1, -1);
 
 
 -- vote_match_result
-insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values('1-1-1-bioman1@gmail.com', 1,'1-1','1-bioman1@gmail.com');
-insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, team_member_id) values('1-1-1-bioman2@gmail.com', 0,'1-1','1-bioman2@gmail.com');
-insert into vote_match_result(vote_match_result_id,attendance, email, vote_match_id) values('1-1-bioman17@gmail.com', 1,'bioman17@gmail.com','1-1');
-insert into vote_match_result(vote_match_result_id,attendance, email, vote_match_id) values('1-1-bioman16@gmail.com', 1,'bioman16@gmail.com','1-1');
-insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, team_member_id) values('2-3-2-bioman6@gmail.com', 1,'2-3','2-bioman6@gmail.com');
-insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values('1-1-1-bioman3@gmail.com', 2,'1-1','1-bioman3@gmail.com');
+insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values(1, 1,1,'1-bioman1@gmail.com');
+insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, team_member_id) values(2, 0,1,'1-bioman2@gmail.com');
+insert into vote_match_result(vote_match_result_id,attendance, email, vote_match_id) values(3, 1,'bioman17@gmail.com',1);
+insert into vote_match_result(vote_match_result_id,attendance, email, vote_match_id) values(4, 1,'bioman16@gmail.com',1);
+insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, team_member_id) values(5, 1,3,'2-bioman6@gmail.com');
+insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values(6, 2,4,'1-bioman3@gmail.com');
 
 
 -- invite
-insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman16@gmail.com', '1-1');
-insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman17@gmail.com', '1-1');
+insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman16@gmail.com', 1);
+insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman17@gmail.com', 1);
 
 -- search
 INSERT INTO
 search(search_id, team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date, content)
 VALUES(1, 1, 1, '1-bioman1@gmail.com', sysdate(), 3, 11, '2020-10-13 21:00', "빠른 파악 부탁드립니다.");
-INSERT INTO
-search(search_id, team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date, content)
-VALUES(2, 1, 2, '1-bioman1@gmail.com', sysdate(), 3, 11, '2020-12-21 20:00', "빠른 인원파악 부탁드립니다.");
 INSERT INTO
 search(search_id, team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date, content)
 VALUES(3, 2, 3, '2-bioman6@gmail.com', sysdate(), 2, 11, '2020-10-21 21:00', "빠른 파악 부탁드립니다.");

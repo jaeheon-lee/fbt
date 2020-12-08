@@ -94,7 +94,7 @@
                       label="password"
                       type="Password"
                       v-model="pass"
-                      @keydown.enter.stop="emailLogin"
+                      @keydown.enter.prevent="emailLogin"
                     ></v-text-field>
                   </form>
                 </span>

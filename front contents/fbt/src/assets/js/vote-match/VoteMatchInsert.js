@@ -123,6 +123,26 @@ export default {
   mounted() {},
   computed: {},
   methods: {
+    // 경기 투표 등록(FV04)
+    submitVoteMatch() {
+      this.voteMatch.matchSchedule = this.matchSchedule;
+      this.voteMatch.voteMatchSetting = this.voteMatchSetting;
+      this.submitting = true;
+      axios
+        .post("/vote-match", this.voteMatch)
+        .then(() => {
+          alert("등록이 완료됐습니다.");
+          // 카카오 공유하기 기능 사용 여부를 묻는다.
+          this.dialogKakao = true;
+        })
+        .catch(() => {
+          alert("등록에 실패했습니다.");
+          this.errored = true;
+        })
+        .finally(() => {
+          this.submitting = false;
+        });
+    },
     // Session 내용 중 Insert에 필요한 정보 받기
     insertInfoFromSession() {
       let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -190,40 +210,6 @@ export default {
       this.targetStadium =
         this.matchSchedule.stadiumAddress + " " + place.place_name;
       this.dialogStadium = false;
-    },
-
-    // 입력 받은 정보 제출하기
-    submitVoteMatch() {
-      this.voteMatch.matchSchedule = this.matchSchedule;
-      this.voteMatch.voteMatchSetting = this.voteMatchSetting;
-      this.submitting = true;
-      let searchRes = null;
-      if (this.searchId) {
-        searchRes = {
-          searchId: this.searchId,
-          reservationStatus: 2,
-          teamTaker: {
-            teamId: this.matchSchedule.awayTeam.teamId
-          }
-        };
-      }
-      let voteMatchRes = {
-        voteMatch: this.voteMatch,
-        searchReservation: searchRes
-      };
-      axios
-        .post("/vote-match", voteMatchRes)
-        .then(() => {
-          alert("등록이 완료됐습니다.");
-          this.dialogKakao = true;
-        })
-        .catch(() => {
-          alert("등록에 실패했습니다.");
-          this.errored = true;
-        })
-        .finally(() => {
-          this.submitting = false;
-        });
     },
     closeKaokao() {
       this.dialogKakao = false;

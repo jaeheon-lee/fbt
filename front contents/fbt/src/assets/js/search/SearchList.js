@@ -208,6 +208,19 @@ export default {
           alert("인원파악신청에 실패했습니다.");
         });
     },
+    // 매치 확정하기
+    completeSearch(search) {
+      console.log(search);
+      // axios
+      //   .put("/search-reservation/1")
+      //   .then(() => {
+      //     alert("매치가 확정됐습니다.");
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     alert("매치 확정에 실패했습니다.");
+      //   });
+    },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
@@ -269,6 +282,23 @@ export default {
       } else {
         return "미정";
       }
+    },
+    // 인원신청 or 마감된 글 버튼 조절 메소드
+    controlSearchApplyBtn(search) {
+      // 마감조건 : 마감일이 지났거나 매치가 완료된 글
+      let searchRes = search.searchReservations;
+      let isEnd = false;
+      for (let i = 0; i < searchRes.length; i++) {
+        if (searchRes[i].reservationStatus == 2) {
+          isEnd = true;
+        }
+      }
+      let dueDate = new Date(search.dueDate);
+      let today = new Date();
+      if (dueDate < today || isEnd) {
+        return false;
+      }
+      return true;
     }
   },
   filters: {

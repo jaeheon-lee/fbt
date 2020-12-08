@@ -150,7 +150,7 @@ export default {
       else return 0; // 끝나지 않았으면 그린
     },
     // ===================== 경기 정보 관련 메소드 =========================== //
-    // 스케쥴Id별 투표 출력(V014, V015)
+    // 스케쥴Id별 투표 출력(, FV03)
     showVoteInfoBySchedueId({ nativeEvent, event }) {
       this.infoActive = true;
       let matchScheduleId = event.matchScheduleId;
@@ -189,6 +189,7 @@ export default {
             nativeEvent.stopPropagation();
           });
       } else {
+        //FV03
         axios
           .get("/vote-match/2/" + matchScheduleId)
           .then(response => {

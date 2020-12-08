@@ -92,9 +92,9 @@
 	</sql>
 	<!-- 추가: 인원파악신청했을 때 조인 테이블 -->
 	<sql id="showSearchJoinApplied">
-		JOIN search_reservation sr
+		LEFT OUTER JOIN search_reservation sr
 		ON s.search_id = sr.search_id
-		JOIN team t3
+		LEFT OUTER JOIN team t3
 		ON sr.team_id_taker = t3.team_id
 	</sql>
 	<!-- M002-1: 팀별 매치 중 or 매치 실패 등록 매치 출력 -->	
@@ -130,7 +130,8 @@
 		<where>
 			<if test="isApply == 0">
 			s.team_id_giver = #{teamIdGiver}
-				<if test="reservationStatus == 0"> 
+				<if test="reservationStatus == 0">
+					AND reservation_status = 0 
 					AND s.search_id NOT IN (
 						SELECT search_id 
 						FROM search_reservation
@@ -164,8 +165,10 @@
 	
 	<!-- M003: 매치검색 -->
 	<select id="searchMatchByFilter" parameterType="filter" resultMap="searchRM">
-		<include refid="showSearchFactorBasic"/>
+		<include refid="showSearchFactorBasic"/>,
+		<include refid="showSearchFactorApplied"/>
 		<include refid="showSearchJoinBasic"/>
+		<include refid="showSearchJoinApplied"/>
 		<where>
 			<!-- 경기일 -->
 			<if test="date != null">

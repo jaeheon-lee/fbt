@@ -316,7 +316,18 @@
                 small
                 color="#6920A3"
                 @click="doApply(search)"
+                v-if="controlSearchApplyBtn(search)"
                 >인원파악 신청</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                disabled
+                v-else
+                >마감된 글</v-btn
               >
             </v-row>
             <!-- 매치 등록 시 -->
@@ -357,10 +368,20 @@
                 elevation="3"
                 width="20%"
                 small
-                color="#6920A3"
+                color="#AD1457"
+                class="mr-5"
                 @click="deleteSearch(search)"
                 v-if="registeredStage == 5"
                 >매치취소</v-btn
+              >
+              <v-btn
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                @click="completeSearch(search)"
+                v-if="registeredStage == 5"
+                >매치 완료</v-btn
               >
             </v-row>
             <!-- 신청 매치  -->

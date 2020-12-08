@@ -48,6 +48,7 @@ public class MatchScheduleController {
 			matchScheduleService.deleteMatchSchedule(matchScheduleId);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
+			System.out.println(e);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

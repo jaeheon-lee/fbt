@@ -112,7 +112,7 @@ public class SearchController {
 	
 	//M005
 	@PostMapping("/search-reservation")
-	public ResponseEntity searchMatchByFilter(@RequestBody SearchReservation searchRes) throws SQLException {
+	public ResponseEntity doApplySearch(@RequestBody SearchReservation searchRes) throws SQLException {
 		try {
 			searchService.doApplySearch(searchRes);
 			return new ResponseEntity(HttpStatus.OK);

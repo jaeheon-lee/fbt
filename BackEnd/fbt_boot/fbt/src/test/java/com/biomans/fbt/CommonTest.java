@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -22,23 +23,28 @@ import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.User;
+import com.biomans.fbt.domain.VoteMatchResult;
+import com.biomans.fbt.util.Attendance;
 import com.biomans.fbt.util.Filter;
 
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "UserMapper.";
+	final String ns = "VoteMatchMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
 	void contextLoads() throws ParseException {
-		HashMap<String, String> searchCon = new HashMap<String, String>();
-		searchCon.put("apiKey", "11");
-		searchCon.put("apiType", "1");
-		User user = sqlSession.selectOne(ns+"LoginByApi", searchCon);
-		System.out.println(user);
+//		HashMap<String, String> con = new HashMap<String, String>();
+//		con.put("voteMatchId", "2");
+//		con.put("matchScheduleId", "2");
+//		con.put("teamIdTaker", "1");
+//		String searchId = sqlSession.selectOne(ns+"checkBySearch", con);
+//		System.out.println(searchId);
+		List<VoteMatchResult> list = new ArrayList<VoteMatchResult>();
+		System.out.println(list.size());
 		
 	}
 

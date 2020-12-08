@@ -3,7 +3,7 @@ package com.biomans.fbt.domain;
 import java.util.ArrayList;
 
 public class VoteMatch {
-	private String voteMatchId;
+	private int voteMatchId;
 	private String memo;
 	private String dueDate;
 	private int voteStatus;
@@ -24,7 +24,7 @@ public class VoteMatch {
 	
 	public VoteMatch() {}
 
-	public VoteMatch(String voteMatchId, String memo, String dueDate, int voteStatus, String voteRegDate, String writer,
+	public VoteMatch(int voteMatchId, String memo, String dueDate, int voteStatus, String voteRegDate, String writer,
 			int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
 			VoteMatchResult voteMatchResult, ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum,
 			int abscentNum, int attendNum, int friendNum, int totalAttend) {
@@ -49,11 +49,11 @@ public class VoteMatch {
 		this.totalAttend = totalAttend;
 	}
 
-	public String getVoteMatchId() {
+	public int getVoteMatchId() {
 		return voteMatchId;
 	}
 
-	public void setVoteMatchId(String voteMatchId) {
+	public void setVoteMatchId(int voteMatchId) {
 		this.voteMatchId = voteMatchId;
 	}
 

@@ -1,7 +1,6 @@
 package com.biomans.fbt.votematch.service.impl;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.Invite;
 import com.biomans.fbt.domain.MatchSchedule;
-import com.biomans.fbt.domain.SearchReservation;
-import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
@@ -21,7 +18,6 @@ import com.biomans.fbt.domain.VoteMatchSetting;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.util.Attendance;
-import com.biomans.fbt.util.VoteMatchRes;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 import com.biomans.fbt.votematch.service.VoteMatchService;
 
@@ -36,14 +32,19 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Autowired
 	private SearchDAO searchDAO;
 
+// ============================================================================================================ //	
+	
+	//FV01, FV02
 	@Override
+	@Transactional
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
+		//1. 팀별 투표를 가져온다.
 		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(searchCon);
 		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByVote(searchCon.get("teamId"));
 		for(VoteMatch voteMatch1 : voteMatchList) {
-//			투표 인원 정보 넣기 & 투표 인원 명단 넣기
+			// 2. 투표 명단 요약 삽입
 			for(VoteMatch voteMatch2 : numList) {
-				if(voteMatch1.getVoteMatchId().equals(voteMatch2.getVoteMatchId())) {
+				if(voteMatch1.getVoteMatchId() == voteMatch2.getVoteMatchId()) {
 					voteMatch1.setVotedNum(voteMatch2.getVotedNum());
 					voteMatch1.setAttendNum(voteMatch2.getAttendNum());
 					voteMatch1.setAbscentNum(voteMatch2.getAbscentNum());
@@ -51,11 +52,11 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 					voteMatch1.setTotalAttend(voteMatch2.getAttendNum()+voteMatch2.getFriendNum());
 				}
 			}
+			// 3. 투표 명단 삽입
 			ArrayList<VoteMatchResult> voteMatchResults = 
 					(ArrayList<VoteMatchResult>) voteMatchDAO.showVoteMatchResultByVote(voteMatch1.getVoteMatchId()); 
 			voteMatch1.setVoteMatchResults(voteMatchResults);
-			
-//			투표 인원 명단 정보 가공하기
+			// 4. 투표 명단 정보 가공: 지인이면 지인태그를 붙인다.
 			for(VoteMatchResult voteMatchResult : voteMatchResults) {
 				if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
 					voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
@@ -65,17 +66,96 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		return voteMatchList;
 	}
 	
+	//FV03
+	@Override
+	@Transactional
+	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
+		//1. 경기 일정 별 투표 정보를 가져온다
+		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(matchScheduleId);
+		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(matchScheduleId);
+		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
+		// 2. 경기 일정별 투표 명단 요약 삽입
+		if(num != null) {
+			voteMatch.setVotedNum(num.getVotedNum());
+			voteMatch.setAttendNum(num.getAttendNum());
+			voteMatch.setAbscentNum(num.getAbscentNum());
+			voteMatch.setFriendNum(num.getFriendNum());
+			voteMatch.setTotalAttend(num.getAttendNum()+num.getFriendNum());
+		}
+		// 3. 경기 일정별 투표 명단 삽입
+		voteMatch.setVoteMatchResults(voteMatchResults);
+		// 4. 투표 명단 가공: 지인 추가
+		for(VoteMatchResult voteMatchResult : voteMatchResults) {
+			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
+				voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
+			}
+		}
+		return voteMatch;
+	}
+	
+	//FV04
+	@Override
+	@Transactional
+	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException {
+		int teamId = 0;
+		//S001
+		MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
+		// 1. 일정등록한다
+		if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null); // 상대팀이 미정인 경우, null 처리
+		matchScheduleDAO.addMatchSchedule(matchSchedule);
+		// 2. 갓 등록한 일정의 id를 가져와서 주입
+		teamId = voteMatch.getTeam().getTeamId();
+		int matchScheduleId = matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
+		voteMatch.getMatchSchedule().setMatchScheduleId(matchScheduleId);
+		// 경기일정Id에 경기 투표 등록
+		voteMatchDAO.addVoteMatch(voteMatch);
+		// 가장 최근의 등록한, 해당 팀의 투표 아이디를 가져온다
+		int voteMatchId = voteMatchDAO.getLatestVoteMatchIdByTeam(teamId);
+		voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);
+		// 경기투표Id에 경기투표설정 등록
+		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
+	}
+	
+	//FV05
+	@Override
+	@Transactional
+	public void addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException {
+		voteMatchDAO.addAttendance(voteMatchResult);
+		// 만일 상대방 찾기를 통해 투표를 하는 거라면
+		HashMap<String, String> searchCon = new HashMap<String, String>();
+		searchCon.put("voteMatchId", voteMatch.getVoteMatchId()+"");
+		searchCon.put("matchScheduleId", voteMatch.getMatchSchedule().getMatchScheduleId()+"");
+		searchCon.put("takerTeamId", voteMatch.getTeam().getTeamId()+"");
+		String searchId = voteMatchDAO.checkBySearch(searchCon);
+		if(searchId != null) {
+			Attendance attendance = searchDAO.checkMinNum(searchCon);
+			System.out.println(attendance);
+			if(attendance != null) {
+				int minNumber = attendance.getMinNumber();
+				int totalNumber = attendance.getTotalFriend() + attendance.getTotalMember();
+				int resStatus = attendance.getReservationStatus();
+				searchCon.put("searchId", attendance.getSearchId()+"");
+				if(minNumber <= totalNumber && resStatus != -1) {
+					// 해당 신청 매치 인원파악 완료
+					searchDAO.completeSearch(searchCon);
+					// 나머지 신청 매치 실패
+					searchDAO.failSearch(searchCon);
+					// 일정에서 awayTeam으로 등록
+					matchScheduleDAO.addAwayTeam(searchCon);
+				}
+			}
+		}
+		
+	}
+	
+	//FV05
 	@Override
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
 		voteMatchDAO.updateVoteMatchResult(voteMatchResult);
 		
 	}
-
-	@Override
-	public void addAttendance(VoteMatchResult voteMatchResult) throws SQLException {
-		voteMatchDAO.addAttendance(voteMatchResult);
-		
-	}
+	
+	
 
 	@Override
 	public void inviteFriend(Invite invite) throws SQLException {
@@ -83,40 +163,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		
 	}
 
-	@Override
-	@Transactional
-	public void addVoteMatchAndSetting(VoteMatchRes voteMatchRes) throws SQLException {
-		VoteMatch voteMatch = voteMatchRes.getVoteMatch();
-		SearchReservation searchRes = voteMatchRes.getSearchReservation();
-		//S001
-		MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
-		if(matchSchedule.getMatchScheduleId() == 0) { //신규 투표 생성이라면
-			if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);
-			matchScheduleDAO.addMatchSchedule(matchSchedule);
-			//S002
-			int teamId = voteMatch.getTeam().getTeamId();
-			int matchScheduleId = matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
-			// voteMatchId 설정
-			String voteMatchId = String.valueOf(teamId) + "-" + String.valueOf(matchScheduleId);
-			voteMatch.getMatchSchedule().setMatchScheduleId(matchScheduleId);
-			voteMatch.setVoteMatchId(voteMatchId);
-			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);
-		} else { // 매칭을 통한 투표 생성이라면
-			// matchSchedule에서 상대팀으로 등록하지 않는다
-			// voteMatchId 설정2
-			int teamId = voteMatch.getMatchSchedule().getAwayTeam().getTeamId();
-			int matchScheduleId = voteMatch.getMatchSchedule().getMatchScheduleId();
-			String voteMatchId = String.valueOf(teamId) + "-" + String.valueOf(matchScheduleId);
-			voteMatch.getTeam().setTeamId(teamId);
-			voteMatch.setVoteMatchId(voteMatchId);
-			voteMatch.getVoteMatchSetting().setVoteMatchId(voteMatchId);
-			searchDAO.updateResStatus(searchRes);
-		}
-		voteMatchDAO.addVoteMatch(voteMatch);
-		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
-		
-		
-	}
+	
 
 	@Override
 	public void endVoteMatch(VoteMatch voteMatch) throws SQLException {
@@ -153,59 +200,11 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		return voteMatchDAO.searchFriend(searchCon);
 	}
 
-	@Override
-	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
-		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(matchScheduleId);
-		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(matchScheduleId);
-		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
-		// 각각의 정보를 삽입
-		if(num != null) {
-			voteMatch.setVotedNum(num.getVotedNum());
-			voteMatch.setAttendNum(num.getAttendNum());
-			voteMatch.setAbscentNum(num.getAbscentNum());
-			voteMatch.setFriendNum(num.getFriendNum());
-			voteMatch.setTotalAttend(num.getAttendNum()+num.getFriendNum());
-		}
-		
-//		투표 인원 명단 정보 가공하기
-		for(VoteMatchResult voteMatchResult : voteMatchResults) {
-			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
-				voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
-			}
-		}
-		voteMatch.setVoteMatchResults(voteMatchResults);
-		return voteMatch;
-	}
+	
 
 	@Override
-	public List<VoteMatchResult> showVoteMatchResultByVote(String voteMatchId) throws SQLException {
+	public List<VoteMatchResult> showVoteMatchResultByVote(int voteMatchId) throws SQLException {
 		return voteMatchDAO.showVoteMatchResultByVote(voteMatchId);
-	}
-	
-	//
-	//
-	public void checkMinNum(String voteMatchId) throws SQLException {
-		String[] arr = voteMatchId.split("-");
-		HashMap<String, String> con = new HashMap<String, String>();
-		con.put("voteMatchId", voteMatchId);
-		con.put("matchScheduleId", arr[1]);
-		con.put("takerTeamId", arr[0]);
-		Attendance attendance = searchDAO.checkMinNum(con);
-		if(attendance != null) {
-			int minNumber = attendance.getMinNumber();
-			int totalNumber = attendance.getTotalFriend() + attendance.getTotalMember();
-			int resStatus = attendance.getReservationStatus();
-			con.put("searchId", attendance.getSearchId()+"");
-			if(minNumber <= totalNumber && resStatus != -1) {
-				// 해당 신청 매치 완료
-				searchDAO.completeSearch(con);
-				// 나머지 신청 매치 실패
-				searchDAO.failSearch(con);
-				// 일정에서 awayTeam으로 등록
-				matchScheduleDAO.addAwayTeam(con);
-			}
-		}
-		
 	}
 
 }

@@ -12,15 +12,7 @@ export default {
       //vote vot
       votes: [],
       // 투표 중과 투표 완료 구분 변수 동시에 버튼에 색 입히기
-      isEnd: false,
-      //로그인 변수 -- 임시 변수
-      userInfo: {
-        email: "bioman2@gmail.com",
-        teamId: 1,
-        teamMemberId: "1-bioman2@gmail.com",
-        teamName: "왕십리FC",
-        nickName: "nick2"
-      }
+      isEnd: false
     };
   },
   mounted() {
@@ -36,10 +28,14 @@ export default {
     sendingHeader: function() {
       if (this.isManager) return "voteMatchManager";
       else return "voteMatch";
+    },
+    controlMY: function() {
+      if (this.isManager) return "my-0";
+      else return "my-7";
     }
   },
   methods: {
-    // 팀별 투표 출력 (V001)
+    // 팀별 투표 출력 (FV01, FV02)
     showVoteInfo() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let voteStatus = 0;

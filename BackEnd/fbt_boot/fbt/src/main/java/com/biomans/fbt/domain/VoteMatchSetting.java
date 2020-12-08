@@ -1,7 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class VoteMatchSetting {
-	private String voteMatchId;
+	private int voteMatchId;
 	private int type;
 	private int cancelNumber;
 	private boolean isFirst;
@@ -21,7 +21,7 @@ public class VoteMatchSetting {
 		super();
 	}
 
-	public VoteMatchSetting(String voteMatchId, int type, int cancelNumber, boolean isFirst, boolean waiting, boolean friendEmp,
+	public VoteMatchSetting(int voteMatchId, int type, int cancelNumber, boolean isFirst, boolean waiting, boolean friendEmp,
 			int selfMinNumber, int selfMaxNumber, String empDueDate, int empMinNumber, int awayMinNumber,
 			String awayDueDate, int assignCost, int empCost, int searchCost) {
 		super();
@@ -42,11 +42,11 @@ public class VoteMatchSetting {
 		this.searchCost = searchCost;
 	}
 
-	public String getVoteMatchId() {
+	public int getVoteMatchId() {
 		return voteMatchId;
 	}
 
-	public void setVoteMatchId(String voteMatchId) {
+	public void setVoteMatchId(int voteMatchId) {
 		this.voteMatchId = voteMatchId;
 	}
 

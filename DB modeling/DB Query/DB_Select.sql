@@ -17,22 +17,4 @@ select * from team_member;
 select * from entry;
 select * from match_result;
 
-delete from employ_result where employ_result_id = 1;
-select
-distinct m.match_schedule_id, m.start_time, m.match_type,
-tm.email
-from team_member tm
-join team t
-on t.team_id = tm.team_id
-join match_schedule m
-on (m.home_team_id = t.team_id or m.away_team_id = t.team_id)
-where tm.email = 'bioman7@gmail.com'
-;
-
-SELECT
-e.employ_id,
-t.team_id, t.team_name
-FROM employ e
-JOIN team t
-ON e.team_id_giver = t.team_id
-WHERE e.match_schedule_id = 1;
+update vote_match set vote_status = 0 where vote_match_id = 2;

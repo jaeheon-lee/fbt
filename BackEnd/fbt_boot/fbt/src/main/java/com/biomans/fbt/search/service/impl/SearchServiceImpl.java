@@ -85,9 +85,6 @@ public class SearchServiceImpl implements SearchService{
 		// 투표를 생성한다.
 		VoteMatch voteMatch = new VoteMatch();
 		voteMatch.setMatchSchedule(matchSchedule);
-		// 투표 Id를 설정한다
-		String voteMatchId = searchRes.getTeamTaker().getTeamId() + "-"  + matchSchedule.getMatchScheduleId();
-		voteMatch.setVoteMatchId(voteMatchId);
 		// 투표 마감시간을 현재 시간에서 + waitingTime으로 설정한다.
 		int waitingTime = search.getWaitingTime();
 		Long current = System.currentTimeMillis();
@@ -107,6 +104,9 @@ public class SearchServiceImpl implements SearchService{
 		voteMatch.setMemo("상대팀 있는 투표입니다. 마감시간이 중요하니 마감시간 전에 빠른 투표 부탁드립니다.");
 		// 투표 생성
 		voteMatchDAO.addVoteMatch(voteMatch);
+		// 해당 팀의, 갓 생성한 투표Id를 가져온다
+		int teamId = searchRes.getTeamTaker().getTeamId();
+		int voteMatchId = voteMatchDAO.getLatestVoteMatchIdByTeam(teamId);
 		// 투표 설정을 지인 추가 가능으로 설정한다 & 투표 설정 생성
 		VoteMatchSetting voteSet = 
 				new VoteMatchSetting(voteMatchId, 0, search.getMinNumber(), false, 
@@ -122,7 +122,7 @@ public class SearchServiceImpl implements SearchService{
 		int number=2;
 		int waitingTime = search.getWaitingTime();
 		try {
-			Thread.sleep(1000 * 60 * 1 * waitingTime); // 시간을 한 시간 단위로 잡는다 : 1000 * 60 * 60 * var
+			Thread.sleep(1000 * 60 * 60 * waitingTime); // 시간을 한 시간 단위로 잡는다 : 1000 * 60 * 60 * var
 			int status = searchDAO.checkSearchSuccessById(searchRes);
 			if(status != 3) { // 마감시간까지도 완료되지 않았다면
 				searchRes.setReservationStatus(-1);

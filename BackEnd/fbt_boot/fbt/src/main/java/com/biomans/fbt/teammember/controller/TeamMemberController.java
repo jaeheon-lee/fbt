@@ -25,7 +25,6 @@ public class TeamMemberController {
 	@GetMapping("/team-member/2/{teamId}")
 	public ResponseEntity showMembersByTeamIdName(@PathVariable int teamId) throws SQLException {
 		try {
-			System.out.println(teamId);
 			List<TeamMember> list = teamMemberService.showMembersByTeamId(teamId);
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {

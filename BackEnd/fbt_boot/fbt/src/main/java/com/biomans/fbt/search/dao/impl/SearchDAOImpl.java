@@ -8,10 +8,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
-import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.util.Attendance;
 import com.biomans.fbt.util.Filter;
@@ -28,7 +26,6 @@ public class SearchDAOImpl implements SearchDAO{
 	public void addSearch(Search search) throws SQLException {
 		sqlSession.insert(ns+"addSearch", search);
 	}
-	
 	//M002-1
 	@Override
 	public List<Search> showRegisteredSearchByTeam(HashMap<String, Integer> searchCon) throws SQLException {
@@ -40,19 +37,26 @@ public class SearchDAOImpl implements SearchDAO{
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showRegisteredSearchAppliedByTeam", searchCon);
 	}
-	
 	//M003
 	@Override
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException {
 		return sqlSession.selectList(ns+"searchMatchByFilter", filter);
 	}
-	
-	//M005
+	//M004
 	@Override
 	public void doApplySearch(SearchReservation searchRes) throws SQLException {
 		sqlSession.insert(ns+"doApplySearch", searchRes);
 	}
 	
+	
+	
+	
+	
+
+	
+	
+	
+
 	//M006
 	@Override
 	public void updateResStatus(SearchReservation searchRes) throws SQLException {

@@ -34,7 +34,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 
 // ============================================================================================================ //	
 	
-	//FV01, FV02
+	//FV01, FV02, FS02
 	@Override
 	@Transactional
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
@@ -58,8 +58,9 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 			voteMatch1.setVoteMatchResults(voteMatchResults);
 			// 4. 투표 명단 정보 가공: 지인이면 지인태그를 붙인다.
 			for(VoteMatchResult voteMatchResult : voteMatchResults) {
-				if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
-					voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
+				if(voteMatchResult.getUser() != null) {
+					String email = voteMatchResult.getUser().getEmail();
+					voteMatchResult.getUser().setEmail( email + " (지인)");
 				}
 			}
 		}
@@ -86,8 +87,9 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		voteMatch.setVoteMatchResults(voteMatchResults);
 		// 4. 투표 명단 가공: 지인 추가
 		for(VoteMatchResult voteMatchResult : voteMatchResults) {
-			if(voteMatchResult.getTeamMember().getUser().getEmail() == null) {
-				voteMatchResult.getTeamMember().getUser().setEmail(voteMatchResult.getUser().getEmail() + " (지인)");
+			if(voteMatchResult.getUser() != null) {
+				String email = voteMatchResult.getUser().getEmail();
+				voteMatchResult.getUser().setEmail( email + " (지인)");
 			}
 		}
 		return voteMatch;
@@ -116,11 +118,13 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
 	}
 	
-	//FV05
+	//FV05, FV06
 	@Override
 	@Transactional
 	public void addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException {
+		// FV05
 		voteMatchDAO.addAttendance(voteMatchResult);
+		// FV06
 		// 만일 상대방 찾기를 통해 투표를 하는 거라면
 		HashMap<String, String> searchCon = new HashMap<String, String>();
 		searchCon.put("voteMatchId", voteMatch.getVoteMatchId()+"");
@@ -129,13 +133,14 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		String searchId = voteMatchDAO.checkBySearch(searchCon);
 		if(searchId != null) {
 			Attendance attendance = searchDAO.checkMinNum(searchCon);
-			System.out.println(attendance);
+			// 맞다면 minNum을 넘기는 매번 확인
 			if(attendance != null) {
 				int minNumber = attendance.getMinNumber();
 				int totalNumber = attendance.getTotalFriend() + attendance.getTotalMember();
 				int resStatus = attendance.getReservationStatus();
 				searchCon.put("searchId", attendance.getSearchId()+"");
 				if(minNumber <= totalNumber && resStatus != -1) {
+				// 넘겼다면
 					// 해당 신청 매치 인원파악 완료
 					searchDAO.completeSearch(searchCon);
 					// 나머지 신청 매치 실패
@@ -155,39 +160,39 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		
 	}
 	
+	//FV07
+	@Override
+	@Transactional
+	public void updateVoteMatch(VoteMatch voteMatch, int type) throws SQLException {
+		voteMatchDAO.updateVoteMatch(voteMatch);
+		//투표수정이면 일정 수정까지 같이 한다.
+		if(type == 1) {
+			MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
+			matchScheduleDAO.updateMatchSchedule(matchSchedule);
+		}
+		
+	}
 	
-
+	//FV09
 	@Override
 	public void inviteFriend(Invite invite) throws SQLException {
 		voteMatchDAO.inviteFriend(invite);
 		
 	}
-
+	//FV09
+	@Override
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
+		return voteMatchDAO.searchFriend(searchCon);
+	}
 	
-
-	@Override
-	public void endVoteMatch(VoteMatch voteMatch) throws SQLException {
-		voteMatchDAO.endVoteMatch(voteMatch);
-		
-	}
-
-	@Override
-	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException {
-		voteMatchDAO.updateVoteMatch(voteMatch);
-		
-	}
-
-	@Override
-	public void deleteVoteMatch(String voteMatchId) throws SQLException {
-		voteMatchDAO.deleteVoteMatch(voteMatchId);
-		
-	}
-
+	//FV10
 	@Override
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		voteMatchDAO.updateVoteMatchSetting(voteMatchSetting);
 		
 	}
+	
+
 
 	@Override
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
@@ -195,16 +200,5 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		
 	}
 
-	@Override
-	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
-		return voteMatchDAO.searchFriend(searchCon);
-	}
-
 	
-
-	@Override
-	public List<VoteMatchResult> showVoteMatchResultByVote(int voteMatchId) throws SQLException {
-		return voteMatchDAO.showVoteMatchResultByVote(voteMatchId);
-	}
-
 }

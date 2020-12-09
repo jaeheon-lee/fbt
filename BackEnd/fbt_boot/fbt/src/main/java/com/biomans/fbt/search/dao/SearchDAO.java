@@ -22,8 +22,13 @@ public interface SearchDAO {
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//M003
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
-	//M005
+	//M004
 	public void doApplySearch(SearchReservation searchRes) throws SQLException;
+	
+	
+	
+	
+	
 	//M006
 	public void updateResStatus(SearchReservation searchRes) throws SQLException;
 	//M009

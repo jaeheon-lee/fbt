@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     // ========================== 버튼 눌렀을 때 메소드 ===============================//
-    // 투표하기 (FV05)
+    // 투표하기 (FV05, FV06)
     doVote(vote, result) {
       // 필요한 정보를 담는다.
       // eslint-disable-next-line prettier/prettier
@@ -88,7 +88,7 @@ export default {
       // 수정인지 등록인지 판별한다
       // eslint-disable-next-line prettier/prettier
       let idx = vote.voteMatchResults.map(x=> x.teamMember.teamMemberId).indexOf(teamMemberId);
-      // 투표를 하지 않았다면 => 등록
+      // 투표를 하지 않았다면 => 등록 (Fv05, FV06)
       if (idx == -1) {
         axios
           .post("/vote-match-result", vote)
@@ -102,7 +102,7 @@ export default {
             this.refresh();
           });
       } else {
-        // 이미 투표를 했다면 => 수정
+        // 이미 투표를 했다면 => 수정 (FV05)
         axios
           .put("/vote-match-result", voteMatchResult)
           .then(() => {
@@ -116,14 +116,11 @@ export default {
           });
       }
     },
-    // 투표 마감하기 V007
+    // 투표 마감하기 FV07
     endVote(vote) {
-      let voteMatch = {
-        voteMatchId: null
-      };
-      voteMatch.voteMatchId = vote.voteMatchId;
+      vote.voteStatus = 1;
       axios
-        .put("/vote-match/1", voteMatch)
+        .put("/vote-match/1", vote)
         .then(() => {
           alert("투표가 마감됐습니다.");
           this.sendingVote = vote;
@@ -136,7 +133,21 @@ export default {
           this.refresh();
         });
     },
-    // 지인찾기 V013
+    // 경기 취소하기 FV08
+    deleteVoteMatch(vote) {
+      axios
+        .delete("/match-schedule/" + vote.matchSchedule.matchScheduleId)
+        .then(() => {
+          alert("취소가 완료됐습니다.");
+        })
+        .catch(() => {
+          alert("취소에 실패했습니다.");
+        })
+        .finally(() => {
+          this.refresh();
+        });
+    },
+    // 지인찾기 FV09
     searchFriend() {
       axios
         .get(
@@ -156,7 +167,7 @@ export default {
           this.loading = false;
         });
     },
-    // 지인초대하기 V004
+    // 지인초대하기 FV09
     inviteFriend(email, voteMatchId) {
       let invite = {
         teamMember: {
@@ -174,35 +185,19 @@ export default {
         .post("/vote-match/invite", invite)
         .then(() => {
           alert("초대가 완료됐습니다.");
+          this.dialogKakao = true;
         })
         .catch(() => {
           alert("초대에 실패했습니다.");
         });
     },
-    // 추가 인원받기: V010
+    // 추가 인원받기: FV10
     updateSetting(type, vote) {
-      let voteMatchSetting = {
-        voteMatchId: null,
-        type: null,
-        cancelMember: null,
-        isFirst: null,
-        waiting: null,
-        friendEmp: null,
-        selfMinNumber: null,
-        selfMaxNumber: null,
-        empDueDate: null,
-        empMinNumber: null,
-        awayMinNumber: null,
-        awayDueDate: null,
-        assignCost: null,
-        empCost: null,
-        searchCost: null
-      };
       let notion = "";
-      voteMatchSetting.voteMatchId = vote.voteMatchId;
+      let voteMatchSetting = vote.voteMatchSetting;
       switch (type) {
         case "setWaiting":
-          voteMatchSetting.waiting = 1;
+          voteMatchSetting.waiting = true;
           notion = "추가인원하기가 설정되었습니다.";
           break;
       }
@@ -218,20 +213,38 @@ export default {
           this.refresh();
         });
     },
-    // 경기 취소하기 V009
-    deleteVoteMatch(vote) {
-      console.log(vote.matchSchedule.matchScheduleId);
-      axios
-        .delete("/match-schedule/" + vote.matchSchedule.matchScheduleId)
-        .then(() => {
-          alert("취소가 완료됐습니다.");
-        })
-        .catch(() => {
-          alert("취소에 실패했습니다.");
-        })
-        .finally(() => {
-          this.refresh();
-        });
+    // 매칭 등록으로 넘어가기(FV11, FV12, FV13)
+    moveToRegister(vote, i) {
+      const router = this.$router;
+      let name = "";
+      // 용병, 상대팀, 양도 등록페이지로 넘어가기
+      switch (i) {
+        case 0: // FV12
+          name = "employ";
+          break;
+        case 1: // FV11
+          name = "search";
+          break;
+        case 2: //FV13
+          name = "assign";
+          break;
+      }
+      router.push({
+        name: name,
+        params: {
+          menu: 1, // 등록페이지 인덱스
+          matchScheduleId: vote.matchSchedule.matchScheduleId // 불러오기할 때 필요한 것
+        }
+      });
+    },
+    // 투표 수정하기 (FV14)
+    updateVoteMatch(vote) {
+      this.$router.push({
+        name: "voteMatchUpdate",
+        params: {
+          vote: vote
+        }
+      });
     },
     // 새로고침
     refresh() {
@@ -244,30 +257,6 @@ export default {
       } else {
         return require("@/assets/image/emblem/emptyFC.png");
       }
-    },
-    // 매칭 등록으로 넘어가기
-    moveToRegister(vote, i) {
-      const router = this.$router;
-      let name = "";
-      // 용병, 상대팀, 양도 등록페이지로 넘어가기
-      switch (i) {
-        case 0:
-          name = "employ";
-          break;
-        case 1:
-          name = "search";
-          break;
-        case 2:
-          name = "assign";
-          break;
-      }
-      router.push({
-        name: name,
-        params: {
-          menu: 1, // 등록페이지 인덱스
-          matchScheduleId: vote.matchSchedule.matchScheduleId // 불러오기할 때 필요한 것
-        }
-      });
     },
     // 이메일, 닉네임으로 구분
     getAttendName(entry) {
@@ -283,6 +272,16 @@ export default {
         return teamScore.teamGiver.teamName;
       } else {
         return teamScore.user.email;
+      }
+    },
+    // 지인이면 이메일, 팀원이면 닉네임으로 출력하기
+    showNickEmail(result) {
+      if (result.teamMember) {
+        // 팀원이면
+        return result.teamMember.nickName;
+      } else {
+        //지인이면
+        return result.user.email;
       }
     },
     // ========================== 창 컨트롤 메소드===============================//
@@ -406,7 +405,7 @@ export default {
       let totalAttend = vote.totalAttend;
       let waiting = vote.voteMatchSetting.waiting;
       // eslint-disable-next-line prettier/prettier
-      if (vote.voteStatus == 1 && totalAttend > cancelNumber && waiting != 1){
+      if (vote.voteStatus == 1 && totalAttend > cancelNumber && !waiting){
         // 마감 + 목표인원 도달했을 때 + 대기인원 안 받을 때
         return true;
       } else {
@@ -450,6 +449,12 @@ export default {
       } else {
         return false;
       }
+    },
+    // 투표수정하기 버튼 조절 메소드
+    controlUpdateBtn(vote) {
+      // 투표 마감 전에만 수정 가능하다
+      if (vote.voteStatus == 0) return true;
+      else return false;
     }
     /* 투표 페이지 관련 메소드 -------------------------------------------*/
   },

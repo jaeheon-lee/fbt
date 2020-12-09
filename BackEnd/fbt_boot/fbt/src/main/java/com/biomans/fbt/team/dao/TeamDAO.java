@@ -7,6 +7,8 @@ import java.util.List;
 import com.biomans.fbt.domain.Team;
 
 public interface TeamDAO {
+	//T001
+	public Team showTeamInfo(int teamId) throws SQLException;
 	//T006: 팀 검색
 	public List<Team> searchTeams(HashMap<String, String> searchCon) throws SQLException;
 	//TNN :

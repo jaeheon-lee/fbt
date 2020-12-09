@@ -18,6 +18,12 @@ public class TeamDAOImpl implements TeamDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
+	//T001
+	@Override
+	public Team showTeamInfo(int teamId) throws SQLException {
+		return sqlSession.selectOne(ns+"showOtherTeamInfo", teamId);
+	}
+	
 	//V006: 팀 검색
 	@Override
 	public List<Team> searchTeams(HashMap<String, String> searchCon) throws SQLException {

@@ -18,12 +18,14 @@ public class Team {
 	private List<TeamMember> teamMembers;
 	private double teamManner;
 	private double teamAbility;
+	private int totalNum;
 
 	public Team() {}
 
 	public Team(int teamId, String teamName, String emblem, String area, String stadiumInfo, String uniformColor,
 			int uniformType, String foundingDate, String teamRegDate, String account, String bank,
-			List<TeamScore> teamScores, List<TeamMember> teamMembers, double teamManner, double teamAbility) {
+			List<TeamScore> teamScores, List<TeamMember> teamMembers, double teamManner, double teamAbility,
+			int totalNum) {
 		super();
 		this.teamId = teamId;
 		this.teamName = teamName;
@@ -40,6 +42,7 @@ public class Team {
 		this.teamMembers = teamMembers;
 		this.teamManner = teamManner;
 		this.teamAbility = teamAbility;
+		this.totalNum = totalNum;
 	}
 
 	public int getTeamId() {
@@ -162,14 +165,22 @@ public class Team {
 		this.teamAbility = teamAbility;
 	}
 
+	public int getTotalNum() {
+		return totalNum;
+	}
+
+	public void setTotalNum(int totalNum) {
+		this.totalNum = totalNum;
+	}
+
 	@Override
 	public String toString() {
 		return "Team [teamId=" + teamId + ", teamName=" + teamName + ", emblem=" + emblem + ", area=" + area
 				+ ", stadiumInfo=" + stadiumInfo + ", uniformColor=" + uniformColor + ", uniformType=" + uniformType
 				+ ", foundingDate=" + foundingDate + ", teamRegDate=" + teamRegDate + ", account=" + account + ", bank="
 				+ bank + ", teamScores=" + teamScores + ", teamMembers=" + teamMembers + ", teamManner=" + teamManner
-				+ ", teamAbility=" + teamAbility + "]";
+				+ ", teamAbility=" + teamAbility + ", totalNum=" + totalNum + "]";
 	}
 
-			
+	
 }

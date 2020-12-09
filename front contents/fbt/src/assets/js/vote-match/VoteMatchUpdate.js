@@ -3,10 +3,9 @@ import MapVue from "@/components/Map/Map.vue";
 import KakaoLink from "@/components/Common/KakaoLink.vue";
 
 export default {
-  name: "vote-match-insert",
+  name: "vote-match-update",
   props: {
-    matchScheduleProps: Object,
-    searchId: Number
+    vote: Object
   },
   components: {
     "map-vue": MapVue,
@@ -110,18 +109,40 @@ export default {
     };
   },
   created() {
-    if (!this.matchScheduleProps) this.insertInfoFromSession();
-    if (this.matchScheduleProps) {
-      this.matchSchedule = this.matchScheduleProps;
+    if (this.vote) {
+      this.voteMatch = this.vote;
+      this.matchSchedule = this.vote.matchSchedule;
+      this.voteMatchSetting = this.vote.voteMatchSetting;
       this.targetStadium =
-        // eslint-disable-next-line prettier/prettier
-        this.matchSchedule.stadiumAddress + " " + this.matchSchedule.stadiumName;
-      // eslint-disable-next-line prettier/prettier
-        this.voteMatch.writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
+        this.matchSchedule.stadiumAddress +
+        " " +
+        this.matchSchedule.stadiumName;
     }
   },
   mounted() {},
   computed: {
+    targetDate: {
+      get: function() {
+        if (this.matchSchedule.startTime) {
+          return this.$moment(this.matchSchedule.startTime).format(
+            "yyyy-MM-DDThh:mm"
+          );
+        }
+      },
+      set: function(newVar) {
+        this.dateFomatter(0, newVar);
+      }
+    },
+    targetDueDate: {
+      get: function() {
+        if (this.vote.dueDate) {
+          return this.$moment(this.vote.dueDate).format("yyyy-MM-DDThh:mm");
+        }
+      },
+      set: function(newVar) {
+        this.dateFomatter(1, newVar);
+      }
+    },
     cancelNumber: {
       get: function() {
         if (this.voteMatchSetting.cancelNumber == -1) return 0;
@@ -133,34 +154,25 @@ export default {
     }
   },
   methods: {
-    // 경기 투표 등록(FV04)
-    submitVoteMatch() {
-      this.voteMatch.matchSchedule = this.matchSchedule;
-      this.voteMatch.voteMatchSetting = this.voteMatchSetting;
+    // 경기 투표 수정(FV14)
+    updateVoteMatch() {
+      this.vote.matchSchedule = this.matchSchedule;
+      this.vote.voteMatchSetting = this.voteMatchSetting;
       this.submitting = true;
       axios
-        .post("/vote-match", this.voteMatch)
+        .put("/vote-match/2", this.voteMatch)
         .then(() => {
-          alert("등록이 완료됐습니다.");
+          alert("수정이 완료됐습니다.");
           // 카카오 공유하기 기능 사용 여부를 묻는다.
           this.dialogKakao = true;
         })
         .catch(() => {
-          alert("등록에 실패했습니다.");
+          alert("수정에 실패했습니다.");
           this.errored = true;
         })
         .finally(() => {
           this.submitting = false;
         });
-    },
-    // Session 내용 중 Insert에 필요한 정보 받기
-    insertInfoFromSession() {
-      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-      this.matchSchedule.writer = userInfo.nickName;
-      this.voteMatch.writer = userInfo.nickName;
-      this.voteMatch.team.teamId = userInfo.teamId;
-      this.matchSchedule.homeTeam.teamId = userInfo.teamId;
-      this.matchSchedule.homeTeam.teamName = userInfo.teamName;
     },
     // 상대팀 유형 메소드
     // 1: Radio를 통해 바꾸기 (자체 or 미정)
@@ -177,10 +189,8 @@ export default {
       this.dialogAwayTeam = false;
     },
     // 받은 date값 변환
-    dateFomatter(i, event) {
-      let dateTime = this.$moment(event.target.value).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
+    dateFomatter(i, date) {
+      let dateTime = this.$moment(date).format("YYYY-MM-DD HH:mm:ss");
       if (i == 0) this.matchSchedule.startTime = dateTime;
       // 경기일시이면
       else this.voteMatch.dueDate = dateTime; // 마감일시면
@@ -223,7 +233,7 @@ export default {
     },
     closeKaokao() {
       this.dialogKakao = false;
-      this.$emit("close");
+      this.$router.push("/voteMatchManager");
     }
   }
 };

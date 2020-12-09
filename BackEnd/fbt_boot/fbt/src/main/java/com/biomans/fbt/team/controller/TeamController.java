@@ -23,6 +23,18 @@ public class TeamController {
 	@Autowired
 	private TeamService teamService;
 	
+	//FT01
+	@GetMapping("/team/3/{teamId}")
+	public ResponseEntity showTeamInfo(@PathVariable int teamId) throws SQLException {
+		try {
+			Team team = teamService.showTeamInfo(teamId);
+			return new ResponseEntity(team, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
 	//T006: 팀 검색
 	@GetMapping("/team/{teamName}")
 	public ResponseEntity searchTeams(@PathVariable String teamName,

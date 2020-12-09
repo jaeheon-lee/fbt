@@ -31,6 +31,19 @@ public class MatchScheduleController {
 	@Autowired
 	private MatchScheduleService matchScheduleService;
 	
+	//FS01
+	@GetMapping("/match-schedule/2/{matchScheduleId}")
+	public ResponseEntity showMatchScheduleByMatchScheduleId(@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleByMatchScheduleId(matchScheduleId);
+			return new ResponseEntity(matchSchedule,HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	
+	
 	//S001: 일정 등록
 	@PostMapping("/match-schedule")
 	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {
@@ -89,16 +102,7 @@ public class MatchScheduleController {
 		}
 	}
 	
-	//S006: 팀에 등록된 일정 기간 별로 불러오기
-	@GetMapping("/match-schedule/2/{matchScheduleId}")
-	public ResponseEntity showMatchScheduleById(@PathVariable int matchScheduleId) throws SQLException {
-		try {
-			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleById(matchScheduleId);
-			return new ResponseEntity(matchSchedule,HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-		}
-	}
+	
 	
 	//S007
 	@GetMapping("/match-schedule/3/{voteMatchId}")

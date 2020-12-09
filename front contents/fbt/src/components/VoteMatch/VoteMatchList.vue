@@ -422,19 +422,16 @@
               </v-row>
               <!--투표 인원 내용 끝-->
               <v-row class="text-center">
-                <v-col cols="5">
-                  아이디
-                </v-col>
-                <v-col cols="4">
-                  이름
+                <v-col offset="2" cols="5">
+                  닉네임/이메일
                 </v-col>
                 <v-col cols="2">
                   참/불
                 </v-col>
-                <v-col cols="1" class="ma-0 pa-0">
+                <v-col class="ma-0 pa-0">
                   <i
                     id="member-close"
-                    class="material-icons md-18"
+                    class="material-icons md-18 float-right"
                     @click="closeMemberList()"
                     >close</i
                   >
@@ -446,11 +443,8 @@
                 :key="i"
                 class="text-center"
               >
-                <v-col cols="5">
-                  {{ result.teamMember.user.email }}
-                </v-col>
-                <v-col cols="4">
-                  {{ result.user.name }}
+                <v-col offset="2" cols="5">
+                  {{ showNickEmail(result) }}
                 </v-col>
                 <v-col cols="2">
                   {{ result.attendance | attendanceFliter }}
@@ -548,6 +542,15 @@
               class="mr-2"
               @click="deleteVoteMatch(vote)"
               >경기취소하기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="updateVoteMatch(vote)"
+              v-if="controlUpdateBtn(vote)"
+              >투표수정하기</v-btn
             >
             <v-btn
               elevation="3"

@@ -189,7 +189,7 @@ export default {
         this.search.dueDate = dateTime; // 마감일시면
       }
     },
-    // 매치 등록
+    // 매치 등록(FM01)
     addSearch() {
       // eslint-disable-next-line prettier/prettier
       Axios
@@ -218,6 +218,7 @@ export default {
       this.parkingSelected = true;
     },
     /* 투표 완료 후 버튼으로 넘어온 경우 --------------------------------------*/
+    //FS01
     showMatchScheduleInfo() {
       // eslint-disable-next-line prettier/prettier
       Axios
@@ -237,7 +238,7 @@ export default {
         });
     },
     /* 지정된 경기 불러오기 --------------------------------------*/
-    // 경기 불러오기
+    // 경기 불러오기(FS02)
     loadMatchSchedule() {
       this.dialogMatchSchedule = true;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
@@ -253,6 +254,7 @@ export default {
           alert("정보를 불러오는 데 실패했습니다.");
         });
     },
+    //FS02
     selectMatch(matchSchedule) {
       this.search.matchSchedule = matchSchedule;
       this.targetStadium =

@@ -12,6 +12,11 @@ import com.biomans.fbt.util.MatchResultCollection;
 import com.biomans.fbt.util.SearchKey;
 
 public interface MatchScheduleService {
+	// FS01
+	public MatchSchedule showMatchScheduleByMatchScheduleId(int matchScheduleId) throws SQLException;
+	
+	
+	
 	//S001: 일정 등록
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
 	// S002: 방금 동록한 일정 ID 출력
@@ -22,8 +27,6 @@ public interface MatchScheduleService {
 	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException;
 	// S005-2: 등록된 개인 경기 일정 출력
 	public List<MatchSchedule> showMatchSchduleByUserPeriod(HashMap<String, String> searchCon) throws SQLException;
-	// S006
-	public MatchSchedule showMatchScheduleById(int matchScheduleId) throws SQLException;
 	// S007
 	public List<TeamMember> showAttendVotedMember(String voteMatchId) throws SQLException;
 	// S008

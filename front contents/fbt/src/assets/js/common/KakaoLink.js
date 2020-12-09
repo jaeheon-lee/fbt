@@ -3,7 +3,8 @@ export default {
   props: {
     dialogKakao: Boolean,
     voteMatch: Object, // 투표 생성 시 받는 vo
-    vote: Object // 투표 마감 시 받는 vo
+    vote: Object, // 투표 마감 시 받는 vo
+    updateVoteMatch: Object // 투표 수정 시 받는 vo
   },
   data() {
     return {};
@@ -19,12 +20,14 @@ export default {
       let mobileWebUrl = "";
       let btnTitle = "";
       if (this.voteMatch) {
+        // 생성이면 아래의 글로 공유한다.
         title = this.voteMatch.matchSchedule.matchType + " 경기 투표 생성";
         desc = this.voteMatch.dueDate.slice(0, -2) + "까지 투표부탁드립니다.";
         webUrl = "http://localhost:8080/voteMatch";
         mobileWebUrl = "http://localhost:8080/voteMatch";
         btnTitle = "투표하러 가기";
       } else if (this.vote) {
+        // 마감이면 아래의 글로 공유한다
         title =
           this.vote.matchSchedule.startTime.slice(0, -3) +
           "일자 경기 투표 마감";
@@ -32,6 +35,13 @@ export default {
         webUrl = "http://localhost:8080/schedule";
         mobileWebUrl = "http://localhost:8080/schedule";
         btnTitle = "일정 확인하러 가기";
+      } else if (this.updateVoteMatch) {
+        // 수정이면 아래의 글로 공유한다
+        title = this.updateVoteMatch.matchSchedule.matchType + " 경기 투표 수정";
+        desc = this.updateVoteMatch.dueDate.slice(0, -2) + "까지 투표부탁드립니다.";
+        webUrl = "http://localhost:8080/voteMatch";
+        mobileWebUrl = "http://localhost:8080/voteMatch";
+        btnTitle = "투표하러 가기";
       }
 
       //2. 공유하기

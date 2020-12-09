@@ -24,9 +24,9 @@ INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main
 INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, height, weight, was_pro, gender, born_date, area, image, api_key, api_type) VALUES('wpdud94@naver.com', '12345678', '강제영', '010-5043-5765', '2020-12-05 16:08:55', '2020-12-05 16:08:55', '오른발', 'DF', '171', '70', '0', '0', '1995-06-01', NULL, NULL, '1549194656', '0');
 
 -- team
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('왕십리FC','왕십리FC201018.png','성동구','성동구 구장','red',1,'2016-01-01',sysdate(),'1234','기업');
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('답십리FC','답십리FC201018.png','성동구','응봉동 구장','blue',0,'2017-01-01',sysdate(),'5678','하나');
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('대구FC','대구FC201018.jpg','달서구','달서구 구장','green',0,'2018-01-01',sysdate(),'2345','기업');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('왕십리FC','왕십리FC201018.png','서울 성동구','성동구 구장','red',1,'2016-01-01',sysdate(),'1234','기업');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('답십리FC','답십리FC201018.png','서울 성동구','응봉동 구장','blue',0,'2017-01-01',sysdate(),'5678','하나');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('대구FC','대구FC201018.jpg','대구 달서구','달서구 구장','green',0,'2018-01-01',sysdate(),'2345','기업');
 
 -- team_member
 INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_status, team_id, email, nick_name)VALUES('1-bioman1@gmail.com',sysdate(),4,1,1,'bioman1@gmail.com','nick1');
@@ -66,13 +66,13 @@ values('6', '2020-12-12 07:51:00', '0', '0', 'nick1', '2020-11-27 07:52:20', '�
 
 -- vote_match
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES(1, '2020-10-14 21:00','늦지 마시오', 1, sysdate(), '왕십리FC 구단주', 1, 1);
+VALUES(1, '2020-10-14 21:00','늦지 마시오', 1, sysdate(), 'nick1', 1, 1);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES(2, '2020-12-21 21:00','늦지 마시오', 0, sysdate(), '왕십리FC 구단주', 1, 2);
+VALUES(2, '2020-12-21 21:00','늦지 마시오', 0, sysdate(), 'nick1', 1, 2);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES(3, '2020-12-21 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 2, 3);
+VALUES(3, '2020-12-21 21:00','늦지 마시오', 0, sysdate(), 'nick1', 2, 3);
 INSERT INTO vote_match(vote_match_id, due_date, memo, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
-VALUES(4, '2020-12-27 21:00','늦지 마시오', 0, sysdate(), '답십리FC 구단주', 1, 4);
+VALUES(4, '2020-12-27 21:00','늦지 마시오', 0, sysdate(), 'nick1', 1, 4);
 
 -- vote_match_setting
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)

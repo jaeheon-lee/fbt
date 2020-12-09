@@ -30,22 +30,16 @@ import com.biomans.fbt.util.Filter;
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "VoteMatchMapper.";
+	final String ns = "TeamMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
 	void contextLoads() throws ParseException {
-//		HashMap<String, String> con = new HashMap<String, String>();
-//		con.put("voteMatchId", "2");
-//		con.put("matchScheduleId", "2");
-//		con.put("teamIdTaker", "1");
-//		String searchId = sqlSession.selectOne(ns+"checkBySearch", con);
-//		System.out.println(searchId);
-		List<VoteMatchResult> list = new ArrayList<VoteMatchResult>();
-		System.out.println(list.size());
-		
+		int teamId = 2;
+		Team team = sqlSession.selectOne(ns+"showOtherTeamInfo", teamId);
+		System.out.println(team.getTeamScores().size());
 	}
 
 }

@@ -11,16 +11,19 @@ import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.util.Filter;
 
 public interface SearchService {
-	//M001
+	//FM01
 	public void addSearch(Search search) throws SQLException;
+	//FM02
+	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
+	//FM03
+	public void doApplySearch(SearchReservation searchRes) throws SQLException;
+	
 	//M002-1
 	public List<Search> showRegisteredSearchByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//M002-2
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	//M003
-	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
-	//M005
-	public void doApplySearch(SearchReservation searchRes) throws SQLException;
+	
+	
 	//M006
 	public void updateResStatus(Search search, SearchReservation searchRes) throws SQLException;
 	//M009

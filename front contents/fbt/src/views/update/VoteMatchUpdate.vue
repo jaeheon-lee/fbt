@@ -163,7 +163,7 @@
                   <input
                     type="datetime-local"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                    @change="dateFomatter(0, $event)"
+                    v-model="targetDate"
                   />
                 </v-col>
               </v-row>
@@ -432,7 +432,7 @@
                 <input
                   type="datetime-local"
                   style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                  @change="dateFomatter(1, $event)"
+                  v-model="targetDueDate"
                 />
               </v-row>
             </v-col>
@@ -558,8 +558,8 @@
           <!--기타 설정 끝-->
           <!-- 투표 등록 btn -->
           <v-row class="ma-0 pa-4 justify-center">
-            <v-btn large color="#AD1457" @click="submitVoteMatch"
-              >투표 등록하기</v-btn
+            <v-btn large color="#AD1457" @click="updateVoteMatch"
+              >투표 수정하기</v-btn
             >
           </v-row>
         </v-col>
@@ -567,12 +567,12 @@
       <v-dialog v-model="dialogKakao">
         <kakao-link
           :dialogKakao="dialogKakao"
-          :voteMatch="voteMatch"
+          :updateVoteMatch="voteMatch"
           @close="closeKaokao"
         ></kakao-link>
       </v-dialog>
     </v-container>
   </div>
 </template>
-<script scroped src="@/assets/js/vote-match/VoteMatchInsert.js"></script>
+<script scroped src="@/assets/js/vote-match/VoteMatchUpdate.js"></script>
 <style scoped src="@/assets/css/common/Insert.css"></style>

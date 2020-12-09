@@ -10,9 +10,7 @@
 		VALUES(#{teamGiver.teamId}, #{matchSchedule.matchScheduleId}, #{teamMember.teamMemberId},
 		 sysdate(), #{waitingTime}, #{minNumber}, #{dueDate}, #{content})
 	</insert>
-	
-	
-	<!-- M002: 등록된 매치 출력 -->
+	<!-- M002,  공통부분 -->
 	<!-- RM -->
 	<resultMap type="search" id="searchRM">
 		<id column="search_id" property="searchId"/>
@@ -170,6 +168,7 @@
 		<include refid="showSearchJoinBasic"/>
 		<include refid="showSearchJoinApplied"/>
 		<where>
+		m.start_time > sysdate() 
 			<!-- 경기일 -->
 			<if test="date != null">
 				AND m.start_time LIKE "${date}%"
@@ -217,11 +216,11 @@
 		<!-- 매너순 -->
 	</select>
 	
-	<!-- M005: 인원파악 신청 -->
+	<!-- M004: 인원파악 신청 -->
 	<insert id="doApplySearch" parameterType="searchReservation">
 		INSERT INTO 
 		search_reservation(search_id, team_id_taker, writer, reservation_status)
-		VALUES(#{searchId},#{teamTaker.teamId},#{writer}, 1)
+		VALUES(#{searchId},#{teamTaker.teamId},#{writer}, 0)
 	</insert>
 	
 	<!-- M006: 신청 매치 단계 수정 -->

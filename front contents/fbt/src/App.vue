@@ -219,12 +219,6 @@ export default {
             index: i
           });
         }
-        // 팀 선택 기본 값: 첫 번째
-        this.userInfo.teamId = teams[0].teamId;
-        this.userInfo.teamMemberId = teams[0].teamMemberId;
-        this.userInfo.nickName = teams[0].nickName;
-        this.userInfo.teamName = teams[0].teamName;
-        sessionStorage.setItem("userInfo", JSON.stringify(this.userInfo));
       }
     } else {
       this.userInfo = null;

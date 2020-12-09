@@ -39,23 +39,33 @@ public class SearchController {
 	@Autowired
 	private MatchScheduleService matchScheduleService;
 	
-	//M001|S001|S002: 일정 등록 + 등록된 일정 출력 + 매치 등록
+	//FM01
 	@PostMapping("/search")
 	public ResponseEntity addSearch1(@RequestBody Search search) throws SQLException {
 		try {
-			//S001
-			MatchSchedule matchSchedule = search.getMatchSchedule();
-			if(matchSchedule.getMatchScheduleId() == 0) {
-				int teamId = search.getTeamGiver().getTeamId();
-				matchSchedule.getHomeTeam().setTeamId(teamId);
-				if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);
-				matchScheduleService.addMatchSchedule(matchSchedule);
-				//S002
-				int matchScheduleId = matchScheduleService.showLatestMatchScheduleIdById(teamId);
-				search.getMatchSchedule().setMatchScheduleId(matchScheduleId);
-			}
-			//M001
 			searchService.addSearch(search);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	//FM02
+	@PostMapping("/search/2")
+	public ResponseEntity searchMatchByFilter(@RequestBody Filter filter) throws SQLException {
+		try {
+			List<Search> list = searchService.searchMatchByFilter(filter);
+			return new ResponseEntity(list, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	//FM03
+	@PostMapping("/search-reservation")
+	public ResponseEntity doApplySearch(@RequestBody SearchReservation searchRes) throws SQLException {
+		try {
+			searchService.doApplySearch(searchRes);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -98,29 +108,6 @@ public class SearchController {
 		}
 	}
 	
-	//M003
-	@PostMapping("/search/2")
-	public ResponseEntity searchMatchByFilter(@RequestBody Filter filter) throws SQLException {
-		try {
-			List<Search> list = searchService.searchMatchByFilter(filter);
-			return new ResponseEntity(list, HttpStatus.OK);
-		}catch(RuntimeException e) {
-			System.out.println(e);
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-		}
-	}
-	
-	//M005
-	@PostMapping("/search-reservation")
-	public ResponseEntity doApplySearch(@RequestBody SearchReservation searchRes) throws SQLException {
-		try {
-			searchService.doApplySearch(searchRes);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			System.out.println(e);
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
 	
 	//M006
 	@PutMapping("/search-reservation/1")

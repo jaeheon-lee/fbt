@@ -28,6 +28,19 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	@Autowired
 	private MatchScheduleDAO matchScheduleDAO;
 	
+	//FS01
+	@Override
+	public MatchSchedule showMatchScheduleByMatchScheduleId(int matchScheduleId) throws SQLException {
+		return matchScheduleDAO.showMatchScheduleByMatchScheduleId(matchScheduleId);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	//S001: 일정 등록
 	@Override
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
@@ -69,10 +82,7 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		return totalUserSchedule;
 	}
 
-	@Override
-	public MatchSchedule showMatchScheduleById(int matchScheduleId) throws SQLException {
-		return matchScheduleDAO.showMatchScheduleById(matchScheduleId);
-	}
+	
 	
 	// S007
 	@Override

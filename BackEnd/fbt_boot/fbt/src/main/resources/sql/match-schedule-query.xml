@@ -3,6 +3,22 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="MatchScheduleMapper">
+	<!-- S001 -->
+	<select id="showMatchScheduleById" parameterType="integer" resultType="matchSchedule">
+		SELECT
+		match_schedule_id, stadium_name, stadium_address, match_type, cost,
+		start_time, duration, stadium_type, stadium_shower, stadium_parking
+		FROM match_schedule
+		WHERE match_schedule_id = #{value}
+	</select>
+
+
+
+
+
+
+
+
 	<!-- S001: 일정 등록 -->
 	<insert id="addMatchSchedule" parameterType="matchSchedule">
 		INSERT INTO
@@ -24,6 +40,29 @@
 		ORDER BY match_schedule_id 
 		DESC limit 1;
 	</select>
+	
+	<!-- SNNN: 일정 수정 -->
+	<update id="updateMatchSchedule" parameterType="matchSchedule">
+		UPDATE match_schedule
+		SET
+		start_time = #{startTime},
+		duration = #{duration},
+		cost = #{cost},
+		writer = #{writer},
+		reg_date = #{regDate},
+		content = #{content},
+		stadium_name = #{stadiumName},
+		stadium_type = #{stadiumType},
+		stadium_address = #{stadiumAddress},
+		stadium_x = #{stadiumX},
+		stadium_y = #{stadiumY},
+		stadium_parking = #{stadiumParking},
+		stadium_shower = #{stadiumShower},
+		match_type = #{matchType},
+		home_team_id = #{homeTeam.teamId},
+		away_team_id = #{awayTeam.teamId}
+		WHERE match_schedule_id = #{matchScheduleId};
+	</update>
 	
 	<!-- S004: 일정 삭제 -->
 	<delete id="deleteMatchSchedule" parameterType="integer">
@@ -67,15 +106,7 @@
 		WHERE er.email = #{value}
 		AND er.emp_result_status != -1
 	</select>
-	
-	<!-- S006 -->
-	<select id="showMatchScheduleById" parameterType="integer" resultType="matchSchedule">
-		SELECT
-		match_schedule_id, stadium_name, stadium_address, match_type, cost,
-		start_time, duration, stadium_type, stadium_shower, stadium_parking
-		FROM match_schedule
-		WHERE match_schedule_id = #{value}
-	</select>
+
 	
 	<!-- S007 -->
 	<!-- 참여 누른 맴버들 불러오기 -->

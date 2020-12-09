@@ -25,18 +25,33 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
-	//S001: 일정 등록
+	// S001
+	@Override
+	public MatchSchedule showMatchScheduleByMatchScheduleId(int matchScheduleId) throws SQLException {
+		return sqlSession.selectOne(ns+"showMatchScheduleById", matchScheduleId);
+	}
+	// S002
+	@Override
+	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
+		return sqlSession.selectOne(ns+"showLatestMatchScheduleIdById", teamId);
+		
+	}
+	//S003
 	@Override
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
 		sqlSession.insert(ns+"addMatchSchedule", matchSchedule);
 		
 	}
 	
-	// S002: 방금 동록한 일정 ID 출력
+	
+	
+	
+
+	
+	//일정 수정
 	@Override
-	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
-		return sqlSession.selectOne(ns+"showLatestMatchScheduleIdById", teamId);
-		
+	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
+		sqlSession.update(ns+"updateMatchSchedule", matchSchedule);
 	}
 	
 	// S00N: 일정 삭제
@@ -61,11 +76,7 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		return sqlSession.selectList(ns+"showMatchScheduleByEmployPeriod", email);
 	}
 	
-	// S006
-	@Override
-	public MatchSchedule showMatchScheduleById(int matchScheduleId) throws SQLException {
-		return sqlSession.selectOne(ns+"showMatchScheduleById", matchScheduleId);
-	}
+	
 	
 	// S007
 	@Override

@@ -94,7 +94,7 @@ export default {
     }
   },
   methods: {
-    // 검색하기 (Mxx)
+    // 검색하기 (FM02)
     arrangeFilter() {
       // 경기 시간 통합
       let timeRange1 = this.filter.timeRange1;
@@ -125,10 +125,9 @@ export default {
       // 검색
       this.doSearch();
     },
-    // 필터 검색(M006)
+    // 필터 검색(FM02)
     doSearch() {
       this.loading = true;
-      // eslint-disable-next-line prettier/prettier
       axios
         .post("/search/2", this.filter)
         .then(response => {

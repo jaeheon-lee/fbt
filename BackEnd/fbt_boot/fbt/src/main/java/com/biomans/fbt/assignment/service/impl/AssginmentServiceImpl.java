@@ -64,9 +64,8 @@ public class AssginmentServiceImpl implements AssignmentService{
 		// 수락이면 
 		if(assignRes.getReservationStatus() == 1) {
 			//기존 투표를 지운다
-			int teamId = assignment.getTeamGiver().getTeamId();
 			int matchScheduleId = assignment.getMatchSchedule().getMatchScheduleId();
-			String voteMatchId = teamId + "-" + matchScheduleId;
+			int voteMatchId = voteMatchDAO.findVoteMatchIdByMatchScheduleId(matchScheduleId);
 			voteMatchDAO.deleteVoteMatch(voteMatchId);
 			
 			// 홈팀을 바꾼다

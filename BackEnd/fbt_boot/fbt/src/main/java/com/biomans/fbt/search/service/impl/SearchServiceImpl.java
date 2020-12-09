@@ -2,7 +2,6 @@ package com.biomans.fbt.search.service.impl;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
@@ -22,7 +20,6 @@ import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchSetting;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
-import com.biomans.fbt.search.controller.SearchController;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.search.service.SearchService;
 import com.biomans.fbt.util.Filter;
@@ -38,12 +35,38 @@ public class SearchServiceImpl implements SearchService{
 	
 	@Autowired VoteMatchDAO voteMatchDAO;
 
-	//M001
+	//FM01
 	@Override
 	public void addSearch(Search search) throws SQLException {
+		// 경기일정이 없으면 경기일정을 먼저 등록한다.
+		MatchSchedule matchSchedule = search.getMatchSchedule();
+		if(matchSchedule.getMatchScheduleId() == 0) {
+			int teamId = search.getTeamGiver().getTeamId();
+			matchSchedule.getHomeTeam().setTeamId(teamId);
+			if(matchSchedule.getAwayTeam().getTeamId() == 0) matchSchedule.setAwayTeam(null);
+			matchScheduleDAO.addMatchSchedule(matchSchedule);
+			// 갓 등록하나 경기일정을 가져온다
+			int matchScheduleId = matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
+			search.getMatchSchedule().setMatchScheduleId(matchScheduleId);
+		}
+		// 해당 Id에 매치글을 등록한다.
 		searchDAO.addSearch(search);
 		
 	}
+	//FM02
+	@Override
+	public List<Search> searchMatchByFilter(Filter filter) throws SQLException {
+		return searchDAO.searchMatchByFilter(filter);
+	}
+	
+	//FM03
+	@Override
+	public void doApplySearch(SearchReservation searchRes) throws SQLException {
+		searchDAO.doApplySearch(searchRes);
+	}
+	
+	
+	
 	
 	//M002-1
 	@Override
@@ -57,17 +80,9 @@ public class SearchServiceImpl implements SearchService{
 		return searchDAO.showRegisteredSearchAppliedByTeam(searchCon);
 	}
 	
-	//M003
-	@Override
-	public List<Search> searchMatchByFilter(Filter filter) throws SQLException {
-		return searchDAO.searchMatchByFilter(filter);
-	}
 	
-	//M005
-	@Override
-	public void doApplySearch(SearchReservation searchRes) throws SQLException {
-		searchDAO.doApplySearch(searchRes);
-	}
+	
+	
 	
 	//M006
 	@Override

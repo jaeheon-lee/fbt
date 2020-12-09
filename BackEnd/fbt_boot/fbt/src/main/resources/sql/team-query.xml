@@ -3,6 +3,22 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="TeamMapper">
+	<!-- T001: 타팀 정보 출력 -->
+	<select id="showOtherTeamInfo" parameterType="integer" resultMap="TeamInfoRM">
+		SELECT
+		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type,
+		tm.team_member_id,
+		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
+		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
+		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
+		ts.defence
+		FROM team t
+		JOIN team_member tm
+		ON t.team_id = tm.team_id
+		LEFT OUTER JOIN team_score ts
+		ON ts.team_taker_id = t.team_id
+		WHERE t.team_id = #{value}
+	</select>
 	<!-- T004: 팀 등록 -->
 	<insert id="addTeam" parameterType="team">
 		INSERT INTO

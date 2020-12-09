@@ -73,54 +73,55 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 		sqlSession.insert(ns+"addVoteMatchSetting", voteMatchSetting);
 		
 	}
-	
-	
-	
-	
-	@Override
-	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
-		sqlSession.update(ns+"updateAttendace", voteMatchResult);
-	}
-	
+	//V007
 	@Override
 	public void addAttendance(VoteMatchResult voteMatchResult) throws SQLException {
 		sqlSession.insert(ns+"addAttendance", voteMatchResult);
 		
 	}
-	
-	// 상대방 찾기를 통한 투표인지 확인
+	//V008
+	@Override
+	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
+		sqlSession.update(ns+"updateAttendace", voteMatchResult);
+	}
+	//V009
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"checkBySearch", searchCon);
 	}
-
-	@Override
-	public void inviteFriend(Invite invite) throws SQLException {
-		sqlSession.insert(ns+"inviteFriend", invite);
-		
-	}
-
-	@Override
-	public void endVoteMatch(VoteMatch voteMatch) throws SQLException {
-		sqlSession.update(ns+"endVoteMatch", voteMatch);
-		
-	}
-
+	//V010
 	@Override
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatch", voteMatch);
 		
 	}
-
-	@Override
-	public void deleteVoteMatch(String voteMatchId) throws SQLException {
-		sqlSession.delete(ns+"deleteVoteMatch", voteMatchId);
-		
-	}
-
+	//V011
 	@Override
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatchSetting",voteMatchSetting);
 	}
+	//V012
+	@Override
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"searchFriend", searchCon);
+	}
+	//V013
+	@Override
+	public void inviteFriend(Invite invite) throws SQLException {
+		sqlSession.insert(ns+"inviteFriend", invite);
+		
+	}
+	//V014
+	@Override
+	public void deleteVoteMatch(int voteMatchId) throws SQLException {
+		sqlSession.delete(ns+"deleteVoteMatch", voteMatchId);
+	}
+	//V015
+	@Override
+	public int findVoteMatchIdByMatchScheduleId(int matchScheduleId) throws SQLException {
+		return sqlSession.selectOne(ns+"findVoteMatchIdByMatchScheduleId", matchScheduleId);
+	}
+
+	
 
 	@Override
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
@@ -129,11 +130,7 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 	
 
-	@Override
-	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
-		return sqlSession.selectList(ns+"searchFriend", searchCon);
-	}
-
+	
 	
 
 	

@@ -29,7 +29,7 @@ public class VoteMatchController {
 	@Autowired
 	private VoteMatchService voteMatchService;
 	
-	//FV01, FV02
+	//FV01, FV02, FS02
 	@GetMapping("/vote-match/1/{teamId}")
 	public ResponseEntity showVoteMatchInfoByTeam(@PathVariable int teamId,
 			@RequestParam(value="voteStatus") int voteStauts) throws SQLException {
@@ -68,12 +68,11 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV05
+	//FV05, FV06
 	@PostMapping("/vote-match-result")
 	public ResponseEntity addAttendance(@RequestBody VoteMatch voteMatch) throws SQLException {
 		try {
 			VoteMatchResult voteMatchResult = voteMatch.getVoteMatchResult();		
-			// 투표를 하지 않은 경우, 생성
 			voteMatchService.addAttendance(voteMatchResult, voteMatch);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -94,8 +93,33 @@ public class VoteMatchController {
 		}
 	}
 	
+	//FV07
+	@PutMapping("/vote-match/1")
+	public ResponseEntity endVoteMatch(@RequestBody VoteMatch voteMatch) throws SQLException {
+		try {
+			int type = 0;
+			voteMatchService.updateVoteMatch(voteMatch, type);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
 	
-	//V004 : 지인 초대하기
+	//FV09
+	@GetMapping("/user/1")
+	public ResponseEntity searchFriend(@RequestParam(value="email") String email, 
+			@RequestParam(value="teamId") String teamId) throws SQLException {
+		try {
+			HashMap<String, String> searchCon = new HashMap<String, String>();
+			searchCon.put("email", email);
+			searchCon.put("teamId", teamId);
+			return new ResponseEntity(voteMatchService.searchFriend(searchCon), HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	//FV09
 	@PostMapping("/vote-match/invite")
 	public ResponseEntity inviteFriend(@RequestBody Invite invite) throws SQLException{
 		try {
@@ -106,46 +130,25 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V007
-	@PutMapping("/vote-match/1")
-	public ResponseEntity endVoteMatch(@RequestBody VoteMatch voteMatch) throws SQLException {
-		try {
-			voteMatchService.endVoteMatch(voteMatch);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	//V008
-	@PutMapping("/vote-match/2")
-	public ResponseEntity updateVoteMatch(@RequestBody VoteMatch voteMatch) throws SQLException {
-		try {
-			voteMatchService.updateVoteMatch(voteMatch);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	//V009
-	@DeleteMapping("/vote-match/{voteMatchId}")
-	public ResponseEntity deleteVoteMatch(@PathVariable String voteMatchId) throws SQLException {
-		try {
-			voteMatchService.deleteVoteMatch(voteMatchId);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	//V010
+	//FV10
 	@PutMapping("/vote-match-setting")
 	public ResponseEntity updateVoteMatchSetting(@RequestBody VoteMatchSetting voteMatchSetting) throws SQLException {
 		try {
 			voteMatchService.updateVoteMatchSetting(voteMatchSetting);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	//FV14
+	@PutMapping("/vote-match/2")
+	public ResponseEntity updateVoteMatch(@RequestBody VoteMatch voteMatch) throws SQLException {
+		try {
+			int type = 1;
+			voteMatchService.updateVoteMatch(voteMatch, type);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -160,19 +163,4 @@ public class VoteMatchController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	//V013: 지인 검색하기
-	@GetMapping("/user/1")
-	public ResponseEntity searchFriend(@RequestParam(value="email") String email, 
-			@RequestParam(value="teamId") String teamId) throws SQLException {
-		try {
-			HashMap<String, String> searchCon = new HashMap<String, String>();
-			searchCon.put("email", email);
-			searchCon.put("teamId", teamId);
-			return new ResponseEntity(voteMatchService.searchFriend(searchCon), HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-		}
-	}
-	
 }

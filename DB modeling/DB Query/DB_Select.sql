@@ -16,5 +16,16 @@ select * from team_score;
 select * from team_member;
 select * from entry;
 select * from match_result;
+select * from invite;
+delete from search where search_id = 2;
+update search_reservation set reservation_status = 0 where search_id = 4;
 
-update vote_match set vote_status = 0 where vote_match_id = 2;
+SELECT
+s.search_id
+FROM search s
+JOIN search_reservation sr
+ON s.search_id = sr.search_id
+WHERE s.match_schedule_id = 4
+AND sr.team_id_taker = 2;
+
+

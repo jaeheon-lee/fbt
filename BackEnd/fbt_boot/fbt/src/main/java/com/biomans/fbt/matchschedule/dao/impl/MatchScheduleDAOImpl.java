@@ -42,6 +42,12 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		sqlSession.insert(ns+"addMatchSchedule", matchSchedule);
 		
 	}
+	//S004
+	@Override
+	public void addAwayTeam(HashMap<String, Integer> con) throws SQLException {
+		sqlSession.update(ns+"addAwayTeam", con);
+		
+	}
 	
 	
 	
@@ -127,6 +133,7 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	public void changeHomeTeam(HashMap<String, Integer> con) throws SQLException {
 		sqlSession.update(ns+"changeHomeTeam", con);
 	}
+
 	
 	
 	

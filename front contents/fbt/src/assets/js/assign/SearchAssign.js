@@ -26,6 +26,8 @@ export default {
         costType: -1,
         order: 0
       },
+      // 매치 신청 버튼 조절 변수
+      whichBtnActive: [], // 1이면 양도신청, 2이면 이미 신청한 글, 3이면 마감된 글
       // 검색 조건 토글 변수
       activeFilter: true, // 화면을 처음 열면 필터 먼저 연다
       // 시간 구간 관련 변수
@@ -94,7 +96,7 @@ export default {
     }
   },
   methods: {
-    // 검색하기 (Mxx)
+    // FA02
     arrangeFilter() {
       // 경기 시간 통합
       let timeRange1 = this.filter.timeRange1;
@@ -125,7 +127,7 @@ export default {
       // 검색
       this.doSearch();
     },
-    // 필터 검색(M006)
+    // FA02
     doSearch() {
       this.loading = true;
       // eslint-disable-next-line prettier/prettier
@@ -133,6 +135,9 @@ export default {
         .post("/assignment/3", this.filter)
         .then(response => {
           this.searchedAssigns = response.data;
+          for (let j = 0; j < this.searchedAssigns.length; j++) {
+            this.controlAssignApplyBtn(this.searchedAssigns[j]);
+          }
         })
         .catch(() => {
           this.errored = true;
@@ -140,6 +145,33 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    // FA02
+    // 마감 버튼 조절 메소드
+    controlAssignApplyBtn(assign) {
+      // 마감조건 : 마감일이 지났거나 매치가 완료된 글 + 이미 신청하지 않은 글
+      let assignRes = assign.assignmentReservations;
+      // 마감일이 지났는지
+      let dueDate = new Date(assign.dueDate);
+      let today = new Date();
+      if (dueDate < today) {
+        this.whichBtnActive.push(2);
+        return;
+      }
+      // 매치가 완료됐는지 + 신청하지 않았는지
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      for (let i = 0; i < assignRes.length; i++) {
+        // 매치가 완료됐다면
+        if (assignRes[i].reservationStatus == 1) {
+          this.whichBtnActive.push(2);
+          return;
+        }
+        if (assignRes[i].teamTaker.teamId == teamId) {
+          this.whichBtnActive.push(1);
+          return;
+        }
+      }
+      this.whichBtnActive.push(0);
     },
     // 필터 초기화
     initFilter() {

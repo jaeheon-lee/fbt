@@ -7,7 +7,8 @@ export default {
   props: {
     registeredStage: null,
     appliedStage: null,
-    searchedSearch: Array
+    searchedSearch: Array,
+    whichBtnActive: Array
   },
   components: {
     "team-info": TeamInfo,
@@ -64,7 +65,7 @@ export default {
           this.loading = false;
         });
     },
-    // FM07, FM10
+    // FM07, FM10, FM16
     showRegisteredSearchAppliedByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let reservationStatus = 0;
@@ -107,6 +108,7 @@ export default {
           // 매치완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
           if (this.registeredStage == 5) {
             for (let i = 0; i < this.searches.length; i++) {
+              // eslint-disable-next-line prettier/prettier
               this.searches[i].matchSchedule.awayTeam = this.searches[i].searchReservations[0].teamTaker;
             }
           }
@@ -199,7 +201,7 @@ export default {
         });
       }
     },
-    // 매치 예약 삭제 (M013)
+    // FM17
     deleteSearchRes(search) {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       axios
@@ -212,7 +214,7 @@ export default {
           alert("취소에 실패했습니다.");
         });
     },
-    // 인원피악신청하기
+    // FM03
     doApply(search) {
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let teamIdGiver = search.teamGiver.teamId;
@@ -238,6 +240,15 @@ export default {
         .catch(() => {
           alert("인원파악신청에 실패했습니다.");
         });
+    },
+    //FM18
+    updateSearch(search) {
+      this.$router.push({
+        name: "searchUpdate",
+        params: {
+          pushedSearch: search
+        }
+      });
     },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
@@ -293,23 +304,6 @@ export default {
       } else {
         return "미정";
       }
-    },
-    // 인원신청 or 마감된 글 버튼 조절 메소드
-    controlSearchApplyBtn(search) {
-      // 마감조건 : 마감일이 지났거나 매치가 완료된 글
-      let searchRes = search.searchReservations;
-      let isEnd = false;
-      for (let i = 0; i < searchRes.length; i++) {
-        if (searchRes[i].reservationStatus == 2) {
-          isEnd = true;
-        }
-      }
-      let dueDate = new Date(search.dueDate);
-      let today = new Date();
-      if (dueDate < today || isEnd) {
-        return false;
-      }
-      return true;
     }
   },
   filters: {

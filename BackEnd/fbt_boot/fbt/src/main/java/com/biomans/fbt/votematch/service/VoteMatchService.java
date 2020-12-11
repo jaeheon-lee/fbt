@@ -21,7 +21,7 @@ public interface VoteMatchService {
 	public void addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException;
 	//FV05
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
-	//FV07
+	//FV07, FV14
 	public void updateVoteMatch(VoteMatch voteMatch, int type) throws SQLException;
 	//FV09
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
@@ -29,6 +29,8 @@ public interface VoteMatchService {
 	public void inviteFriend(Invite invite) throws SQLException;
 	//FV10
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
+	//FV15
+	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException;
 	
 	//V011 : 투표 결과 삭제
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;

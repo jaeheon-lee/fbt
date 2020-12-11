@@ -76,6 +76,8 @@
 			FROM search s
 			JOIN match_schedule m
 			ON s.match_schedule_id = m.match_schedule_id
+			JOIN team t4
+			ON s.team_id_giver = t4.team_id
 			JOIN team t
 			ON s.team_id_giver = t.team_id
 			LEFT OUTER JOIN team t2
@@ -205,8 +207,14 @@
 		<if test="order == 0">
 			ORDER BY s.search_reg_date DESC
 		</if>
-		<!-- 경기순 -->
+		<!-- 실력순 -->
+		<if test="order == 1">
+			ORDER BY t4.team_ability DESC
+		</if>
 		<!-- 매너순 -->
+		<if test="order == 2">
+			ORDER BY t4.team_manner DESC
+		</if>
 	</select>
 	
 	<!-- M004: 인원파악 신청 -->
@@ -244,26 +252,14 @@
 		AND team_id_taker = #{teamTaker.teamId} 
 	</select>
 	
-	<!-- M009: awayTeam 등록 -->
-	<update id="addAwayTeam" parameterType="hashMap">
-		UPDATE match_schedule
-		SET away_team_id = #{takerTeamId}
-		WHERE match_schedule_id = #{matchScheduleId}
-	</update>
-	
-
-	
-	
-	
-	<!-- M013: 신청 매치 삭제 -->
+	<!-- M009: 인원파악취소 -->
 	<delete id="deleteSeachRes" parameterType="hashMap">
 		DELETE FROM search_reservation 
 		WHERE search_id = #{searchId}
 		AND team_id_taker = #{teamTakerId}
 	</delete>
 	
-	<!-- :최소인원 넘는지 체크 -->
-	<!-- 체크를 위한 정보 가져오가 -->
+	<!-- M010: 체크를 위한 정보 가져오가 -->
 	<select id="checkMinNum" parameterType="hashMap" resultType="attendance">
 		SELECT
 		s.search_id,  s.min_number, v.total_member, v.total_friend, sr.reservation_status
@@ -285,19 +281,30 @@
 		where s.match_schedule_id = #{matchScheduleId}
 		and sr.team_id_taker = #{takerTeamId}
 	</select>
-	<!-- 해당 신청 매치 상태 완료로 변경 -->
+	<!-- M011: 해당 신청 매치 상태 완료로 변경 -->
 	<update id="completeSearch" parameterType="hashMap">
 		UPDATE search_reservation
 		SET reservation_status = 2
 		WHERE search_id = #{searchId}
 		AND team_id_taker = #{takerTeamId}
 	</update>
-	<!-- 나머지 신청 매치 상태 실패로 변경 -->
+	<!-- M012: 나머지 신청 매치 상태 실패로 변경 -->
 	<update id="failSearch" parameterType="hashMap">
 		UPDATE search_reservation
 		SET reservation_status = -1
 		WHERE search_id = #{searchId}
 		AND team_id_taker != #{takerTeamId}
+	</update>
+	<!-- M013: 매치글 수정하기 -->
+	<update id="updateSearch" parameterType="search">
+		UPDATE search
+		SET
+		search_reg_date = sysdate(),
+		waiting_time = #{waitingTime},
+		min_number = #{minNumber},
+		due_date = #{dueDate},
+		content = #{content}
+		WHERE search_id = #{searchId};
 	</update>
 	
 	

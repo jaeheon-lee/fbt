@@ -244,7 +244,7 @@ export default {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       // eslint-disable-next-line prettier/prettier
       Axios
-        .get("/vote-match/1/" + teamId+"?voteStatus=0")
+        .get("/vote-match/3/" + teamId + "/" + 1)
         .then(response => {
           this.votes = response.data;
           this.selectedOn();

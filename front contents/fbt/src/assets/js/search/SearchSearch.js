@@ -26,6 +26,8 @@ export default {
         costType: -1,
         order: 0
       },
+      // 매치 신청 버튼 조절 변수
+      whichBtnActive: [], // 1이면 양도신청, 2이면 이미 신청한 글, 3이면 마감된 글
       // 검색 조건 토글 변수
       activeFilter: true, // 화면을 처음 열면 필터 먼저 연다
       // 시간 구간 관련 변수
@@ -132,14 +134,42 @@ export default {
         .post("/search/2", this.filter)
         .then(response => {
           this.searchedSearch = response.data;
+          for (let j = 0; j < this.searchedSearch.length; j++) {
+            this.controlSearchApplyBtn(this.searchedSearch[j]);
+          }
         })
         .catch(() => {
           this.errored = true;
-          alert("이미 신청한 경기입니다.");
         })
         .finally(() => {
           this.loading = false;
         });
+    },
+    // 인원신청 or 마감된 글 버튼 조절 메소드
+    controlSearchApplyBtn(search) {
+      // 마감조건 : 마감일이 지났거나 매치가 완료된 글 + 이미 신청하지 않은 글
+      let searchRes = search.searchReservations;
+      // 마감일이 지났는지
+      let dueDate = new Date(search.dueDate);
+      let today = new Date();
+      if (dueDate < today) {
+        this.whichBtnActive.push(2);
+        return;
+      }
+      // 매치가 완료됐는지 + 신청하지 않았는지
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      for (let i = 0; i < searchRes.length; i++) {
+        // 매치가 완료됐다면
+        if (searchRes[i].reservationStatus == 1) {
+          this.whichBtnActive.push(2);
+          return;
+        }
+        if (searchRes[i].teamTaker.teamId == teamId) {
+          this.whichBtnActive.push(1);
+          return;
+        }
+      }
+      this.whichBtnActive.push(0);
     },
     // 필터 초기화
     initFilter() {

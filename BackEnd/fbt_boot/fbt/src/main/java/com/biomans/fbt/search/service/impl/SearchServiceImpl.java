@@ -90,7 +90,7 @@ public class SearchServiceImpl implements SearchService{
 		
 	}
 	
-	//FM07, FM10
+	//FM07, FM10, FM16
 	@Override
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		// 매치 글 정보를 먼저 받아온다
@@ -197,19 +197,22 @@ public class SearchServiceImpl implements SearchService{
 		HashMap<String, Integer> con = new HashMap<String, Integer>();
 		con.put("takerTeamId", takerTeamId);
 		con.put("matchScheduleId", matchScheduleId);
-		searchDAO.addAwayTeam(con);
+		matchScheduleDAO.addAwayTeam(con);
 		// 매치글 삭제
 		int searchId = search.getSearchId();
 		searchDAO.deleteSearch(searchId);
 	}
 
-
-
-	
-	//M013
+	//FM17
 	@Override
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException {
 		searchDAO.deleteSeachRes(searchCon);
+	}
+	
+	//FM18
+	@Override
+	public void updateSearch(Search search) throws SQLException {
+		searchDAO.updateSearch(search);
 	}
 	
 }

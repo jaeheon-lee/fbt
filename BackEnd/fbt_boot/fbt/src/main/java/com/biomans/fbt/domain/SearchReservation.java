@@ -3,16 +3,16 @@ package com.biomans.fbt.domain;
 public class SearchReservation {
 	private int searchId;
 	private Team teamTaker;
-	private String writer;
+	private TeamMember teamMember;
 	private int reservationStatus;
 	
 	public SearchReservation() {}
 
-	public SearchReservation(int searchId, Team teamTaker, String writer, int reservationStatus) {
+	public SearchReservation(int searchId, Team teamTaker, TeamMember teamMember, int reservationStatus) {
 		super();
 		this.searchId = searchId;
 		this.teamTaker = teamTaker;
-		this.writer = writer;
+		this.teamMember = teamMember;
 		this.reservationStatus = reservationStatus;
 	}
 
@@ -32,12 +32,12 @@ public class SearchReservation {
 		this.teamTaker = teamTaker;
 	}
 
-	public String getWriter() {
-		return writer;
+	public TeamMember getTeamMember() {
+		return teamMember;
 	}
 
-	public void setWriter(String writer) {
-		this.writer = writer;
+	public void setTeamMember(TeamMember teamMember) {
+		this.teamMember = teamMember;
 	}
 
 	public int getReservationStatus() {
@@ -50,9 +50,10 @@ public class SearchReservation {
 
 	@Override
 	public String toString() {
-		return "SearchReservation [searchId=" + searchId + ", teamTaker=" + teamTaker + ", writer=" + writer
+		return "SearchReservation [searchId=" + searchId + ", teamTaker=" + teamTaker + ", teamMember=" + teamMember
 				+ ", reservationStatus=" + reservationStatus + "]";
 	}
+
 	
 	
 }

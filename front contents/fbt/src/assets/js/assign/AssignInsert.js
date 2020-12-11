@@ -164,6 +164,23 @@ export default {
   },
   methods: {
     /* 공통 -----------------------------------------------------------------*/
+    // FA01 
+    addAssign() {
+      // eslint-disable-next-line prettier/prettier
+      Axios
+        .post("/assignment", this.assignment)
+        .then(() => {
+          alert("양도등록이 완료됐습니다.");
+          this.dialogNaver = true;
+        })
+        .catch(() => {
+          alert("양도등록에 실패했습니다.");
+        })
+        // eslint-disable-next-line prettier/prettier
+        .finally(() => {
+
+        })
+    },
     // 세션 | props 정보 vo에 넣기
     insertInfoFromSessionProps() {
       let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -185,23 +202,6 @@ export default {
         );
         this.assignment.dueDate = dateTime; // 마감일시면
       }
-    },
-    // 매치 등록
-    addAssign() {
-      // eslint-disable-next-line prettier/prettier
-      Axios
-        .post("/assignment", this.assignment)
-        .then(() => {
-          alert("양도등록이 완료됐습니다.");
-          this.dialogNaver = true;
-        })
-        .catch(() => {
-          alert("양도등록에 실패했습니다.");
-        })
-        // eslint-disable-next-line prettier/prettier
-        .finally(() => {
-
-        })
     },
     // 불러왔을 때, Class 변수 true
     selectedOn() {
@@ -238,9 +238,8 @@ export default {
     loadMatchSchedule() {
       this.dialogMatchSchedule = true;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
-      // eslint-disable-next-line prettier/prettier
-      Axios
-        .get("/vote-match/1/" + teamId+"?voteStatus=0")
+      this.$axios
+        .get("/vote-match/3/" + teamId + "/" + 2)
         .then(response => {
           this.votes = response.data;
           this.selectedOn();

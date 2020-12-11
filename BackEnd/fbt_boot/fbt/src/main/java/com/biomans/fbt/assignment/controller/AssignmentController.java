@@ -34,7 +34,7 @@ public class AssignmentController {
 	@Autowired
 	private MatchScheduleService matchScheduleService;
 	
-	//A001
+	//FA01
 	@PostMapping("/assignment")
 	public ResponseEntity addAssignment(@RequestBody Assignment assignment) throws SQLException {
 		try {
@@ -57,7 +57,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A002-1
+	//FA04
 	@GetMapping("/assignment/1/{teamId}/{status}")
 	public ResponseEntity showRegisteredAssignByTeam(@PathVariable int teamId,
 			@PathVariable int status) throws SQLException {
@@ -73,7 +73,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A002-2
+	//FA07
 	@GetMapping("/assignment/2/{teamId}/{reservationStatus}/{isApply}")
 	public ResponseEntity showRegisteredAssignAppliedByTeam(@PathVariable int teamId,
 			@PathVariable int reservationStatus,
@@ -92,7 +92,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A003
+	//FA02
 	@PostMapping("/assignment/3")
 	public ResponseEntity addAssignment(@RequestBody Filter filter) throws SQLException {
 		try {
@@ -104,7 +104,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A005
+	//FA03
 	@PostMapping("/assignment-reservation")
 	public ResponseEntity doApplyAssignment(@RequestBody AssignmentReservation assignmentRes) throws SQLException {
 		try {
@@ -128,7 +128,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A009
+	//FA05
 	@DeleteMapping("/assignment/{assignmentId}")
 	public ResponseEntity deleteSearch(@PathVariable int assignmentId) throws SQLException {
 		try {
@@ -139,7 +139,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A010
+	//FA06
 	@PutMapping("/assignment/1/{assignmentId}")
 	public ResponseEntity renewAssign(@PathVariable int assignmentId) throws SQLException {
 		try {

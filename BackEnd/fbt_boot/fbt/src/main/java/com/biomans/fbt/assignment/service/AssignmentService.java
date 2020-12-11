@@ -10,21 +10,21 @@ import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.util.Filter;
 
 public interface AssignmentService {
-	//A001
+	//FA01
 	public void addAssignment(Assignment assignment) throws SQLException;
-	//A002-1
+	//FA04
 	public List<Assignment> showRegisteredAssignByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	//A002-2
+	//FA07
 	public List<Assignment> showRegisteredAssignAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	//A003
+	//FA02
 	public List<Assignment> searchAssignmentByFilter(Filter filter) throws SQLException;
-	//A005
+	//FA03
 	public void doApplyAssignment(AssignmentReservation assignmentRes) throws SQLException;
 	//A006
 	public void updateResStatus(Assignment assignment) throws SQLException;
-	//A009
+	//FA05
 	public void deleteAssignment(int assignmentId) throws SQLException;
-	//A010
+	//FA06
 	public void renewAssign(int assignmentId) throws SQLException;
 	//A013
 	public void deleteAssignRes(HashMap<String, Integer> searchCon) throws SQLException;

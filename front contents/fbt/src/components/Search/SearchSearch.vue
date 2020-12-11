@@ -203,6 +203,7 @@
         :searchedSearch="searchedSearch"
         :registeredStage="null"
         :appliedStage="null"
+        :whichBtnActive="whichBtnActive"
       ></search-list>
     </v-container>
   </div>

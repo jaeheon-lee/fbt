@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="AssignmentMapper">
-	<!-- M001: 양도 등록 -->
+	<!-- A001: 양도 등록 -->
 	<insert id="addAssignment" parameterType="assignment">
 		INSERT INTO
 		assignment(team_id_giver, match_schedule_id, team_member_id, reg_date, due_date, content)
@@ -11,7 +11,7 @@
 		 sysdate(), #{dueDate}, #{content})
 	</insert>
 	
-	<!-- M002 양도 출력 -->
+	<!-- A002 양도 출력 -->
 	<!-- RM -->
 	<resultMap type="assignment" id="assignmentRM">
 		<id column="assignment_id" property="assignmentId"/>
@@ -55,9 +55,6 @@
 			<result column="reservation_status" property="reservationStatus"/>
 			<association property="teamTaker" javaType="team">
 				<id column="team_id_taker" property="teamId"/>
-				<result column="team_name3" property="teamName"/>
-				<result column="area3" property="area"/>
-				<result column="emblem3" property="emblem"/>
 			</association>
 		</collection>
 	</resultMap>
@@ -73,13 +70,14 @@
 		m.cost, m.stadium_parking, m.stadium_x, m.stadium_y, m.home_team_id, m.away_team_id,
 		t.team_id, t.team_name, t.emblem,
 		t2.team_name team_name2, t2.area area2, t2.emblem emblem2
-		
 	</sql>
 	<!-- 기본: 양도 중일 때 | 양도 실패 시 조인 테이블 -->
 	<sql id="showAssignmentJoinBasic">
 		FROM assignment a
 		JOIN match_schedule m
 		ON a.match_schedule_id = m.match_schedule_id
+		JOIN team t4
+		ON a.team_id_giver = t4.team_id
 		JOIN team t
 		ON m.home_team_id = t.team_id
 		LEFT OUTER JOIN team t2
@@ -88,15 +86,12 @@
 	<!-- 추가: 양도신청했을 때 불러올 데이터 -->
 	<sql id="showAssignmentFactorApplied">
 		ar.assignment_res_id, ar.assignment_id res_assignment_id, ar.team_id_taker, 
-		ar.writer res_writer, ar.reservation_status,
-		t3.team_name team_name3, t3.area area3, t3.emblem emblem3
+		ar.writer res_writer, ar.reservation_status
 	</sql>
 	<!-- 추가: 양도신청했을 때 조인 테이블 -->
 	<sql id="showAssignmentJoinApplied">
-		JOIN assignment_reservation ar
+		LEFT OUTER JOIN assignment_reservation ar
 		ON a.assignment_id = ar.assignment_id
-		JOIN team t3
-		ON ar.team_id_taker = t3.team_id
 	</sql>
 	
 	<!-- A002-1: 팀별 양도 중 or 양도 실패 등록 매치 출력 -->
@@ -134,6 +129,7 @@
 			<if test="isApply == 0">
 				a.team_id_giver = #{teamIdGiver}
 					<if test="reservationStatus == 0">
+						AND reservation_status IN (0, -1) 
 						AND a.assignment_id NOT IN (
 							SELECT assignment_id 
 							FROM assignment_reservation
@@ -158,8 +154,10 @@
 	
 	<!-- A003: 양도검색 -->
 	<select id="searchAssignmentByFilter" parameterType="filter" resultMap="assignmentRM">
-		<include refid="showAssignmentFactorBasic"/>
+		<include refid="showAssignmentFactorBasic"/>,
+		<include refid="showAssignmentFactorApplied"/>
 		<include refid="showAssignmentJoinBasic"/>
+		<include refid="showAssignmentJoinApplied"/>
 		<where>
 			<!-- 경기일 -->
 			<if test="date != null">
@@ -204,18 +202,26 @@
 		<if test="order == 0">
 			ORDER BY a.reg_date DESC
 		</if>
-		<!-- 경기순 -->
+		<!-- 실력순 -->
+		<if test="order == 1">
+			ORDER BY t4.team_ability DESC
+		</if>
+		<!-- 매너순 -->
+		<if test="order == 2">
+			ORDER BY t4.team_manner DESC
+		</if>
+			
 		<!-- 매너순 -->
 	</select>
 	
-	<!-- A005: 양도 신청 -->
+	<!-- A004: 양도 신청 -->
 	<insert id="doApplyAssignment" parameterType="assignmentReservation">
 		INSERT INTO 
 		assignment_reservation(assignment_id, team_id_taker, writer, reservation_status)
 		VALUES(#{assignmentId},#{teamTaker.teamId},#{writer}, 0)
 	</insert>
 	
-	<!-- A006: 신청 양도 단계 수정 -->
+	<!-- A005: 신청 양도 단계 수정 -->
 	<update id="updateResStatus" parameterType="assignmentReservation">
 		UPDATE assignment_reservation
 		SET reservation_status = #{reservationStatus}
@@ -223,19 +229,19 @@
 		AND team_id_taker = #{teamTaker.teamId}
 	</update>
 	
-	<!-- A009: 양도글 삭제 -->
+	<!-- A006: 양도글 삭제 -->
 	<delete id="deleteAssignment" parameterType="integer">
 		DELETE FROM assignment WHERE assignment_id = #{value} 
 	</delete>
 	
-	<!-- A010: 양도글 끌어올리기 -->
+	<!-- A007: 양도글 끌어올리기 -->
 	<update id="renewAssign" parameterType="integer">
 		UPDATE assignment
 		SET reg_date = sysdate()
 		WHERE assignment_id = #{value}
 	</update>
 	
-	<!-- M013: 신청 양도 삭제 -->
+	<!-- A008: 신청 양도 삭제 -->
 	<delete id="deleteAssignRes" parameterType="hashMap">
 		DELETE FROM assignment_reservation 
 		WHERE assignment_id = #{assignmentId}

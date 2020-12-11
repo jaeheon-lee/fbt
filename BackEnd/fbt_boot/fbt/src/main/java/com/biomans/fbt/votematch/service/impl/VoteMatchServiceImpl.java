@@ -158,7 +158,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		
 	}
 	
-	//FV07
+	//FV07, FV14
 	@Override
 	@Transactional
 	public void updateVoteMatch(VoteMatch voteMatch, int type) throws SQLException {
@@ -188,6 +188,13 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		voteMatchDAO.updateVoteMatchSetting(voteMatchSetting);
 		
+	}
+	
+	//FV15
+	@Override
+	//FV15
+	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException {
+		return voteMatchDAO.loadEndedVoteMatch(searchCon);
 	}
 	
 

@@ -47,7 +47,7 @@ final String ns = "AssignmentMapper.";
 		return sqlSession.selectList(ns+"searchAssignmentByFilter", filter);
 	}
 	
-	//A006
+	//A004
 	@Override
 	public void updateResStatus(AssignmentReservation assignmentRes) throws SQLException {
 		sqlSession.update(ns+"updateResStatus", assignmentRes);
@@ -58,20 +58,21 @@ final String ns = "AssignmentMapper.";
 	public void doApplyAssignment(AssignmentReservation assignmentRes) throws SQLException {
 		sqlSession.insert(ns + "doApplyAssignment", assignmentRes);
 	}
-
+	//A006
 	@Override
 	public void deleteAssignment(int assignmentId) throws SQLException {
 		sqlSession.delete(ns+"deleteAssignment", assignmentId);
 		
 	}
-
+	
+	//A007
 	@Override
 	public void renewAssign(int assignmentId) throws SQLException {
 		sqlSession.update(ns+"renewAssign", assignmentId);
 		
 	}
 	
-	//A013
+	//A008
 	@Override
 	public void deleteAssignRes(HashMap<String, Integer> searchCon) throws SQLException {
 		sqlSession.delete(ns+"deleteAssignRes", searchCon);

@@ -35,7 +35,6 @@
 			</association>
 		</collection>
 	</resultMap>
-	<!-- U003-1 -->
 	<sql id="Login">
 		SELECT
 		u.email, u.image, u.name,
@@ -47,11 +46,13 @@
 		LEFT OUTER JOIN team t
 		ON t.team_id = tm.team_id
 	</sql>
+	<!-- U003-1 -->
 	<select id="LoginByApi" parameterType="hashMap" resultMap="UserRM">
 		<include refid="Login"/>
 		WHERE u.api_type = #{apiType}
 		AND u.api_key = #{apiKey}
 	</select>
+	<!-- U003-2 -->
 	<select id="LoginByEmail" parameterType="hashMap" resultMap="UserRM">
 		<include refid="Login"/>
 		WHERE u.email = #{email}

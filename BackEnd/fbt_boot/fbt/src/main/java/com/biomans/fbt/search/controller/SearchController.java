@@ -111,7 +111,7 @@ public class SearchController {
 		}
 	}
 	
-	//FM07, FM10
+	//FM07, FM10, FM16
 	@GetMapping("/search/2/{teamId}/{reservationStatus}/{isApply}")
 	public ResponseEntity showRegisteredSearchAppliedByTeam(@PathVariable int teamId,
 			@PathVariable int reservationStatus,
@@ -169,8 +169,7 @@ public class SearchController {
 		}
 	}
 
-	
-	//M013
+	//FM17
 	@DeleteMapping("/search-reservation/{searchId}/{teamId}")
 	public ResponseEntity deleteSeachRes(@PathVariable int searchId,
 			@PathVariable int teamId) throws SQLException {
@@ -179,6 +178,18 @@ public class SearchController {
 			searchCon.put("searchId", searchId);
 			searchCon.put("teamIdTaker", teamId);
 			searchService.deleteSeachRes(searchCon);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FM18
+	@PutMapping("/search/3")
+	public ResponseEntity updateSearch(@RequestBody Search search) throws SQLException {
+		try {
+			searchService.updateSearch(search);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

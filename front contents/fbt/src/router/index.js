@@ -126,6 +126,12 @@ const routes = [
     name: "voteMatchUpdate",
     component: () => import("@/views/update/VoteMatchUpdate.vue"),
     props: true
+  },
+  {
+    path: "/searchUpdate",
+    name: "searchUpdate",
+    component: () => import("@/views/update/SearchUpdate.vue"),
+    props: true
   }
 ];
 

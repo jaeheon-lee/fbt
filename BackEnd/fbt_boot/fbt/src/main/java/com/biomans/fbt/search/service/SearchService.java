@@ -7,7 +7,6 @@ import java.util.concurrent.Future;
 
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
-import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.util.Filter;
 
 public interface SearchService {
@@ -23,7 +22,7 @@ public interface SearchService {
 	public void deleteSearch(int searchId) throws SQLException;
 	//FM06
 	public void renewSearch(int searchId) throws SQLException;
-	//FM07, FM10
+	//FM07, FM10, FM16
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//FM08, FM09, FM11
 	public void updateResStatus(Search search, SearchReservation searchRes) throws SQLException;
@@ -31,8 +30,8 @@ public interface SearchService {
 	public Future<Integer> timeSearchFailure(Search search, SearchReservation searchRes) throws SQLException;
 	//FM15
 	public void completeSearch(Search search) throws SQLException;
-
-
-	//M013
+	//FM17
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException;
+	//FM18
+	public void updateSearch(Search search) throws SQLException;
 }

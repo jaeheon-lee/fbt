@@ -127,7 +127,12 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public int findVoteMatchIdByMatchScheduleId(int matchScheduleId) throws SQLException {
 		return sqlSession.selectOne(ns+"findVoteMatchIdByMatchScheduleId", matchScheduleId);
 	}
-
+	
+	//V016
+	@Override
+	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"loadEndedVoteMatch", searchCon);
+	}
 	
 
 	@Override

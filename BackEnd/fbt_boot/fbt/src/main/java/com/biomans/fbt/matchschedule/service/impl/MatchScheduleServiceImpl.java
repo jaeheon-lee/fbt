@@ -121,9 +121,9 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		int awayTeamOfDB = matchScheduleDAO.checkAwayTeam(matchScheduleId);
 		int awayTeamIdOfFront = teamScore.getTeamTaker().getTeamId();
 		if(awayTeamOfDB != awayTeamIdOfFront) {
-			HashMap<String, String> searchCon = new HashMap<String, String>();
-			searchCon.put("takerTeamId", awayTeamIdOfFront+"");
-			searchCon.put("matchScheduleId", matchScheduleId+"");
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("takerTeamId", awayTeamIdOfFront);
+			searchCon.put("matchScheduleId", matchScheduleId);
 			matchScheduleDAO.addAwayTeam(searchCon);
 		}
 		// 2. 승패 입력

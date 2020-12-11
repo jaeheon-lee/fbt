@@ -153,6 +153,22 @@ public class VoteMatchController {
 		}
 	}
 	
+	//FV15
+	@GetMapping("vote-match/3/{teamId}/{type}")
+	public ResponseEntity loadEndedVoteMatch(@PathVariable int teamId,
+			@PathVariable int type) throws SQLException {
+		try {
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("teamId", teamId);
+			searchCon.put("type", type);
+			List<VoteMatch> list = voteMatchService.loadEndedVoteMatch(searchCon);
+			return new ResponseEntity(list, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
 	//V011: 투표 결과 삭제(지인 투표 불참 시)
 	@DeleteMapping("/vote-match-result")
 	public ResponseEntity deleteVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {

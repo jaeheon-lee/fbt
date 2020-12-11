@@ -203,6 +203,7 @@
         :searchedAssigns="searchedAssigns"
         :registeredStage="null"
         :appliedStage="null"
+        :whichBtnActive="whichBtnActive"
       ></assign-list>
     </v-container>
   </div>

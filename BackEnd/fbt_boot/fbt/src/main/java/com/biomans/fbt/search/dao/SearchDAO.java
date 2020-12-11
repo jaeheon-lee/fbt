@@ -33,16 +33,14 @@ public interface SearchDAO {
 	//M008
 	public int checkSearchSuccessById(SearchReservation searchRes) throws SQLException;
 	//M009
-	public void addAwayTeam(HashMap<String, Integer> con) throws SQLException;
-	
-	
-	
-	//M012
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException;
-	//
+	//M010
 	public Attendance checkMinNum(HashMap<String, String> con) throws SQLException;
+	//M011
 	public void completeSearch(HashMap<String, String> con) throws SQLException;
+	//M012
 	public void failSearch(HashMap<String, String> con) throws SQLException;
-	//
+	//M013
+	public void updateSearch(Search search) throws SQLException;
 	
 }

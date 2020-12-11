@@ -20,7 +20,8 @@ public interface MatchScheduleDAO {
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException;
 	//S003
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
-	
+	//S004
+	public void addAwayTeam(HashMap<String, Integer> con) throws SQLException;
 	
 	
 	//일정 수정

@@ -4,22 +4,20 @@ public class AssignmentReservation {
 	private int asssignmetResId;
 	private int assignmentId;
 	private Team teamTaker;
-	private String writer;
+	private TeamMember teamMember;
 	private int reservationStatus;
 	
 	public AssignmentReservation() {}
 
-	public AssignmentReservation(int asssignmetResId, int assignmentId, Team teamTaker, String writer,
+	public AssignmentReservation(int asssignmetResId, int assignmentId, Team teamTaker, TeamMember teamMember,
 			int reservationStatus) {
 		super();
 		this.asssignmetResId = asssignmetResId;
 		this.assignmentId = assignmentId;
 		this.teamTaker = teamTaker;
-		this.writer = writer;
+		this.teamMember = teamMember;
 		this.reservationStatus = reservationStatus;
 	}
-
-
 
 	public int getAsssignmetResId() {
 		return asssignmetResId;
@@ -45,12 +43,12 @@ public class AssignmentReservation {
 		this.teamTaker = teamTaker;
 	}
 
-	public String getWriter() {
-		return writer;
+	public TeamMember getTeamMember() {
+		return teamMember;
 	}
 
-	public void setWriter(String writer) {
-		this.writer = writer;
+	public void setTeamMember(TeamMember teamMember) {
+		this.teamMember = teamMember;
 	}
 
 	public int getReservationStatus() {
@@ -64,8 +62,8 @@ public class AssignmentReservation {
 	@Override
 	public String toString() {
 		return "AssignmentReservation [asssignmetResId=" + asssignmetResId + ", assignmentId=" + assignmentId
-				+ ", teamTaker=" + teamTaker + ", writer=" + writer + ", reservationStatus=" + reservationStatus + "]";
+				+ ", teamTaker=" + teamTaker + ", teamMember=" + teamMember + ", reservationStatus=" + reservationStatus
+				+ "]";
 	}
 
-	
 }

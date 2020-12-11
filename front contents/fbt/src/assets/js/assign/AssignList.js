@@ -1,10 +1,16 @@
 import axios from "axios";
+import TeamInfo from "@/components/Team/TeamInfo.vue";
+
 export default {
   name: "assign-list",
   props: {
     registeredStage: null,
     appliedStage: null,
-    searchedAssigns: Array
+    searchedAssigns: Array,
+    whichBtnActive: Array
+  },
+  components: {
+    "team-info": TeamInfo
   },
   data() {
     return {
@@ -13,6 +19,7 @@ export default {
       // 토글 변수
       activeDetail: null, // 상세보기 토글
       activeTeamList: null, // 신청 팀리스트 토글
+      activeTeamInfo: null, // 팀상세보기 토글
 
       // get 변수
       loading: false,
@@ -35,7 +42,7 @@ export default {
     }
   },
   methods: {
-    // 팀별 양도 출력 (A002-1) => 양도 중 & 매치실패
+    // FA04
     showRegisteredAssignByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let status = 0; // 매치 실패
@@ -53,7 +60,7 @@ export default {
           this.loading = false;
         });
     },
-    // 양도신청 수락 시 출력 (A002-2)
+    // FA07
     showRegisteredAssignAppliedByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let reservationStatus = 0;
@@ -95,7 +102,7 @@ export default {
           this.loading = false;
         });
     },
-    // 양도글 삭제 (A009)
+    // FA05
     deleteAssign(assign) {
       axios
         .delete("/assignment/" + assign.assignmentId)
@@ -107,7 +114,7 @@ export default {
           alert("삭제에 실패했습니다.");
         });
     },
-    // 양도글 끌어올리기 (A010)
+    // FA06
     renewAssign(assign) {
       let assignmentId = assign.assignmentId;
       axios
@@ -163,7 +170,7 @@ export default {
           alert("취소에 실패했습니다.");
         });
     },
-    // 양도신청하기
+    // FA03
     doApply(assign) {
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let teamIdGiver = assign.teamGiver.teamId;
@@ -207,6 +214,11 @@ export default {
     openTeamList(i) {
       if (this.activeTeamList == i) this.activeTeamList = null;
       else this.activeTeamList = i;
+    },
+    // 팀 상세정보 창 여닫기
+    controlTeamInfoToggle(j) {
+      if (this.activeTeamInfo == j) this.activeTeamInfo = null;
+      else this.activeTeamInfo = j;
     },
     // DB 조정 후 등록 양도 업데이트
     refreshRegistered() {
@@ -287,6 +299,22 @@ export default {
     content(value) {
       if (value) return value;
       else return "내용이 없습니다.";
+    },
+    // ======================= 받은 점수 =========================//
+    showTeamScore(value) {
+      if (value == 0) {
+        return "";
+      } else if (value < 2) {
+        return "하하";
+      } else if (value < 4) {
+        return "중하";
+      } else if (value < 6) {
+        return "중중";
+      } else if (value < 8) {
+        return "중상";
+      } else {
+        return "상상";
+      }
     }
   }
 };

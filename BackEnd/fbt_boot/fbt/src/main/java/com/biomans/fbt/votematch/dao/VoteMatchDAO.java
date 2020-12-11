@@ -51,6 +51,8 @@ public interface VoteMatchDAO {
 	public void deleteVoteMatchByMatchScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	//V015
 	public int findVoteMatchIdByMatchScheduleId(int matchScheduleId) throws SQLException;
+	//V016
+	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException;
 	
 	
 	//V011 : 투표 결과 삭제

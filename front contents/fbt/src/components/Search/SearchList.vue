@@ -102,8 +102,8 @@
                         >주차</v-col
                       >
                     </v-row>
+                    <!-- 경기타입, 비용, 주차 본문 -->
                     <v-row class="mx-0 px-0">
-                      <!-- 경기타입, 비용, 주차 본문 -->
                       <!-- 경기 타입 -->
                       <v-col cols="4" class="pa-0 pr-1"
                         ><v-row
@@ -140,6 +140,48 @@
                       >
                     </v-row>
                     <!--경기타입비용주차 끝-->
+                    <!-- 대기시간, 최소인원 -->
+                    <!--  대기시간, 최소인원  라벨-->
+                    <v-row class="mx-0 px-0">
+                      <v-col
+                        cols="4"
+                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                        >대기시간</v-col
+                      >
+                      <v-col
+                        cols="4"
+                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                        style="padding-left:2px;padding-right:2px;"
+                        >최소인원</v-col
+                      >
+                    </v-row>
+                    <!--  대기시간, 최소인원  라벨 끝-->
+                    <!-- 대기시간, 최소인원 본문 -->
+                    <v-row class="mx-0 px-0">
+                      <!-- 대기시간 -->
+                      <v-col cols="4" class="pa-0 pr-1"
+                        ><v-row
+                          class="ma-0 pa-3"
+                          justify="center"
+                          style="border:2px solid #AD1457;border-radius:25px;"
+                          >{{ search.waitingTime }} 시간</v-row
+                        ></v-col
+                      >
+                      <!-- 최소인원 -->
+                      <v-col
+                        cols="4"
+                        class="py-0"
+                        style="padding-left:2px;padding-right:2px;"
+                        ><v-row
+                          class="ma-0 pa-3"
+                          justify="center"
+                          style="border:2px solid #AD1457;border-radius:25px;"
+                          >{{ search.minNumber }} 명
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                    <!--대기시간, 최소인원 끝-->
+                    <!-- 대기시간, 최소인원 끝 -->
                     <!--내용-->
                     <!-- 내용 라벨 -->
                     <v-row class="mx-0 px-0">
@@ -322,7 +364,7 @@
                 small
                 color="#6920A3"
                 @click="doApply(search)"
-                v-if="controlSearchApplyBtn(search)"
+                v-if="whichBtnActive[i] == 0"
                 >인원파악 신청</v-btn
               >
               <v-btn
@@ -332,8 +374,18 @@
                 small
                 color="#6920A3"
                 disabled
-                v-else
+                v-else-if="whichBtnActive[i] == 2"
                 >마감된 글</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                disabled
+                v-if="whichBtnActive[i] == 1"
+                >이미 신청한 글</v-btn
               >
             </v-row>
             <!-- 매치 등록 시 -->
@@ -360,6 +412,16 @@
                 @click="renewSearch(search)"
                 v-if="registeredStage < 4"
                 >매치글 끌어올리기</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                @click="updateSearch(search)"
+                v-if="registeredStage == 1"
+                >매치글 수정하기</v-btn
               >
               <v-btn
                 elevation="3"

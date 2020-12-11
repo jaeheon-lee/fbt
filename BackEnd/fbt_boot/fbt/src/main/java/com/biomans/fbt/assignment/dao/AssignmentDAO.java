@@ -19,14 +19,14 @@ public interface AssignmentDAO {
 	public List<Assignment> showRegisteredAssignAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//A003
 	public List<Assignment> searchAssignmentByFilter(Filter filter) throws SQLException;
-	//A005
+	//A004
 	public void doApplyAssignment(AssignmentReservation assignmentRes) throws SQLException;
-	//A006
+	//A005
 	public void updateResStatus(AssignmentReservation assignmentRes) throws SQLException;
-	//A009
+	//A006
 	public void deleteAssignment(int assignmentId) throws SQLException;
-	//A010
+	//A007
 	public void renewAssign(int assignmentId) throws SQLException;
-	//A013
+	//A008
 	public void deleteAssignRes(HashMap<String, Integer> searchCon) throws SQLException;
 }

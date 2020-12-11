@@ -186,17 +186,18 @@
                   <div id="match-info-detail" v-if="activeTeamList == i">
                     <!--팀 리스트 라벨-->
                     <v-row class="mx-0 px-0 text-center">
+                      <v-col cols="1"></v-col>
                       <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >팀명</v-col
                       >
-                      <v-col cols="2" class="mx-0 pl-2 pr-1 px-0 pb-2"
+                      <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >활동지역</v-col
                       >
-                      <v-col cols="2" class="mx-0 pl-2 pr-1 px-0 pb-2"
+                      <v-col cols="1" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >실력</v-col
                       >
-                      <v-col cols="2" class="mx-0 pl-2 pr-1 px-0 pb-2"
-                        >경기매너점수</v-col
+                      <v-col cols="1" class="mx-0 pl-2 pr-1 px-0 pb-2"
+                        >매너</v-col
                       >
                       <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >양도</v-col
@@ -205,52 +206,88 @@
                     <!-- 팀 리스트 라벨 끝 -->
                     <v-divider color="white"></v-divider>
                     <!-- 팀리스트 본문 -->
-                    <v-row
-                      class="mx-0 px-0 text-center"
+                    <div
                       v-for="(res, j) in assign.assignmentReservations"
                       :key="j"
                     >
-                      <!-- 팀명 -->
-                      <v-col cols="3">{{ res.teamTaker.teamName }}</v-col>
-                      <!-- 활동지역 -->
-                      <v-col cols="2">{{ res.teamTaker.area }}</v-col>
-                      <!-- 실력 -->
-                      <v-col cols="2">
-                        <!-- 여기에 실력 머스타치 넣기 -->
-                      </v-col>
-                      <!-- 경기매너점수 -->
-                      <v-col cols="2">
-                        <!-- 여기에 경기매너점수 머스타치 넣기 -->
-                      </v-col>
-                      <!-- 인원파악신청|거절 버튼 -->
-                      <!-- 신청만 했다면 -->
-                      <v-col cols="3" v-if="registeredStage == 2 && res.reservationStatus == 0">
-                        <v-row class="justify-center">
-                          <v-btn
-                            class="ma-0 pa-0 mr-2 justify-center"
-                            elevation="2"
-                            small
-                            color="#6920A3"
-                            @click="acceptApply(res, assign)"
-                            >수락</v-btn
-                          >
-                          <v-btn
-                            class="ma-0 pa-0 justify-center"
-                            elevation="2"
-                            small
-                            color="#AD1457"
-                            @click="refuseApply(res, assign)"
-                            >거절</v-btn
-                          >
-                        </v-row>
-                      </v-col>
-                      <!-- 거절됐다면 -->
-                      <v-col cols="3" v-if="registeredStage == 2 && res.reservationStatus == -1">
-                        <v-row class="justify-center">
-                          거절됨
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                      <!-- 팀리스트  리얼-->
+                      <v-row
+                        class="mx-0 px-0 text-center"
+                        @click="controlTeamInfoToggle(j)"
+                        style="cursor:pointer"
+                      >
+                        <!-- 아이콘 -->
+                        <v-col cols="1">
+                          <v-icon v-if="activeTeamInfo == j">
+                            mdi-chevron-down
+                          </v-icon>
+                          <v-icon v-else>
+                            mdi-chevron-right
+                          </v-icon>
+                        </v-col>
+                        <!-- 팀명 -->
+                        <v-col cols="3">{{ res.teamTaker.teamName }}</v-col>
+                        <!-- 활동지역 -->
+                        <v-col cols="3">{{ res.teamTaker.area }}</v-col>
+                        <!-- 실력 -->
+                        <v-col cols="1" class="px-0">
+                          {{ res.teamTaker.teamAbility | showTeamScore }}
+                        </v-col>
+                        <!-- 경기매너점수 -->
+                        <v-col cols="1" class="px-0">
+                          {{ res.teamTaker.teamManner | showTeamScore }}
+                        </v-col>
+                        <!-- 인원파악신청|거절 버튼 -->
+                        <!-- 신청만 했다면 -->
+                        <v-col
+                          cols="3"
+                          v-if="
+                            registeredStage == 2 && res.reservationStatus == 0
+                          "
+                        >
+                          <v-row class="justify-center">
+                            <v-btn
+                              class="ma-0 pa-0 mr-2 justify-center"
+                              elevation="2"
+                              small
+                              color="#6920A3"
+                              @click="acceptApply(res, assign)"
+                              >수락</v-btn
+                            >
+                            <v-btn
+                              class="ma-0 pa-0 justify-center"
+                              elevation="2"
+                              small
+                              color="#AD1457"
+                              @click="refuseApply(res, assign)"
+                              >거절</v-btn
+                            >
+                          </v-row>
+                        </v-col>
+                        <!-- 거절됐다면 -->
+                        <v-col
+                          cols="3"
+                          v-if="
+                            registeredStage == 2 && res.reservationStatus == -1
+                          "
+                        >
+                          <v-row class="justify-center">
+                            거절됨
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                      <!-- 팀리스트 리얼 끝 -->
+                      <!-- 팀 상세보기 -->
+                      <v-row>
+                        <v-expand-transition>
+                          <team-info
+                            :teamId="res.teamTaker.teamId"
+                            v-if="activeTeamInfo == j"
+                          ></team-info>
+                        </v-expand-transition>
+                      </v-row>
+                      <!-- 팀 상세보기 끝 -->
+                    </div>
                     <!-- 팀리스트 본문  끝-->
                     <!--팀리스트 끝-->
                     <!--내용-->
@@ -292,7 +329,28 @@
                 small
                 color="#6920A3"
                 @click="doApply(assign)"
+                v-if="whichBtnActive[i] == 0"
                 >양도 신청</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                disabled
+                v-else-if="whichBtnActive[i] == 2"
+                >마감된 글</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                disabled
+                v-if="whichBtnActive[i] == 1"
+                >이미 신청한 글</v-btn
               >
             </v-row>
             <!-- 매치 등록 시 -->
@@ -340,7 +398,7 @@
                 width="20%"
                 small
                 color="#AD1457"
-                v-if="appliedStage == 1 && appliedStage !=null"
+                v-if="appliedStage == 1 && appliedStage != null"
                 @click="deleteAssignRes(assign)"
                 >양도신청 취소</v-btn
               >

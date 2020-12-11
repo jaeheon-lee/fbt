@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="VoteMatchMapper">
-	<!-- 투표 및 경기 일정 정보 RM V001, V002  -->
+	<!-- 투표 및 경기 일정 정보 RM V001, V002, V016  -->
 	<resultMap type="voteMatch" id="VoteMatchRM">
 		<id column="vote_match_id" property="voteMatchId"/>
 		<result column="vote_reg_date" property="voteRegDate"/>
@@ -66,13 +66,20 @@
 		</association>
 	</resultMap>
 	<!-- 투표 및 경기 일정 정보 SQL V001 -->
-	<sql id="showVoteMatchInfo">
-		SELECT 
-		v.vote_match_id, v.vote_reg_date, v.due_date, v.memo, v.vote_status, v.team_id, v.writer,
+	<!-- 투표 엔티티 -->
+	<sql id="voteMatchEntity">
+		v.vote_match_id, v.vote_reg_date, v.due_date, v.memo, v.vote_status, v.team_id, v.writer
+	</sql>
+	<sql id="matchScheduleEntity">
 		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.content, m.stadium_name, 
 		m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
 		m.match_type, m.home_team_id, m.away_team_id,
-		date_add(m.start_time, interval m.duration hour) end_time,
+		date_add(m.start_time, interval m.duration hour) end_time
+	</sql>
+	<sql id="showVoteMatchInfo">
+		SELECT 
+		<include refid="voteMatchEntity"/>,
+		<include refid="matchScheduleEntity"/>,
 		vs.type, vs.cancel_number, vs.is_first, vs.waiting, vs.friend_emp, vs.self_min_number, 
 		vs.self_max_number, vs.emp_due_date, vs.emp_min_number, vs.away_min_number, vs.away_due_date, 
 		vs.assign_cost, vs.emp_cost, vs.search_cost,
@@ -284,6 +291,21 @@
 		vote_match_id
 		FROM vote_match
 		WHERE match_schedule_id = #{value}
+	</select>
+	<!-- V016: 저장된 경기 불러오기 -->
+	<select id="loadEndedVoteMatch" parameterType="hashMap" resultMap="VoteMatchRM">
+		SELECT
+		<include refid="voteMatchEntity"/>,
+		<include refid="matchScheduleEntity"/>
+		FROM vote_match v
+		JOIN match_schedule m
+		ON v.match_schedule_id = m.match_schedule_id
+		WHERE v.vote_status = 1
+		AND  v.due_date > sysdate()
+		AND v.team_id = #{teamId}
+		<if test="type = 2">
+			AND m.home_team_id = #{teamId}
+		</if>
 	</select>
 	
 

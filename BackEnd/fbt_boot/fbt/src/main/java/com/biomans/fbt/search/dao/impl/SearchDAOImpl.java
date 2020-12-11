@@ -76,26 +76,33 @@ public class SearchDAOImpl implements SearchDAO{
 	
 	//M009
 	@Override
-	public void addAwayTeam(HashMap<String, Integer> con) throws SQLException {
-		sqlSession.update(ns+"addAwayTeam", con);	
-	}
-	
-	//M013
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException {
 		sqlSession.delete(ns + "deleteSeachRes", searchCon);
 	}
 	
-	//
+	//M010
+	@Override
 	public Attendance checkMinNum(HashMap<String, String> con) throws SQLException {
 		return sqlSession.selectOne(ns+"checkMinNum", con);
 	}
+	
+	//M011
+	@Override
 	public void completeSearch(HashMap<String, String> con) throws SQLException {
 		sqlSession.update(ns+"completeSearch", con);
 	}
+	
+	//M012
+	@Override
 	public void failSearch(HashMap<String, String> con) throws SQLException {
 		sqlSession.update(ns+"failSearch", con);
 	}
-
+	
+	//M013
+	@Override
+	public void updateSearch(Search search) throws SQLException {
+		sqlSession.update(ns+"updateSearch", search);
+	}
 	
 
 }

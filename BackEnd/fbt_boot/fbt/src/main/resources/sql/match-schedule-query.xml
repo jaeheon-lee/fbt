@@ -282,12 +282,7 @@
 		WHERE m.match_schedule_id = #{value}
 	</select>
 	
-	<!-- :awayTeam 등록 -->
-	<update id="addAwayTeam" parameterType="hashMap">
-		UPDATE match_schedule
-		SET away_team_id = #{takerTeamId}
-		WHERE match_schedule_id = #{matchScheduleId}
-	</update>
+
 	<!-- :homeTeam 변경 -->
 	<update id="changeHomeTeam" parameterType="hashMap">
 		UPDATE match_schedule

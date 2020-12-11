@@ -31,7 +31,7 @@ export default {
   methods: {
     getTeamMember() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
-      console.log("id: " + teamId);
+
       this.$axios
         .get("/team-member/2/" + teamId)
         .then(response => {

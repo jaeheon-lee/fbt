@@ -145,8 +145,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 					searchDAO.completeSearch(searchCon);
 					// 나머지 신청 매치 실패
 					searchDAO.failSearch(searchCon);
-					// 일정에서 awayTeam으로 등록
-					matchScheduleDAO.addAwayTeam(searchCon);
 				}
 			}
 		}

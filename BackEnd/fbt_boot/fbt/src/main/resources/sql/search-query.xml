@@ -10,91 +10,88 @@
 		VALUES(#{teamGiver.teamId}, #{matchSchedule.matchScheduleId}, #{teamMember.teamMemberId},
 		 sysdate(), #{waitingTime}, #{minNumber}, #{dueDate}, #{content})
 	</insert>
-	<!-- M002,  공통부분 -->
-	<!-- RM -->
-	<resultMap type="search" id="searchRM">
-		<id column="search_id" property="searchId"/>
-		<result column="search_reg_date" property="searchRegDate"/>
-		<result column="waiting_time" property="waitingTime"/>
-		<result column="min_number" property="minNumber"/>
-		<result column="due_date" property="dueDate"/>
-		<result column="content" property="content"/>
-		<association property="teamGiver" javaType="team">
-			<id column="team_id" property="teamId"/>
-			<result column="team_name" property="teamName"/>
-			<result column="emblem" property="emblem"/>
-		</association>
-		<association property="matchSchedule" javaType="matchSchedule">
-			<id column="match_schedule_id" property="matchScheduleId"/>
-			<result column="start_time" property="startTime"/>
-			<result column="duration" property="duration"/>
-			<result column="stadium_address" property="stadiumAddress"/>
-			<result column="stadium_name" property="stadiumName"/>
-			<result column="match_type" property="matchType"/>
-			<result column="stadium_shower" property="stadiumShower"/>
-			<result column="stadium_type" property="stadiumType"/>
-			<result column="end_time" property="endTime"/>
-			<result column="cost" property="cost"/>
-			<result column="stadium_parking" property="stadiumParking"/>
-			<result column="stadium_x" property="stadiumX"/>
-			<result column="stadium_y" property="stadiumY"/>
-			<association property="homeTeam" javaType="team">
-				<id column="home_team_id" property="teamId"/>
+	<!-- M003, M002-1, M002-2  공통부분 -->
+		<!-- RM -->
+		<resultMap type="search" id="searchRM">
+			<id column="search_id" property="searchId"/>
+			<result column="search_reg_date" property="searchRegDate"/>
+			<result column="waiting_time" property="waitingTime"/>
+			<result column="min_number" property="minNumber"/>
+			<result column="due_date" property="dueDate"/>
+			<result column="content" property="content"/>
+			<association property="teamGiver" javaType="team">
+				<id column="team_id" property="teamId"/>
 				<result column="team_name" property="teamName"/>
 				<result column="emblem" property="emblem"/>
 			</association>
-			<association property="awayTeam" javaType="team">
-				<id column="away_team_id" property="teamId"/>
-				<result column="team_name2" property="teamName"/>
-				<result column="emblem2" property="emblem"/>
+			<association property="matchSchedule" javaType="matchSchedule">
+				<id column="match_schedule_id" property="matchScheduleId"/>
+				<result column="start_time" property="startTime"/>
+				<result column="duration" property="duration"/>
+				<result column="stadium_address" property="stadiumAddress"/>
+				<result column="stadium_name" property="stadiumName"/>
+				<result column="match_type" property="matchType"/>
+				<result column="stadium_shower" property="stadiumShower"/>
+				<result column="stadium_type" property="stadiumType"/>
+				<result column="end_time" property="endTime"/>
+				<result column="cost" property="cost"/>
+				<result column="stadium_parking" property="stadiumParking"/>
+				<result column="stadium_x" property="stadiumX"/>
+				<result column="stadium_y" property="stadiumY"/>
+				<association property="homeTeam" javaType="team">
+					<id column="home_team_id" property="teamId"/>
+					<result column="team_name" property="teamName"/>
+					<result column="emblem" property="emblem"/>
+				</association>
+				<association property="awayTeam" javaType="team">
+					<id column="away_team_id" property="teamId"/>
+					<result column="team_name2" property="teamName"/>
+					<result column="emblem2" property="emblem"/>
+				</association>
 			</association>
-		</association>
-		<collection property="searchReservations" javaType="java.util.ArrayList" ofType="SearchReservation">
-			<result column="res_search_id" property="searchId"/>
-			<result column="writer" property="writer"/>
-			<result column="reservation_status" property="reservationStatus"/>
-			<association property="teamTaker" javaType="team">
-				<id column="team_id_taker" property="teamId"/>
-				<result column="team_name3" property="teamName"/>
-				<result column="area3" property="area"/>
-			</association>
-		</collection>
-	</resultMap>
+			<collection property="searchReservations" javaType="java.util.ArrayList" ofType="SearchReservation">
+				<result column="res_search_id" property="searchId"/>
+				<result column="writer" property="writer"/>
+				<result column="reservation_status" property="reservationStatus"/>
+				<association property="teamTaker" javaType="team">
+					<id column="team_id_taker" property="teamId"/>
+				</association>
+			</collection>
+		</resultMap>
+		
+		<!-- 공통쿼리 -->
+		<!-- 기본: 매치 중일 때 불러올 데이터 -->
+		<sql id="showSearchFactorBasic">
+			SELECT
+			s.search_id, s.search_reg_date, s.waiting_time, s.min_number, s.due_date, s.content,
+			m.match_schedule_id, m.start_time, m.duration, m.stadium_address, m.stadium_name, 
+			m.match_type, m.stadium_shower, m.stadium_type,
+			date_add(m.start_time, interval m.duration hour) end_time,
+			m.cost, m.stadium_parking, m.stadium_x, m.stadium_y, m.home_team_id, m.away_team_id,
+			t.team_id, t.team_name, t.emblem,
+			t2.team_name team_name2, t2.area area2, t2.emblem emblem2
+		</sql>
+		<!-- 기본: 매치 중일 때 조인 테이블 -->
+		<sql id="showSearchJoinBasic">
+			FROM search s
+			JOIN match_schedule m
+			ON s.match_schedule_id = m.match_schedule_id
+			JOIN team t
+			ON s.team_id_giver = t.team_id
+			LEFT OUTER JOIN team t2
+			ON m.away_team_id = t2.team_id
+		</sql>
+		<!-- 추가: 인원파악신청했을 때 불러올 데이터 -->
+		<sql id="showSearchFactorApplied">
+			sr.search_id res_search_id, sr.team_id_taker, sr.writer, sr.reservation_status
+		</sql>
+		<!-- 추가: 인원파악신청했을 때 조인 테이블 -->
+		<sql id="showSearchJoinApplied">
+			LEFT OUTER JOIN search_reservation sr
+			ON s.search_id = sr.search_id
+		</sql>
+	<!-- M002-1, M002-2, M003  공통부분 끝 -->
 	
-	<!-- 공통쿼리 -->
-	<!-- 기본: 매치 중일 때 불러올 데이터 -->
-	<sql id="showSearchFactorBasic">
-		SELECT
-		s.search_id, s.search_reg_date, s.waiting_time, s.min_number, s.due_date, s.content,
-		m.match_schedule_id, m.start_time, m.duration, m.stadium_address, m.stadium_name, 
-		m.match_type, m.stadium_shower, m.stadium_type,
-		date_add(m.start_time, interval m.duration hour) end_time,
-		m.cost, m.stadium_parking, m.stadium_x, m.stadium_y, m.home_team_id, m.away_team_id,
-		t.team_id, t.team_name, t.emblem,
-		t2.team_name team_name2, t2.area area2, t2.emblem emblem2
-	</sql>
-	<!-- 기본: 매치 중일 때 조인 테이블 -->
-	<sql id="showSearchJoinBasic">
-		FROM search s
-		JOIN match_schedule m
-		ON s.match_schedule_id = m.match_schedule_id
-		JOIN team t
-		ON s.team_id_giver = t.team_id
-		LEFT OUTER JOIN team t2
-		ON m.away_team_id = t2.team_id
-	</sql>
-	<!-- 추가: 인원파악신청했을 때 불러올 데이터 -->
-	<sql id="showSearchFactorApplied">
-		sr.search_id res_search_id, sr.team_id_taker, sr.writer, sr.reservation_status,
-		t3.team_name team_name3, t3.area area2, t3.emblem emblem3
-	</sql>
-	<!-- 추가: 인원파악신청했을 때 조인 테이블 -->
-	<sql id="showSearchJoinApplied">
-		LEFT OUTER JOIN search_reservation sr
-		ON s.search_id = sr.search_id
-		LEFT OUTER JOIN team t3
-		ON sr.team_id_taker = t3.team_id
-	</sql>
 	<!-- M002-1: 팀별 매치 중 or 매치 실패 등록 매치 출력 -->	
 	<select id="showRegisteredSearchByTeam" parameterType="hashMap" resultMap="searchRM">
 		<include refid="showSearchFactorBasic"/>
@@ -129,7 +126,7 @@
 			<if test="isApply == 0">
 			s.team_id_giver = #{teamIdGiver}
 				<if test="reservationStatus == 0">
-					AND reservation_status = 0 
+					AND reservation_status IN (0, 1, -1) 
 					AND s.search_id NOT IN (
 						SELECT search_id 
 						FROM search_reservation
@@ -147,11 +144,7 @@
 					AND due_date > sysdate() 
 				</if>
 				<if test="reservationStatus == 2">
-					AND s.search_id IN (
-						SELECT search_id 
-						FROM search_reservation
-						WHERE reservation_status = 2
-					)
+					AND reservation_status = 2
 				</if>
 			</if>
 			<if test="isApply == 1">
@@ -223,7 +216,19 @@
 		VALUES(#{searchId},#{teamTaker.teamId},#{writer}, 0)
 	</insert>
 	
-	<!-- M006: 신청 매치 단계 수정 -->
+	<!-- M005: 매치글 삭제 -->
+	<delete id="deleteSearch" parameterType="integer">
+		DELETE FROM search WHERE search_id = #{value} 
+	</delete>
+	
+	<!-- M006: 매치글 끌어올리기 -->
+	<update id="renewSearch" parameterType="integer">
+		UPDATE search
+		SET search_reg_date = sysdate()
+		WHERE search_id = #{value}
+	</update>
+	
+	<!-- M007: 매치 신청글 단계 수정 -->
 	<update id="updateResStatus" parameterType="searchReservation">
 		UPDATE search_reservation
 		SET reservation_status = #{reservationStatus}
@@ -231,17 +236,24 @@
 		AND team_id_taker = #{teamTaker.teamId}
 	</update>
 	
-	<!-- M009: 매치글 삭제 -->
-	<delete id="deleteSearch" parameterType="integer">
-		DELETE FROM search WHERE search_id = #{value} 
-	</delete>
+	<!--M008: 인원파악 마감 시간 됐을 때 매치 성공했는지 출력 -->
+	<select id="checkSearchSuccessById" parameterType="hashMap" resultType="integer">
+		SELECT reservation_status
+		FROM search_reservation
+		WHERE search_id = #{searchId}
+		AND team_id_taker = #{teamTaker.teamId} 
+	</select>
 	
-	<!-- M010: 매치글 끌어올리기 -->
-	<update id="renewSearch" parameterType="integer">
-		UPDATE search
-		SET search_reg_date = sysdate()
-		WHERE search_id = #{value}
+	<!-- M009: awayTeam 등록 -->
+	<update id="addAwayTeam" parameterType="hashMap">
+		UPDATE match_schedule
+		SET away_team_id = #{takerTeamId}
+		WHERE match_schedule_id = #{matchScheduleId}
 	</update>
+	
+
+	
+	
 	
 	<!-- M013: 신청 매치 삭제 -->
 	<delete id="deleteSeachRes" parameterType="hashMap">
@@ -288,11 +300,5 @@
 		AND team_id_taker != #{takerTeamId}
 	</update>
 	
-	<!-- 인원파악 마감 시간 됐을 때 매치 성공했는지 출력 -->
-	<select id="checkSearchSuccessById" parameterType="hashMap" resultType="integer">
-		SELECT reservation_status
-		FROM search_reservation
-		WHERE search_id = #{searchId}
-		AND team_id_taker = #{teamTaker.teamId} 
-	</select>
+	
 </mapper>

@@ -46,9 +46,7 @@ public interface MatchScheduleDAO {
 	public int checkAwayTeam(int matchScheduleId) throws SQLException;
 	// S010
 	public MatchSchedule showMatchScheduleResult(int matchScheduleId) throws SQLException;
-	
-	//
-	public void addAwayTeam(HashMap<String, String> con) throws SQLException;
+
 	// A006
 	public void changeHomeTeam(HashMap<String, Integer> con) throws SQLException;
 }

@@ -111,8 +111,6 @@ export default {
   },
   mounted() {
     this.vote = this.votes[0];
-    console.log(this.votes);
-    console.log(this.vote);
   },
   computed: {
     awayTeamName: function() {
@@ -168,7 +166,6 @@ export default {
         .get("/match-schedule/3/" + voteMatchId)
         .then(response => {
           this.teamMembers = response.data;
-          console.log(this.teamMembers);
           for (let i = 0; i < this.teamMembers.length; i++) {
             let entry = {
               attendance: 2,

@@ -17,21 +17,22 @@ public interface SearchService {
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
 	//FM03
 	public void doApplySearch(SearchReservation searchRes) throws SQLException;
-	
-	//M002-1
+	//FM04, FM12
 	public List<Search> showRegisteredSearchByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	//M002-2
-	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	
-	
-	//M006
-	public void updateResStatus(Search search, SearchReservation searchRes) throws SQLException;
-	//M009
+	//FM05, FM13
 	public void deleteSearch(int searchId) throws SQLException;
-	//M010
+	//FM06
 	public void renewSearch(int searchId) throws SQLException;
+	//FM07, FM10
+	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
+	//FM08, FM09, FM11
+	public void updateResStatus(Search search, SearchReservation searchRes) throws SQLException;
+	//FM08
+	public Future<Integer> timeSearchFailure(Search search, SearchReservation searchRes) throws SQLException;
+	//FM15
+	public void completeSearch(Search search) throws SQLException;
+
+
 	//M013
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException;
-	//
-	public Future<Integer> timeSearchFailure(Search search, SearchReservation searchRes) throws SQLException;
 }

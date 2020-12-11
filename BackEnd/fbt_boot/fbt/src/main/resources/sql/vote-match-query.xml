@@ -267,10 +267,16 @@
 		invite(team_member_id, email, vote_match_id)
 		VALUES(#{teamMember.teamMemberId}, #{user.email}, #{voteMatch.voteMatchId})
 	</insert>
-	<!-- V014 : 투표 삭제 -->
-	<delete id="deleteVoteMatch" parameterType="string">
+	<!-- V014-1 : 경기 투표 Id로 투표 삭제 -->
+	<delete id="deleteVoteMatchByVoteMatchId" parameterType="integer">
 		DELETE FROM vote_match
 		WHERE vote_match_id = #{value}
+	</delete>
+	<!-- V014-2 : 경기 일정 Id로 투표 삭제 -->
+	<delete id="deleteVoteMatchByMatchScheduleId" parameterType="hashMap">
+		DELETE FROM vote_match
+		WHERE match_schedule_id = #{matchScheduleId}
+		AND team_id = #{teamId}
 	</delete>
 	<!-- V015: 경기일정Id로 경기투표Id찾기 -->
 	<select id="findVoteMatchIdByMatchScheduleId" parameterType="integer" resultType="integer">

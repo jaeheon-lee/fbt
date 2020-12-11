@@ -68,7 +68,6 @@ export default {
       this.loading = true;
       const events = [];
       if (this.isUser) {
-        console.log(1);
         // 개인 일정 불러오기
         let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
         axios
@@ -92,7 +91,6 @@ export default {
             this.loading = false;
           });
       } else {
-        console.log(2);
         // 팀 일정 불러오기
         let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
         this.searchKey.teamId = teamId;
@@ -161,7 +159,6 @@ export default {
           .get("/match-schedule/5/" + matchScheduleId)
           .then(response => {
             let matchSchedule = response.data;
-            console.log(response.data);
             let vote = {};
             vote.matchSchedule = matchSchedule;
             // 끝난 경기인지에 대한 정보 담고

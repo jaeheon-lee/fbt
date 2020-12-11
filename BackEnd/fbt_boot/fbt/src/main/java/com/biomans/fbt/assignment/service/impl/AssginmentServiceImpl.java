@@ -66,7 +66,7 @@ public class AssginmentServiceImpl implements AssignmentService{
 			//기존 투표를 지운다
 			int matchScheduleId = assignment.getMatchSchedule().getMatchScheduleId();
 			int voteMatchId = voteMatchDAO.findVoteMatchIdByMatchScheduleId(matchScheduleId);
-			voteMatchDAO.deleteVoteMatch(voteMatchId);
+			voteMatchDAO.deleteVoteMatchByVoteMatchId(voteMatchId);
 			
 			// 홈팀을 바꾼다
 			HashMap<String, Integer> con = new HashMap<String, Integer>();

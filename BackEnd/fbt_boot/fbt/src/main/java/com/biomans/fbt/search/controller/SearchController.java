@@ -73,7 +73,7 @@ public class SearchController {
 		}
 	}
 	
-	//M002-1
+	//FM04, FM12
 	@GetMapping("/search/1/{teamId}/{status}")
 	public ResponseEntity showRegisteredSearchByTeam(@PathVariable int teamId,
 			@PathVariable int status) throws SQLException {
@@ -89,7 +89,29 @@ public class SearchController {
 		}
 	}
 	
-	//M002-2
+	//FM05, FM13
+	@DeleteMapping("/search/{searchId}")
+	public ResponseEntity deleteSearch(@PathVariable int searchId) throws SQLException {
+		try {
+			searchService.deleteSearch(searchId);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FM06
+	@PutMapping("/search/1/{searchId}")
+	public ResponseEntity renewSearch(@PathVariable int searchId) throws SQLException {
+		try {
+			searchService.renewSearch(searchId);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FM07, FM10
 	@GetMapping("/search/2/{teamId}/{reservationStatus}/{isApply}")
 	public ResponseEntity showRegisteredSearchAppliedByTeam(@PathVariable int teamId,
 			@PathVariable int reservationStatus,
@@ -109,7 +131,7 @@ public class SearchController {
 	}
 	
 	
-	//M006
+	//FM08, FM09, FM11
 	@PutMapping("/search-reservation/1")
 	public ResponseEntity updateResStatus(@RequestBody Search search) throws SQLException {
 		try {
@@ -122,6 +144,7 @@ public class SearchController {
 		}
 	}
 	
+	//FM08
 	@PutMapping("/search-reservation/2")
 	public ResponseEntity timerOn(@RequestBody Search search) throws SQLException {
 		try {
@@ -134,27 +157,18 @@ public class SearchController {
 		}
 	}
 	
-	//M009
-	@DeleteMapping("/search/{searchId}")
-	public ResponseEntity deleteSearch(@PathVariable int searchId) throws SQLException {
+	//FM15
+	@PutMapping("/search/2")
+	public ResponseEntity completeSearch(@RequestBody Search search) throws SQLException {
 		try {
-			searchService.deleteSearch(searchId);
+			searchService.completeSearch(search);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
+			System.out.println(e);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	//M010
-	@PutMapping("/search/1/{searchId}")
-	public ResponseEntity renewSearch(@PathVariable int searchId) throws SQLException {
-		try {
-			searchService.renewSearch(searchId);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
+
 	
 	//M013
 	@DeleteMapping("/search-reservation/{searchId}/{teamId}")

@@ -45,8 +45,10 @@ public interface VoteMatchDAO {
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
 	//V013
 	public void inviteFriend(Invite invite) throws SQLException;
-	//V014
-	public void deleteVoteMatch(int voteMatchId) throws SQLException;
+	//V014-1
+	public void deleteVoteMatchByVoteMatchId(int voteMatchId) throws SQLException;
+	//V014-1
+	public void deleteVoteMatchByMatchScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	//V015
 	public int findVoteMatchIdByMatchScheduleId(int matchScheduleId) throws SQLException;
 	

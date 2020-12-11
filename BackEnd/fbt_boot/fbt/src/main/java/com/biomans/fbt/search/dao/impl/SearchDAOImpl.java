@@ -48,33 +48,36 @@ public class SearchDAOImpl implements SearchDAO{
 		sqlSession.insert(ns+"doApplySearch", searchRes);
 	}
 	
-	
-	
-	
-	
-
-	
-	
-	
-
-	//M006
-	@Override
-	public void updateResStatus(SearchReservation searchRes) throws SQLException {
-		sqlSession.update(ns+"updateResStatus", searchRes);
-	}
-	
-	//M009
+	//M005
 	@Override
 	public void deleteSearch(int searchId) throws SQLException {
 		sqlSession.delete(ns+"deleteSearch", searchId);
 		
 	}
 	
-	//M010
+	//M006
 	@Override
 	public void renewSearch(int searchId) throws SQLException {
 		sqlSession.update(ns+"renewSearch", searchId);
 		
+	}
+	
+	//M007
+	@Override
+	public void updateResStatus(SearchReservation searchRes) throws SQLException {
+		sqlSession.update(ns+"updateResStatus", searchRes);
+	}
+	
+	//M008
+	@Override
+	public int checkSearchSuccessById(SearchReservation searchRes) throws SQLException {
+		return sqlSession.selectOne(ns+"checkSearchSuccessById", searchRes);
+	}
+	
+	//M009
+	@Override
+	public void addAwayTeam(HashMap<String, Integer> con) throws SQLException {
+		sqlSession.update(ns+"addAwayTeam", con);	
 	}
 	
 	//M013
@@ -93,9 +96,6 @@ public class SearchDAOImpl implements SearchDAO{
 		sqlSession.update(ns+"failSearch", con);
 	}
 
-	@Override
-	public int checkSearchSuccessById(SearchReservation searchRes) throws SQLException {
-		return sqlSession.selectOne(ns+"checkSearchSuccessById", searchRes);
-	}
+	
 
 }

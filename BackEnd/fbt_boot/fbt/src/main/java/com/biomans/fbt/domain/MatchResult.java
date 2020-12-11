@@ -1,6 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class MatchResult {
+	private int matchScheduleId;
 	private int isSet;
 	private int homeResult;
 	private int awayResult;
@@ -10,15 +11,24 @@ public class MatchResult {
 	
 	public MatchResult() {}
 
-	public MatchResult(int isSet, int homeResult, int awayResult, int homeScore, int awayScore,
+	public MatchResult(int matchScheduleId, int isSet, int homeResult, int awayResult, int homeScore, int awayScore,
 			MatchSchedule matchSchedule) {
 		super();
+		this.matchScheduleId = matchScheduleId;
 		this.isSet = isSet;
 		this.homeResult = homeResult;
 		this.awayResult = awayResult;
 		this.homeScore = homeScore;
 		this.awayScore = awayScore;
 		this.matchSchedule = matchSchedule;
+	}
+
+	public int getMatchScheduleId() {
+		return matchScheduleId;
+	}
+
+	public void setMatchScheduleId(int matchScheduleId) {
+		this.matchScheduleId = matchScheduleId;
 	}
 
 	public int getIsSet() {
@@ -71,9 +81,11 @@ public class MatchResult {
 
 	@Override
 	public String toString() {
-		return "MatchResult [isSet=" + isSet + ", homeResult=" + homeResult + ", awayResult=" + awayResult
-				+ ", homeScore=" + homeScore + ", awayScore=" + awayScore + ", matchSchedule=" + matchSchedule + "]";
+		return "MatchResult [matchScheduleId=" + matchScheduleId + ", isSet=" + isSet + ", homeResult=" + homeResult
+				+ ", awayResult=" + awayResult + ", homeScore=" + homeScore + ", awayScore=" + awayScore
+				+ ", matchSchedule=" + matchSchedule + "]";
 	}
 
+	
 	
 }

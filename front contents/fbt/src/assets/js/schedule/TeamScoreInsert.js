@@ -68,7 +68,6 @@ export default {
       this.$axios
         .get("/employ/3/" + this.matchScheduleId)
         .then(response => {
-          console.log(response.data);
           this.team = response.data;
           this.teamScore.teamTaker.teamId = this.team.teamId;
         })
@@ -79,7 +78,6 @@ export default {
     },
     // ============== 제출====================== //
     submitMatchResult() {
-      console.log(this.teamScore);
       this.$axios
         .post("/match-schedule/3", this.teamScore)
         .then(() => {

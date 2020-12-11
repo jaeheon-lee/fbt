@@ -24,17 +24,19 @@ public interface SearchDAO {
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
 	//M004
 	public void doApplySearch(SearchReservation searchRes) throws SQLException;
-	
-	
-	
-	
-	
-	//M006
-	public void updateResStatus(SearchReservation searchRes) throws SQLException;
-	//M009
+	//M005
 	public void deleteSearch(int searchId) throws SQLException;
-	//M010
+	//M006
 	public void renewSearch(int searchId) throws SQLException;
+	//M007
+	public void updateResStatus(SearchReservation searchRes) throws SQLException;
+	//M008
+	public int checkSearchSuccessById(SearchReservation searchRes) throws SQLException;
+	//M009
+	public void addAwayTeam(HashMap<String, Integer> con) throws SQLException;
+	
+	
+	
 	//M012
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException;
 	//
@@ -42,5 +44,5 @@ public interface SearchDAO {
 	public void completeSearch(HashMap<String, String> con) throws SQLException;
 	public void failSearch(HashMap<String, String> con) throws SQLException;
 	//
-	public int checkSearchSuccessById(SearchReservation searchRes) throws SQLException;
+	
 }

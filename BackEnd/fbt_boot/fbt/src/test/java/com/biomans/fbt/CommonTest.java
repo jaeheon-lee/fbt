@@ -39,7 +39,7 @@ class CommonTest {
 	void contextLoads() throws ParseException {
 		int teamId = 2;
 		Team team = sqlSession.selectOne(ns+"showOtherTeamInfo", teamId);
-		System.out.println(team.getTeamScores().size());
+		System.out.println(team.getMatchSchedules());
 	}
 
 }

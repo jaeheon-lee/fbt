@@ -16,6 +16,7 @@ public class Team {
 	private String bank;
 	private List<TeamScore> teamScores;
 	private List<TeamMember> teamMembers;
+	private List<MatchSchedule> matchSchedules;
 	private double teamManner;
 	private double teamAbility;
 	private int totalNum;
@@ -24,8 +25,8 @@ public class Team {
 
 	public Team(int teamId, String teamName, String emblem, String area, String stadiumInfo, String uniformColor,
 			int uniformType, String foundingDate, String teamRegDate, String account, String bank,
-			List<TeamScore> teamScores, List<TeamMember> teamMembers, double teamManner, double teamAbility,
-			int totalNum) {
+			List<TeamScore> teamScores, List<TeamMember> teamMembers, List<MatchSchedule> matchSchedules,
+			double teamManner, double teamAbility, int totalNum) {
 		super();
 		this.teamId = teamId;
 		this.teamName = teamName;
@@ -40,6 +41,7 @@ public class Team {
 		this.bank = bank;
 		this.teamScores = teamScores;
 		this.teamMembers = teamMembers;
+		this.matchSchedules = matchSchedules;
 		this.teamManner = teamManner;
 		this.teamAbility = teamAbility;
 		this.totalNum = totalNum;
@@ -149,6 +151,14 @@ public class Team {
 		this.teamMembers = teamMembers;
 	}
 
+	public List<MatchSchedule> getMatchSchedules() {
+		return matchSchedules;
+	}
+
+	public void setMatchSchedules(List<MatchSchedule> matchSchedules) {
+		this.matchSchedules = matchSchedules;
+	}
+
 	public double getTeamManner() {
 		return teamManner;
 	}
@@ -178,8 +188,9 @@ public class Team {
 		return "Team [teamId=" + teamId + ", teamName=" + teamName + ", emblem=" + emblem + ", area=" + area
 				+ ", stadiumInfo=" + stadiumInfo + ", uniformColor=" + uniformColor + ", uniformType=" + uniformType
 				+ ", foundingDate=" + foundingDate + ", teamRegDate=" + teamRegDate + ", account=" + account + ", bank="
-				+ bank + ", teamScores=" + teamScores + ", teamMembers=" + teamMembers + ", teamManner=" + teamManner
-				+ ", teamAbility=" + teamAbility + ", totalNum=" + totalNum + "]";
+				+ bank + ", teamScores=" + teamScores + ", teamMembers=" + teamMembers + ", matchSchedules="
+				+ matchSchedules + ", teamManner=" + teamManner + ", teamAbility=" + teamAbility + ", totalNum="
+				+ totalNum + "]";
 	}
 
 	

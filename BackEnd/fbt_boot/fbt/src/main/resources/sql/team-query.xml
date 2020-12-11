@@ -6,7 +6,8 @@
 	<!-- T001: 타팀 정보 출력 -->
 	<select id="showOtherTeamInfo" parameterType="integer" resultMap="TeamInfoRM">
 		SELECT
-		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type,
+		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type, t.team_ability, t.team_manner,
+		t.emblem,
 		tm.team_member_id,
 		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
 		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
@@ -19,6 +20,37 @@
 		ON ts.team_taker_id = t.team_id
 		WHERE t.team_id = #{value}
 	</select>
+	<!-- T002: 팀별 최근 5경기 전적 -->
+	<select id="showMatchRecordByTeam" parameterType="integer" resultMap="MatchRecordRM">
+		SELECT 
+		m.start_time, m.home_team_id, m.away_team_id,
+		mr.match_schedule_id, mr.is_set, mr.home_result, mr.away_result, mr.home_score, mr.away_score
+		FROM match_schedule m
+		JOIN match_result mr
+		ON m.match_schedule_id = mr.match_schedule_id
+		WHERE m.home_team_id = #{value} OR m.away_team_id = #{value}
+		ORDER BY m.start_time DESC
+		LIMIT 5
+	</select>
+	<resultMap type="matchSchedule" id="MatchRecordRM">
+		<id column="match_schedule_id" property="matchScheduleId"/>
+		<result column="start_time" property="startTime"/>
+		<association property="homeTeam" javaType="team">
+			<id column="home_team_id" property="teamId"/>
+		</association>
+		<association property="awayTeam" javaType="team">
+			<id column="away_team_id" property="teamId"/>
+		</association>
+		<association property="matchResult" javaType="MatchResult">
+			<id column="match_schedule_id" property="matchScheduleId"/>
+			<result column="is_set" property="isSet"/>
+			<result column="home_result" property="homeResult"/>
+			<result column="away_result" property="awayResult"/>
+			<result column="home_score" property="homeScore"/>
+			<result column="away_score" property="awayScore"/>
+		</association>
+	</resultMap>
+	
 	<!-- T004: 팀 등록 -->
 	<insert id="addTeam" parameterType="team">
 		INSERT INTO
@@ -42,9 +74,12 @@
 		<id column="team_id" property="teamId"/>
 		<result column="team_name" property="teamName"/>
 		<result column="area" property="area"/>
+		<result column="emblem" property="emblem"/>
 		<result column="uniform_color" property="uniformColor"/>
 		<result column="uniform_type" property="uniformType"/>
 		<result column="founding_date" property="foundingDate"/>
+		<result column="team_ability" property="teamAbility"/>
+		<result column="team_manner" property="teamManner"/>
 		<collection property="teamMembers" javaType="list" ofType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
 			<association property="user" javaType="user">

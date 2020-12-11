@@ -122,13 +122,6 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		return sqlSession.selectOne(ns+"showMatchScheduleResult", matchScheduleId);
 	}
 	
-	
-	@Override
-	public void addAwayTeam(HashMap<String, String> con) throws SQLException {
-		sqlSession.update(ns+"addAwayTeam", con);
-		
-	}
-	
 	@Override
 	// A006
 	public void changeHomeTeam(HashMap<String, Integer> con) throws SQLException {

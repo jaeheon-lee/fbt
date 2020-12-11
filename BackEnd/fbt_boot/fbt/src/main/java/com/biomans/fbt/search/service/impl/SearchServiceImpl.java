@@ -22,6 +22,7 @@ import com.biomans.fbt.domain.VoteMatchSetting;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.search.service.SearchService;
+import com.biomans.fbt.team.dao.TeamDAO;
 import com.biomans.fbt.util.Filter;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
@@ -33,7 +34,11 @@ public class SearchServiceImpl implements SearchService{
 	@Autowired
 	private MatchScheduleDAO matchScheduleDAO;
 	
-	@Autowired VoteMatchDAO voteMatchDAO;
+	@Autowired 
+	public VoteMatchDAO voteMatchDAO;
+	
+	@Autowired
+	public TeamDAO teamDAO;
 
 	//FM01
 	@Override
@@ -65,36 +70,66 @@ public class SearchServiceImpl implements SearchService{
 		searchDAO.doApplySearch(searchRes);
 	}
 	
-	
-	
-	
-	//M002-1
+	//FM04, FM12
 	@Override
 	public List<Search> showRegisteredSearchByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		return searchDAO.showRegisteredSearchByTeam(searchCon);
 	}
 	
-	//M002-2
+	//FM05, FM13
+	@Override
+	public void deleteSearch(int searchId) throws SQLException {
+		searchDAO.deleteSearch(searchId);
+		
+	}
+	
+	//FM06
+	@Override
+	public void renewSearch(int searchId) throws SQLException {
+		searchDAO.renewSearch(searchId);
+		
+	}
+	
+	//FM07, FM10
 	@Override
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
-		return searchDAO.showRegisteredSearchAppliedByTeam(searchCon);
+		// 매치 글 정보를 먼저 받아온다
+		List<Search> searches = searchDAO.showRegisteredSearchAppliedByTeam(searchCon);
+		// 신청 팀에 대한 정보를 받아온다
+		if(searches.size() > 0) {
+			for(Search search : searches) {
+				List<SearchReservation> searchReservations = search.getSearchReservations();
+				for(SearchReservation searchRes : searchReservations) {
+					int teamTakerId = searchRes.getTeamTaker().getTeamId();
+					Team teamTaker = teamDAO.showTeamInfo(teamTakerId);
+					searchRes.setTeamTaker(teamTaker);
+				}
+			}
+		}
+		return searches;
 	}
 	
 	
-	
-	
-	
-	//M006
+	//FM08, FM09, FM11
 	@Override
 	@Transactional
 	public void updateResStatus(Search search, SearchReservation searchRes) throws SQLException {
 		searchDAO.updateResStatus(searchRes);
-		//인원파악수락을 했으면, 자동으로 투표를 생성한다.
+		//인원파악수락을 요청했다면, 자동으로 투표를 생성
 		if(searchRes.getReservationStatus() == 1) {
+			// 자동 투표 생성 메소드
 			addVoteMatchBySearch(search, searchRes);
+		} else if (searchRes.getReservationStatus() == -1) {
+			int matchScheduleId = search.getMatchSchedule().getMatchScheduleId();
+			int teamId = search.getSearchReservations().get(0).getTeamTaker().getTeamId();
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("matchScheduleId", matchScheduleId);
+			searchCon.put("teamId", teamId);
+			voteMatchDAO.deleteVoteMatchByMatchScheduleId(searchCon);
 		}
 	}
 	
+	//FM08
 	public void addVoteMatchBySearch(Search search, SearchReservation searchRes) throws SQLException {
 		MatchSchedule matchSchedule = search.getMatchSchedule();
 		// 투표를 생성한다.
@@ -129,7 +164,7 @@ public class SearchServiceImpl implements SearchService{
 		voteMatchDAO.addVoteMatchSetting(voteSet);	
 	}
 	
-	//
+	//FM08
 	@Async("threadPoolTaskExecutor")
 	@Transactional
 	@Override
@@ -152,19 +187,24 @@ public class SearchServiceImpl implements SearchService{
 		return new AsyncResult<Integer>(number);
 	}
 	
-	//M009
+	//FM15
 	@Override
-	public void deleteSearch(int searchId) throws SQLException {
+	@Transactional
+	public void completeSearch(Search search) throws SQLException {
+		// awayTeam 등록
+		int takerTeamId = search.getSearchReservations().get(0).getTeamTaker().getTeamId();
+		int matchScheduleId = search.getMatchSchedule().getMatchScheduleId();
+		HashMap<String, Integer> con = new HashMap<String, Integer>();
+		con.put("takerTeamId", takerTeamId);
+		con.put("matchScheduleId", matchScheduleId);
+		searchDAO.addAwayTeam(con);
+		// 매치글 삭제
+		int searchId = search.getSearchId();
 		searchDAO.deleteSearch(searchId);
-		
 	}
 
-	//M010
-	@Override
-	public void renewSearch(int searchId) throws SQLException {
-		searchDAO.renewSearch(searchId);
-		
-	}
+
+
 	
 	//M013
 	@Override

@@ -1,10 +1,17 @@
 import axios from "axios";
+import TeamInfo from "@/components/Team/TeamInfo.vue";
+import CheckCompleteSearch from "@/components/dialog/CheckCompleteSearch.vue";
+
 export default {
   name: "search-list",
   props: {
     registeredStage: null,
     appliedStage: null,
     searchedSearch: Array
+  },
+  components: {
+    "team-info": TeamInfo,
+    "check-complete-search": CheckCompleteSearch
   },
   data() {
     return {
@@ -13,6 +20,10 @@ export default {
       // 토글 변수
       activeDetail: null, // 상세보기 토글
       activeTeamList: null, // 신청 팀리스트 토글
+      activeTeamInfo: null, // 팀상세보기 토글
+
+      // 다이어로그 변수
+      activeCheckComplete: false, // 팀 확정 전 의사묻는 다이어로그
 
       // get 변수
       loading: false,
@@ -35,7 +46,7 @@ export default {
     }
   },
   methods: {
-    // 팀별 매치 출력 (M002-1) => 매치 중 & 매치실패
+    // FM04, FM12
     showRegisteredSearchByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let status = 0; // 매치 실패
@@ -53,7 +64,7 @@ export default {
           this.loading = false;
         });
     },
-    // 인원신청 수락 시 출력 (M002-2)
+    // FM07, FM10
     showRegisteredSearchAppliedByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let reservationStatus = 0;
@@ -93,6 +104,12 @@ export default {
         .get("/search/2/" + teamId + "/" + reservationStatus + "/" + isApply)
         .then(response => {
           this.searches = response.data;
+          // 매치완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
+          if (this.registeredStage == 5) {
+            for (let i = 0; i < this.searches.length; i++) {
+              this.searches[i].matchSchedule.awayTeam = this.searches[i].searchReservations[0].teamTaker;
+            }
+          }
         })
         .catch(() => {
           this.errored = true;
@@ -101,7 +118,7 @@ export default {
           this.loading = false;
         });
     },
-    // 매치글 삭제 (M009)
+    // FM05, FM13
     deleteSearch(search) {
       axios
         .delete("/search/" + search.searchId)
@@ -113,7 +130,7 @@ export default {
           alert("삭제에 실패했습니다.");
         });
     },
-    // 매치글 끌어올리기 (M010)
+    // FM06
     renewSearch(search) {
       axios
         .put("/search/1/" + search.searchId)
@@ -125,7 +142,7 @@ export default {
           alert("끌어올리기에 실패했습니다.");
         });
     },
-    // 인원파악신청 수락하기(M006)
+    // FM08
     acceptApply(searchRes, search) {
       let selectedSearch = search;
       searchRes.reservationStatus = 1;
@@ -150,7 +167,7 @@ export default {
         })
         .catch(() => {});
     },
-    //인원파악신청 거절하기(M006)
+    // FM09, FM11
     refuseApply(searchRes, search, i) {
       let selectedSearch = search;
       searchRes.reservationStatus = -1;
@@ -167,6 +184,20 @@ export default {
           if (i == 0) alert("인원파악신청 거절에 실패했습니다.");
           else alert("인원파악 중단에 실패했습니다.");
         });
+    },
+    // FM13
+    cancelSearch(search, doAssign) {
+      this.deleteSearch(search);
+      if (doAssign == 1) {
+        const router = this.$router;
+        router.push({
+          name: "assign",
+          params: {
+            menu: 1,
+            matchScheduleId: search.matchSchedule.matchScheduleId
+          }
+        });
+      }
     },
     // 매치 예약 삭제 (M013)
     deleteSearchRes(search) {
@@ -208,19 +239,6 @@ export default {
           alert("인원파악신청에 실패했습니다.");
         });
     },
-    // 매치 확정하기
-    completeSearch(search) {
-      console.log(search);
-      // axios
-      //   .put("/search-reservation/1")
-      //   .then(() => {
-      //     alert("매치가 확정됐습니다.");
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //     alert("매치 확정에 실패했습니다.");
-      //   });
-    },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
@@ -238,6 +256,11 @@ export default {
     openTeamList(i) {
       if (this.activeTeamList == i) this.activeTeamList = null;
       else this.activeTeamList = i;
+    },
+    // 팀 상세정보 창 여닫기
+    controlTeamInfoToggle(j) {
+      if (this.activeTeamInfo == j) this.activeTeamInfo = null;
+      else this.activeTeamInfo = j;
     },
     // DB 조정 후 등록 매치 업데이트
     refreshRegistered() {
@@ -262,18 +285,6 @@ export default {
     // 신청 매치 리프레시
     refreshApplied() {
       this.showRegisteredSearchAppliedByTeam();
-    },
-    // 매치 취소하고 양도하기
-    cancelAssign(search) {
-      this.deleteSearch(search);
-      const router = this.$router;
-      router.push({
-        name: "assign",
-        params: {
-          menu: 1,
-          matchScheduleId: search.matchSchedule.matchScheduleId
-        }
-      });
     },
     // 어웨이 이름
     getAwayTeamName(matchSchedule) {
@@ -324,6 +335,22 @@ export default {
     content(value) {
       if (value) return value;
       else return "내용이 없습니다.";
+    },
+    // ======================= 받은 점수 =========================//
+    showTeamScore(value) {
+      if (value == 0) {
+        return "";
+      } else if (value < 2) {
+        return "하하";
+      } else if (value < 4) {
+        return "중하";
+      } else if (value < 6) {
+        return "중중";
+      } else if (value < 8) {
+        return "중상";
+      } else {
+        return "상상";
+      }
     }
   }
 };

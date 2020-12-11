@@ -110,11 +110,18 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 		sqlSession.insert(ns+"inviteFriend", invite);
 		
 	}
-	//V014
+	//V014-1
 	@Override
-	public void deleteVoteMatch(int voteMatchId) throws SQLException {
-		sqlSession.delete(ns+"deleteVoteMatch", voteMatchId);
+	public void deleteVoteMatchByVoteMatchId(int voteMatchId) throws SQLException {
+		sqlSession.delete(ns+"deleteVoteMatchByVoteMatchId", voteMatchId);
 	}
+	
+	//V014-1
+	@Override
+	public void deleteVoteMatchByMatchScheduleId(HashMap<String, Integer> searchCon) throws SQLException {
+		sqlSession.delete(ns+"deleteVoteMatchByMatchScheduleId", searchCon);
+	}
+	
 	//V015
 	@Override
 	public int findVoteMatchIdByMatchScheduleId(int matchScheduleId) throws SQLException {

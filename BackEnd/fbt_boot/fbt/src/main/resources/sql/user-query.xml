@@ -26,6 +26,13 @@
 		<id column="email" property="email"/>
 		<result column="image" property="image"/>
 		<result column="name" property="name"/>
+		<result column="phone_num" property="phoneNum"/>
+		<result column="area" property="area"/>
+		<result column="main_foot" property="mainFoot"/>
+		<result column="position" property="position"/>
+		<result column="emp_ability" property="empAbility"/>
+		<result column="emp_manner" property="empManner"/>
+		<result column="total_emp_attend" property="totalEmpAttend"/>
 		<collection property="teamMembers" javaType="list" ofType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
 			<result column="nick_name" property="nickName"/>
@@ -33,6 +40,23 @@
 				<id column="team_id" property="teamId"/>
 				<result column="team_name" property="teamName"/>
 			</association>
+		</collection>
+		<collection property="empScores" javaType="list" ofType="empScore">
+			<id column="emp_score_id" property="empScoreId"/>
+			<result column="manner_promise" property="mannerPromise"/>
+			<result column="manner_contact" property="mannerContact"/>
+			<result column="manner_rule" property="mannerRule"/>
+			<result column="manner_body_fight" property="mannerBodyFight"/>
+			<result column="manner_slang" property="mannerSlang"/>
+			<result column="manner_smoking" property="mannerSmoking"/>
+			<result column="manner_uniform" property="mannerUniform"/>
+			<result column="manner_payment" property="mannerPayment"/>
+			<result column="manner_arrangement" property="mannerArrangement"/>
+			<result column="manner_referee" property="mannerReferee"/>
+			<result column="manner_tackle" property="mannerTackle"/>
+			<result column="forward" property="forward"/>
+			<result column="middle" property="middle"/>
+			<result column="defence" property="defence"/>
 		</collection>
 	</resultMap>
 	<sql id="Login">
@@ -57,6 +81,29 @@
 		<include refid="Login"/>
 		WHERE u.email = #{email}
 		AND u.pass = #{pass}
+	</select>
+	
+	<!-- U004: 회원정보출력 -->
+	<select id="showUserInfo" parameterType="string" resultMap="UserRM">
+		SELECT
+		u.email, u.pass, u.name, u.phone_num, u.user_reg_date, u.recent_login, u.main_foot, u.position, u.height, 
+		u.weight, u.was_pro, u.gender, u.born_date, u.area, u.image, u.api_key, u.api_type, u.emp_ability, u.emp_manner,
+		es.emp_score_id, es.emp_email, es.manner_promise, es.manner_contact, es.manner_rule, es.manner_body_fight, es.manner_slang, 
+		es.manner_smoking, es.manner_uniform, es.manner_payment,
+		es.manner_arrangement, es.manner_referee, es.manner_tackle, es.forward, es.middle, es.defence,
+		ent.total_emp_attend
+		FROM user u
+		LEFT OUTER JOIN emp_score es
+		ON u.email = es.emp_email
+		LEFT OUTER JOIN (
+			SELECT 
+			email, count(entry_id) total_emp_attend
+			FROM entry
+			WHERE email = #{value}
+			GROUP BY email
+		) ent
+		ON u.email = ent.email
+		WHERE u.email = #{value}
 	</select>
 
 </mapper>

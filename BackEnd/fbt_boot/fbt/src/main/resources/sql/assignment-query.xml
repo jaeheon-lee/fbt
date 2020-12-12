@@ -222,8 +222,8 @@
 	<!-- A004: 양도 신청 -->
 	<insert id="doApplyAssignment" parameterType="assignmentReservation">
 		INSERT INTO 
-		assignment_reservation(assignment_id, team_id_taker, writer, reservation_status)
-		VALUES(#{assignmentId},#{teamTaker.teamId},#{writer}, 0)
+		assignment_reservation(assignment_id, team_id_taker, team_member_id, reservation_status)
+		VALUES(#{assignmentId},#{teamTaker.teamId},#{teamMember.teamMemberId}, 0)
 	</insert>
 	
 	<!-- A005: 신청 양도 단계 수정 -->

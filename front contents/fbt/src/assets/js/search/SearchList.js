@@ -224,13 +224,15 @@ export default {
         alert("자기글입니다.");
         return false;
       }
-      let writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
       let searchRes = {
         searchId: search.searchId,
         teamTaker: {
           teamId: teamIdTaker
         },
-        writer: writer
+        teamMember: {
+          teamMemberId: teamMemberId
+        }
       };
       axios
         .post("/search-reservation/", searchRes)

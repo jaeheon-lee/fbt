@@ -11,7 +11,7 @@ export default {
       // 검색 결과 받을 변수
       searchedEmploys: [],
       // 용병 신청 버튼 관리 변수
-      ApplyAble: [],
+      whichBtnActive: [],
       // 필터 변수
       filter: {
         date: null,
@@ -79,7 +79,7 @@ export default {
       stadiumTypes: ['흙', '잔디', '인조잔디'], // select option properties
       // 정렬 기준 정보
       orderList: [
-        { label: "날짜 최신순", value: 0 },
+        { label: "등록일 최신순", value: 0 },
         { label: "실력 오름차순", value: 1 },
         { label: "매너 오름차순", value: 2 }
       ]
@@ -96,7 +96,7 @@ export default {
     }
   },
   methods: {
-    // 검색하기 (Mxx)
+    // 검색하기 (FE02)
     arrangeFilter() {
       // 경기 시간 통합
       let timeRange1 = this.filter.timeRange1;
@@ -127,7 +127,7 @@ export default {
       // 검색
       this.doSearch();
     },
-    // 필터 검색(M006)
+    // 필터 검색(FE02)
     doSearch() {
       this.loading = true;
       // eslint-disable-next-line prettier/prettier
@@ -136,7 +136,7 @@ export default {
         .then(response => {
           this.searchedEmploys = response.data;
           for (let i = 0; i < this.searchedEmploys.length; i++) {
-            this.checkEmployed(this.searchedEmploys[i]);
+            this.controlEmployApplyBtn(this.searchedEmploys[i]);
           }
         })
         .catch(() => {
@@ -148,17 +148,26 @@ export default {
     },
     // 용병 검색 결과 출력 시, 이미 검색한 항목에 대해서 표시
     // 이메일이 같으면 false, 다르면 true
-    checkEmployed(employ) {
-      let employResList = employ.employResults;
+    // 마감 버튼 조절 메소드
+    controlEmployApplyBtn(employ) {
+      // 마감조건 : 마감일이 지났거나 이미 신청하지 않은 글
+      let employRes = employ.employResults;
+      // 마감일이 지났는지
+      let dueDate = new Date(employ.dueDate);
+      let today = new Date();
+      if (dueDate < today) {
+        this.whichBtnActive.push(2);
+        return;
+      }
+      // 글이 완료됐는지 + 신청하지 않았는지
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
-      for (let i = 0; i < employResList.length; i++) {
-        let emailOfRes = employResList[i].user.email;
-        if (email != emailOfRes) {
-          this.ApplyAble.push(true);
-        } else {
-          this.ApplyAble.push(false);
+      for (let i = 0; i < employRes.length; i++) {
+        if (employRes[i].user.email == email) {
+          this.whichBtnActive.push(1);
+          return;
         }
       }
+      this.whichBtnActive.push(0);
     },
     // 필터 초기화
     initFilter() {

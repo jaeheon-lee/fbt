@@ -201,7 +201,7 @@
       <!-- 검색 결과 라벨 끝-->
       <employ-list
         :searchedEmploys="searchedEmploys"
-        :ApplyAble="ApplyAble"
+        :whichBtnActive="whichBtnActive"
         :registeredStage="null"
         :appliedStage="null"
       ></employ-list>

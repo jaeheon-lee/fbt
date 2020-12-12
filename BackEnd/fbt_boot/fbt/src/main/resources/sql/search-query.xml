@@ -229,8 +229,8 @@
 	<!-- M004: 인원파악 신청 -->
 	<insert id="doApplySearch" parameterType="searchReservation">
 		INSERT INTO 
-		search_reservation(search_id, team_id_taker, writer, reservation_status)
-		VALUES(#{searchId},#{teamTaker.teamId},#{writer}, 0)
+		search_reservation(search_id, team_id_taker, team_member_id, reservation_status)
+		VALUES(#{searchId},#{teamTaker.teamId},#{teamMember.teamMemberId}, 0)
 	</insert>
 	
 	<!-- M005: 매치글 삭제 -->

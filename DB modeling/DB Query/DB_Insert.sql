@@ -175,7 +175,7 @@ employ(employ_id, team_id_giver, match_schedule_id, team_member_id, cost, req_nu
 values('4', '1', '1', '1-bioman1@gmail.com', '1', '3', '매너있는 분은 언제나 환영입니다.', '2020-10-13 07:46:21', '2020-10-10 15:52:00');
 INSERT INTO
 employ(employ_id, team_id_giver, match_schedule_id, team_member_id, cost, req_number, content, reg_date, due_date)
-values('1', '1', '2', '1-bioman1@gmail.com', '1', '3', '매너있는 분은 언제나 환영입니다.', '2020-11-27 07:46:21', '2020-11-27 15:52:00');
+values('1', '1', '2', '1-bioman1@gmail.com', '1', '3', '매너있는 분은 언제나 환영입니다.', '2020-11-27 07:46:21', '2020-12-31 15:52:00');
 
 INSERT INTO
 employ(employ_id, team_id_giver, match_schedule_id, team_member_id, cost, req_number, content, reg_date, due_date)
@@ -211,6 +211,10 @@ values('10', '8', '9', '8', '7', '8', '9', '10', '8', '7', '9', '7', '5', '9', '
 INSERT INTO
 emp_score(manner_promise, manner_contact, manner_rule, manner_body_fight, manner_slang, manner_smoking, manner_uniform, manner_payment, manner_arrangement, manner_referee, manner_tackle, forward, middle, defence, match_schedule_id, team_giver_id, emp_email)
 values('10', '8', '9', '9', '10', '8', '9', '8', '9', '7', '7', '9', '5', '5', '1', '1', 'bioman7@gmail.com');
+
+update user set emp_ability = 7.6666, emp_manner = 8.1818 where email = 'bioman16@gmail.com';
+update user set emp_ability = 7, emp_manner = 8.3636 where email = 'bioman17@gmail.com';
+update user set emp_ability = 6.3333, emp_manner = 8.5454 where email = 'bioman7@gmail.com';
 
 -- team_score
 -- team1

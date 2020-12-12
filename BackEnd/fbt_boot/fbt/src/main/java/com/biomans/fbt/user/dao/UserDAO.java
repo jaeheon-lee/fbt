@@ -14,4 +14,6 @@ public interface UserDAO {
 	public User LoginByApi(HashMap<String, String> searchCon) throws SQLException;
 	//U003-2
 	public User LoginByEmail(HashMap<String, String> searchCon) throws SQLException;
+	//U004
+	public User showUserInfo(String email) throws SQLException;
 }

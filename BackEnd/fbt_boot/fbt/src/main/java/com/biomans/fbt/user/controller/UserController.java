@@ -30,6 +30,20 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	//FU01
+	@GetMapping("/user/4/{email}")
+	public ResponseEntity showUserInfo(@PathVariable String email) throws SQLException {
+		try {
+			User user = userService.showUserInfo(email);
+			return new ResponseEntity(user, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	
+	
 	//U001
 	@PostMapping("/user")
 	public ResponseEntity addUser(@RequestBody User user) throws SQLException {

@@ -188,7 +188,7 @@ export default {
         this.employ.dueDate = dateTime; // 마감일시면
       }
     },
-    // 매치 등록
+    // (FE01)
     addEmploy() {
       // eslint-disable-next-line prettier/prettier
       Axios
@@ -236,7 +236,7 @@ export default {
         });
     },
     /* 지정된 경기 불러오기 --------------------------------------*/
-    // 경기 불러오기
+    // FV15
     loadMatchSchedule() {
       this.dialogMatchSchedule = true;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;

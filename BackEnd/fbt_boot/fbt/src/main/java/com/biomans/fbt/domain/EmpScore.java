@@ -1,6 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class EmpScore {
+	private int empScoreId;
 	private int mannerPromise;
 	private int mannerContact;
 	private int mannerRule;
@@ -23,11 +24,12 @@ public class EmpScore {
 	
 	public EmpScore() {}
 
-	public EmpScore(int mannerPromise, int mannerContact, int mannerRule, int mannerBodyFight, int mannerSlang,
-			int mannerSmoking, int mannerUniform, int mannerPayment, int mannerArrangement, int mannerReferee,
-			int mannerTackle, double empAbility, double empManner, int forward, int middle, int defence,
-			MatchSchedule matchSchedule, Team teamGiver, User user) {
+	public EmpScore(int empScoreId, int mannerPromise, int mannerContact, int mannerRule, int mannerBodyFight,
+			int mannerSlang, int mannerSmoking, int mannerUniform, int mannerPayment, int mannerArrangement,
+			int mannerReferee, int mannerTackle, double empAbility, double empManner, int forward, int middle,
+			int defence, MatchSchedule matchSchedule, Team teamGiver, User user) {
 		super();
+		this.empScoreId = empScoreId;
 		this.mannerPromise = mannerPromise;
 		this.mannerContact = mannerContact;
 		this.mannerRule = mannerRule;
@@ -47,6 +49,14 @@ public class EmpScore {
 		this.matchSchedule = matchSchedule;
 		this.teamGiver = teamGiver;
 		this.user = user;
+	}
+
+	public int getEmpScoreId() {
+		return empScoreId;
+	}
+
+	public void setEmpScoreId(int empScoreId) {
+		this.empScoreId = empScoreId;
 	}
 
 	public int getMannerPromise() {
@@ -203,13 +213,13 @@ public class EmpScore {
 
 	@Override
 	public String toString() {
-		return "EmpScore [mannerPromise=" + mannerPromise + ", mannerContact=" + mannerContact + ", mannerRule="
-				+ mannerRule + ", mannerBodyFight=" + mannerBodyFight + ", mannerSlang=" + mannerSlang
-				+ ", mannerSmoking=" + mannerSmoking + ", mannerUniform=" + mannerUniform + ", mannerPayment="
-				+ mannerPayment + ", mannerArrangement=" + mannerArrangement + ", mannerReferee=" + mannerReferee
-				+ ", mannerTackle=" + mannerTackle + ", empAbility=" + empAbility + ", empManner=" + empManner
-				+ ", forward=" + forward + ", middle=" + middle + ", defence=" + defence + ", matchSchedule="
-				+ matchSchedule + ", teamGiver=" + teamGiver + ", user=" + user + "]";
+		return "EmpScore [empScoreId=" + empScoreId + ", mannerPromise=" + mannerPromise + ", mannerContact="
+				+ mannerContact + ", mannerRule=" + mannerRule + ", mannerBodyFight=" + mannerBodyFight
+				+ ", mannerSlang=" + mannerSlang + ", mannerSmoking=" + mannerSmoking + ", mannerUniform="
+				+ mannerUniform + ", mannerPayment=" + mannerPayment + ", mannerArrangement=" + mannerArrangement
+				+ ", mannerReferee=" + mannerReferee + ", mannerTackle=" + mannerTackle + ", empAbility=" + empAbility
+				+ ", empManner=" + empManner + ", forward=" + forward + ", middle=" + middle + ", defence=" + defence
+				+ ", matchSchedule=" + matchSchedule + ", teamGiver=" + teamGiver + ", user=" + user + "]";
 	}
 
 	

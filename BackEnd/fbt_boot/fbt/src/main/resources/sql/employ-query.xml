@@ -60,6 +60,8 @@
 				<result column="position" property="position"/>
 				<result column="main_foot" property="mainFoot"/>
 				<result column="area" property="area"/>
+				<result column="emp_ability" property="empAbility"/>
+				<result column="emp_manner" property="empManner"/>
 			</association>
 		</collection>
 	</resultMap>
@@ -89,7 +91,7 @@
 	<!-- 추가: 인원파악신청했을 때 불러올 데이터 -->
 	<sql id="showEmployFactorApplied">
 		er.employ_result_id, er.employ_id res_employ_id, er.email, er.emp_result_status,
-		u.position position, u.name, u.main_foot, u.area
+		u.position position, u.name, u.main_foot, u.area, u.emp_ability, u.emp_manner
 	</sql>
 	<!-- 추가: 인원파악신청했을 때 조인 테이블 -->
 	<sql id="showEmployJoinApplied">
@@ -185,8 +187,14 @@
 		<if test="order == 0">
 			ORDER BY e.reg_date DESC
 		</if>
-		<!-- 경기순 -->
+		<!-- 실력순 -->
+		<if test="order == 1">
+			ORDER BY t.team_ability DESC
+		</if>
 		<!-- 매너순 -->
+		<if test="order == 2">
+			ORDER BY t.team_manner DESC
+		</if>
 	</select>
 	
 	<!-- E006: 신청 매치 단계 수정 -->

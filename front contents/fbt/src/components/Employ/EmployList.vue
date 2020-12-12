@@ -57,7 +57,8 @@
                 </v-row>
                 <v-row fluid justify="center" class="mt-3">
                   <!-- 용병 찾기 현황 정보 -->
-                  모집인원: {{ employ.reqNumber }}명 / 현재인원 {{ employ.currentNum }} 명
+                  모집인원: {{ employ.reqNumber }}명 / 현재인원
+                  {{ employ.currentNum }} 명
                 </v-row>
               </v-col>
               <!-- 어웨이 엠블럼 -->
@@ -84,145 +85,133 @@
               </v-col>
             </v-row>
             <!-- 상세정보: 목표인원, 신청인원 -->
-            <v-row>
-              <v-col offset="2" cols="8">
-                <v-expand-transition>
-                  <div id="match-info-detail" v-if="activeDetail == i">
-                    <!--경기타입비용주차-->
-                    <!-- 경기타입,비용,주차  라벨-->
-                    <v-row class="mx-0 px-0">
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >경기타입</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        style="padding-left:2px;padding-right:2px;"
-                        >비용</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >용병 부담 비용</v-col
-                      >
-                    </v-row>
-                    <!-- 경기타입, 비용, 주차 본문 -->
-                    <v-row class="mx-0 px-0">
-                      <!-- 경기 타입 -->
-                      <v-col cols="4" class="pa-0 pr-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{
-                            employ.matchSchedule.matchType | showMatchType
-                          }}</v-row
-                        ></v-col
-                      >
-                      <!-- 경기 비용 -->
-                      <v-col
-                        cols="4"
-                        class="py-0"
-                        style="padding-left:2px;padding-right:2px;"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ employ.matchSchedule.cost }} 만원</v-row
-                        ></v-col
-                      >
-                      <!-- 용밤 부담 비용-->
-                      <v-col cols="4" class="pa-0 pl-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ employ.cost }} 만원</v-row
-                        ></v-col
-                      >
-                    </v-row>
-                    <!--경기타입비용주차 끝-->
-                    <!-- 경기장 타입, 경기장 샤워여부, 경기장 주차여부 -->
-                    <!-- 경기장 타입,샤워,주차  라벨-->
-                    <v-row class="mx-0 px-0">
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >경기장 타입</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        style="padding-left:2px;padding-right:2px;"
-                        >샤워여부</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >주차여부</v-col
-                      >
-                    </v-row>
-                    <v-row class="mx-0 px-0">
-                      <!-- 경기장 타입 -->
-                      <v-col cols="4" class="pa-0 pl-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ employ.matchSchedule.stadiumType }}</v-row
-                        ></v-col
-                      >
-                      <!-- 경기장 샤워여부 -->
-                      <v-col cols="4" class="pa-0 pl-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{
-                            employ.matchSchedule.stadiumShower | showShower
-                          }}</v-row
-                        ></v-col
-                      >
-                      <!-- 경기장 주차여부 -->
-                      <v-col cols="4" class="pa-0 pl-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{
-                            employ.matchSchedule.stadiumParking | showParking
-                          }}</v-row
-                        ></v-col
-                      >
-                    </v-row>
-                    <!-- 경기장 타입, 경기장 샤워여부, 경기장 주차여부  끝-->
-                    <!--내용-->
-                    <!-- 내용 라벨 -->
-                    <v-row class="mx-0 px-0">
-                      <v-col
-                        cols="12"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >내용</v-col
-                      >
-                    </v-row>
-                    <!-- 내용 본문 -->
-                    <v-row class="mx-0 px-0">
-                      <v-col cols="12" class="text-left pa-0"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ employ.content | content }}</v-row
-                        ></v-col
-                      >
-                    </v-row>
-                    <!--내용 끝 -->
-                  </div>
-                </v-expand-transition>
-              </v-col>
-            </v-row>
+            <v-expand-transition>
+              <v-row v-if="activeDetail == i">
+                <v-col offset="2" cols="8">
+                  <!--경기타입비용주차-->
+                  <!-- 경기타입,비용,주차  라벨-->
+                  <v-row class="mx-0 px-0">
+                    <v-col cols="4" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      >경기타입</v-col
+                    >
+                    <v-col
+                      cols="4"
+                      class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      style="padding-left:2px;padding-right:2px;"
+                      >비용</v-col
+                    >
+                    <v-col cols="4" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      >용병 부담 비용</v-col
+                    >
+                  </v-row>
+                  <!-- 경기타입, 비용, 주차 본문 -->
+                  <v-row class="mx-0 px-0">
+                    <!-- 경기 타입 -->
+                    <v-col cols="4" class="pa-0 pr-1"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{
+                          employ.matchSchedule.matchType | showMatchType
+                        }}</v-row
+                      ></v-col
+                    >
+                    <!-- 경기 비용 -->
+                    <v-col
+                      cols="4"
+                      class="py-0"
+                      style="padding-left:2px;padding-right:2px;"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{ employ.matchSchedule.cost }} 만원</v-row
+                      ></v-col
+                    >
+                    <!-- 용밤 부담 비용-->
+                    <v-col cols="4" class="pa-0 pl-1"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{ employ.cost }} 만원</v-row
+                      ></v-col
+                    >
+                  </v-row>
+                  <!--경기타입비용주차 끝-->
+                  <!-- 경기장 타입, 경기장 샤워여부, 경기장 주차여부 -->
+                  <!-- 경기장 타입,샤워,주차  라벨-->
+                  <v-row class="mx-0 px-0">
+                    <v-col cols="4" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      >경기장 타입</v-col
+                    >
+                    <v-col
+                      cols="4"
+                      class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      style="padding-left:2px;padding-right:2px;"
+                      >샤워여부</v-col
+                    >
+                    <v-col cols="4" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      >주차여부</v-col
+                    >
+                  </v-row>
+                  <v-row class="mx-0 px-0">
+                    <!-- 경기장 타입 -->
+                    <v-col cols="4" class="pa-0 pl-1"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{ employ.matchSchedule.stadiumType }}</v-row
+                      ></v-col
+                    >
+                    <!-- 경기장 샤워여부 -->
+                    <v-col cols="4" class="pa-0 pl-1"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{
+                          employ.matchSchedule.stadiumShower | showShower
+                        }}</v-row
+                      ></v-col
+                    >
+                    <!-- 경기장 주차여부 -->
+                    <v-col cols="4" class="pa-0 pl-1"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{
+                          employ.matchSchedule.stadiumParking | showParking
+                        }}</v-row
+                      ></v-col
+                    >
+                  </v-row>
+                  <!-- 경기장 타입, 경기장 샤워여부, 경기장 주차여부  끝-->
+                  <!--내용-->
+                  <!-- 내용 라벨 -->
+                  <v-row class="mx-0 px-0">
+                    <v-col cols="12" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      >내용</v-col
+                    >
+                  </v-row>
+                  <!-- 내용 본문 -->
+                  <v-row class="mx-0 px-0">
+                    <v-col cols="12" class="text-left pa-0"
+                      ><v-row
+                        class="ma-0 pa-3"
+                        justify="center"
+                        style="border:2px solid #AD1457;border-radius:25px;"
+                        >{{ employ.content | content }}</v-row
+                      ></v-col
+                    >
+                  </v-row>
+                  <!--내용 끝 -->
+                </v-col>
+              </v-row>
+            </v-expand-transition>
             <!-- 경기 상세정보 끝 -->
             <div v-if="registeredStage != null">
               <!-- 신청 리스트 -->
@@ -242,16 +231,25 @@
                   <v-expand-transition>
                     <div id="match-info-detail" v-if="activeTeamList == i">
                       <!-- 신청 요약 -->
-                      <v-row fluid justify="center" class="mx-0 px-0 text-center">
-                        <span class="mr-2">모집인원: {{ employ.reqNumber }}명</span>
-                        <span class="mr-2">신청인원: {{ employ.currentNum }}명</span>
+                      <v-row
+                        fluid
+                        justify="center"
+                        class="mx-0 px-0 text-center"
+                      >
+                        <span class="mr-2"
+                          >모집인원: {{ employ.reqNumber }}명</span
+                        >
+                        <span class="mr-2"
+                          >신청인원: {{ employ.currentNum }}명</span
+                        >
                         <span class="mr-2">수락인원: </span>
                         <span class="mr-2">거절인원: </span>
                       </v-row>
                       <!--팀 리스트 라벨-->
                       <v-row class="mx-0 px-0 text-center">
+                        <v-col cols="1"></v-col>
                         <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
-                          >이름</v-col
+                          >이메일</v-col
                         >
                         <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
                           >활동지역</v-col
@@ -259,8 +257,8 @@
                         <v-col cols="1" class="mx-0 pl-2 pr-1 px-0 pb-2"
                           >실력</v-col
                         >
-                        <v-col cols="2" class="mx-0 pl-2 pr-1 px-0 pb-2"
-                          >경기매너점수</v-col
+                        <v-col cols="1" class="mx-0 pl-2 pr-1 px-0 pb-2"
+                          >매너</v-col
                         >
                         <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
                           >조치</v-col
@@ -268,69 +266,100 @@
                       </v-row>
                       <!-- 팀 리스트 라벨 끝 -->
                       <v-divider color="white"></v-divider>
-                      <!-- 팀리스트 본문 -->
-                      <v-row
-                        class="mx-0 px-0 text-center"
-                        v-for="(res, j) in employ.employResults"
-                        :key="j"
-                      >
-                        <!-- 팀명 -->
-                        <v-col cols="3">{{ res.user.name }}</v-col>
-                        <!-- 활동지역 -->
-                        <v-col cols="3">{{ res.user.area }}</v-col>
-                        <!-- 실력 -->
-                        <v-col cols="1">
-                          <!-- 여기에 실력 머스타치 넣기 -->
-                        </v-col>
-                        <!-- 경기매너점수 -->
-                        <v-col cols="2">
-                          <!-- 여기에 경기매너점수 머스타치 넣기 -->
-                        </v-col>
-                        <!-- 인원파악신청|거절 버튼 -->
-                        <!-- 신청만 했다면 -->
-                        <v-col
-                          cols="3"
-                          v-if="registeredStage == 1 && res.empResultStatus == 0"
+                      <!-- 신청 회원리스트 본문 -->
+                      <div v-for="(res, j) in employ.employResults" :key="j">
+                        <v-row
+                          class="mx-0 px-0 text-center"
+                          @click="controlUserInfoToggle(j)"
+                          style="cursor:pointer;"
                         >
-                          <v-row class="justify-center">
-                            <v-btn
-                              class="ma-0 pa-0 mr-2 justify-center"
-                              elevation="2"
-                              small
-                              color="#6920A3"
-                              @click="modifyApply(res, employ, 0)"
-                              >수락</v-btn
-                            >
-                            <v-btn
-                              class="ma-0 pa-0 justify-center"
-                              elevation="2"
-                              small
-                              color="#AD1457"
-                              @click="modifyApply(res, employ, 1)"
-                              >거절</v-btn
-                            >
-                          </v-row>
-                        </v-col>
-                        <!-- 수락했다면 -->
-                        <v-col
-                          cols="3"
-                          v-if="registeredStage == 1 && res.empResultStatus == 1"
-                        >
-                          <v-row class="justify-center">
-                            수락됨
-                          </v-row>
-                        </v-col>
-                        <!-- 거절했다면 -->
-                        <v-col
-                          cols="3"
-                          v-if="registeredStage == 1 && res.empResultStatus == -1"
-                        >
-                          <v-row class="justify-center">
-                            거절됨
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <!-- 팀리스트 본문  끝-->
+                          <!-- 팀명 -->
+                          <!-- 아이콘 -->
+                          <v-col cols="1">
+                            <v-icon v-if="activeUserInfo == j">
+                              mdi-chevron-down
+                            </v-icon>
+                            <v-icon v-else>
+                              mdi-chevron-right
+                            </v-icon>
+                          </v-col>
+                          <v-col
+                            cols="3"
+                            style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
+                            >{{ res.user.email }}</v-col
+                          >
+                          <!-- 활동지역 -->
+                          <v-col cols="3">{{ res.user.area }}</v-col>
+                          <!-- 실력 -->
+                          <v-col cols="1" class="px-0">
+                            {{ res.user.empAbility | showTeamScore }}
+                          </v-col>
+                          <!-- 경기매너점수 -->
+                          <v-col cols="1" class="px-0">
+                            {{ res.user.empManner | showTeamScore }}
+                          </v-col>
+                          <!-- 인원파악신청|거절 버튼 -->
+                          <!-- 신청만 했다면 -->
+                          <v-col
+                            cols="3"
+                            v-if="
+                              registeredStage == 1 && res.empResultStatus == 0
+                            "
+                          >
+                            <v-row class="justify-center">
+                              <v-btn
+                                class="ma-0 pa-0 mr-2 justify-center"
+                                elevation="2"
+                                small
+                                color="#6920A3"
+                                @click.stop="modifyApply(res, employ, 0)"
+                                >수락</v-btn
+                              >
+                              <v-btn
+                                class="ma-0 pa-0 justify-center"
+                                elevation="2"
+                                small
+                                color="#AD1457"
+                                @click.stop="modifyApply(res, employ, 1)"
+                                >거절</v-btn
+                              >
+                            </v-row>
+                          </v-col>
+                          <!-- 수락했다면 -->
+                          <v-col
+                            cols="3"
+                            v-if="
+                              registeredStage == 1 && res.empResultStatus == 1
+                            "
+                          >
+                            <v-row class="justify-center">
+                              수락됨
+                            </v-row>
+                          </v-col>
+                          <!-- 거절했다면 -->
+                          <v-col
+                            cols="3"
+                            v-if="
+                              registeredStage == 1 && res.empResultStatus == -1
+                            "
+                          >
+                            <v-row class="justify-center">
+                              거절됨
+                            </v-row>
+                          </v-col>
+                        </v-row>
+                        <!-- 신청 회원리스트 본문  끝-->
+                        <!-- 회원 상세보기 창 -->
+                        <v-row>
+                          <v-expand-transition>
+                            <user-info
+                              class="my-5"
+                              :email="res.user.email"
+                              v-if="activeUserInfo == j"
+                            ></user-info>
+                          </v-expand-transition>
+                        </v-row>
+                      </div>
                       <!--팀리스트 끝-->
                       <!--내용-->
                       <!-- 내용 라벨 -->
@@ -372,8 +401,18 @@
                 small
                 color="#6920A3"
                 @click="doApply(employ)"
-                v-if="ApplyAble[i]"
+                v-if="whichBtnActive[i] == 0"
                 >용병 신청</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                disabled
+                v-else-if="whichBtnActive[i] == 2"
+                >마감된 글</v-btn
               >
               <v-btn
                 class="mr-7"

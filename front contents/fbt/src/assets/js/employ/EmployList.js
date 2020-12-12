@@ -1,11 +1,15 @@
 import axios from "axios";
+import UserInfo from "@/components/User/UserInfo.vue";
 export default {
   name: "employ-list",
   props: {
     registeredStage: null,
     appliedStage: null,
     searchedEmploys: Array,
-    ApplyAble: Array
+    whichBtnActive: Array
+  },
+  components: {
+    "user-info": UserInfo
   },
   data() {
     return {
@@ -13,7 +17,9 @@ export default {
       employs: [],
       // 토글 변수
       activeDetail: null, // 상세보기 토글
-      activeTeamList: null, // 신청 팀리스트 토글,
+      activeTeamList: null, // 신청 용병 리스트 토글,
+      activeUserInfo: null, // 회원상세보기 토글
+      activeRegisterTeam: null, // 등록팀 상세보기 토글
 
       // get 변수
       loading: false,
@@ -36,7 +42,7 @@ export default {
     }
   },
   methods: {
-    // 팀별 용병 신청글 출력 (A002-1) => 용변 신청 중 & 용병실패 & 성공
+    // FE04, FE09, FE10
     showRegisteredEmployByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let status = 0;
@@ -94,7 +100,7 @@ export default {
           this.loading = false;
         });
     },
-    // 용병 찾기 글 삭제 (E009)
+    // FE05
     deleteEmploy(employ) {
       axios
         .delete("/employ/" + employ.employId)
@@ -106,7 +112,7 @@ export default {
           alert("삭제에 실패했습니다.");
         });
     },
-    // 용병글 끌어올리기 (E010)
+    // FE06
     renewEmploy(employ) {
       let employId = employ.employId;
       axios
@@ -119,7 +125,7 @@ export default {
           alert("끌어올리기에 실패했습니다.");
         });
     },
-    // 용병신청 수락하기(M006)
+    // FE07
     modifyApply(employRes, employ, i) {
       employRes.empResultStatus = 1;
       if (i == 1) employRes.empResultStatus = -1;
@@ -150,7 +156,7 @@ export default {
           alert("취소에 실패했습니다.");
         });
     },
-    // 용병신청하기
+    // 용병신청하기(FE03)
     doApply(employ) {
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
@@ -194,6 +200,11 @@ export default {
     openTeamList(i) {
       if (this.activeTeamList == i) this.activeTeamList = null;
       else this.activeTeamList = i;
+    },
+    // 회원 상세보기 창 여닫기
+    controlUserInfoToggle(j) {
+      if (this.activeUserInfo == j) this.activeUserInfo = null;
+      else this.activeUserInfo = j;
     },
     // 투표 생성 페이지로 이동하기
     moveToVoteMatchInsert(search, i) {
@@ -257,6 +268,22 @@ export default {
     content(value) {
       if (value) return value;
       else return "내용이 없습니다.";
+    },
+    // ======================= 받은 점수 =========================//
+    showTeamScore(value) {
+      if (value == 0) {
+        return "";
+      } else if (value < 2) {
+        return "하하";
+      } else if (value < 4) {
+        return "중하";
+      } else if (value < 6) {
+        return "중중";
+      } else if (value < 8) {
+        return "중상";
+      } else {
+        return "상상";
+      }
     }
   }
 };

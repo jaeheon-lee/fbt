@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDAO userDAO;
 	
-	//U001
+	//FU01
 	@Override
 	public void addUser(User user) throws SQLException {
 		userDAO.addUser(user);
@@ -43,5 +43,11 @@ public class UserServiceImpl implements UserService {
 	public User LoginByEmail(HashMap<String, String> searchCon) throws SQLException {
 		User user = userDAO.LoginByEmail(searchCon);
 		return user;
+	}
+	
+	//U004
+	@Override
+	public User showUserInfo(String email) throws SQLException {
+		return userDAO.showUserInfo(email);
 	}
 }

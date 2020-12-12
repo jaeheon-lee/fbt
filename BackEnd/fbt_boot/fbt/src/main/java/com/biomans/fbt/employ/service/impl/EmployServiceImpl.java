@@ -19,20 +19,22 @@ import com.biomans.fbt.util.Filter;
 public class EmployServiceImpl implements EmployService {
 	@Autowired
 	private EmployDAO employDAO;
-
+	
+	//FE01
 	@Override
 	public void addEmploy(Employ employ) throws SQLException {
 		employDAO.addEmploy(employ);
 		
 	}
-
+	
+	//FE04, FE09, FE10
 	@Override
 	public List<Employ> showRegisteredEmployByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		List<Employ> selectedList = new ArrayList<Employ>();
 		int status = searchCon.get("status");
 		List<Employ> list = employDAO.showRegisteredEmployByTeam(searchCon);
 		for(Employ emp : list) {
-			int currentNum = countCurrentNum(emp);
+			int currentNum = countEmployDesc(emp);
 			int reqNumber = emp.getReqNumber();
 			emp.setCurrentNum(currentNum); // 현재인원 추가
 			if(status == 0) { // 용병찾기 중 창에서 요청
@@ -50,47 +52,52 @@ public class EmployServiceImpl implements EmployService {
 	@Override
 	public List<Employ> showAppliedEmployByUser(HashMap<String, String> searchCon) throws SQLException {
 		List<Employ> list = employDAO.showAppliedEmployByUser(searchCon);
+		// 모집 현황 삽입
 		for(Employ emp : list) {
-			emp.setCurrentNum(countCurrentNum(emp));
+			emp.setCurrentNum(countEmployDesc(emp));
 		}
 		return list;
 	}
 
-	//E003
+	//FE02
 	@Override
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException {
 		List<Employ> list = employDAO.searchEmployByFilter(filter);
+		// 모집 현황 삽입
 		for(Employ emp : list) {
-			emp.setCurrentNum(countCurrentNum(emp));
+			emp.setCurrentNum(countEmployDesc(emp));
 		}
 		return list;
 	}
 	
 	@Override
-	public int countCurrentNum(Employ employ) throws SQLException {
+	public int countEmployDesc(Employ employ) throws SQLException {
 		List<EmployResult> list = employ.getEmployResults();
+		System.out.println(list);
 		return list.size();
 	}
 	
 	
-	//E005
+	//FE03
 	@Override
 	public void doApplyEmploy(EmployResult employRes) throws SQLException {
 		employDAO.doApplyEmploy(employRes);
 	}
 	
-	//E006
+	//FE07
 	@Override
 	public void updateResStatus(EmployResult employRes) throws SQLException {
 		employDAO.updateResStatus(employRes);
 	}
 	
+	//FE05
 	@Override
 	public void deleteEmploy(int employId) throws SQLException {
 		employDAO.deleteEmploy(employId);
 		
 	}
-
+	
+	//FE06
 	@Override
 	public void renewEmploy(int employId) throws SQLException {
 		employDAO.renewEmploy(employId);

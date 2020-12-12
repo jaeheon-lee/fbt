@@ -20,15 +20,19 @@ public class User {
 	private String area;
 	private String image;
 	private int apiType;
+	private int empAbility;
+	private int empManner;
+	private int totalEmpAttend;
 	private ApiCategory apiCategory;
 	private List<TeamMember> teamMembers;
+	private List<EmpScore> empScores;
 	
 	public User() {}
 
 	public User(String email, String pass, String name, String phoneNum, String userRegDate, String recentLogin,
 			String mainFoot, String position, String apiKey, int height, int weight, int wasPro, int gender,
-			String bornDate, String area, String image, int apiType, ApiCategory apiCategory,
-			List<TeamMember> teamMembers) {
+			String bornDate, String area, String image, int apiType, int empAbility, int empManner, int totalEmpAttend,
+			ApiCategory apiCategory, List<TeamMember> teamMembers, List<EmpScore> empScores) {
 		super();
 		this.email = email;
 		this.pass = pass;
@@ -47,8 +51,12 @@ public class User {
 		this.area = area;
 		this.image = image;
 		this.apiType = apiType;
+		this.empAbility = empAbility;
+		this.empManner = empManner;
+		this.totalEmpAttend = totalEmpAttend;
 		this.apiCategory = apiCategory;
 		this.teamMembers = teamMembers;
+		this.empScores = empScores;
 	}
 
 	public String getEmail() {
@@ -183,8 +191,32 @@ public class User {
 		return apiType;
 	}
 
-	public void setApi_type(int apiType) {
+	public void setApiType(int apiType) {
 		this.apiType = apiType;
+	}
+
+	public int getEmpAbility() {
+		return empAbility;
+	}
+
+	public void setEmpAbility(int empAbility) {
+		this.empAbility = empAbility;
+	}
+
+	public int getEmpManner() {
+		return empManner;
+	}
+
+	public void setEmpManner(int empManner) {
+		this.empManner = empManner;
+	}
+
+	public int getTotalEmpAttend() {
+		return totalEmpAttend;
+	}
+
+	public void setTotalEmpAttend(int totalEmpAttend) {
+		this.totalEmpAttend = totalEmpAttend;
 	}
 
 	public ApiCategory getApiCategory() {
@@ -203,15 +235,25 @@ public class User {
 		this.teamMembers = teamMembers;
 	}
 
+	public List<EmpScore> getEmpScores() {
+		return empScores;
+	}
+
+	public void setEmpScores(List<EmpScore> empScores) {
+		this.empScores = empScores;
+	}
+
 	@Override
 	public String toString() {
 		return "User [email=" + email + ", pass=" + pass + ", name=" + name + ", phoneNum=" + phoneNum
 				+ ", userRegDate=" + userRegDate + ", recentLogin=" + recentLogin + ", mainFoot=" + mainFoot
 				+ ", position=" + position + ", apiKey=" + apiKey + ", height=" + height + ", weight=" + weight
 				+ ", wasPro=" + wasPro + ", gender=" + gender + ", bornDate=" + bornDate + ", area=" + area + ", image="
-				+ image + ", apiType=" + apiType + ", apiCategory=" + apiCategory + ", teamMembers=" + teamMembers
-				+ "]";
+				+ image + ", apiType=" + apiType + ", empAbility=" + empAbility + ", empManner=" + empManner
+				+ ", totalEmpAttend=" + totalEmpAttend + ", apiCategory=" + apiCategory + ", teamMembers=" + teamMembers
+				+ ", empScores=" + empScores + "]";
 	}
 
+	
 	
 }

@@ -30,16 +30,16 @@ import com.biomans.fbt.util.Filter;
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "TeamMapper.";
+	final String ns = "UserMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
 	void contextLoads() throws ParseException {
-		int teamId = 2;
-		Team team = sqlSession.selectOne(ns+"showOtherTeamInfo", teamId);
-		System.out.println(team.getMatchSchedules());
+		String email = "bioman7@gmail.com";
+		User user = sqlSession.selectOne(ns+"showUserInfo", email);
+		System.out.println(user.getEmpScores());
 	}
 
 }

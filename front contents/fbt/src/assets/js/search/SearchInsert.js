@@ -238,7 +238,7 @@ export default {
         });
     },
     /* 지정된 경기 불러오기 --------------------------------------*/
-    // 경기 불러오기(FS02)
+    // 경기 불러오기(FV15)
     loadMatchSchedule() {
       this.dialogMatchSchedule = true;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;

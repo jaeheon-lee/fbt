@@ -40,4 +40,10 @@ public class UserDAOImpl implements UserDAO{
 	public User LoginByEmail(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"LoginByEmail", searchCon);
 	}
+	
+	//U004
+	@Override
+	public User showUserInfo(String email) throws SQLException {
+		return sqlSession.selectOne(ns+"showUserInfo", email);
+	}
 }

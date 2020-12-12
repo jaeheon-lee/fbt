@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.biomans.fbt.domain.User;
 
 public interface UserService {
-	//U001
+	//FU01
 	public void addUser(User user) throws SQLException;
 	//U002
 	public String checkDuple(String email) throws SQLException;
@@ -14,4 +14,6 @@ public interface UserService {
 	public User LoginByApi(HashMap<String, String> searchCon) throws SQLException;
 	//U003-2
 	public User LoginByEmail(HashMap<String, String> searchCon) throws SQLException;
+	//U004
+	public User showUserInfo(String email) throws SQLException;
 }

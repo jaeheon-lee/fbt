@@ -10,22 +10,22 @@ import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.util.Filter;
 
 public interface EmployService {
-	//E001
+	//FE01
 	public void addEmploy(Employ employ) throws SQLException;
-	//E002-1
+	//FE04, FE09, FE10
 	public List<Employ> showRegisteredEmployByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//E002-2
 	public List<Employ> showAppliedEmployByUser(HashMap<String, String> searchCon) throws SQLException;
-	//E003
+	//FE02
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException;
-	public int countCurrentNum(Employ employ) throws SQLException;
-	//E005
+	public int countEmployDesc(Employ employ) throws SQLException;
+	//FE03
 	public void doApplyEmploy(EmployResult employRes) throws SQLException;
-	//E006
+	//FE07
 	public void updateResStatus(EmployResult employRes) throws SQLException;
-	//E009
+	//FE05
 	public void deleteEmploy(int employId) throws SQLException;
-	//E010
+	//FE06
 	public void renewEmploy(int employId) throws SQLException;
 	//E013
 	public void deleteEmployRes(HashMap<String, String> searchCon) throws SQLException;

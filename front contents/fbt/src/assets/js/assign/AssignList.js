@@ -181,13 +181,15 @@ export default {
         alert("자기글입니다.");
         return false;
       }
-      let writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
       let assignmentRes = {
         assignmentId: assign.assignmentId,
         teamTaker: {
           teamId: teamIdTaker
         },
-        writer: writer
+        teamMember: {
+          teamMemberId: teamMemberId
+        }
       };
       axios
         .post("/assignment-reservation/", assignmentRes)

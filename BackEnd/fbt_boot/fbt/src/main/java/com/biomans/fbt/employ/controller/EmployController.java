@@ -34,7 +34,7 @@ public class EmployController {
 	@Autowired
 	private MatchScheduleService matchScheduleService;
 	
-	//E001
+	//FE01
 	@PostMapping("/employ")
 	public ResponseEntity addEmploy(@RequestBody Employ employ) throws SQLException {
 		try {
@@ -58,7 +58,7 @@ public class EmployController {
 		}
 	}
 	
-	//E002-1
+	//FE04, FE09, FE10
 	@GetMapping("/employ/1/{teamId}/{status}")
 	public ResponseEntity showRegisteredEmployByTeam(@PathVariable int teamId,
 			@PathVariable int status) throws SQLException {
@@ -90,7 +90,7 @@ public class EmployController {
 		}
 	}
 	
-	//E003
+	//FE02
 	@PostMapping("/employ/2")
 	public ResponseEntity searchEmployByFilter(@RequestBody Filter filter) throws SQLException {
 		try {
@@ -102,7 +102,7 @@ public class EmployController {
 		}
 	}
 	
-	//E005
+	//FE03
 	@PostMapping("/employ-result")
 	public ResponseEntity doApplyEmploy(@RequestBody EmployResult employRes) throws SQLException {
 		try {
@@ -114,7 +114,7 @@ public class EmployController {
 		}
 	}
 	
-	//E006
+	//FE07
 	@PutMapping("/employ-result/1")
 	public ResponseEntity updateResStatus(@RequestBody Employ employ) throws SQLException {
 		try {
@@ -128,7 +128,7 @@ public class EmployController {
 	}
 	
 	
-	//E009
+	//FE05
 	@DeleteMapping("/employ/{employId}")
 	public ResponseEntity deleteEmploy(@PathVariable int employId) throws SQLException {
 		try {
@@ -140,7 +140,7 @@ public class EmployController {
 		}
 	}
 	
-	//E010
+	//FE06
 	@PutMapping("/employ/1/{employId}")
 	public ResponseEntity renewEmploy(@PathVariable int employId) throws SQLException {
 		try {

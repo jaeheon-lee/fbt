@@ -23,6 +23,9 @@
 			<result column="team_name" property="teamName"/>
 			<result column="emblem" property="emblem"/>
 		</association>
+		<association property="teamMember" javaType="teamMember">
+			<id column="giver_writer" property="teamMemberId"/>
+		</association>
 		<association property="matchSchedule" javaType="matchSchedule">
 			<id column="match_schedule_id" property="matchScheduleId"/>
 			<result column="start_time" property="startTime"/>
@@ -51,10 +54,12 @@
 		<collection property="assignmentReservations" javaType="java.util.ArrayList" ofType="assignmentReservation">
 			<id column="assignment_res_id" property="asssignmetResId"/>
 			<result column="res_assignment_id" property="assignmentId"/>
-			<result column="res_writer" property="writer"/>
 			<result column="reservation_status" property="reservationStatus"/>
 			<association property="teamTaker" javaType="team">
 				<id column="team_id_taker" property="teamId"/>
+			</association>
+			<association property="teamMember" javaType="teamMember">
+				<id column="team_member_id" property="teamMemberId"/>
 			</association>
 		</collection>
 	</resultMap>
@@ -63,7 +68,7 @@
 	<!-- 기본: 양도 중일 때 | 양도 실패 시 불러올 데이터 -->
 	<sql id="showAssignmentFactorBasic">
 		SELECT
-		a.assignment_id, a.reg_date, a.due_date, a.content,
+		a.assignment_id, a.reg_date, a.due_date, a.content, a.team_member_id giver_writer,
 		m.match_schedule_id, m.start_time, m.duration, m.stadium_address, m.stadium_name, 
 		m.match_type, m.stadium_shower, m.stadium_type,
 		date_add(m.start_time, interval m.duration hour) end_time,
@@ -86,7 +91,7 @@
 	<!-- 추가: 양도신청했을 때 불러올 데이터 -->
 	<sql id="showAssignmentFactorApplied">
 		ar.assignment_res_id, ar.assignment_id res_assignment_id, ar.team_id_taker, 
-		ar.writer res_writer, ar.reservation_status
+		ar.team_member_id, ar.reservation_status
 	</sql>
 	<!-- 추가: 양도신청했을 때 조인 테이블 -->
 	<sql id="showAssignmentJoinApplied">
@@ -247,5 +252,16 @@
 		WHERE assignment_id = #{assignmentId}
 		AND team_id_taker = #{teamTakerId}
 	</delete>
+	
+	<!-- A010: 양도글 수정하기 -->
+	<update id="updateAssignment" parameterType="assignment">
+		UPDATE assignment
+		SET
+		reg_date = #{regDate},
+		due_date = #{dueDate},
+		content = #{content}
+		WHERE assignment_id = #{assignmentId};
+
+	</update>
 	
 </mapper>

@@ -9,9 +9,11 @@ import com.biomans.fbt.domain.Team;
 
 public interface TeamDAO {
 	//T001
-	public Team showTeamInfo(int teamId) throws SQLException;
+	public Team showTeamInfo(HashMap<String, String> con) throws SQLException;
 	//T002
 	public List<MatchSchedule> showMatchRecordByTeam(int teamId) throws SQLException;
+	//T003
+	public Team showTeamBasicInfo(int teamId) throws SQLException;
 	//T006: 팀 검색
 	public List<Team> searchTeams(HashMap<String, String> searchCon) throws SQLException;
 	//TNN :

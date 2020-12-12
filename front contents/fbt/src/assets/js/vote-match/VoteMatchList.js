@@ -220,7 +220,7 @@ export default {
       // 용병, 상대팀, 양도 등록페이지로 넘어가기
       switch (i) {
         case 0: // FV12
-          name = "employ";
+          name = "employManager";
           break;
         case 1: // FV11
           name = "search";

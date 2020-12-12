@@ -29,4 +29,6 @@ public interface AssignmentDAO {
 	public void renewAssign(int assignmentId) throws SQLException;
 	//A008
 	public void deleteAssignRes(HashMap<String, Integer> searchCon) throws SQLException;
+	//A009
+	public void updateAssignment(Assignment assignment) throws SQLException;
 }

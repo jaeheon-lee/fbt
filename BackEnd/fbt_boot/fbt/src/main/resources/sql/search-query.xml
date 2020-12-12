@@ -24,6 +24,9 @@
 				<result column="team_name" property="teamName"/>
 				<result column="emblem" property="emblem"/>
 			</association>
+			<association property="teamMember" javaType="teamMember">
+				<id column="giver_writer" property="teamMemberId"/>
+			</association>
 			<association property="matchSchedule" javaType="matchSchedule">
 				<id column="match_schedule_id" property="matchScheduleId"/>
 				<result column="start_time" property="startTime"/>
@@ -50,11 +53,15 @@
 				</association>
 			</association>
 			<collection property="searchReservations" javaType="java.util.ArrayList" ofType="SearchReservation">
+				<id column="search_res_id" property="searchResId"/>
 				<result column="res_search_id" property="searchId"/>
 				<result column="writer" property="writer"/>
 				<result column="reservation_status" property="reservationStatus"/>
 				<association property="teamTaker" javaType="team">
 					<id column="team_id_taker" property="teamId"/>
+				</association>
+				<association property="teamMember" javaType="teamMember">
+					<result column="team_member_id" property="teamMemberId"/>
 				</association>
 			</collection>
 		</resultMap>
@@ -63,7 +70,8 @@
 		<!-- 기본: 매치 중일 때 불러올 데이터 -->
 		<sql id="showSearchFactorBasic">
 			SELECT
-			s.search_id, s.search_reg_date, s.waiting_time, s.min_number, s.due_date, s.content,
+			s.search_id, s.search_reg_date, s.waiting_time, s.min_number, s.due_date, s.content, 
+			s.team_member_id giver_writer,
 			m.match_schedule_id, m.start_time, m.duration, m.stadium_address, m.stadium_name, 
 			m.match_type, m.stadium_shower, m.stadium_type,
 			date_add(m.start_time, interval m.duration hour) end_time,
@@ -85,7 +93,8 @@
 		</sql>
 		<!-- 추가: 인원파악신청했을 때 불러올 데이터 -->
 		<sql id="showSearchFactorApplied">
-			sr.search_id res_search_id, sr.team_id_taker, sr.writer, sr.reservation_status
+			sr.search_res_id, sr.search_id res_search_id, sr.team_id_taker, 
+			sr.team_member_id, sr.reservation_status
 		</sql>
 		<!-- 추가: 인원파악신청했을 때 조인 테이블 -->
 		<sql id="showSearchJoinApplied">

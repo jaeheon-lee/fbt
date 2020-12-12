@@ -12,4 +12,6 @@ public interface TeamMemberDAO {
 	List<TeamMember> showMembersByTeamId(int teamId) throws SQLException;
 	//TM002-2
 	List<TeamMember> showMembersByTeamIdName(HashMap<String, String> searchCon) throws SQLException;
+	//TM002-3
+	TeamMember showMemberById(String teamMemberId) throws SQLException;
 }

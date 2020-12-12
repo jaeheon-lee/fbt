@@ -17,12 +17,14 @@ import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
+import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchSetting;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.search.service.SearchService;
 import com.biomans.fbt.team.dao.TeamDAO;
+import com.biomans.fbt.teammember.dao.TeamMemberDAO;
 import com.biomans.fbt.util.Filter;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
@@ -39,6 +41,9 @@ public class SearchServiceImpl implements SearchService{
 	
 	@Autowired
 	public TeamDAO teamDAO;
+	
+	@Autowired
+	public TeamMemberDAO teamMemberDAO;
 
 	//FM01
 	@Override
@@ -95,15 +100,20 @@ public class SearchServiceImpl implements SearchService{
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		// 매치 글 정보를 먼저 받아온다
 		List<Search> searches = searchDAO.showRegisteredSearchAppliedByTeam(searchCon);
-		// 신청 팀에 대한 정보를 받아온다
+		// 신청 팀에 대한 정보, 연락처를 받아온다
 		if(searches.size() > 0) {
 			for(Search search : searches) {
 				List<SearchReservation> searchReservations = search.getSearchReservations();
 				for(SearchReservation searchRes : searchReservations) {
+					// 신청팀에 대한 정보 출력
 					int teamTakerId = searchRes.getTeamTaker().getTeamId();
-					Team teamTaker = teamDAO.showTeamInfo(teamTakerId);
+					if(teamTakerId == 0) continue; 
+					Team teamTaker = teamDAO.showTeamBasicInfo(teamTakerId);
+					if(teamTaker == null) continue;
 					searchRes.setTeamTaker(teamTaker);
 				}
+				
+				
 			}
 		}
 		return searches;

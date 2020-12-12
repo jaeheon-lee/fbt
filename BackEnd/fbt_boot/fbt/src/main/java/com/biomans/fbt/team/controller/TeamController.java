@@ -24,10 +24,14 @@ public class TeamController {
 	private TeamService teamService;
 	
 	//FT01
-	@GetMapping("/team/3/{teamId}")
-	public ResponseEntity showTeamInfo(@PathVariable int teamId) throws SQLException {
+	@GetMapping("/team/3/{teamId}/{teamMemberId}")
+	public ResponseEntity showTeamInfo(@PathVariable String teamId,
+			@PathVariable String teamMemberId) throws SQLException {
 		try {
-			Team team = teamService.showTeamInfo(teamId);
+			HashMap<String, String> con = new HashMap<String, String>();
+			con.put("teamId", teamId);
+			con.put("teamMemberId", teamMemberId);
+			Team team = teamService.showTeamInfo(con);
 			return new ResponseEntity(team, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

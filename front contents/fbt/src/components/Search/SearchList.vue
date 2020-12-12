@@ -78,10 +78,10 @@
                 >
               </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="activeDetail == i">
               <v-col offset="2" cols="8">
                 <v-expand-transition>
-                  <div id="match-info-detail" v-if="activeDetail == i">
+                  <div id="match-info-detail">
                     <!--경기타입비용주차-->
                     <!-- 경기타입,비용,주차  라벨-->
                     <v-row class="mx-0 px-0">
@@ -208,6 +208,34 @@
               </v-col>
             </v-row>
             <!-- 경기 상세정보 끝 -->
+            <!-- 등록 팀 상세보기 -->
+            <div v-if="searchedSearch">
+              <!-- 라벨 -->
+              <v-row style="color:rgba(235, 255, 0,0.7)">
+                <v-col offset="2" cols="10">
+                  <span
+                    id="match-info-detail-btn"
+                    @click="openTeamDetail(i)"
+                    style="cursor:pointer;"
+                    >등록팀 상세내용 보기</span
+                  >
+                </v-col>
+              </v-row>
+              <!-- 라벨 -->
+              <!-- 본문 -->
+              <v-expand-transition>
+                <v-row v-if="activeRegisterTeam == i">
+                  <v-col offset="2" cols="8">
+                    <team-info
+                      :teamId="search.teamGiver.teamId"
+                      :teamMemberId="search.teamMember.teamMemberId"
+                    ></team-info>
+                  </v-col>
+                </v-row>
+              </v-expand-transition>
+              <!-- 본문 끝 -->
+            </div>
+            <!-- 등록 팀 상세보기 끝 -->
             <!-- 신청 팀리스트 -->
             <v-row
               style="color:rgba(235, 255, 0,0.7)"
@@ -256,7 +284,7 @@
                         @click="controlTeamInfoToggle(j)"
                         style="cursor:pointer"
                       >
-                        <!-- 팀명 -->
+                        <!-- 아이콘 -->
                         <v-col cols="1">
                           <v-icon v-if="activeTeamInfo == j">
                             mdi-chevron-down
@@ -265,6 +293,7 @@
                             mdi-chevron-right
                           </v-icon>
                         </v-col>
+                        <!-- 팀명 -->
                         <v-col cols="3">{{ res.teamTaker.teamName }}</v-col>
                         <!-- 활동지역 -->
                         <v-col cols="3">{{ res.teamTaker.area }}</v-col>
@@ -335,6 +364,7 @@
                         <v-expand-transition>
                           <team-info
                             :teamId="res.teamTaker.teamId"
+                            :teamMemberId="res.teamMember.teamMemberId"
                             v-if="activeTeamInfo == j"
                           ></team-info>
                         </v-expand-transition>

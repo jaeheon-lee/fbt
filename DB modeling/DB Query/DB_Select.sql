@@ -22,4 +22,10 @@ delete from team_score where team_taker_id = 1;
 update search_reservation set reservation_status = 0 where search_id =4;
 update match_schedule set away_team_id = null where match_schedule_id =4;
 update assignment set due_date = "2020-12-15 22:00" where assignment_id = 3;
+
 delete from assignment_reservation where assignment_res_id = 5;
+
+update assignment_reservation set reservation_status = 0 where assignment_id = 3;
+delete from vote_match;
+update match_schedule set home_team_id = 1 where match_schedule_id = 5;
+

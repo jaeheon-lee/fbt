@@ -21,13 +21,18 @@ public class TeamDAOImpl implements TeamDAO{
 	
 	//T001
 	@Override
-	public Team showTeamInfo(int teamId) throws SQLException {
-		return sqlSession.selectOne(ns+"showOtherTeamInfo", teamId);
+	public Team showTeamInfo(HashMap<String, String> con) throws SQLException {
+		return sqlSession.selectOne(ns+"showOtherTeamInfo", con);
 	}
 	
 	//T002
 	public List<MatchSchedule> showMatchRecordByTeam(int teamId) throws SQLException {
 		return sqlSession.selectList(ns+"showMatchRecordByTeam", teamId);
+	}
+	
+	//T003
+	public Team showTeamBasicInfo(int teamId) throws SQLException {
+		return sqlSession.selectOne(ns+"showTeamBasicInfo", teamId);
 	}
 	
 	//V006: 팀 검색

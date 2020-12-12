@@ -1,6 +1,7 @@
 package com.biomans.fbt.team.service.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,13 +22,27 @@ public class TeamServiceImpl implements TeamService{
 	
 	//T001
 	@Override
-	public Team showTeamInfo(int teamId) throws SQLException {
-		Team team = teamDAO.showTeamInfo(teamId);
+	public Team showTeamInfo(HashMap<String, String> con) throws SQLException {
+		Team team = teamDAO.showTeamInfo(con);
 		// 팀원의 총원을 구한다
 		List<TeamMember> tmList = team.getTeamMembers();
 		if(tmList.size() > 0) team.setTotalNum(tmList.size());
 		
+		// 연락처를 남길 대표자만 남긴다
+		List<TeamMember> setList = new ArrayList<TeamMember>();
+		String teamMemberId = con.get("teamMemberId");
+		for(TeamMember member : tmList) {
+			if(member.getTeamMemberId().equals(teamMemberId)) {
+				setList.add(member);
+				break;
+			}else {
+				continue;
+			}
+		}
+		team.setTeamMembers(setList);
+		
 		// 최근 5경기 전적 삽입
+		int teamId = Integer.valueOf(con.get("teamId"));
 		List<MatchSchedule> matchSchedules = teamDAO.showMatchRecordByTeam(teamId);
 		if (matchSchedules.size() > 0) {
 			team.setMatchSchedules(matchSchedules);

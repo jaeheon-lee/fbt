@@ -77,10 +77,10 @@
                 >
               </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="activeDetail == i">
               <v-col offset="2" cols="8">
                 <v-expand-transition>
-                  <div id="match-info-detail" v-if="activeDetail == i">
+                  <div id="match-info-detail">
                     <!--경기타입비용주차-->
                     <!-- 경기타입,비용,주차  라벨-->
                     <v-row class="mx-0 px-0">
@@ -165,6 +165,34 @@
               </v-col>
             </v-row>
             <!-- 경기 상세정보 끝 -->
+            <!-- 등록 팀 상세보기 -->
+            <div v-if="searchedAssigns">
+              <!-- 라벨 -->
+              <v-row style="color:rgba(235, 255, 0,0.7)">
+                <v-col offset="2" cols="10">
+                  <span
+                    id="match-info-detail-btn"
+                    @click="openTeamDetail(i)"
+                    style="cursor:pointer;"
+                    >등록팀 상세내용 보기</span
+                  >
+                </v-col>
+              </v-row>
+              <!-- 라벨 -->
+              <!-- 본문 -->
+              <v-expand-transition>
+                <v-row v-if="activeRegisterTeam == i">
+                  <v-col offset="2" cols="8">
+                    <team-info
+                      :teamId="assign.teamGiver.teamId"
+                      :teamMemberId="assign.teamMember.teamMemberId"
+                    ></team-info>
+                  </v-col>
+                </v-row>
+              </v-expand-transition>
+              <!-- 본문 끝 -->
+            </div>
+            <!-- 등록 팀 상세보기 끝 -->
             <!-- 신청 팀리스트 -->
             <v-row
               style="color:rgba(235, 255, 0,0.7)"
@@ -251,7 +279,7 @@
                               elevation="2"
                               small
                               color="#6920A3"
-                              @click="acceptApply(res, assign)"
+                              @click.stop="acceptApply(res, assign)"
                               >수락</v-btn
                             >
                             <v-btn
@@ -259,7 +287,7 @@
                               elevation="2"
                               small
                               color="#AD1457"
-                              @click="refuseApply(res, assign)"
+                              @click.stop="refuseApply(res, assign)"
                               >거절</v-btn
                             >
                           </v-row>
@@ -282,6 +310,7 @@
                         <v-expand-transition>
                           <team-info
                             :teamId="res.teamTaker.teamId"
+                            :teamMemberId="res.teamMember.teamMemberId"
                             v-if="activeTeamInfo == j"
                           ></team-info>
                         </v-expand-transition>
@@ -353,7 +382,7 @@
                 >이미 신청한 글</v-btn
               >
             </v-row>
-            <!-- 매치 등록 시 -->
+            <!-- 양도 등록 시 -->
             <v-row
               class="ma-0 pa-0 pb-3 justify-center"
               v-if="registeredStage != null"
@@ -377,6 +406,16 @@
                 @click="renewAssign(assign)"
                 v-if="registeredStage == 1"
                 >양도글 끌어올리기</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                @click="updateAssign(assign)"
+                v-if="registeredStage == 1"
+                >양도글 수정하기</v-btn
               >
               <v-btn
                 class="mr-7"

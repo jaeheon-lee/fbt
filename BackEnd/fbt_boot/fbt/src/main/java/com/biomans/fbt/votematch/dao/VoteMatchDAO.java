@@ -49,8 +49,8 @@ public interface VoteMatchDAO {
 	public void deleteVoteMatchByVoteMatchId(int voteMatchId) throws SQLException;
 	//V014-1
 	public void deleteVoteMatchByMatchScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
-	//V015
-	public int findVoteMatchIdByMatchScheduleId(int matchScheduleId) throws SQLException;
+	//V015-1
+	public VoteMatch showVoteMatchBasicByScheduleTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//V016
 	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException;
 	

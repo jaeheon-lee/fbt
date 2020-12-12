@@ -20,6 +20,7 @@ export default {
       activeDetail: null, // 상세보기 토글
       activeTeamList: null, // 신청 팀리스트 토글
       activeTeamInfo: null, // 팀상세보기 토글
+      activeRegisterTeam: null, // 등록팀 상세보기 토글
 
       // get 변수
       loading: false,
@@ -42,7 +43,7 @@ export default {
     }
   },
   methods: {
-    // FA04
+    // FA04, FA10
     showRegisteredAssignByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let status = 0; // 매치 실패
@@ -60,7 +61,7 @@ export default {
           this.loading = false;
         });
     },
-    // FA07
+    // FA07, FA12, FA13
     showRegisteredAssignAppliedByTeam() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let reservationStatus = 0;
@@ -102,7 +103,7 @@ export default {
           this.loading = false;
         });
     },
-    // FA05
+    // FA05, FA11
     deleteAssign(assign) {
       axios
         .delete("/assignment/" + assign.assignmentId)
@@ -127,7 +128,7 @@ export default {
           alert("끌어올리기에 실패했습니다.");
         });
     },
-    // 양도신청 수락하기(M006)
+    // FA08
     acceptApply(assignmentRes, assign) {
       assignmentRes.reservationStatus = 1;
       assign.assignmentReservations = [];
@@ -140,9 +141,10 @@ export default {
         })
         .catch(() => {
           alert("양도신청 수락에 실패했습니다.");
+          this.refreshRegistered();
         });
     },
-    //양도신청 거절하기(M006)
+    //FA09
     refuseApply(assignmentRes, assign) {
       assignmentRes.reservationStatus = -1;
       assign.assignmentReservations = [];
@@ -157,7 +159,7 @@ export default {
           alert("양도신청 거절에 실패했습니다.");
         });
     },
-    // 매치 예약 삭제 (M013)
+    // FA14
     deleteAssignRes(assign) {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       axios
@@ -197,6 +199,15 @@ export default {
           alert("양도신청에 실패했습니다.");
         });
     },
+    //FM18
+    updateAssign(assign) {
+      this.$router.push({
+        name: "assignUpdate",
+        params: {
+          pushedAssign: assign
+        }
+      });
+    },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
@@ -214,6 +225,11 @@ export default {
     openTeamList(i) {
       if (this.activeTeamList == i) this.activeTeamList = null;
       else this.activeTeamList = i;
+    },
+    //등록팀 상세정보보기 창 여닫기
+    openTeamDetail(i) {
+      if (this.activeRegisterTeam == i) this.activeRegisterTeam = null;
+      else this.activeRegisterTeam = i;
     },
     // 팀 상세정보 창 여닫기
     controlTeamInfoToggle(j) {

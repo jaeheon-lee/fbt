@@ -112,7 +112,7 @@
           <!-- 매치 부분 끝 -->
           <!-- 제출 버튼 -->
           <v-row class="mx-0 px-0 pt-3 justify-center">
-            <v-btn elevation="3" @click="updateSearch">매치등록하기</v-btn>
+            <v-btn elevation="3" @click="updateSearch">매치수정하기</v-btn>
           </v-row>
           <!-- 제출 버튼 끝 -->
         </v-col>

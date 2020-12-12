@@ -22,6 +22,7 @@ export default {
       activeDetail: null, // 상세보기 토글
       activeTeamList: null, // 신청 팀리스트 토글
       activeTeamInfo: null, // 팀상세보기 토글
+      activeRegisterTeam: null, // 등록팀 상세보기 토글
 
       // 다이어로그 변수
       activeCheckComplete: false, // 팀 확정 전 의사묻는 다이어로그
@@ -262,6 +263,11 @@ export default {
     openDetail(i) {
       if (this.activeDetail == i) this.activeDetail = null;
       else this.activeDetail = i;
+    },
+    //등록팀 상세정보보기 창 여닫기
+    openTeamDetail(i) {
+      if (this.activeRegisterTeam == i) this.activeRegisterTeam = null;
+      else this.activeRegisterTeam = i;
     },
     // 팀리스트 창 여닫기
     openTeamList(i) {

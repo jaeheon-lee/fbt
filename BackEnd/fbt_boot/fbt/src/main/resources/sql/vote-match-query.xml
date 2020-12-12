@@ -109,6 +109,7 @@
 		WHERE v.vote_status = #{voteStatus}
 		AND tm.team_id = #{teamId}
 		AND m.start_time > sysdate() 
+		ORDER BY v.due_date ASC
 	</select>
 	<!-- V001-2: 경기 일정 별 투표 및 경기 일정 정보 -->
 	<select id="showVoteMatchInfoByScheduleId" parameterType="integer" resultMap="VoteMatchRM" >
@@ -285,12 +286,13 @@
 		WHERE match_schedule_id = #{matchScheduleId}
 		AND team_id = #{teamId}
 	</delete>
-	<!-- V015: 경기일정Id로 경기투표Id찾기 -->
-	<select id="findVoteMatchIdByMatchScheduleId" parameterType="integer" resultType="integer">
+	<!-- V015-1: 경기일정Id와 팀Id로 경기 투표 출력 -->
+	<select id="showVoteMatchBasicByScheduleTeam" parameterType="hashMap" resultType="voteMatch">
 		SELECT
-		vote_match_id
-		FROM vote_match
-		WHERE match_schedule_id = #{value}
+		<include refid="voteMatchEntity"/>
+		FROM vote_match v
+		WHERE v.match_schedule_id = #{matchScheduleId}
+		AND v.team_id = #{teamId}
 	</select>
 	<!-- V016: 저장된 경기 불러오기 -->
 	<select id="loadEndedVoteMatch" parameterType="hashMap" resultMap="VoteMatchRM">

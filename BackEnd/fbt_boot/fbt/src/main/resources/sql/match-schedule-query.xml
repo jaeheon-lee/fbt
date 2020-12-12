@@ -11,7 +11,7 @@
 		FROM match_schedule
 		WHERE match_schedule_id = #{value}
 	</select>
-	<!-- M009: awayTeam 등록 -->
+	<!-- S002: awayTeam 등록 -->
 	<update id="addAwayTeam" parameterType="hashMap">
 		UPDATE match_schedule
 		SET away_team_id = #{takerTeamId}

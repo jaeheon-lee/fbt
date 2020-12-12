@@ -57,7 +57,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//FA04
+	//FA04, FA10
 	@GetMapping("/assignment/1/{teamId}/{status}")
 	public ResponseEntity showRegisteredAssignByTeam(@PathVariable int teamId,
 			@PathVariable int status) throws SQLException {
@@ -73,7 +73,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//FA07
+	//FA07, FA12, FA13
 	@GetMapping("/assignment/2/{teamId}/{reservationStatus}/{isApply}")
 	public ResponseEntity showRegisteredAssignAppliedByTeam(@PathVariable int teamId,
 			@PathVariable int reservationStatus,
@@ -116,7 +116,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//M006
+	//FA08, FA09
 	@PutMapping("/assignment-reservation/1")
 	public ResponseEntity updateResStatus(@RequestBody Assignment assignment) throws SQLException {
 		try {
@@ -128,7 +128,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//FA05
+	//FA05, FA11
 	@DeleteMapping("/assignment/{assignmentId}")
 	public ResponseEntity deleteSearch(@PathVariable int assignmentId) throws SQLException {
 		try {
@@ -151,7 +151,7 @@ public class AssignmentController {
 		}
 	}
 	
-	//A013
+	//FA14
 	@DeleteMapping("/assign-reservation/{assignmentId}/{teamId}")
 	public ResponseEntity deleteSeachRes(@PathVariable int assignmentId,
 			@PathVariable int teamId) throws SQLException {
@@ -160,6 +160,18 @@ public class AssignmentController {
 			searchCon.put("assignmentId", assignmentId);
 			searchCon.put("teamTakerId", teamId);
 			assignmentService.deleteAssignRes(searchCon);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FA06
+	@PutMapping("/assignment/2")
+	public ResponseEntity renewAssign(@RequestBody Assignment assignment) throws SQLException {
+		try {
+			assignmentService.updateAssignment(assignment);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

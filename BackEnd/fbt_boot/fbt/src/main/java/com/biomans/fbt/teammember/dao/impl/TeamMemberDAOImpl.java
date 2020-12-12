@@ -28,5 +28,9 @@ public class TeamMemberDAOImpl implements TeamMemberDAO {
 		return sqlSession.selectList(ns+"showMembersByTeamIdName", searchCon);
 	}
 	
+	//TM002-3
+	public TeamMember showMemberById(String teamMemberId) throws SQLException {
+		return sqlSession.selectOne(ns+"showMemberById", teamMemberId);
+	}
 	
 }

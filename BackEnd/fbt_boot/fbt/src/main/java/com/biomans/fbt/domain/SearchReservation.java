@@ -1,6 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class SearchReservation {
+	private int searchResId;
 	private int searchId;
 	private Team teamTaker;
 	private TeamMember teamMember;
@@ -8,12 +9,22 @@ public class SearchReservation {
 	
 	public SearchReservation() {}
 
-	public SearchReservation(int searchId, Team teamTaker, TeamMember teamMember, int reservationStatus) {
+	public SearchReservation(int searchResId, int searchId, Team teamTaker, TeamMember teamMember,
+			int reservationStatus) {
 		super();
+		this.searchResId = searchResId;
 		this.searchId = searchId;
 		this.teamTaker = teamTaker;
 		this.teamMember = teamMember;
 		this.reservationStatus = reservationStatus;
+	}
+
+	public int getSearchResId() {
+		return searchResId;
+	}
+
+	public void setSearchResId(int searchResId) {
+		this.searchResId = searchResId;
 	}
 
 	public int getSearchId() {
@@ -50,10 +61,9 @@ public class SearchReservation {
 
 	@Override
 	public String toString() {
-		return "SearchReservation [searchId=" + searchId + ", teamTaker=" + teamTaker + ", teamMember=" + teamMember
-				+ ", reservationStatus=" + reservationStatus + "]";
+		return "SearchReservation [searchResId=" + searchResId + ", searchId=" + searchId + ", teamTaker=" + teamTaker
+				+ ", teamMember=" + teamMember + ", reservationStatus=" + reservationStatus + "]";
 	}
 
-	
 	
 }

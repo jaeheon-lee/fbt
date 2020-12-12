@@ -19,12 +19,13 @@
 		<association property="user" javaType="user">
 			<id column="email" property="email"/>
 			<result column="name" property="name"/>
+			<result column="phone_num" property="phoneNum"/>
 		</association>
 	</resultMap>
 	<sql id="showMemberFactorBasic">
 		SELECT 
 		tm.team_member_id, tm.member_reg_date, tm.member_level, tm.reg_status, tm.nick_name,
-		u.email, u.name
+		u.email, u.name, u.phone_num
 	</sql>
 	<sql id="showMemberJoinBasic">
 		From team_member tm
@@ -36,7 +37,7 @@
 		ON 	
 	</sql>
 	<!-- TM002-1: 팀별 팀원 출력 -->
-	<select id="showMembersByTeamId" parameterType="integer" resultType="integer" resultMap="teamMemberRM">
+	<select id="showMembersByTeamId" parameterType="integer" resultMap="teamMemberRM">
 		<include refid="showMemberFactorBasic"/>
 		<include refid="showMemberJoinBasic"/>
 		WHERE team_id = #{value}
@@ -49,6 +50,13 @@
 		<include refid="showMemberJoinBasic"/>
 		WHERE team_id = #{teamId}
 		AND u.name Like "%${name}%"
+		AND tm.reg_status > 0
+	</select>
+	<!-- TM002-3: Id로 팀원 출력 -->
+	<select id="showMemberById" parameterType="string" resultMap="teamMemberRM">
+		<include refid="showMemberFactorBasic"/>
+		<include refid="showMemberJoinBasic"/>
+		WHERE tm.team_member_id = #{value}
 		AND tm.reg_status > 0
 	</select>
 </mapper>

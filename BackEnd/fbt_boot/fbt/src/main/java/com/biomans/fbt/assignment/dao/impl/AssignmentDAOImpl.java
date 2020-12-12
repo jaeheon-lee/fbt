@@ -78,7 +78,10 @@ final String ns = "AssignmentMapper.";
 		sqlSession.delete(ns+"deleteAssignRes", searchCon);
 	}
 
-	
-
+	//A009
+	@Override
+	public void updateAssignment(Assignment assignment) throws SQLException {
+		sqlSession.update(ns+"updateAssignment", assignment);
+	}
 	
 }

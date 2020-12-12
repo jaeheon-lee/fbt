@@ -28,6 +28,10 @@
               <v-icon class="mr-1">mdi-hexagon</v-icon>
               유니폼 색: {{ team.uniformColor }}
             </v-row>
+            <v-row class="mb-2">
+              <v-icon class="mr-1">mdi-hexagon</v-icon>
+              연락처: {{ phoneNum }}
+            </v-row>
           </v-col>
           <!-- 팀명, 활동지역, 회원수 끝 -->
           <!-- 유니폼 -->
@@ -243,7 +247,7 @@
                     {{ ms.startTime.split(" ")[0] }}
                   </v-col>
                   <v-col cols="4" class="my-0 py-0">
-                    {{ matchResult(ms) }}
+                    {{ matchResult(ms, team) }}
                   </v-col>
                 </v-row>
                 <!-- 테이블 바디 끝 -->
@@ -268,13 +272,15 @@
 export default {
   name: "team-info",
   props: {
-    teamId: Number
+    teamId: Number,
+    teamMemberId: String
   },
   data() {
     return {
       // 서버로부터 받을 객체
       team: {
-        teamScores: []
+        teamScores: [],
+        teamMembers: [{}]
       },
 
       // 매너점수 항목별 평균 점수
@@ -291,6 +297,8 @@ export default {
         mannerTackle: 0,
         mannerUniform: 0
       },
+
+      loadingCompleted: false,
       loading: false,
       error: false
     };
@@ -306,19 +314,24 @@ export default {
     teamManner: function() {
       if (this.team) return this.team.teamManner / 2;
       return 0;
+    },
+    phoneNum: function() {
+      if (this.loadingCompleted) return this.team.teamMembers[0].user.phoneNum;
+      else return null;
     }
   },
   methods: {
     getTeamInfo() {
       this.loading = true;
       this.$axios
-        .get("/team/3/" + this.teamId)
+        .get("/team/3/" + this.teamId + "/" + this.teamMemberId)
         .then(response => {
           this.team = response.data;
           // 매너 점수 항목별 평균을 구한다
           if (this.team.teamScores) {
             this.countAvgManner();
           }
+          this.loadingCompleted = true;
         })
         .catch(error => {
           console.log(error);
@@ -361,14 +374,15 @@ export default {
       this.avgManners.mannerTackle /= this.team.teamScores.length;
     },
     // 해당 팀이 해당 일정에서 홈인지 어웨인지 파악하고 승패 리턴
-    matchResult(ms) {
+    matchResult(ms, team) {
       if (ms.matchResult) {
-        let homeTeamId = ms.homeTeamId;
-        let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+        let homeTeamId = ms.homeTeam.teamId; // 일정에서 홈팀
+        let teamId = team.teamId; // 출력하고자 하는 팀
         let score = ms.matchResult.homeScore + " : " + ms.matchResult.awayScore;
         let win = "승리 " + "(" + score + ")";
         let lose = "패배 " + "(" + score + ")";
         if (teamId == homeTeamId) {
+          console.log(1);
           // 승이면 승이라고, 패면 패라고 리턴
           if (ms.matchResult.homeResult == 1) {
             return win;

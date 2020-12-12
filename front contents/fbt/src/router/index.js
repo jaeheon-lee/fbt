@@ -132,6 +132,12 @@ const routes = [
     name: "searchUpdate",
     component: () => import("@/views/update/SearchUpdate.vue"),
     props: true
+  },
+  {
+    path: "/assignUpdate",
+    name: "assignUpdate",
+    component: () => import("@/views/update/AssignUpdate.vue"),
+    props: true
   }
 ];
 

@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      // Search VO 받기 위한 정보
+      // Assign VO 받기 위한 정보
       assignment: {
         assignmentId: null,
         teamGiver: {

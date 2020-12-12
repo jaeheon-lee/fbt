@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.assignment.dao.AssignmentDAO;
 import com.biomans.fbt.assignment.service.AssignmentService;
@@ -14,8 +15,10 @@ import com.biomans.fbt.domain.AssignmentReservation;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
+import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.team.dao.TeamDAO;
+import com.biomans.fbt.teammember.dao.TeamMemberDAO;
 import com.biomans.fbt.util.Filter;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
@@ -33,6 +36,9 @@ public class AssginmentServiceImpl implements AssignmentService{
 	@Autowired
 	private TeamDAO teamDAO;
 	
+	@Autowired
+	private TeamMemberDAO teamMemberDAO;
+	
 	//FA01
 	@Override
 	public void addAssignment(Assignment assignment) throws SQLException {
@@ -40,13 +46,13 @@ public class AssginmentServiceImpl implements AssignmentService{
 		
 	}
 	
-	//FA04
+	//FA04, FA10
 	@Override
 	public List<Assignment> showRegisteredAssignByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		return assignmentDAO.showRegisteredAssignByTeam(searchCon);
 	}
 	
-	//FA07
+	//FA07, FA12, FA13
 	@Override
 	public List<Assignment> showRegisteredAssignAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		//양도글을 먼저 받아온다
@@ -58,11 +64,8 @@ public class AssginmentServiceImpl implements AssignmentService{
 				for(AssignmentReservation assignmentRes : assignmentReservations) {
 					// 신청 팀 정보 받기
 					int teamTakerId = assignmentRes.getTeamTaker().getTeamId();
-					Team teamTaker = teamDAO.showTeamInfo(teamTakerId);
-					assignmentRes.setTeamTaker(teamTaker);
-					// 글쓴이 연락처 담기
-					String nickName = assignmentRes.getTeamMember().getTeamMemberId();
-					
+					Team teamTaker = teamDAO.showTeamBasicInfo(teamTakerId);
+					if(teamTaker != null) assignmentRes.setTeamTaker(teamTaker);
 				}
 			}
 		}
@@ -82,16 +85,21 @@ public class AssginmentServiceImpl implements AssignmentService{
 		assignmentDAO.doApplyAssignment(assignmentRes);
 	}
 	
-	//A006
+	//FA08, FA09
 	@Override
+	@Transactional
 	public void updateResStatus(Assignment assignment) throws SQLException {
 		AssignmentReservation assignRes = assignment.getAssignmentReservations().get(0);
 		// 수락이면 
 		if(assignRes.getReservationStatus() == 1) {
 			//기존 투표를 지운다
 			int matchScheduleId = assignment.getMatchSchedule().getMatchScheduleId();
-			int voteMatchId = voteMatchDAO.findVoteMatchIdByMatchScheduleId(matchScheduleId);
-			voteMatchDAO.deleteVoteMatchByVoteMatchId(voteMatchId);
+			int teamGiverId = assignment.getTeamGiver().getTeamId();
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("matchScheduleId", matchScheduleId);
+			searchCon.put("teamId", teamGiverId);
+			int voteMatchId = voteMatchDAO.showVoteMatchBasicByScheduleTeam(searchCon).getVoteMatchId();
+			if(voteMatchId != 0) voteMatchDAO.deleteVoteMatchByVoteMatchId(voteMatchId);
 			
 			// 홈팀을 바꾼다
 			HashMap<String, Integer> con = new HashMap<String, Integer>();
@@ -102,7 +110,7 @@ public class AssginmentServiceImpl implements AssignmentService{
 		assignmentDAO.updateResStatus(assignRes);
 	}
 	
-	//FA05
+	//FA05, FA11
 	@Override
 	public void deleteAssignment(int assignmentId) throws SQLException {
 		assignmentDAO.deleteAssignment(assignmentId);
@@ -116,10 +124,15 @@ public class AssginmentServiceImpl implements AssignmentService{
 		
 	}
 	
-	//A013
+	//FA14
 	@Override
 	public void deleteAssignRes(HashMap<String, Integer> searchCon) throws SQLException {
 		assignmentDAO.deleteAssignRes(searchCon);
+	}
+	
+	//FA15
+	public void updateAssignment(Assignment assignment) throws SQLException {
+		assignmentDAO.updateAssignment(assignment);
 	}
 
 }

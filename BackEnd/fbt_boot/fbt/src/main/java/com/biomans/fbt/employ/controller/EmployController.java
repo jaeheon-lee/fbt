@@ -74,7 +74,7 @@ public class EmployController {
 		}
 	}
 	
-	//E002-2
+	//FE11
 	@GetMapping("/employ/2/{email}/{empResultStatus}")
 	public ResponseEntity showAppliedEmployByUser(@PathVariable String email,
 			@PathVariable String empResultStatus) throws SQLException {
@@ -152,15 +152,27 @@ public class EmployController {
 		}
 	}
 	
-	//E013
+	//FE12, FE13
 	@DeleteMapping("/employ-result/{employId}/{email}")
-	public ResponseEntity deleteEmploy(@PathVariable String employId, 
+	public ResponseEntity deleteEmployRes(@PathVariable String employId, 
 			@PathVariable String email) throws SQLException {
 		try {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("email", email);
 			searchCon.put("employId", employId);
 			employService.deleteEmployRes(searchCon);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FE14
+	@PutMapping("/employ/2")
+	public ResponseEntity updateEmploy(@RequestBody Employ employ) throws SQLException {
+		try {
+			employService.updateEmploy(employ);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

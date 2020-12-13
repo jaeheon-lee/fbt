@@ -14,12 +14,14 @@ public class Employ {
 	private String dueDate;
 	private List<EmployResult> employResults;
 	private int currentNum;
+	private int acceptNum;
+	private int refuseNum;
 	
 	public Employ() {}
 
 	public Employ(int employId, Team teamGiver, MatchSchedule matchSchedule, TeamMember teamMember, int cost,
 			int reqNumber, String content, String regDate, String dueDate, List<EmployResult> employResults,
-			int currentNum) {
+			int currentNum, int acceptNum, int refuseNum) {
 		super();
 		this.employId = employId;
 		this.teamGiver = teamGiver;
@@ -32,6 +34,8 @@ public class Employ {
 		this.dueDate = dueDate;
 		this.employResults = employResults;
 		this.currentNum = currentNum;
+		this.acceptNum = acceptNum;
+		this.refuseNum = refuseNum;
 	}
 
 	public int getEmployId() {
@@ -122,12 +126,28 @@ public class Employ {
 		this.currentNum = currentNum;
 	}
 
+	public int getAcceptNum() {
+		return acceptNum;
+	}
+
+	public void setAcceptNum(int acceptNum) {
+		this.acceptNum = acceptNum;
+	}
+
+	public int getRefuseNum() {
+		return refuseNum;
+	}
+
+	public void setRefuseNum(int refuseNum) {
+		this.refuseNum = refuseNum;
+	}
+
 	@Override
 	public String toString() {
 		return "Employ [employId=" + employId + ", teamGiver=" + teamGiver + ", matchSchedule=" + matchSchedule
 				+ ", teamMember=" + teamMember + ", cost=" + cost + ", reqNumber=" + reqNumber + ", content=" + content
 				+ ", regDate=" + regDate + ", dueDate=" + dueDate + ", employResults=" + employResults + ", currentNum="
-				+ currentNum + "]";
+				+ currentNum + ", acceptNum=" + acceptNum + ", refuseNum=" + refuseNum + "]";
 	}
 
 	

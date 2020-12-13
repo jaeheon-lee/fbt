@@ -45,6 +45,12 @@ public class EmployDAOImpl implements EmployDAO{
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException {
 		return sqlSession.selectList(ns+"searchEmployByFilter", filter);
 	}
+
+	//E004
+	@Override
+	public void updateResStatus(EmployResult employRes) throws SQLException {
+		sqlSession.update(ns+"updateResStatus", employRes);
+	}
 	
 	//E005
 	@Override
@@ -54,34 +60,39 @@ public class EmployDAOImpl implements EmployDAO{
 	
 	//E006
 	@Override
-	public void updateResStatus(EmployResult employRes) throws SQLException {
-		sqlSession.update(ns+"updateResStatus", employRes);
-	}
-	
-	//E009
-	@Override
 	public void deleteEmploy(int employId) throws SQLException {
 		sqlSession.delete(ns+"deleteEmploy", employId);
 		
 	}
 	
-	//E010
+	//E007
 	@Override
 	public void renewEmploy(int employId) throws SQLException {
 		sqlSession.update(ns+"renewEmploy", employId);
 		
 	}
 	
-	//E013
+	//E008
 	@Override
 	public void deleteEmployRes(HashMap<String, String> searchCon) throws SQLException {
 		sqlSession.delete(ns+"deleteEmployRes", searchCon);
 	}
 	
-	//E014
+	//E009
+	@Override
 	public Team findEmpTeam(int matchScheduleId) throws SQLException {
 		return sqlSession.selectOne(ns+"findEmpTeam", matchScheduleId);
 	}
 	
+	//E010
+	@Override
+	public Employ getEmployDesc(int employId) throws SQLException {
+		return sqlSession.selectOne(ns+"getEmployDesc", employId);
+	}
 	
+	//E011
+	@Override
+	public void updateEmploy(Employ employ) throws SQLException {
+		sqlSession.update(ns+"updateEmploy", employ);
+	}
 }

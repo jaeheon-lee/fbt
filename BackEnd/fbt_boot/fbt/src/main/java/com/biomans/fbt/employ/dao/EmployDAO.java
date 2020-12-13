@@ -18,16 +18,20 @@ public interface EmployDAO {
 	public List<Employ> showAppliedEmployByUser(HashMap<String, String> searchCon) throws SQLException;
 	//E003
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException;
+	//E004
+	public void updateResStatus(EmployResult employRes) throws SQLException;
 	//E005
 	public void doApplyEmploy(EmployResult employRes) throws SQLException;
 	//E006
-	public void updateResStatus(EmployResult employRes) throws SQLException;
-	//E009
 	public void deleteEmploy(int employId) throws SQLException;
-	//E010
+	//E007
 	public void renewEmploy(int employId) throws SQLException;
-	//E013
+	//E008
 	public void deleteEmployRes(HashMap<String, String> searchCon) throws SQLException;
-	//E014
+	//E009
 	public Team findEmpTeam(int matchScheduleId) throws SQLException;
+	//E010
+	public Employ getEmployDesc(int employId) throws SQLException;
+	//E011
+	public void updateEmploy(Employ employ) throws SQLException;
 }

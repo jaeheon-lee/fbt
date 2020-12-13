@@ -138,6 +138,12 @@ const routes = [
     name: "assignUpdate",
     component: () => import("@/views/update/AssignUpdate.vue"),
     props: true
+  },
+  {
+    path: "/employUpdate",
+    name: "employUpdate",
+    component: () => import("@/views/update/EmployUpdate.vue"),
+    props: true
   }
 ];
 

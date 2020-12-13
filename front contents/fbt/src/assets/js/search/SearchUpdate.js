@@ -80,10 +80,10 @@ export default {
       this.$axios
         .put("/search/3", this.search)
         .then(() => {
-          alert("매치등록이 완료됐습니다.");
+          alert("수정이 완료됐습니다.");
         })
         .catch(() => {
-          alert("매치등록에 실패했습니다.");
+          alert("수정에 실패했습니다.");
         })
         // eslint-disable-next-line prettier/prettier
         .finally(() => {

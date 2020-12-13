@@ -71,7 +71,7 @@ export default {
           this.loading = false;
         });
     },
-    // 개인별별 용병 신청글 출력 (A002-2) => 용변 신청 중 & 용병실패 & 성공
+    // FE11
     showAppliedEmployByUser() {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       let empResultStatus = 0;
@@ -143,7 +143,7 @@ export default {
           else alert("용병신청 거절에 실패했습니다.");
         });
     },
-    // 매치 예약 삭제 (M013)
+    // FE12 
     deleteEmployRes(employ) {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       axios
@@ -182,6 +182,15 @@ export default {
         .catch(() => {
           alert("용병신청에 실패했습니다.");
         });
+    },
+    //F#14
+    updateEmploy(employ) {
+      this.$router.push({
+        name: "employUpdate",
+        params: {
+          pushedEmploy: employ
+        }
+      });
     },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {

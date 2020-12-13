@@ -29,18 +29,8 @@ update assignment_reservation set reservation_status = 0 where assignment_id = 3
 update match_schedule set home_team_id = 1 where match_schedule_id = 5;
 
 SELECT
-u.email, u.pass, u.name, u.phone_num, u.user_reg_date, u.recent_login, u.main_foot, u.position, u.height, 
-u.weight, u.was_pro, u.gender, u.born_date, u.area, u.image, u.api_key, u.api_type, u.emp_ability, u.emp_manner,
-ent.total_emp_attend
-FROM user u
-JOIN (
-	SELECT 
-	email, count(entry_id) total_emp_attend
-	FROM entry ent
-	WHERE email = "bioman7@gmail.com"
-	GROUP BY email
-) ent
-ON u.email = ent.email
-WHERE u.email = "bioman7@gmail.com"
+IF(emp_result_status =
+FROM employ_result
+WHERE employ_id = 1
 ;
 

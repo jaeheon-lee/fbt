@@ -14,11 +14,10 @@ public interface EmployService {
 	public void addEmploy(Employ employ) throws SQLException;
 	//FE04, FE09, FE10
 	public List<Employ> showRegisteredEmployByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	//E002-2
+	//FE11
 	public List<Employ> showAppliedEmployByUser(HashMap<String, String> searchCon) throws SQLException;
 	//FE02
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException;
-	public int countEmployDesc(Employ employ) throws SQLException;
 	//FE03
 	public void doApplyEmploy(EmployResult employRes) throws SQLException;
 	//FE07
@@ -27,8 +26,10 @@ public interface EmployService {
 	public void deleteEmploy(int employId) throws SQLException;
 	//FE06
 	public void renewEmploy(int employId) throws SQLException;
-	//E013
+	//FE12, FE13
 	public void deleteEmployRes(HashMap<String, String> searchCon) throws SQLException;
+	//FE14
+	public void updateEmploy(Employ employ) throws SQLException;
 	//E014
 	public Team findEmpTeam(int matchScheduleId) throws SQLException;
 }

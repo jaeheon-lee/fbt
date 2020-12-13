@@ -30,16 +30,18 @@ import com.biomans.fbt.util.Filter;
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "UserMapper.";
+	final String ns = "EmployMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
 	void contextLoads() throws ParseException {
-		String email = "bioman7@gmail.com";
-		User user = sqlSession.selectOne(ns+"showUserInfo", email);
-		System.out.println(user.getEmpScores());
+		Employ emp = new Employ();
+		int employId = 1;
+		emp.setEmployId(employId);
+		Employ employ = sqlSession.selectOne(ns+"getEmployDesc", employId);
+		System.out.println(employ);
 	}
 
 }

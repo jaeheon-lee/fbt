@@ -1,44 +1,43 @@
 export default {
-  name: "assign-update",
+  name: "employ-update",
   props: {
-    pushedAssign: Object
+    pushedEmploy: Object
   },
   data() {
     return {
-      // Assign VO 받기 위한 정보
-      assignment: {
-        assignmentId: null,
+      // Search VO 받기 위한 정보
+      employ: {
+        employId: null,
+        cost: null,
+        reqNumber: null,
+        content: null,
         regDate: null,
-        dueDate: null,
-        content: null
+        dueDate: null
       }
     };
   },
   created() {
-    this.assignment = this.pushedAssign;
+    this.employ = this.pushedEmploy;
   },
   computed: {
     targetDueDate: {
       get: function() {
-        if (this.assignment.dueDate) {
-          return this.$moment(this.assignment.dueDate).format(
-            "yyyy-MM-DDThh:mm"
-          );
+        if (this.employ.dueDate) {
+          return this.$moment(this.employ.dueDate).format("yyyy-MM-DDThh:mm");
         }
       },
       set: function(newVar) {
-        this.assignment.dueDate = this.$moment(newVar).format(
+        this.employ.dueDate = this.$moment(newVar).format(
           "YYYY-MM-DD HH:mm:ss"
         );
       }
     }
   },
   methods: {
-    /* 공통 -----------------------------------------------------------------*/
-    // FA15
-    updateAssign() {
+    //FE14
+    updateEmploy() {
       this.$axios
-        .put("/assignment/2", this.assignment)
+        .put("/employ/2", this.employ)
         .then(() => {
           alert("수정이 완료됐습니다.");
         })
@@ -48,9 +47,9 @@ export default {
         // eslint-disable-next-line prettier/prettier
         .finally(() => {
           this.$router.push({
-            name: "assign",
+            name: "employManager",
             params: {
-              menu: 3
+              menu: 2
             }
           });
         });

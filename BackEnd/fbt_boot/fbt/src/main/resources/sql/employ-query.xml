@@ -118,10 +118,7 @@
 				AND sysdate() > due_date
 			</if>
 			<!-- 용병 찾기 성공 -->
-			<!--조건: 마감시간 지나고(여기서 처리) reqNum 이상일 때 (service에서 처리) -->
-			<if test="status == 2">
-				AND sysdate() > due_date
-			</if>
+			<!--조건: reqNum 이상일 때 (service에서 처리) -->
 		</where>
 	</select>
 	
@@ -134,6 +131,9 @@
 		<where>
 			er.email = #{email}
 			AND er.emp_result_status = #{empResultStatus}
+			<if test="empResultStatus == 0">
+				AND e.due_date > sysdate()
+			</if>
 		</where>
 	</select>
 	
@@ -197,7 +197,7 @@
 		</if>
 	</select>
 	
-	<!-- E006: 신청 매치 단계 수정 -->
+	<!-- E004: 신청 매치 단계 수정 -->
 	<update id="updateResStatus" parameterType="employResult">
 		UPDATE employ_result
 		SET emp_result_status = #{empResultStatus}
@@ -212,24 +212,24 @@
 		VALUES(#{employId},#{user.email}, 0)
 	</insert>
 	
-	<!-- E009: 용병 찾기 글 삭제 -->
+	<!-- E006: 용병 찾기 글 삭제 -->
 	<delete id="deleteEmploy" parameterType="integer">
 		DELETE FROM employ WHERE employ_id = #{value}
 	</delete>
 	
-	<!-- E010: 끌올 -->
+	<!-- E007: 끌올 -->
 	<update id="renewEmploy" parameterType="integer">
 		UPDATE employ SET reg_date = sysdate() WHERE employ_id = #{value}
 	</update>
 	
-	<!-- E013: 용병 신청 삭제 -->
+	<!-- E008: 용병 신청 삭제 -->
 	<delete id="deleteEmployRes" parameterType="hashMap">
 		DELETE FROM employ_result
 		WHERE email = #{email}
 		AND employ_id = #{employId}
 	</delete>
 	
-	<!-- E014: 용병 팀 찾기 -->
+	<!-- E009: 용병 팀 찾기 -->
 	<select id="findEmpTeam" parameterType="integer" resultType="team">
 		SELECT
 		t.team_id, t.team_name
@@ -238,4 +238,27 @@
 		ON e.team_id_giver = t.team_id
 		WHERE e.match_schedule_id = #{value};
 	</select>
+	
+	<!-- E010: 글별 용병 모집 현황 출력 -->
+	<select id="getEmployDesc" parameterType="integer" resultType="employ">
+		SELECT
+		employ_id, count(employ_result_id) currentNum, 
+		count(if(emp_result_status = 1, emp_result_status, null)) acceptNum,
+		count(if(emp_result_status = -1, emp_result_status, null)) refuseNum
+		FROM employ_result
+		WHERe employ_id = #{value}
+		GROUP BY employ_id
+	</select>
+	
+	<!-- E011: 용병찾기글 수정하기 -->
+	<update id="updateEmploy" parameterType="employ">
+		UPDATE `employ`
+		SET
+		`cost` = #{cost},
+		`req_number` = #{reqNumber},
+		`content` = #{content},
+		`reg_date` = #{regDate},
+		`due_date` = #{dueDate}
+		WHERE `employ_id` = #{employId}
+	</update>
 </mapper>

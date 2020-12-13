@@ -32,29 +32,32 @@ public class EmployServiceImpl implements EmployService {
 	public List<Employ> showRegisteredEmployByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		List<Employ> selectedList = new ArrayList<Employ>();
 		int status = searchCon.get("status");
-		List<Employ> list = employDAO.showRegisteredEmployByTeam(searchCon);
-		for(Employ emp : list) {
-			int currentNum = countEmployDesc(emp);
+		List<Employ> employs = employDAO.showRegisteredEmployByTeam(searchCon);
+		for(Employ emp : employs) {
+			// 용병 모집 현황 삽입
+			setEmployDesc(emp);
+			
+			// 단계별로 분류하기
+			int acceptNum = emp.getAcceptNum();
 			int reqNumber = emp.getReqNumber();
-			emp.setCurrentNum(currentNum); // 현재인원 추가
 			if(status == 0) { // 용병찾기 중 창에서 요청
-				selectedList.add(emp);
+				if(acceptNum < reqNumber) selectedList.add(emp);
 			}else if (status == 1) { // 용병찾기실패 창에서 요청
-				if(currentNum < reqNumber) selectedList.add(emp); // 요구 용병수보다 현재원이 작다면
+				if(acceptNum < reqNumber) selectedList.add(emp); // 요구 용병수보다 현재원이 작다면
 			}else { // 용병찾기완료 창에서 요청
-				if(currentNum > reqNumber) selectedList.add(emp); // 요구 용병수보다 현재원이 크다면
+				if(acceptNum >= reqNumber) selectedList.add(emp); // 요구 용병수보다 현재원이 크다면
 			}
 		}
 		return selectedList;
 	}
 	
-	//E002-2
+	//FE11
 	@Override
 	public List<Employ> showAppliedEmployByUser(HashMap<String, String> searchCon) throws SQLException {
 		List<Employ> list = employDAO.showAppliedEmployByUser(searchCon);
 		// 모집 현황 삽입
 		for(Employ emp : list) {
-			emp.setCurrentNum(countEmployDesc(emp));
+			setEmployDesc(emp);
 		}
 		return list;
 	}
@@ -65,18 +68,20 @@ public class EmployServiceImpl implements EmployService {
 		List<Employ> list = employDAO.searchEmployByFilter(filter);
 		// 모집 현황 삽입
 		for(Employ emp : list) {
-			emp.setCurrentNum(countEmployDesc(emp));
+			setEmployDesc(emp);
 		}
 		return list;
 	}
 	
-	@Override
-	public int countEmployDesc(Employ employ) throws SQLException {
-		List<EmployResult> list = employ.getEmployResults();
-		System.out.println(list);
-		return list.size();
+	//FE02, FE04, FE09, FE10
+	public void setEmployDesc(Employ emp) throws SQLException {
+		Employ employDesc = employDAO.getEmployDesc(emp.getEmployId());
+		if(employDesc != null) {
+			emp.setCurrentNum(employDesc.getCurrentNum());
+			emp.setAcceptNum(employDesc.getAcceptNum());
+			emp.setRefuseNum(employDesc.getRefuseNum());
+		}
 	}
-	
 	
 	//FE03
 	@Override
@@ -104,10 +109,16 @@ public class EmployServiceImpl implements EmployService {
 		
 	}
 	
-	//E013
+	//FE12, FE13
 	@Override
 	public void deleteEmployRes(HashMap<String, String> searchCon) throws SQLException {
 		employDAO.deleteEmployRes(searchCon);
+	}
+	
+	//FE14
+	@Override
+	public void updateEmploy(Employ employ) throws SQLException {
+		employDAO.updateEmploy(employ);
 	}
 	
 	//E014

@@ -242,8 +242,12 @@
                         <span class="mr-2"
                           >신청인원: {{ employ.currentNum }}명</span
                         >
-                        <span class="mr-2">수락인원: </span>
-                        <span class="mr-2">거절인원: </span>
+                        <span class="mr-2"
+                          >수락인원: {{ employ.acceptNum }}명</span
+                        >
+                        <span class="mr-2"
+                          >거절인원: {{ employ.refuseNum }}명</span
+                        >
                       </v-row>
                       <!--팀 리스트 라벨-->
                       <v-row class="mx-0 px-0 text-center">
@@ -449,6 +453,16 @@
                 @click="renewEmploy(employ)"
                 v-if="registeredStage == 1"
                 >용병찾기글 끌어올리기</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                @click="updateEmploy(employ)"
+                v-if="registeredStage == 1"
+                >수정하기</v-btn
               >
               <v-btn
                 class="mr-7"

@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Employ;
@@ -21,6 +23,20 @@ import com.biomans.fbt.teammember.service.TeamMemberService;
 public class TeamMemberController {
 	@Autowired
 	TeamMemberService teamMemberService;
+	
+	//FTM01
+	@PostMapping("/team-member/1")
+	public ResponseEntity addTeamMember(@RequestBody TeamMember teamMember) throws SQLException {
+		try {
+			System.out.println(teamMember);
+			teamMemberService.addTeamMember(teamMember);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	//TM002-1
 	@GetMapping("/team-member/2/{teamId}")
 	public ResponseEntity showMembersByTeamIdName(@PathVariable int teamId) throws SQLException {

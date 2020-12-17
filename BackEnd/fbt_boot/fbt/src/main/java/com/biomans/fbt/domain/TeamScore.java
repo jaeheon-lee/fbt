@@ -1,6 +1,7 @@
 package com.biomans.fbt.domain;
 
 public class TeamScore {
+	private int teamScoreId;
 	private int mannerPromise;
 	private int mannerContact;
 	private int mannerRule;
@@ -24,11 +25,12 @@ public class TeamScore {
 	
 	public TeamScore() {}
 
-	public TeamScore(int mannerPromise, int mannerContact, int mannerRule, int mannerBodyFight, int mannerSlang,
-			int mannerSmoking, int mannerUniform, int mannerPayment, int mannerArrangement, int mannerReferee,
-			int mannerTackle, int forward, int middle, int defence, MatchSchedule matchSchedule, Team teamGiver,
-			Team teamTaker, User user, double avgManner, double avgAbility) {
+	public TeamScore(int teamScoreId, int mannerPromise, int mannerContact, int mannerRule, int mannerBodyFight,
+			int mannerSlang, int mannerSmoking, int mannerUniform, int mannerPayment, int mannerArrangement,
+			int mannerReferee, int mannerTackle, int forward, int middle, int defence, MatchSchedule matchSchedule,
+			Team teamGiver, Team teamTaker, User user, double avgManner, double avgAbility) {
 		super();
+		this.teamScoreId = teamScoreId;
 		this.mannerPromise = mannerPromise;
 		this.mannerContact = mannerContact;
 		this.mannerRule = mannerRule;
@@ -49,6 +51,14 @@ public class TeamScore {
 		this.user = user;
 		this.avgManner = avgManner;
 		this.avgAbility = avgAbility;
+	}
+
+	public int getTeamScoreId() {
+		return teamScoreId;
+	}
+
+	public void setTeamScoreId(int teamScoreId) {
+		this.teamScoreId = teamScoreId;
 	}
 
 	public int getMannerPromise() {
@@ -213,14 +223,16 @@ public class TeamScore {
 
 	@Override
 	public String toString() {
-		return "TeamScore [mannerPromise=" + mannerPromise + ", mannerContact=" + mannerContact + ", mannerRule="
-				+ mannerRule + ", mannerBodyFight=" + mannerBodyFight + ", mannerSlang=" + mannerSlang
-				+ ", mannerSmoking=" + mannerSmoking + ", mannerUniform=" + mannerUniform + ", mannerPayment="
-				+ mannerPayment + ", mannerArrangement=" + mannerArrangement + ", mannerReferee=" + mannerReferee
-				+ ", mannerTackle=" + mannerTackle + ", forward=" + forward + ", middle=" + middle + ", defence="
-				+ defence + ", matchSchedule=" + matchSchedule + ", teamGiver=" + teamGiver + ", teamTaker=" + teamTaker
-				+ ", user=" + user + ", avgManner=" + avgManner + ", avgAbility=" + avgAbility + "]";
+		return "TeamScore [teamScoreId=" + teamScoreId + ", mannerPromise=" + mannerPromise + ", mannerContact="
+				+ mannerContact + ", mannerRule=" + mannerRule + ", mannerBodyFight=" + mannerBodyFight
+				+ ", mannerSlang=" + mannerSlang + ", mannerSmoking=" + mannerSmoking + ", mannerUniform="
+				+ mannerUniform + ", mannerPayment=" + mannerPayment + ", mannerArrangement=" + mannerArrangement
+				+ ", mannerReferee=" + mannerReferee + ", mannerTackle=" + mannerTackle + ", forward=" + forward
+				+ ", middle=" + middle + ", defence=" + defence + ", matchSchedule=" + matchSchedule + ", teamGiver="
+				+ teamGiver + ", teamTaker=" + teamTaker + ", user=" + user + ", avgManner=" + avgManner
+				+ ", avgAbility=" + avgAbility + "]";
 	}
 
+	
 		
 }

@@ -183,7 +183,7 @@ export default {
           alert("용병신청에 실패했습니다.");
         });
     },
-    //F#14
+    //FE14
     updateEmploy(employ) {
       this.$router.push({
         name: "employUpdate",

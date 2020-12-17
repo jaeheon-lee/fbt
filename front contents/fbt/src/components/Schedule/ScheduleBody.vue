@@ -43,7 +43,7 @@
                 :event-overlap-threshold="30"
                 :event-color="getEventColor"
                 @change="getEvents"
-                @click:event="showVoteInfoBySchedueId"
+                @click:event="showMatchScheduleInfo"
                 width="100"
                 color="primary"
               ></v-calendar>
@@ -62,6 +62,13 @@
                   v-if="controlWriteBtn"
                   >경기결과 작성하기</span
                 >
+                <span
+                  class="float-right"
+                  style="cursor:pointer"
+                  @click="openUpdatePage"
+                  v-if="controlUpdateBtn"
+                  >경기결과 수정하기</span
+                >
               </v-col>
             </v-row>
             <v-row class="py-0 my-0 px-0 mx-5">
@@ -72,6 +79,7 @@
                 <vote-match-list
                   :votes="votes"
                   :header="sendingHeader"
+                  @refresh="showNotEndMatchInfo"
                 ></vote-match-list>
               </v-col>
             </v-row>
@@ -89,7 +97,10 @@
             </v-row>
             <v-row class="py-0 my-0 px-0 mx-2">
               <v-col cols="12">
-                <match-result-insert :votes="votes"></match-result-insert>
+                <match-result-insert
+                  :votes="votes"
+                  :isUpdate="isUpdate"
+                ></match-result-insert>
               </v-col>
             </v-row>
           </div>

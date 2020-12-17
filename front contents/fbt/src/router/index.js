@@ -144,6 +144,18 @@ const routes = [
     name: "employUpdate",
     component: () => import("@/views/update/EmployUpdate.vue"),
     props: true
+  },
+  {
+    path: "/teamInsert",
+    name: "teamInsert",
+    component: () => import("@/views/TeamInsert.vue"),
+    props: true
+  },
+  {
+    path: "/searchTeam",
+    name: "searchTeam",
+    component: () => import("@/views/SearchTeam.vue"),
+    props: true
   }
 ];
 

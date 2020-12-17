@@ -7,18 +7,24 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.Employ;
 import com.biomans.fbt.domain.EmployResult;
+import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.employ.dao.EmployDAO;
 import com.biomans.fbt.employ.service.EmployService;
+import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.util.Filter;
 
 @Service
 public class EmployServiceImpl implements EmployService {
 	@Autowired
 	private EmployDAO employDAO;
+	
+	@Autowired
+	private MatchScheduleDAO matchScheduleDAO;
 	
 	//FE01
 	@Override
@@ -89,10 +95,29 @@ public class EmployServiceImpl implements EmployService {
 		employDAO.doApplyEmploy(employRes);
 	}
 	
-	//FE07
+	//FE07, FE08
 	@Override
-	public void updateResStatus(EmployResult employRes) throws SQLException {
+	@Transactional
+	public void updateResStatus(EmployResult employRes, Employ employ) throws SQLException {
+		// 용병 신청 결과 상태 수정
 		employDAO.updateResStatus(employRes);
+		
+		// 수락 시, 수락인원(지금 가져오는 것은 수락 전 숫자이므로 + 1)이 모집인원 이상인지 확인
+		if(employRes.getEmpResultStatus() == 1) {
+			int acceptNum = employ.getAcceptNum() + 1;
+			int reqNumber = employ.getReqNumber();
+			
+			// 이상이면 경기 확정
+			if(acceptNum >= reqNumber) {
+				int matchScheduleId = employ.getMatchSchedule().getMatchScheduleId();
+				HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+				searchCon.put("matchScheduleId", matchScheduleId);
+				MatchSchedule ms = matchScheduleDAO.showMatchScheduleByMatchScheduleId(matchScheduleId);
+				if(ms.getAwayTeam() == null) searchCon.put("awayTeamId", 0); 
+				else searchCon.put("awayTeamId", -1); 
+				matchScheduleDAO.confirmMatchSchedule(searchCon);
+			}
+		}
 	}
 	
 	//FE05

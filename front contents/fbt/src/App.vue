@@ -10,6 +10,7 @@
             v-for="item in items"
             :key="item.title"
             :prepend-icon="item.action"
+            :class="controlNavi(item)"
             no-action
             color="#ffffff"
           >
@@ -193,8 +194,8 @@ export default {
         items: [
           { title: "홈" },
           { title: "개인 전체일정", target: "scheduleUser" },
-          { title: "팀 찾기" },
-          { title: "팀 만들기" },
+          { title: "팀 찾기", target: "searchTeam" },
+          { title: "팀 만들기", target: "teamInsert" },
           { title: "용병", target: "employ" },
           { title: "전체 알림" },
           { title: "개인정보" }
@@ -216,6 +217,7 @@ export default {
             teamId: teams[i].teamId,
             teamMemberId: teams[i].teamMemberId,
             nickName: teams[i].nickName,
+            memberLevel: teams[i].memberLevel,
             index: i
           });
         }
@@ -244,6 +246,7 @@ export default {
       userInfo.teamMemberId = subItem.teamMemberId;
       userInfo.nickName = subItem.nickName;
       userInfo.teamName = subItem.title;
+      userInfo.memberLevel = subItem.memberLevel;
       sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
       this.$router.push("/").catch(error => {
         if (error.name == "NavigationDuplicated") {
@@ -259,6 +262,28 @@ export default {
           return "teamChosen";
         }
       }
+    },
+    // 네비게이션 조젊 메소드
+    controlNavi(item) {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      if (item.title == "팀 메뉴") {
+        if (userInfo) {
+          if (!userInfo.teamId) {
+            return "noShow";
+          }
+        } else {
+          return "noShow";
+        }
+      }
+      if (item.title == "관리자 메뉴") {
+        if (userInfo) {
+          if (!userInfo.teamId || userInfo.memberLevel < 1) {
+            return "noShow";
+          }
+        } else {
+          return "noShow";
+        }
+      }
     }
   }
 };
@@ -266,5 +291,9 @@ export default {
 <style scoped>
 .teamChosen {
   opacity: 0.5;
+}
+
+.noShow {
+  display: none;
 }
 </style>

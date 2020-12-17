@@ -58,6 +58,7 @@
             :header="sendingHeader"
             :isEnd="isEnd"
             :votes="votes"
+            @refresh="showVoteInfo"
           ></vote-match-list>
         </v-col>
       </v-row>

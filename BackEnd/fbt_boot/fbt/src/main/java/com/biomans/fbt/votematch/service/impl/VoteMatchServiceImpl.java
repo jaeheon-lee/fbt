@@ -40,7 +40,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		//1. 팀별 투표를 가져온다.
 		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(searchCon);
-		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByVote(searchCon.get("teamId"));
+		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByTeam(searchCon.get("teamId"));
 		for(VoteMatch voteMatch1 : voteMatchList) {
 			// 2. 투표 명단 요약 삽입
 			for(VoteMatch voteMatch2 : numList) {
@@ -70,10 +70,11 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	//FV03
 	@Override
 	@Transactional
-	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException {
+	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException {
+		int matchScheduleId = searchCon.get("matchScheduleId");
 		//1. 경기 일정 별 투표 정보를 가져온다
-		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(matchScheduleId);
-		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(matchScheduleId);
+		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(searchCon);
+		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(searchCon);
 		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
 		// 2. 경기 일정별 투표 명단 요약 삽입
 		if(num != null) {
@@ -151,7 +152,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		
 	}
 	
-	//FV05
+	//FV05, FV06, FS05 ,FS06
 	@Override
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
 		voteMatchDAO.updateVoteMatchResult(voteMatchResult);

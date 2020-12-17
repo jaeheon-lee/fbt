@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.team.dao.TeamDAO;
+import com.biomans.fbt.util.TeamFilter;
 
 @Repository
 public class TeamDAOImpl implements TeamDAO{
@@ -26,13 +27,27 @@ public class TeamDAOImpl implements TeamDAO{
 	}
 	
 	//T002
+	@Override
 	public List<MatchSchedule> showMatchRecordByTeam(int teamId) throws SQLException {
 		return sqlSession.selectList(ns+"showMatchRecordByTeam", teamId);
 	}
 	
 	//T003
+	@Override
 	public Team showTeamBasicInfo(int teamId) throws SQLException {
 		return sqlSession.selectOne(ns+"showTeamBasicInfo", teamId);
+	}
+	
+	//T004
+	@Override
+	public void addTeam(Team team) throws SQLException {
+		sqlSession.insert(ns+"addTeam", team);
+	}
+	
+	//T005
+	@Override
+	public String checkDupleTeamName(String teamName) throws SQLException {
+		return sqlSession.selectOne(ns+"checkDupleTeamName", teamName);
 	}
 	
 	//V006: 팀 검색
@@ -41,10 +56,20 @@ public class TeamDAOImpl implements TeamDAO{
 		return sqlSession.selectList(ns+"searchTeams", searchCon);
 	}
 	
+	//T006-1: 팀 필터 검색
+	public List<Team> searchTeamsByFilter(TeamFilter teamFilter) throws SQLException {
+		return sqlSession.selectList(ns+"searchTeamsByFilter", teamFilter);
+	}
+	
 	//TNN :
 	@Override
 	public Team showTeamInfoForAutoWrite(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"showTeamInfoForAutoWrite", searchCon);
+	}
+	
+	//T008
+	public int getTeamIdByTeamName(String teamName) throws SQLException {
+		return sqlSession.selectOne(ns+"getTeamIdByTeamName", teamName);
 	}
 	
 }

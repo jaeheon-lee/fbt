@@ -19,6 +19,7 @@ public class MatchSchedule {
 	private int stadiumParking;
 	private int stadiumShower;
 	private String matchType;
+	private int isConfirmed;
 	private Team homeTeam;
 	private Team awayTeam;
 	private VoteMatch voteMatch;
@@ -33,8 +34,8 @@ public class MatchSchedule {
 
 	public MatchSchedule(int matchScheduleId, String startTime, String endTime, int duration, int cost, String writer,
 			String regDate, String content, String stadiumName, String stadiumType, String stadiumAddress,
-			double stadiumX, double stadiumY, int stadiumParking, int stadiumShower, String matchType, Team homeTeam,
-			Team awayTeam, VoteMatch voteMatch, Search search, Assignment assignment, Employ employ,
+			double stadiumX, double stadiumY, int stadiumParking, int stadiumShower, String matchType, int isConfirmed,
+			Team homeTeam, Team awayTeam, VoteMatch voteMatch, Search search, Assignment assignment, Employ employ,
 			MatchResult matchResult, List<Entry> entries, List<TeamScore> teamScores) {
 		super();
 		this.matchScheduleId = matchScheduleId;
@@ -53,6 +54,7 @@ public class MatchSchedule {
 		this.stadiumParking = stadiumParking;
 		this.stadiumShower = stadiumShower;
 		this.matchType = matchType;
+		this.isConfirmed = isConfirmed;
 		this.homeTeam = homeTeam;
 		this.awayTeam = awayTeam;
 		this.voteMatch = voteMatch;
@@ -192,6 +194,14 @@ public class MatchSchedule {
 		this.matchType = matchType;
 	}
 
+	public int getIsConfirmed() {
+		return isConfirmed;
+	}
+
+	public void setIsConfirmed(int isConfirmed) {
+		this.isConfirmed = isConfirmed;
+	}
+
 	public Team getHomeTeam() {
 		return homeTeam;
 	}
@@ -271,10 +281,9 @@ public class MatchSchedule {
 				+ ", content=" + content + ", stadiumName=" + stadiumName + ", stadiumType=" + stadiumType
 				+ ", stadiumAddress=" + stadiumAddress + ", stadiumX=" + stadiumX + ", stadiumY=" + stadiumY
 				+ ", stadiumParking=" + stadiumParking + ", stadiumShower=" + stadiumShower + ", matchType=" + matchType
-				+ ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", voteMatch=" + voteMatch + ", search="
-				+ search + ", assignment=" + assignment + ", employ=" + employ + ", matchResult=" + matchResult
-				+ ", entries=" + entries + ", teamScores=" + teamScores + "]";
+				+ ", isConfirmed=" + isConfirmed + ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", voteMatch="
+				+ voteMatch + ", search=" + search + ", assignment=" + assignment + ", employ=" + employ
+				+ ", matchResult=" + matchResult + ", entries=" + entries + ", teamScores=" + teamScores + "]";
 	}
 
-	
 }

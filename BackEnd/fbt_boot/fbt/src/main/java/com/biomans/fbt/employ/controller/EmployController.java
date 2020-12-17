@@ -114,12 +114,12 @@ public class EmployController {
 		}
 	}
 	
-	//FE07
+	//FE07, FE08
 	@PutMapping("/employ-result/1")
 	public ResponseEntity updateResStatus(@RequestBody Employ employ) throws SQLException {
 		try {
 			EmployResult employRes = employ.getEmployResults().get(0);
-			employService.updateResStatus(employRes);
+			employService.updateResStatus(employRes, employ);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

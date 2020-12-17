@@ -22,6 +22,7 @@ public class User {
 	private int apiType;
 	private int empAbility;
 	private int empManner;
+	private int totalRatedNum;
 	private int totalEmpAttend;
 	private ApiCategory apiCategory;
 	private List<TeamMember> teamMembers;
@@ -31,8 +32,8 @@ public class User {
 
 	public User(String email, String pass, String name, String phoneNum, String userRegDate, String recentLogin,
 			String mainFoot, String position, String apiKey, int height, int weight, int wasPro, int gender,
-			String bornDate, String area, String image, int apiType, int empAbility, int empManner, int totalEmpAttend,
-			ApiCategory apiCategory, List<TeamMember> teamMembers, List<EmpScore> empScores) {
+			String bornDate, String area, String image, int apiType, int empAbility, int empManner, int totalRatedNum,
+			int totalEmpAttend, ApiCategory apiCategory, List<TeamMember> teamMembers, List<EmpScore> empScores) {
 		super();
 		this.email = email;
 		this.pass = pass;
@@ -53,6 +54,7 @@ public class User {
 		this.apiType = apiType;
 		this.empAbility = empAbility;
 		this.empManner = empManner;
+		this.totalRatedNum = totalRatedNum;
 		this.totalEmpAttend = totalEmpAttend;
 		this.apiCategory = apiCategory;
 		this.teamMembers = teamMembers;
@@ -211,6 +213,14 @@ public class User {
 		this.empManner = empManner;
 	}
 
+	public int getTotalRatedNum() {
+		return totalRatedNum;
+	}
+
+	public void setTotalRatedNum(int totalRatedNum) {
+		this.totalRatedNum = totalRatedNum;
+	}
+
 	public int getTotalEmpAttend() {
 		return totalEmpAttend;
 	}
@@ -250,8 +260,8 @@ public class User {
 				+ ", position=" + position + ", apiKey=" + apiKey + ", height=" + height + ", weight=" + weight
 				+ ", wasPro=" + wasPro + ", gender=" + gender + ", bornDate=" + bornDate + ", area=" + area + ", image="
 				+ image + ", apiType=" + apiType + ", empAbility=" + empAbility + ", empManner=" + empManner
-				+ ", totalEmpAttend=" + totalEmpAttend + ", apiCategory=" + apiCategory + ", teamMembers=" + teamMembers
-				+ ", empScores=" + empScores + "]";
+				+ ", totalRatedNum=" + totalRatedNum + ", totalEmpAttend=" + totalEmpAttend + ", apiCategory="
+				+ apiCategory + ", teamMembers=" + teamMembers + ", empScores=" + empScores + "]";
 	}
 
 	

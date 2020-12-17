@@ -17,6 +17,12 @@ public class TeamMemberDAOImpl implements TeamMemberDAO {
 	
 	@Autowired
 	SqlSession sqlSession;
+	
+	//TM001
+	@Override
+	public void addTeamMember(TeamMember teamMember) throws SQLException {
+		sqlSession.insert(ns+"addTeamMember", teamMember);
+	}
 
 	@Override
 	public List<TeamMember> showMembersByTeamId(int teamId) throws SQLException {

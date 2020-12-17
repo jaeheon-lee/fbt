@@ -16,6 +16,12 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 	@Autowired
 	private TeamMemberDAO teamMemberDAO;
 
+	//FTM01
+	@Override
+	public void addTeamMember(TeamMember teamMember) throws SQLException {
+		teamMemberDAO.addTeamMember(teamMember);
+	}
+	
 	@Override
 	public List<TeamMember> showMembersByTeamId(int teamId) throws SQLException {
 		return teamMemberDAO.showMembersByTeamId(teamId);

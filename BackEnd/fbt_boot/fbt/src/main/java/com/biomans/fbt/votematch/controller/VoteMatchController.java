@@ -45,13 +45,17 @@ public class VoteMatchController {
 	}
 	
 	//FV03
-	@GetMapping("vote-match/2/{matchScheduleId}")
-	public ResponseEntity showVoteMatchInfoByScheduleId(@PathVariable int matchScheduleId) throws SQLException {
+	@GetMapping("vote-match/2/{matchScheduleId}/{teamId}")
+	public ResponseEntity showVoteMatchInfoByScheduleId(@PathVariable int matchScheduleId,
+			@PathVariable int teamId) throws SQLException {
 		try {
-			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(matchScheduleId);
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("matchScheduleId", matchScheduleId);
+			searchCon.put("teamId", teamId);
+			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(searchCon);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
 		}catch(RuntimeException e) {
-			System.out.println(e);
+//			e.printStackTrace();
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
@@ -68,7 +72,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV05, FV06
+	//FV05
 	@PostMapping("/vote-match-result")
 	public ResponseEntity addAttendance(@RequestBody VoteMatch voteMatch) throws SQLException {
 		try {
@@ -81,7 +85,7 @@ public class VoteMatchController {
 		}
 	}
 
-	//FV05
+	//FV05, FV06, FS05 ,FS06
 	@PutMapping("/vote-match-result")
 	public ResponseEntity updateVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {

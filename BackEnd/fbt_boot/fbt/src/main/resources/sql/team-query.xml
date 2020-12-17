@@ -68,10 +68,33 @@
 		team(team_name, emblem, area, stadium_info, 
 		uniform_color, uniform_type, founding_date, team_reg_date, account, bank)
 		VALUES(#{teamName}, #{emblem}, #{area}, #{stadiumInfo}, #{uniformColor}, #{uniformType},
-		#{foundingDate}, #{teamRegDate}, #{account}, #{bank})
+		#{foundingDate}, sysdate(), #{account}, #{bank})
 	</insert>
 	
-	<!-- T006: 팀 검색 -->
+	<!-- T005: 팀명 중복 확인 -->
+	<select id="checkDupleTeamName" parameterType="string" resultType="string">
+		SELECT
+		team_name
+		FROM team
+		WHERE team_name = #{value}
+	</select>
+	<resultMap type="team" id="teamRM">
+		<id column="team_id" property="teamId"/>
+		<result column="team_name" property="teamName"/>
+		<result column="emblem" property="emblem"/>
+		<result column="area" property="area"/>
+		<result column="stadium_info" property="stadiumInfo"/>
+		<result column="uniform_color" property="uniformColor"/>
+		<result column="uniform_type" property="uniformType"/>
+		<result column="founding_date" property="foundingDate"/>
+		<result column="team_reg_date" property="teamRegDate"/>
+		<result column="account" property="account"/>
+		<result column="bank" property="bank"/>
+		<collection property="teamMembers" javaType="list" ofType="teamMember">
+			<id column="team_member_id" property="teamMemberId"/>
+		</collection>
+	</resultMap>
+	<!-- T006-1: 팀 검색 -->
 	<select id="searchTeams" parameterType="hashMap" resultType="team">
 		SELECT 
 		team_name, team_id, emblem
@@ -79,7 +102,37 @@
 		WHERE team_id != #{teamId}
 		AND team_name LIKE '%${teamName}%'
 	</select>
-	
+	<!-- T006-2: 팀 필터 검색 -->
+	<select id="searchTeamsByFilter" parameterType="hashMap" resultMap="teamRM">
+		SELECT 
+		t.team_id, team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, 
+		team_reg_date, team_manner, team_ability,
+		tm.team_member_id
+		FROM team t
+		JOIN team_member tm
+		ON t.team_id = tm.team_id
+		<where>
+			<if test="teamName != null">
+				team_name LIKE '%${teamName}%'
+			</if>
+			<if test="siDo != null and siGun == null">
+				area LIKE '%${siDo}%'
+			</if>
+			<if test="siGun != null">
+				area = #{area}
+			</if>
+		</where>
+		<!-- 실력순 -->
+		<if test="order == 0">
+			ORDER BY team_ability DESC
+		</if>
+		<!-- 매너순 -->
+		<if test="order == 1">
+			ORDER BY team_manner DESC
+		</if>
+		
+		
+	</select>
 	<!-- TNNN: 자동완성을 위한 정보 가져오기 -->
 	<resultMap type="team" id="TeamInfoRM">
 		<id column="team_id" property="teamId"/>
@@ -133,6 +186,13 @@
 		ON u.email = tm.email
 		WHERE t.team_id = #{teamId}
 		AND u.email = #{email}
+	</select>
+	<!-- T008: 팀이름으로 teamId 찾기-->
+	<select id="getTeamIdByTeamName" parameterType="string" resultType="integer">
+		SELECT 
+		team_id
+		FROM team
+		WHERE team_name = #{value}
 	</select>
 	
 </mapper>

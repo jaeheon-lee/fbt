@@ -11,7 +11,19 @@
       <!-- 마감일시 -->
       <v-row class="ma-0 pa-0">
         <v-col cols="12" class="text-left" style="font-size: 0.75em">
-          <span>투표 마감일시 : {{ vote.dueDate | extractSecond }}</span>
+          <span class="mr-2"
+            >투표 마감일시 : {{ vote.dueDate | extractSecond }}</span
+          >
+          <span
+            v-if="vote.voteStatus == 1 && vote.matchSchedule.isConfirmed == 0"
+          >
+            (마감됨)
+          </span>
+          <span
+            v-if="vote.voteStatus == 1 && vote.matchSchedule.isConfirmed == 1"
+          >
+            (확정됨)
+          </span>
         </v-col>
       </v-row>
       <!-- 기본 정보 -->
@@ -42,7 +54,7 @@
             {{ vote.voteMatchSetting | isEmp }}
           </div>
           <!-- 스코어 -->
-          <div class="my-1" style="font-size: 1.5em" v-if="vote.isEndMatch">
+          <div class="my-1" style="font-size: 1.5em" v-if="controlScore(vote)">
             <span>{{ vote.matchSchedule.matchResult.homeScore }}</span>
             <span class="mx-5">:</span>
             <span>{{ vote.matchSchedule.matchResult.awayScore }}</span>
@@ -197,10 +209,7 @@
           </v-row>
           <!--투표버튼 끝-->
           <!-- 대기하기, 참석취소 버튼 -->
-          <v-row
-            class="justify-center"
-            v-if="controlWaitBtn(vote) || controlCancelBtn(vote)"
-          >
+          <v-row class="justify-center" v-if="header.includes('schedule')">
             <v-btn
               small
               width="35px"
@@ -514,7 +523,7 @@
       </v-row>
       <!-- 명단 | 지인 초대 부분 끝 -->
       <!-- 관리자 버튼 영역 -->
-      <v-row v-if="header.slice(-7, header.length) == 'Manager'">
+      <v-row v-if="controlManagerBtn(vote)">
         <v-col offset="2" cols="8">
           <v-row justify="center" class="ma-0 pa-0">
             <v-btn
@@ -542,6 +551,14 @@
               class="mr-2"
               @click="deleteVoteMatch(vote)"
               >경기취소하기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="confirmMatchSchedule(vote)"
+              >경기 확정하기</v-btn
             >
             <v-btn
               elevation="3"

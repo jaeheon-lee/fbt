@@ -49,98 +49,10 @@
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
                     type="text"
                     v-model="matchSchedule.awayTeam.teamName"
-                    placeholder="자체 or 상대팀을 지정해주세요"
+                    placeholder="어웨이"
                     readonly
                   />
                 </v-col>
-                <!-- 상대팀 검색 Dialog -->
-                <v-dialog v-model="dialogAwayTeam" max-width="330px">
-                  <v-card>
-                    <v-card-title class="headline"
-                      >상대팀의 유형은 무엇입니까?</v-card-title
-                    >
-                    <v-card-text>
-                      <v-row>
-                        <v-col>
-                          <v-radio-group
-                            v-model="awayTeamType"
-                            @change="chooseAwayTeamTypeByRadio"
-                            row
-                          >
-                            <v-radio label="미정" value="0" />
-                            <v-radio label="자체" value="1" />
-                            <v-radio label="상대팀" value="2" />
-                          </v-radio-group>
-                        </v-col>
-                      </v-row>
-                      <v-row v-if="awayTeamType == 2">
-                        <v-col>
-                          <v-row>
-                            <v-col cols="11">
-                              <v-text-field
-                                placeholder="상대팀명을 입력해주세요."
-                                v-model="inputTeamName"
-                                @keydown.enter="searchTeams"
-                              />
-                            </v-col>
-                            <v-col id="magnify" cols="1" class="ma-0 mt-9 pa-0">
-                              <i
-                                class="material-icons md-18"
-                                @click.stop="searchTeams"
-                                >search</i
-                              >
-                            </v-col>
-                          </v-row>
-                          <v-row class="text-center">
-                            <v-col cols="7">
-                              팀명
-                            </v-col>
-                          </v-row>
-                          <v-divider></v-divider>
-                          <v-row
-                            id="friend-list"
-                            class="text-center"
-                            v-for="(awayTeam, i) in awayTeams"
-                            :key="i"
-                          >
-                            <v-col cols="7">
-                              {{ awayTeam.teamName }}
-                            </v-col>
-                            <v-col
-                              cols="1"
-                              class="ma-0 mt-2 mb-3 pa-0 text-center"
-                            >
-                              <v-btn
-                                class="ma-0 ml-8 pa-0"
-                                elevation="2"
-                                color="#6920A3"
-                                small
-                                @click="
-                                  selectAwayTeam(
-                                    awayTeam.teamId,
-                                    awayTeam.teamName
-                                  )
-                                "
-                                style="font-size: 0.65em"
-                                >선택</v-btn
-                              >
-                            </v-col>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-                    <v-card-actions class="justify-end">
-                      <v-btn
-                        class="ma-0 ml-8 pa-0"
-                        elevation="2"
-                        color="#6920A3"
-                        @click="dialogAwayTeam = false"
-                        style="font-size: 0.65em"
-                        >확인</v-btn
-                      >
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
               </v-row>
             </v-col>
           </v-row>

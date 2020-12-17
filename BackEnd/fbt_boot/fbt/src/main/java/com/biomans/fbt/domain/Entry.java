@@ -10,11 +10,13 @@ public class Entry {
 	private MatchSchedule matchSchedule;
 	private TeamMember teamMember;
 	private User user;
+	private Team team;
+	private EmpScore empScore;
 	
 	public Entry() {}
 
 	public Entry(int entryId, int attendance, int type, int matchScore, int goal, int assist,
-			MatchSchedule matchSchedule, TeamMember teamMember, User user) {
+			MatchSchedule matchSchedule, TeamMember teamMember, User user, Team team, EmpScore empScore) {
 		super();
 		this.entryId = entryId;
 		this.attendance = attendance;
@@ -25,6 +27,8 @@ public class Entry {
 		this.matchSchedule = matchSchedule;
 		this.teamMember = teamMember;
 		this.user = user;
+		this.team = team;
+		this.empScore = empScore;
 	}
 
 	public int getEntryId() {
@@ -99,12 +103,28 @@ public class Entry {
 		this.user = user;
 	}
 
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	public EmpScore getEmpScore() {
+		return empScore;
+	}
+
+	public void setEmpScore(EmpScore empScore) {
+		this.empScore = empScore;
+	}
+
 	@Override
 	public String toString() {
 		return "Entry [entryId=" + entryId + ", attendance=" + attendance + ", type=" + type + ", matchScore="
 				+ matchScore + ", goal=" + goal + ", assist=" + assist + ", matchSchedule=" + matchSchedule
-				+ ", teamMember=" + teamMember + ", user=" + user + "]";
+				+ ", teamMember=" + teamMember + ", user=" + user + ", team=" + team + ", empScore=" + empScore + "]";
 	}
-	
+
 	
 }

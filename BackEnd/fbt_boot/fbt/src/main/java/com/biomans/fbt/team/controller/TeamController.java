@@ -4,17 +4,26 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.biomans.fbt.domain.Team;
+import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.team.service.TeamService;
+import com.biomans.fbt.util.TeamFilter;
 import com.biomans.fbt.votematch.service.VoteMatchService;
 
 @RestController
@@ -35,6 +44,45 @@ public class TeamController {
 			return new ResponseEntity(team, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FT02
+	@PostMapping("/team/1")
+	public ResponseEntity addTeam(@RequestPart(value="file", required=false) MultipartFile file,
+			@RequestPart(value="team") Team team,
+			@RequestPart(value="teamMember") TeamMember teamMember,
+			HttpServletRequest request) throws SQLException {
+		try {
+			String root = request.getSession().getServletContext().getRealPath("/").substring(0, 11);
+			String path = root + "front contents\\fbt\\src\\assets\\image\\emblem\\";
+			teamService.addTeam(team, file, path, teamMember);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FT03
+	@GetMapping("/team/4/{teamName}")
+	public ResponseEntity checkDupleTeamName(@PathVariable String teamName) throws SQLException {
+		try {
+			String searchedName = teamService.checkDupleTeamName(teamName);
+			return new ResponseEntity(searchedName, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FT04
+	@PostMapping("/team/2")
+	public ResponseEntity searchTeamsByFilter(@RequestBody TeamFilter teamFilter) throws SQLException {
+		try {
+			List<Team> teams = teamService.searchTeamsByFilter(teamFilter);
+			return new ResponseEntity(teams, HttpStatus.OK);
+		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}

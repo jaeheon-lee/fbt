@@ -1,7 +1,8 @@
 export default {
   name: "match-result-insert",
   props: {
-    votes: Array
+    votes: Array,
+    isUpdate: Boolean
   },
   data() {
     return {
@@ -111,6 +112,12 @@ export default {
   },
   mounted() {
     this.vote = this.votes[0];
+    if (this.isUpdate) {
+      this.loadRemainInfo();
+    } else {
+      this.loadTeamMembers();
+      this.loadEmpFriend();
+    }
   },
   computed: {
     awayTeamName: function() {
@@ -123,6 +130,12 @@ export default {
     },
     teamMembersLoaded: function() {
       return this.teamMembers;
+    },
+    controlScoreInsert: function() {
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      let homeTeamId = this.vote.matchSchedule.homeTeam.teamId;
+      if (teamId == homeTeamId) return true;
+      else return false;
     },
     controlAwayTeamResult: function() {
       if (this.vote.matchSchedule.awayTeam) {
@@ -158,12 +171,12 @@ export default {
     },
     // ============== 팀원 출결 입력 ====================== //
     // 투표로부터 팀원 정보 가져오기
-    loadTeamMemebers() {
-      // let voteMatchId = this.vote.voteMatchId;
-      let voteMatchId = '1-1';
+    loadTeamMembers() {
+      let matchScheduleId = this.vote.matchSchedule.matchScheduleId;
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       this.loading = true;
       this.$axios
-        .get("/match-schedule/3/" + voteMatchId)
+        .get("/match-schedule/3/" + matchScheduleId + "/" + teamId)
         .then(response => {
           this.teamMembers = response.data;
           for (let i = 0; i < this.teamMembers.length; i++) {
@@ -181,6 +194,9 @@ export default {
               },
               user: {
                 email: null
+              },
+              team: {
+                teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
               }
             };
             entry.teamMember.teamMemberId = this.teamMembers[i].teamMemberId;
@@ -197,115 +213,130 @@ export default {
     },
     // ============== 용병/지인 출결 입력 ====================== //
     loadEmpFriend() {
-      // let voteMatchId = this.vote.voteMatchId;
-      let voteMatchId = '1-1';
       let matchScheduleId = this.vote.matchSchedule.matchScheduleId;
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       this.loading = true;
       this.$axios
-        .get("/match-schedule/4/" + voteMatchId + "/" + matchScheduleId)
+        .get("/match-schedule/4/" + matchScheduleId + "/" + teamId)
         .then(response => {
           let friendEmployMap = response.data;
           let friendList = friendEmployMap.friendList;
           let employList = friendEmployMap.employList;
-
-          for (let i = 0; i < friendList.length; i++) {
-            // entry에 삽입
-            let entry = {
-              attendance: 2,
-              type: 1,
-              matchScore: 0,
-              goal: 0,
-              assist: 0,
-              matchSchedule: {
-                matchScheduleId: this.vote.matchSchedule.matchScheduleId
-              },
-              teamMember: {
-                teamMemberId: null
-              },
-              user: {
-                email: friendList[i].email
-              }
-            };
-            this.empEntries.push(entry);
-            // empScore에 삽입
-            let empScore = {
-              mannerPromise: 0,
-              mannerContact: 0,
-              mannerRule: 0,
-              mannerBodyFight: 0,
-              mannerSlang: 0,
-              mannerSmoking: 0,
-              mannerUniform: 0,
-              mannerPayment: 0,
-              mannerArrangement: 0,
-              mannerReferee: 0,
-              mannerTackle: 0,
-              empAbility: 0,
-              forward: 0,
-              middle: 0,
-              defence: 0,
-              matchSchedule: {
-                matchScheduleId: this.vote.matchSchedule.matchScheduleId
-              },
-              teamGiver: {
-                teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
-              },
-              user: {
-                email: friendList[i].email
-              }
-            };
-            this.empScores.push(empScore);
+          if (friendList) {
+            for (let i = 0; i < friendList.length; i++) {
+              // entry에 삽입
+              let entry = {
+                attendance: 2,
+                type: 1,
+                matchScore: 0,
+                goal: 0,
+                assist: 0,
+                matchSchedule: {
+                  matchScheduleId: this.vote.matchSchedule.matchScheduleId
+                },
+                teamMember: {
+                  teamMemberId: null
+                },
+                user: {
+                  email: friendList[i].email
+                },
+                team: {
+                  teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
+                }
+              };
+              this.empEntries.push(entry);
+              // empScore에 삽입
+              let empScore = {
+                mannerPromise: 0,
+                mannerContact: 0,
+                mannerRule: 0,
+                mannerBodyFight: 0,
+                mannerSlang: 0,
+                mannerSmoking: 0,
+                mannerUniform: 0,
+                mannerPayment: 0,
+                mannerArrangement: 0,
+                mannerReferee: 0,
+                mannerTackle: 0,
+                empAbility: 0,
+                forward: 0,
+                middle: 0,
+                defence: 0,
+                matchSchedule: {
+                  matchScheduleId: this.vote.matchSchedule.matchScheduleId
+                },
+                teamGiver: {
+                  teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
+                },
+                user: {
+                  email: friendList[i].email
+                },
+                team: {
+                  teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
+                }
+              };
+              this.empScores.push(empScore);
+              this.friendEmploys = friendList;
+            }
           }
-          for (let i = 0; i < employList.length; i++) {
-            // entry에 삽입
-            let entry = {
-              attendance: 2,
-              type: 2,
-              matchScore: 0,
-              goal: 0,
-              assist: 0,
-              matchSchedule: {
-                matchScheduleId: this.vote.matchSchedule.matchScheduleId
-              },
-              teamMember: {
-                teamMemberId: null
-              },
-              user: {
-                email: employList[i].email
-              }
-            };
-            this.empEntries.push(entry);
-            // empScore에 삽입
-            let empScore = {
-              mannerPromise: 0,
-              mannerContact: 0,
-              mannerRule: 0,
-              mannerBodyFight: 0,
-              mannerSlang: 0,
-              mannerSmoking: 0,
-              mannerUniform: 0,
-              mannerPayment: 0,
-              mannerArrangement: 0,
-              mannerReferee: 0,
-              mannerTackle: 0,
-              empAbility: 0,
-              forward: 0,
-              middle: 0,
-              defence: 0,
-              matchSchedule: {
-                matchScheduleId: this.vote.matchSchedule.matchScheduleId
-              },
-              teamGiver: {
-                teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
-              },
-              user: {
-                email: employList[i].email
-              }
-            };
-            this.empScores.push(empScore);
+          if (employList) {
+            for (let i = 0; i < employList.length; i++) {
+              // entry에 삽입
+              let entry = {
+                attendance: 2,
+                type: 2,
+                matchScore: 0,
+                goal: 0,
+                assist: 0,
+                matchSchedule: {
+                  matchScheduleId: this.vote.matchSchedule.matchScheduleId
+                },
+                teamMember: {
+                  teamMemberId: null
+                },
+                user: {
+                  email: employList[i].email
+                },
+                team: {
+                  teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
+                }
+              };
+              this.empEntries.push(entry);
+              // empScore에 삽입
+              let empScore = {
+                mannerPromise: 0,
+                mannerContact: 0,
+                mannerRule: 0,
+                mannerBodyFight: 0,
+                mannerSlang: 0,
+                mannerSmoking: 0,
+                mannerUniform: 0,
+                mannerPayment: 0,
+                mannerArrangement: 0,
+                mannerReferee: 0,
+                mannerTackle: 0,
+                empAbility: 0,
+                forward: 0,
+                middle: 0,
+                defence: 0,
+                matchSchedule: {
+                  matchScheduleId: this.vote.matchSchedule.matchScheduleId
+                },
+                teamGiver: {
+                  teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
+                },
+                user: {
+                  email: employList[i].email
+                }
+              };
+              this.empScores.push(empScore);
+            }
           }
-          this.friendEmploys = friendList.concat(employList);
-          this.loadFriendEmployBtnClicked = true;
+          if (this.friendEmploys.length > 0) {
+            this.friendEmploys = this.friendEmploys.concat(employList);
+          } else {
+            if (employList) this.friendEmploys = employList;
+          }
         })
         .catch(() => {
           this.errored = true;
@@ -313,50 +344,6 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
-    // ============== 상대 유형 입력 ====================== //
-    // 상대팀 유형 메소드
-    // 1: Radio를 통해 바꾸기 (자체 or 미정)
-    chooseAwayTeamTypeByRadio() {
-      if (this.awayTeamType == 1) {
-        this.vote.matchSchedule.awayTeam = this.vote.matchSchedule.homeTeam;
-      }
-    },
-    // 2: 상대팀명 검색을 통해 상대팀 지정하기(상대팀)
-    selectAwayTeam(awayTeam) {
-      this.vote.matchSchedule.awayTeam = awayTeam;
-      this.awayTeamSelectActive = false;
-      this.dialogAwayTeam = false;
-    },
-    //3. 상대팀명 찾기
-    // T006: 팀 검색
-    searchTeams() {
-      this.loading = true;
-      this.$axios
-        .get(
-          "/team/" +
-            this.inputTeamName +
-            "?homeTeamId=" +
-            this.vote.matchSchedule.homeTeam.teamId
-        )
-        .then(response => {
-          this.awayTeams = response.data;
-        })
-        .catch(() => {
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    //4. 최종 확인하기
-    selectTeamOk() {
-      if (this.awayTeamType == "1") {
-        this.chooseAwayTeamTypeByRadio();
-        this.teamScore.teamTaker.teamId = this.vote.matchSchedule.awayTeam.teamId;
-      }
-      this.awayTeamSelectActive = false;
-      this.dialogAwayTeam = false;
     },
     // ============== 팀원 검색====================== //
     searchTeamMember() {
@@ -402,6 +389,9 @@ export default {
         },
         user: {
           email: null
+        },
+        team: {
+          teamId: JSON.parse(sessionStorage.getItem("userInfo")).teamId
         }
       };
       entry.teamMember = teamMember;
@@ -418,6 +408,7 @@ export default {
       else this.mannerActive = i;
     },
     // ============== 제출====================== //
+    //FS08
     submitMatchResult() {
       let entries = this.teamEntries.concat(this.empEntries);
       let matchResultCollection = {
@@ -436,10 +427,55 @@ export default {
           alert("입력에 실패했습니다.");
         })
         .finally(() => {
-          // const router = this.$router;
-          // router.push({
-          //   name: "scheduleManager"
-          // });
+          location.reload();
+        });
+    },
+    // ============== 수정 시 ====================== //
+    //FS11
+    loadRemainInfo() {
+      let matchScheduleId = this.vote.matchSchedule.matchScheduleId;
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      this.$axios
+        .get("/match-schedule/6/" + matchScheduleId + "/" + teamId)
+        .then(response => {
+          let collection = response.data;
+          this.matchResult = collection.matchResult;
+          this.teamScore = collection.teamScore;
+          let entries = collection.entries;
+          for (let i = 0; i < collection.entries.length; i++) {
+            if (entries[i].type == 0) {
+              //팀원이라면
+              this.teamEntries.push(entries[i]);
+              this.teamMembersLoaded.push(entries[i].teamMember);
+            } else {
+              //용병/지인이라면
+              this.empEntries.push(entries[i]);
+              this.friendEmploys.push(entries[i].user);
+              entries[i].empScore.user = entries[i].user;
+              this.empScores.push(entries[i].empScore);
+            }
+          }
+        });
+    },
+    updateMatchResult() {
+      let entries = this.teamEntries.concat(this.empEntries);
+      let matchResultCollection = {
+        entries: entries,
+        empScores: this.empScores,
+        teamScore: this.teamScore,
+        matchResult: this.matchResult
+      };
+      this.$axios
+        .put("match-schedule/2", matchResultCollection)
+        .then(() => {
+          alert("수정이 완료됐습니다.");
+        })
+        .catch(error => {
+          console.log(error);
+          alert("수정에 실패했습니다.");
+        })
+        .finally(() => {
+          location.reload();
         });
     }
   }

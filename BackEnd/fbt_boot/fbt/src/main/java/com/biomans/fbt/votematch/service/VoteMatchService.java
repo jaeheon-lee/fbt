@@ -14,12 +14,12 @@ public interface VoteMatchService {
 	//FV01, FV02, FS02
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//FV03
-	public VoteMatch showVoteMatchInfoByScheduleId(int matchScheduleId) throws SQLException;
+	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	//FV04
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException;
 	//FV05, FV06
 	public void addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException;
-	//FV05
+	//FV05, FV06, FS05 ,FS06
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	//FV07, FV14
 	public void updateVoteMatch(VoteMatch voteMatch, int type) throws SQLException;

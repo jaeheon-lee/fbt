@@ -28,7 +28,7 @@
               <v-icon class="mr-1">mdi-hexagon</v-icon>
               유니폼 색: {{ team.uniformColor }}
             </v-row>
-            <v-row class="mb-2">
+            <v-row class="mb-2" v-if="this.teamMemberId">
               <v-icon class="mr-1">mdi-hexagon</v-icon>
               연락처: {{ phoneNum }}
             </v-row>

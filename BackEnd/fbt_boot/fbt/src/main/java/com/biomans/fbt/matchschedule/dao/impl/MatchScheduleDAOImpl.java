@@ -12,10 +12,13 @@ import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.Entry;
 import com.biomans.fbt.domain.MatchResult;
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
+import com.biomans.fbt.util.AvgScore;
+import com.biomans.fbt.util.ScoreDescInput;
 import com.biomans.fbt.util.SearchKey;
 
 @Repository
@@ -49,51 +52,38 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		
 	}
 	
-	
-	
-	
-
-	
-	//일정 수정
-	@Override
-	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
-		sqlSession.update(ns+"updateMatchSchedule", matchSchedule);
-	}
-	
-	// S00N: 일정 삭제
-	@Override
-	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
-		sqlSession.delete(ns+"deleteMatchSchedule", matchScheduleId);
-	}
-	
-	// S005-1: 등록된 팀 경기 일정 출력 
+	// S005-1: 월별 팀 경기 일정 출력
 	@Override
 	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException {
 		return sqlSession.selectList(ns+"showMatchSchduleByTeamPeriod", searchKey);
 	}
 	
-	// S005-2: 등록된 개인 경기 일정 출력
+	// S005-2: 월별 개인 경기 일정 출력
 	@Override
 	public List<MatchSchedule> showMatchSchduleByUserPeriod(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showMatchSchduleByUserPeriod", searchCon);
 	}
 	@Override
-	public List<MatchSchedule> showMatchScheduleByEmployPeriod(String email) throws SQLException {
-		return sqlSession.selectList(ns+"showMatchScheduleByEmployPeriod", email);
+	public List<MatchSchedule> showMatchScheduleByEmployPeriod(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showMatchScheduleByEmployPeriod", searchCon);
 	}
 	
-	
+	//S006 일정 수정
+	@Override
+	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
+		sqlSession.update(ns+"updateMatchSchedule", matchSchedule);
+	}
 	
 	// S007
 	@Override
-	public List<TeamMember> showAttendVotedMember(String voteMatchId) throws SQLException {
-		return sqlSession.selectList(ns+"showAttendVotedMember", voteMatchId);
+	public List<TeamMember> showAttendVotedMember(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showAttendVotedMember", searchCon);
 	}
 	
 	// S008
 	@Override
-	public List<User> showAttendVotedFriend(String voteMatchId) throws SQLException {
-		return sqlSession.selectList(ns+"showAttendVotedFriend", voteMatchId);
+	public List<User> showAttendVotedFriend(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showAttendVotedFriend", searchCon);
 	}
 	@Override
 	public List<User> showAcceptedEmploy(int matchScheduleId) throws SQLException {
@@ -123,19 +113,85 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	}
 	
 	//S010
-	// S010
-	public MatchSchedule showMatchScheduleResult(int matchScheduleId) throws SQLException {
-		return sqlSession.selectOne(ns+"showMatchScheduleResult", matchScheduleId);
+	@Override
+	public MatchSchedule showMatchScheduleResult(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectOne(ns+"showMatchScheduleResult", searchCon);
 	}
 	
+	// S011
 	@Override
-	// A006
 	public void changeHomeTeam(HashMap<String, Integer> con) throws SQLException {
 		sqlSession.update(ns+"changeHomeTeam", con);
 	}
 
+	// S012: 일정 삭제
+	@Override
+	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
+		sqlSession.delete(ns+"deleteMatchSchedule", matchScheduleId);
+	}
 	
+	// S013
+	@Override
+	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException {
+		sqlSession.update(ns+"confirmMatchSchedule", searchCon);
+	}
 	
+	// S014
+	@Override
+	public Team getTeamScoreDesc(int teamId) throws SQLException {
+		return sqlSession.selectOne(ns+"getTeamScoreDesc", teamId);
+	}
 	
+	// S015
+	@Override
+	public void updateTeamScoreDesc(ScoreDescInput scoreDescInput) throws SQLException {
+		sqlSession.update(ns+"updateTeamScoreDesc", scoreDescInput);
+	}
 	
+	// S016
+	@Override
+	public User getEmpScoreDesc(String email) throws SQLException {
+		return sqlSession.selectOne(ns+"getEmpScoreDesc", email);
+	}
+	
+	// S017
+	@Override
+	public void updateEmpScoreDesc(ScoreDescInput scoreDescInput) throws SQLException {
+		sqlSession.update(ns+"updateEmpScoreDesc", scoreDescInput);
+	}
+	
+	// S018
+	@Override
+	public EmpScore getEmpScoreByScheduleIdEmail(HashMap<String, String> con) throws SQLException {
+		return sqlSession.selectOne(ns+"getEmpScoreByScheduleIdEmail", con);
+	}
+	
+	// S019
+	@Override
+	public void updateEntry(Entry entry) throws SQLException {
+		sqlSession.update(ns+"updateEntry", entry);
+	}
+	@Override
+	public void updateMatchResult(MatchResult matchResult) throws SQLException {
+		sqlSession.update(ns+"updateMatchResult", matchResult);
+	}
+	@Override
+	public void updateEmpScore(EmpScore empScore) throws SQLException {
+		sqlSession.update(ns+"updateEmpScore", empScore);
+	}
+	@Override
+	public void updateTeamScore(TeamScore teamScore) throws SQLException{
+		sqlSession.update(ns+"updateTeamScore", teamScore);
+	}
+	
+	// S020
+	@Override
+	public AvgScore getAvgTeamScore(int takerTeamId) throws SQLException {
+		return sqlSession.selectOne(ns+"getAvgTeamScore", takerTeamId);
+	}
+	// S021
+	@Override
+	public AvgScore getAvgEmpScore(String email) throws SQLException {
+		return sqlSession.selectOne(ns+"getAvgEmpScore", email);
+	}
 }

@@ -5,8 +5,8 @@
 <mapper namespace="TeamMemberMapper">
 	<insert id="addTeamMember" parameterType="teamMember">
 		INSERT INTO
-		team_member(member_reg_date, member_level, reg_status, team_id, email, nick_name)
-		VALUES(sysdate(), #{memberLevel}, #{regStatus}, #{team.teamId}, #{user.email}, #{nickName})
+		team_member(team_member_id, member_reg_date, member_level, reg_status, team_id, email, nick_name)
+		VALUES(#{teamMemberId}, sysdate(), #{memberLevel}, #{regStatus}, #{team.teamId}, #{user.email}, #{nickName})
 	</insert>
 	
 	<!-- TM002: 팀원 출력 -->

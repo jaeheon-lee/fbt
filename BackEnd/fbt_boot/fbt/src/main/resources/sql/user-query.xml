@@ -36,6 +36,7 @@
 		<collection property="teamMembers" javaType="list" ofType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
 			<result column="nick_name" property="nickName"/>
+			<result column="member_level" property="memberLevel"/>
 			<association property="team" javaType="team">
 				<id column="team_id" property="teamId"/>
 				<result column="team_name" property="teamName"/>
@@ -63,7 +64,7 @@
 		SELECT
 		u.email, u.image, u.name,
 		t.team_id, t.team_name,
-		tm.team_member_id, tm.nick_name
+		tm.team_member_id, tm.nick_name, tm.member_level
 		FROM user u
 		LEFT OUTER JOIN team_member tm
 		ON u.email = tm.email

@@ -24,7 +24,7 @@
           <v-stepper-content class="ma-0 pa-0 px-4 py-4" step="1">
             <v-card class="mb-12 py-3" color="#1E1E1E">
               <!-- 스코어 입력 -->
-              <div class="mb-3">
+              <div class="mb-3" v-if="controlScoreInsert">
                 <!-- 스코어 입력 라벨 -->
                 <v-row class="py-0 my-0 px-0 mx-5">
                   1. 스코어 입력
@@ -42,8 +42,8 @@
                     v-model="matchResult.isSet"
                     v-if="isInnerMatch"
                   >
-                    <v-radio label="일반스코어" value= 0 />
-                    <v-radio label="세트스코어" value= 1 />
+                    <v-radio label="일반스코어" value="0" />
+                    <v-radio label="세트스코어" value="1" />
                   </v-radio-group>
                 </v-row>
                 <!-- 스코어 입력 본문 -->
@@ -85,9 +85,6 @@
                       contain
                     />
                   </span>
-                  <v-btn v-else @click="dialogAwayTeam = true"
-                    >팀을 선택해주세요</v-btn
-                  >
                 </v-row>
                 <!-- 스코어 입력 본문 끝-->
               </div>
@@ -98,13 +95,6 @@
                 <v-row class="py-0 my-0 px-0 mx-5">
                   <v-col class="ma-0 pa-0">
                     <span>2. 팀원 출결 입력</span>
-                    <span
-                      class="float-right"
-                      :class="{ 'display-none': loadMemberBtnClicked }"
-                      @click.once="loadTeamMemebers"
-                      style="cursor:pointer;"
-                      >투표 정보 불러오기</span
-                    >
                   </v-col>
                 </v-row>
                 <v-row class="ma-0 pa-0 mx-5">
@@ -207,13 +197,6 @@
                 <v-row class="py-0 my-0 px-0 mx-5">
                   <v-col class="ma-0 pa-0">
                     <span>3. 용병/지인 출결 입력</span>
-                    <span
-                      class="float-right"
-                      :class="{ 'display-none': loadFriendEmployBtnClicked }"
-                      @click.once="loadEmpFriend"
-                      style="cursor:pointer;"
-                      >용병/지인 정보 불러오기</span
-                    >
                   </v-col>
                 </v-row>
                 <v-row class="ma-0 pa-0 mx-5">
@@ -342,7 +325,11 @@
                   >
                     <v-col>
                       <!-- 이메일 칸 -->
-                      <v-row class="ml-2" @click="toggleAbility(i)">
+                      <v-row
+                        class="ml-2"
+                        @click="toggleAbility(i)"
+                        style="cursor:pointer;"
+                      >
                         {{ friendEmploy.email }}
                         <v-icon v-if="abilityActive != i"
                           >mdi-chevron-right</v-icon
@@ -427,7 +414,11 @@
                   >
                     <v-col>
                       <!-- 이메일 칸 -->
-                      <v-row class="ml-2" @click="toggleManner(i)">
+                      <v-row
+                        class="ml-2"
+                        @click="toggleManner(i)"
+                        style="cursor:pointer;"
+                      >
                         {{ friendEmploy.email }}
                         <v-icon v-if="mannerActive != i"
                           >mdi-chevron-right</v-icon
@@ -942,90 +933,21 @@
               class="float-right"
               color="primary"
               @click="submitMatchResult"
+              v-if="!isUpdate"
             >
               확인
+            </v-btn>
+            <v-btn
+              class="float-right"
+              color="primary"
+              @click="updateMatchResult"
+              v-else
+            >
+              수정
             </v-btn>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
-      <!-- 상대팀 검색 Dialog -->
-      <v-dialog v-model="dialogAwayTeam" max-width="330px">
-        <v-card>
-          <v-card-title class="headline"
-            >상대팀의 유형은 무엇입니까?</v-card-title
-          >
-          <v-card-text>
-            <v-row>
-              <v-col>
-                <v-radio-group
-                  v-model="awayTeamType"
-                  @change="chooseAwayTeamTypeByRadio"
-                  row
-                >
-                  <v-radio label="자체" value="1" />
-                  <v-radio label="상대팀" value="2" />
-                </v-radio-group>
-              </v-col>
-            </v-row>
-            <v-row v-if="awayTeamType == 2">
-              <v-col>
-                <v-row>
-                  <v-col cols="11">
-                    <v-text-field
-                      placeholder="상대팀명을 입력해주세요."
-                      v-model="inputTeamName"
-                      @keydown.enter="searchTeams"
-                    />
-                  </v-col>
-                  <v-col id="magnify" cols="1" class="ma-0 mt-9 pa-0">
-                    <i class="material-icons md-18" @click.stop="searchTeams"
-                      >search</i
-                    >
-                  </v-col>
-                </v-row>
-                <v-row class="text-center">
-                  <v-col cols="7">
-                    팀명
-                  </v-col>
-                </v-row>
-                <v-divider></v-divider>
-                <v-row
-                  id="friend-list"
-                  class="text-center"
-                  v-for="(awayTeam, i) in awayTeams"
-                  :key="i"
-                >
-                  <v-col cols="7">
-                    {{ awayTeam.teamName }}
-                  </v-col>
-                  <v-col cols="1" class="ma-0 mt-2 mb-3 pa-0 text-center">
-                    <v-btn
-                      class="ma-0 ml-8 pa-0"
-                      elevation="2"
-                      color="#6920A3"
-                      small
-                      @click="selectAwayTeam(awayTeam)"
-                      style="font-size: 0.65em"
-                      >선택</v-btn
-                    >
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions class="justify-end">
-            <v-btn
-              class="ma-0 ml-8 pa-0"
-              elevation="2"
-              color="#6920A3"
-              @click="selectTeamOk"
-              style="font-size: 0.65em"
-              >확인</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <!-- 상대팀 검색 Dialog 끝 -->
       <!-- 팀원 검색 Dialog -->
       <v-dialog v-model="dialogTeamMember" width="100%">
         <v-card>
@@ -1042,7 +964,10 @@
                 />
               </v-col>
               <v-col id="magnify" cols="1" class="ma-0 mt-9 pa-0">
-                <i class="material-icons md-18" @click.stop="searchTeamMember"
+                <i
+                  class="material-icons md-18"
+                  @click.stop="searchTeamMember"
+                  style="cursor:pointer;"
                   >search</i
                 >
               </v-col>

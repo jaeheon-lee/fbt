@@ -33,6 +33,7 @@
 			<result column="stadium_parking" property="stadiumParking"/>
 			<result column="stadium_shower" property="stadiumShower"/>
 			<result column="match_type" property="matchType"/>
+			<result column="is_confirmed" property="isConfirmed"/>
 			<association property="homeTeam" javaType="team">
 				<id column="home_team_id" property="teamId"/>
 				<result column="home_team_name" property="teamName"/>
@@ -74,7 +75,8 @@
 		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.content, m.stadium_name, 
 		m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
 		m.match_type, m.home_team_id, m.away_team_id,
-		date_add(m.start_time, interval m.duration hour) end_time
+		date_add(m.start_time, interval m.duration hour) end_time,
+		m.is_confirmed
 	</sql>
 	<sql id="showVoteMatchInfo">
 		SELECT 
@@ -112,9 +114,10 @@
 		ORDER BY v.due_date ASC
 	</select>
 	<!-- V001-2: 경기 일정 별 투표 및 경기 일정 정보 -->
-	<select id="showVoteMatchInfoByScheduleId" parameterType="integer" resultMap="VoteMatchRM" >
+	<select id="showVoteMatchInfoByScheduleId" parameterType="hashMap" resultMap="VoteMatchRM" >
 		<include refid="showVoteMatchInfo"/>
-		WHERE m.match_schedule_id = #{value}
+		WHERE v.match_schedule_id = #{matchScheduleId}
+		AND v.team_id = #{teamId}
 	</select>
 	
 	
@@ -137,9 +140,10 @@
 		GROUP BY vr.vote_match_id
 	</select>
 	<!-- V002-2: 경기 일정 별 투표 명단 요약 정보 -->
-	<select id="showVoteMatchNumByScheduleId" parameterType="integer" resultMap="VoteMatchRM">
+	<select id="showVoteMatchNumByScheduleId" parameterType="hashMap" resultMap="VoteMatchRM">
 		<include refid="showVoteMatchNum"/>
 		WHERE v.match_schedule_id = #{value}
+		AND v.team_id = #{teamId}
 		GROUP BY vr.vote_match_id
 	</select>
 	
@@ -173,7 +177,7 @@
 		<include refid="showVoteMatchResult"/>
 		WHERE v.vote_match_id = #{value}
 	</select>
-	<!-- V003-2: 경기 일정별 투표 결과 보기 -->
+	<!-- V003-2: 경기 일정별 투표 명단 보기 -->
 	<select id="showVoteMatchResultByScheduleId" parameterType="integer" resultMap="voteMatchResultRM">
 		<include refid="showVoteMatchResult"/>
 		WHERE v.match_schedule_id = #{value}

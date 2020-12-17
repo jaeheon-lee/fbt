@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     // ========================== 버튼 눌렀을 때 메소드 ===============================//
-    // 투표하기 (FV05, FV06)
+    // 투표하기 (FV05, FV06, FS05 ,FS06)
     doVote(vote, result) {
       // 필요한 정보를 담는다.
       // eslint-disable-next-line prettier/prettier
@@ -99,7 +99,7 @@ export default {
             alert("투표 중 오류가 발생했습니다.");
           })
           .finally(() => {
-            this.refresh();
+            this.refresh(vote.matchSchedule.matchScheduleId);
           });
       } else {
         // 이미 투표를 했다면 => 수정 (FV05)
@@ -112,7 +112,7 @@ export default {
             alert("수정 중 오류가 발생했습니다.");
           })
           .finally(() => {
-            this.refresh();
+            this.refresh(vote.matchSchedule.matchScheduleId);
           });
       }
     },
@@ -130,7 +130,7 @@ export default {
           alert("투표 마감에 실패했습니다.");
         })
         .finally(() => {
-          this.refresh();
+          this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
     // 경기 취소하기 FV08
@@ -144,7 +144,7 @@ export default {
           alert("취소에 실패했습니다.");
         })
         .finally(() => {
-          this.refresh();
+          this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
     // 지인찾기 FV09
@@ -210,7 +210,7 @@ export default {
           alert("설정에 실패했습니다.");
         })
         .finally(() => {
-          this.refresh();
+          this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
     // 매칭 등록으로 넘어가기(FV11, FV12, FV13)
@@ -246,9 +246,29 @@ export default {
         }
       });
     },
+    // 경기 확정하기 (FV16)
+    confirmMatchSchedule(vote) {
+      console.log(vote);
+      let matchScheduleId = vote.matchSchedule.matchScheduleId;
+      let teamId = vote.matchSchedule.homeTeam.teamId;
+      let awayTeamId = 0;
+      if (vote.matchSchedule.awayTeam) {
+        awayTeamId = vote.matchSchedule.awayTeam.teamId;
+      }
+      this.$axios
+        // eslint-disable-next-line prettier/prettier
+        .put("/match-schedule/1/" + matchScheduleId + "/" + teamId + "/" + awayTeamId)
+        .then(() => {
+          alert("경기가 확정됐습니다.");
+        })
+        .catch(error => {
+          console.log(error);
+          alert("경기확정에 실패했습니다.");
+        })
+    },
     // 새로고침
-    refresh() {
-      this.$parent.showVoteInfo();
+    refresh(matchScheduleId) {
+      this.$emit("refresh", null, matchScheduleId);
     },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
@@ -332,11 +352,26 @@ export default {
     closeFriendList() {
       this.activeFriendList = null;
     },
+    //스코어 창 여닫기
+    controlScore(vote) {
+      if (vote.matchSchedule.matchResult) return true;
+      else return false;
+    },
+    // 카카오 링크
     closeKaokao() {
       this.dialogKakao = false;
       this.$emit("close");
     },
     // ========================== 버튼 컨트롤 메소드===============================//
+    // 관리버튼 전체 관리
+    controlManagerBtn(vote) {
+      if (
+        this.header.slice(-7, this.header.length) == "Manager" &&
+        !vote.isEndMatch
+      )
+        return true;
+      else return false;
+    },
     // 스케줄 페이지에서 참불 버튼 관리
     controlAttendBtnOnSchedule(vote) {
       //1. 투표 마감날이 지나면 표시 하지 않는다.
@@ -346,14 +381,16 @@ export default {
 
       //2. 투표가 마감 되면 표시 하지 않는다.
       if (vote.voteStatus == 1) return false;
-      else return true;
+      return true;
     },
     // 대기, 참석취소 버튼 관리
     controlWaitBtn(vote) {
-      // 1. 투표 마감날 전 또는 경기 시작시간 지나면 표시하지 않는다.
+      // 대기버튼 기간적 조건: 인위 마감 후 + 기간적 마감 후 + 경기 시작 전
+      // -> 1. 기간적으로 표시하지 않기 : 기간적 조건의 반명제
       let today = new Date();
       today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
-      if (vote.dueDate > today || vote.matchSchedule.startTime < today)
+      // eslint-disable-next-line prettier/prettier
+      if (!(vote.voteStatus == 1 && vote.dueDate > today && vote.matchSchedule.startTime > today))
         return false;
 
       //2. 다음 로직 따른다
@@ -375,10 +412,12 @@ export default {
       }
     },
     controlCancelBtn(vote) {
-      //1.
+      // 취소버튼 기간적 조건: 인위 마감 후 + 기간적 마감 후 + 경기 시작 전
+      // -> 1. 기간적으로 표시하지 않기 : 기간적 조건의 반명제
       let today = new Date();
       today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
-      if (vote.dueDate > today || vote.matchSchedule.startTime < today)
+      // eslint-disable-next-line prettier/prettier
+      if (!(vote.voteStatus == 1 && vote.dueDate > today && vote.matchSchedule.startTime > today))
         return false;
 
       //2. 다음 로직을 따른다

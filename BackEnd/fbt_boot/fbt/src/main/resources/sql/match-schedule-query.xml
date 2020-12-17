@@ -4,28 +4,26 @@
 
 <mapper namespace="MatchScheduleMapper">
 	<!-- S001 -->
-	<select id="showMatchScheduleById" parameterType="integer" resultType="matchSchedule">
+	<select id="showMatchScheduleById" parameterType="integer" resultMap="matchScheduleRM">
 		SELECT
-		match_schedule_id, stadium_name, stadium_address, match_type, cost,
-		start_time, duration, stadium_type, stadium_shower, stadium_parking
+		match_schedule_id, start_time, duration, cost, writer, reg_date, content, stadium_name, 
+		stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, 
+		match_type, home_team_id, away_team_id, is_confirmed
 		FROM match_schedule
 		WHERE match_schedule_id = #{value}
 	</select>
-	<!-- S002: awayTeam 등록 -->
-	<update id="addAwayTeam" parameterType="hashMap">
-		UPDATE match_schedule
-		SET away_team_id = #{takerTeamId}
-		WHERE match_schedule_id = #{matchScheduleId}
-	</update>
+	<!-- S002: 방금 등록된 일정 ID 출력 -->
+	<select id="showLatestMatchScheduleIdById" parameterType="integer" resultType="integer">
+		SELECT
+		match_schedule_id
+		FROM match_schedule 
+		WHERE home_team_id = #{value} 
+		OR away_team_id = #{value}
+		ORDER BY match_schedule_id DESC 
+		limit 1;
+	</select>
 
-
-
-
-
-
-
-
-	<!-- S001: 일정 등록 -->
+	<!-- S003: 일정 등록 -->
 	<insert id="addMatchSchedule" parameterType="matchSchedule">
 		INSERT INTO
 		match_schedule(home_team_id, away_team_id, start_time, duration, cost, writer, reg_date, 
@@ -36,18 +34,57 @@
 		#{stadiumParking}, #{stadiumShower}, #{matchType})
 	</insert>
 	
-	<!-- S002: 방금 등록된 일정 ID 출력 -->
-	<select id="showLatestMatchScheduleIdById" parameterType="integer" resultType="integer">
+	<!-- S004: awayTeam 등록 -->
+	<update id="addAwayTeam" parameterType="hashMap">
+		UPDATE match_schedule
+		SET away_team_id = #{takerTeamId},
+		is_confirmed = 1
+		WHERE match_schedule_id = #{matchScheduleId}
+	</update>
+	
+	<!-- S005-1: 등록된 팀 경기 일정 기간 별 출력 -->
+	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultType="matchSchedule">
 		SELECT
-		match_schedule_id
-		FROM match_schedule 
-		WHERE home_team_id = #{value} 
-		OR away_team_id = #{value}
-		ORDER BY match_schedule_id 
-		DESC limit 1;
+		match_schedule_id, start_time, match_type,
+		date_add(start_time, interval duration hour) end_time
+		FROM match_schedule
+		WHERE (home_team_id = #{teamId} OR away_team_id = #{teamId})
+		AND (start_time >= #{startTime} 
+		AND #{endTime} >= start_time)
+		AND is_confirmed = 1
+	</select>
+	<!-- S005-2: 등록된 개인 경기 일정 기간 별 출력 -->
+	<!-- 1. 자신이 속한 팀의 모든 경기 일정 -->
+	<select id="showMatchSchduleByUserPeriod" parameterType="hashMap" resultType="matchSchedule">
+		SELECT
+		distinct m.match_schedule_id, m.start_time, m.match_type
+		FROM team_member tm
+		JOIN team t
+		ON t.team_id = tm.team_id
+		JOIN match_schedule m
+		ON (m.home_team_id = t.team_id or m.away_team_id = t.team_id)
+		WHERE tm.email = #{email}
+		AND (start_time >= #{startTime} 
+		AND #{endTime} >= start_time)
+		AND is_confirmed = 1
+	</select>
+	<!-- 2. 용병으로 뛰고 있는 모든 경기 일정 -->
+	<select id="showMatchScheduleByEmployPeriod" parameterType="string" resultType="matchSchedule">
+		SELECT
+		m.match_schedule_id, m.start_time, m.match_type
+		FROM match_schedule m
+		JOIN employ e
+		ON e.match_schedule_id = m.match_schedule_id
+		JOIN employ_result er
+		ON e.employ_id = er.employ_id
+		WHERE er.email = #{email}
+		AND er.emp_result_status = 1
+		AND (start_time >= #{startTime} 
+		AND #{endTime} >= start_time)
+		AND is_confirmed = 1
 	</select>
 	
-	<!-- SNNN: 일정 수정 -->
+	<!-- S006: 일정 수정 -->
 	<update id="updateMatchSchedule" parameterType="matchSchedule">
 		UPDATE match_schedule
 		SET
@@ -70,73 +107,35 @@
 		WHERE match_schedule_id = #{matchScheduleId};
 	</update>
 	
-	<!-- S004: 일정 삭제 -->
-	<delete id="deleteMatchSchedule" parameterType="integer">
-		DELETE
-		FROM match_schedule
-		WHERE match_schedule_id = #{value}
-	</delete>
-	
-	<!-- S005-1: 등록된 팀 경기 일정 기간 별 출력 -->
-	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultType="matchSchedule">
-		SELECT
-		match_schedule_id, start_time, match_type,
-		date_add(start_time, interval duration hour) end_time
-		FROM match_schedule
-		WHERE (home_team_id = #{teamId} OR away_team_id = #{teamId})
-		AND (start_time >= #{startTime} AND #{endTime} >= start_time)
-	</select>
-	
-	<!-- S005-2: 등록된 개인 경기 일정 기간 별 출력 -->
-	<!-- 1. 자신이 속한 팀의 모든 경기 일정 -->
-	<select id="showMatchSchduleByUserPeriod" parameterType="hashMap" resultType="matchSchedule">
-		SELECT
-		distinct m.match_schedule_id, m.start_time, m.match_type
-		FROM team_member tm
-		JOIN team t
-		ON t.team_id = tm.team_id
-		JOIN match_schedule m
-		ON (m.home_team_id = t.team_id or m.away_team_id = t.team_id)
-		WHERE tm.email = #{email}
-		AND (start_time >= #{startTime} AND #{endTime} >= start_time)
-	</select>
-	<!-- 2. 용병으로 뛰고 있는 모든 경기 일정 -->
-	<select id="showMatchScheduleByEmployPeriod" parameterType="string" resultType="matchSchedule">
-		SELECT
-		m.match_schedule_id, m.start_time, m.match_type
-		FROM match_schedule m
-		JOIN employ e
-		ON e.match_schedule_id = m.match_schedule_id
-		JOIN employ_result er
-		ON e.employ_id = er.employ_id
-		WHERE er.email = #{value}
-		AND er.emp_result_status != -1
-	</select>
-
-	
 	<!-- S007 -->
 	<!-- 참여 누른 맴버들 불러오기 -->
-	<select id="showAttendVotedMember" parameterType="string" resultType="teamMember">
+	<select id="showAttendVotedMember" parameterType="hashMap" resultType="teamMember">
 		SELECT 
 		tm.team_member_id, tm.nick_name
-		FROM vote_match_result vr
+		FROM vote_match v
+		JOIN vote_match_result vr
+		ON v.vote_match_id = vr.vote_match_id
 		JOIN team_member tm
 		ON tm.team_member_id = vr.team_member_id
-		WHERE vote_match_id = #{voteMatchId}
-		AND attendance = 1
+		WHERE v.match_schedule_id = #{matchScheduleId}
+		AND v.team_id = #{teamId}
+		AND vr.attendance = 1
 		AND tm.team_member_id is not null
 	</select>
 	
 	<!-- S008 -->
 	<!-- 참여하기로 한 지인 불러오기 -->
-	<select id="showAttendVotedFriend" parameterType="string" resultType="user">
+	<select id="showAttendVotedFriend" parameterType="hashMap" resultType="user">
 		SELECT 
 		u.email, u.name
 		FROM vote_match_result vr
+		JOIN vote_match v
+		ON v.vote_match_id = vr.vote_match_id
 		JOIN user u
 		ON u.email = vr.email
-		WHERE vote_match_id = #{voteMatchId}
-		AND attendance = 1
+		WHERE v.match_schedule_id = #{matchScheduleId}
+		AND v.team_id = #{teamId}
+		AND vr.attendance = 1
 		AND u.email is not null
 	</select>
 	<!-- 참여하기로 한 용병 불러오기 -->
@@ -149,20 +148,21 @@
 		JOIN user u
 		ON u.email = er.email
 		WHERE e.match_schedule_id = #{value}
+		AND er.emp_result_status = 1
 	</select>
 	
 	<!-- S009 -->
 	<!-- entry 입력 -->
 	<insert id="addEntry" parameterType="entry">
 		INSERT INTO
-		entry(team_member_id, match_schedule_id, email, attendance, type, match_score, goal, assist)
+		entry(team_member_id, match_schedule_id, email, attendance, type, match_score, goal, assist, team_id)
 		VALUES(#{teamMember.teamMemberId}, #{matchSchedule.matchScheduleId}, #{user.email},
-		#{attendance}, #{type}, #{matchScore}, #{goal}, #{assist})
+		#{attendance}, #{type}, #{matchScore}, #{goal}, #{assist}, #{team.teamId})
 	</insert>
 	<!-- matchResult 입력 -->
 	<insert id="addMatchResult" parameterType="matchResult">
 		INSERT INTO
-		match_result(isSet, home_result, away_result, home_score, away_score, match_schedule_id)
+		match_result(is_set, home_result, away_result, home_score, away_score, match_schedule_id)
 		VALUES(#{isSet}, #{homeResult}, #{awayResult}, #{homeScore}, #{awayScore}, #{matchSchedule.matchScheduleId})
 	</insert>
 	<!-- empScore 입력 -->
@@ -214,6 +214,7 @@
 			<result column="away_team_name" property="teamName"/>
 		</association>
 		<association property="matchResult" javaType="matchResult">
+			<id column="match_schedule_id" property="matchScheduleId"/>
 			<result column="home_score" property="homeScore"/>
 			<result column="away_score" property="awayScore"/>
 		</association>
@@ -221,8 +222,28 @@
 			<id column="entry_id" property="entryId"/>
 			<result column="attendance" property="attendance"/>
 			<result column="type" property="type"/>
+			<result column="match_score" property="matchScore"/>
+			<result column="goal" property="goal"/>
+			<result column="assist" property="assist"/>
 			<association property="user" javaType="user">
 				<id column="email" property="email"/>
+				<collection property="empScores" javaType="list" ofType="empScore">
+					<id column="emp_score_id" property="empScoreId"/>
+					<result column="manner_promise_e" property="mannerPromise"/>
+					<result column="manner_contact_e" property="mannerContact"/>
+					<result column="manner_rule_e" property="mannerRule"/>
+					<result column="manner_body_fight_e" property="mannerBodyFight"/>
+					<result column="manner_slang_e" property="mannerSlang"/>
+					<result column="manner_smoking_e" property="mannerSmoking"/>
+					<result column="manner_uniform_e" property="mannerUniform"/>
+					<result column="manner_payment_e" property="mannerPayment"/>
+					<result column="manner_arrangement_e" property="mannerArrangement"/>
+					<result column="manner_referee_e" property="mannerReferee"/>
+					<result column="manner_tackle_e" property="mannerTackle"/>
+					<result column="forward_e" property="forward"/>
+					<result column="middle_e" property="middle"/>
+					<result column="defence_e" property="defence"/>
+				</collection>
 			</association>
 			<association property="teamMember" javaType="teamMember">
 				<id column="team_member_id" property="teamMemberId"/>
@@ -256,13 +277,13 @@
 			</association>
 		</collection>
 	</resultMap>
-	<select id="showMatchScheduleResult" parameterType="integer" resultMap="matchScheduleRM">
+	<select id="showMatchScheduleResult" parameterType="hashMap" resultMap="matchScheduleRM">
 		SELECT
 		m.match_schedule_id, m.start_time, m.match_type, m.stadium_name, m.duration,
 		date_add(m.start_time, interval m.duration hour) end_time,
 		t.team_id home_team_id, t.emblem home_emblem, t.team_name home_team_name,
 		t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name,
-		ent.entry_id, ent.email, ent.attendance, ent.type,
+		ent.entry_id, ent.email, ent.attendance, ent.type, ent.match_score, ent.goal, ent.assist,
 		tm.team_member_id, tm.nick_name,
 		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
 		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
@@ -285,14 +306,171 @@
 		ON t3.team_id = ts.team_giver_id
 		LEFT OUTER JOIN match_result mr
 		ON mr.match_schedule_id = m.match_schedule_id
-		WHERE m.match_schedule_id = #{value}
+		WHERE m.match_schedule_id = #{matchScheduleId}
 	</select>
 	
-
+	<!-- S011 -->
 	<!-- :homeTeam 변경 -->
 	<update id="changeHomeTeam" parameterType="hashMap">
 		UPDATE match_schedule
 		SET home_team_id = #{takerTeamId}
 		WHERE match_schedule_id = #{matchScheduleId}
 	</update>
+	
+	<!-- S012: 일정 삭제 -->
+	<delete id="deleteMatchSchedule" parameterType="integer">
+		DELETE
+		FROM match_schedule
+		WHERE match_schedule_id = #{value}
+	</delete>
+	
+	<!-- S013: 경기 확정하기 -->
+	<update id="confirmMatchSchedule" parameterType="hashMap">
+		UPDATE match_schedule
+		SET is_confirmed = 1
+		<if test="awayTeamId == 0">
+		, away_team_id = #{teamId}
+		</if>
+		WHERE match_schedule_id = #{matchScheduleId}
+	</update>
+	
+	<!-- S014: 팀별 평균 매너, 실력, 부여받은 횟수 출력 -->
+	<select id="getTeamScoreDesc" parameterType="integer" resultType="team">
+		SELECT
+		t.team_id, t.team_ability, t.team_manner,
+		count(ts.team_taker_id) totalRatedNum
+		FROM team t
+		LEFT OUTER JOIN team_score ts
+		ON t.team_id = ts.team_taker_id
+		WHERE t.team_id = #{value}
+		GROUP BY ts.team_taker_id
+	</select>
+	
+	<!-- S015: 팀 평균 매너, 실력 수정 -->
+	<update id="updateTeamScoreDesc" parameterType="ScoreDescInput">
+		UPDATE team
+		SET team_ability = #{teamAbility},
+		team_manner = #{teamManner}
+		WHERE team_id = #{teamId}
+	</update>
+	
+	<!-- S016: 개인별 평균 매너, 실력, 부여받은 횟수 출력 -->
+	<select id="getEmpScoreDesc" parameterType="string" resultType="user">
+		SELECT
+		u.email, u.emp_ability, u.emp_manner,
+		count(es.emp_email) totalRatedNum
+		FROM user u
+		LEFT OUTER JOIN emp_score es
+		ON u.email = es.emp_email
+		WHERE u.email = #{value}
+		GROUP BY es.emp_email
+	</select>
+	
+	<!-- S017: 개인 평균 매너, 실력 수정 -->
+	<update id="updateEmpScoreDesc" parameterType="ScoreDescInput">
+		UPDATE user
+		SET emp_ability = #{empAbility},
+		emp_manner = #{empManner}
+		WHERE email = #{email}
+	</update>
+	
+	<!-- S018: 특정 팀의 경기 결과, 부여 점수들 불러오기 -->
+	<select id="getEmpScoreByScheduleIdEmail" parameterType="hashMap" resultType="empScore">
+		SELECT
+		emp_score_id, manner_promise, manner_contact, manner_rule, manner_body_fight, manner_slang, manner_smoking, 
+		manner_uniform, manner_payment, manner_arrangement, manner_referee, manner_tackle, forward, middle, defence, 
+		match_schedule_id, team_giver_id, emp_email
+		FROM emp_score
+		WHERE match_schedule_id = #{matchScheduleId}
+		AND team_giver_id = #{teamId}
+		AND emp_email = #{email}
+	</select>
+	
+	<!-- S019: 경기결과 수정 -->
+	<!-- entry -->
+	<update id="updateEntry" parameterType="entry">
+		UPDATE entry
+		SET
+		attendance = #{attendance},
+		type = #{type},
+		match_score = #{matchScore},
+		goal = #{goal},
+		assist = #{assist}
+		WHERE entry_id = #{entryId}
+	</update>
+	<!-- matchResult -->
+	<update id="updateMatchResult" parameterType="matchResult">
+		UPDATE match_result
+		SET
+		`is_set` = #{isSet},
+		`home_result` = #{homeResult},
+		`away_result` = #{awayResult},
+		`home_score` = #{homeScore},
+		`away_score` = #{awayScore}
+		WHERE `match_schedule_id` = #{matchScheduleId}
+	</update>
+	<!-- empScore -->
+	<update id="updateEmpScore" parameterType="empScore">
+		UPDATE emp_score
+		SET
+		manner_promise = #{mannerPromise},
+		manner_contact = #{mannerContact},
+		manner_rule = #{mannerRule},
+		manner_body_fight = #{mannerBodyFight},
+		manner_slang = #{mannerSlang},
+		manner_smoking = #{mannerSmoking},
+		manner_uniform = #{mannerUniform},
+		manner_payment = #{mannerPayment},
+		manner_arrangement = #{mannerArrangement},
+		manner_referee = #{mannerReferee},
+		manner_tackle = #{mannerTackle},
+		forward = #{forward},
+		middle = #{middle},
+		defence = #{defence}
+		WHERE emp_score_id = #{empScoreId}
+	</update>
+	<!-- teamScore -->
+	<update id="updateTeamScore" parameterType="teamScore">
+		UPDATE team_score
+		SET
+		`manner_promise` = #{mannerPromise},
+		`manner_contact` = #{mannerContact},
+		`manner_rule` = #{mannerRule},
+		`manner_body_fight` = #{mannerBodyFight},
+		`manner_slang` = #{mannerSlang},
+		`manner_smoking` = #{mannerSmoking},
+		`manner_uniform` = #{mannerUniform},
+		`manner_payment` = #{mannerPayment},
+		`manner_arrangement` = #{mannerArrangement},
+		`manner_referee` = #{mannerReferee},
+		`manner_tackle` = #{mannerTackle},
+		`forward` = #{forward},
+		`middle` = #{middle},
+		`defence` = #{defence}
+		WHERE `team_score_id` = #{teamScoreId}
+	</update>
+	
+	<!-- S020: 받은 팀의 평균 점수 -->
+	<select id="getAvgTeamScore" parameterType="integer" resultType="avgScore">
+		select
+		avg(manner_promise) manner_promise, avg(manner_contact) manner_contact, avg(manner_rule) manner_rule, 
+		avg(manner_body_fight) manner_body_fight, avg(manner_slang) manner_slang, avg(manner_smoking) manner_smoking,
+		avg(manner_uniform) manner_uniform, avg(manner_payment) manner_payment, avg(manner_arrangement) manner_arrangement, 
+		avg(manner_referee) manner_referee, avg(manner_tackle) manner_tackle, avg(forward) forward, avg(middle) middle, avg(defence) defence
+		from team_score
+		where team_taker_id = #{value}
+		group by team_taker_id
+	</select>
+	
+	<!-- S021: 받은 용병의 평균 점수 -->
+	<select id="getAvgEmpScore" parameterType="string" resultType="avgScore">
+		select
+		avg(manner_promise) manner_promise, avg(manner_contact) manner_contact, avg(manner_rule) manner_rule, 
+		avg(manner_body_fight) manner_body_fight, avg(manner_slang) manner_slang, avg(manner_smoking) manner_smoking,
+		avg(manner_uniform) manner_uniform, avg(manner_payment) manner_payment, avg(manner_arrangement) manner_arrangement, 
+		avg(manner_referee) manner_referee, avg(manner_tackle) manner_tackle, avg(forward) forward, avg(middle) middle, avg(defence) defence
+		from emp_score
+		where emp_email = #{value}
+		group by emp_email
+	</select>
 </mapper>

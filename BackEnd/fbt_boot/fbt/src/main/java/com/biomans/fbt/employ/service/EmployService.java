@@ -20,8 +20,8 @@ public interface EmployService {
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException;
 	//FE03
 	public void doApplyEmploy(EmployResult employRes) throws SQLException;
-	//FE07
-	public void updateResStatus(EmployResult employRes) throws SQLException;
+	//FE07, FE08
+	public void updateResStatus(EmployResult employRes, Employ employ) throws SQLException;
 	//FE05
 	public void deleteEmploy(int employId) throws SQLException;
 	//FE06

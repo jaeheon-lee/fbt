@@ -96,6 +96,7 @@ public class UserController {
 			User user = userService.LoginByEmail(searchCon);
 			Session session = new Session();
 			if (user != null) session = makeSession(user);
+			System.out.println(session);
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -116,6 +117,7 @@ public class UserController {
 			team.put("teamName", tm.getTeam().getTeamName());
 			team.put("teamMemberId", tm.getTeamMemberId());
 			team.put("nickName", tm.getNickName());
+			team.put("memberLevel", tm.getMemberLevel()+"");
 			teams.add(team);
 		}
 		session.setTeams(teams);

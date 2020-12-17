@@ -5,9 +5,7 @@ import java.util.List;
 import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.Entry;
 import com.biomans.fbt.domain.MatchResult;
-import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
-import com.biomans.fbt.domain.User;
 
 public class MatchResultCollection {
 	private List<Entry> entries;

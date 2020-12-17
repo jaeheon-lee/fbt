@@ -1,5 +1,7 @@
 package com.biomans.fbt.team.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +9,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Team;
@@ -14,13 +18,18 @@ import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.team.dao.TeamDAO;
 import com.biomans.fbt.team.service.TeamService;
+import com.biomans.fbt.teammember.dao.TeamMemberDAO;
+import com.biomans.fbt.util.TeamFilter;
 
 @Service
 public class TeamServiceImpl implements TeamService{
 	@Autowired
 	private TeamDAO teamDAO;
 	
-	//T001
+	@Autowired
+	private TeamMemberDAO teamMemberDAO;
+	
+	//FT01
 	@Override
 	public Team showTeamInfo(HashMap<String, String> con) throws SQLException {
 		Team team = teamDAO.showTeamInfo(con);
@@ -54,6 +63,54 @@ public class TeamServiceImpl implements TeamService{
 	public List<Team> searchTeams(HashMap<String, String> searchCon) throws SQLException {
 		return teamDAO.searchTeams(searchCon);
 	}
+	
+	//FT02
+	@Override
+	@Transactional
+	public void addTeam(Team team, MultipartFile file, String path, TeamMember teamMember) throws SQLException {
+		String fileName = "";
+		System.out.println(teamMember.getUser());
+		// 파일 업로드 & 저장
+		if(file != null) {
+			// 파일명 양식: teamName.확장자 
+			String rawFileName = file.getOriginalFilename();
+			int idx = rawFileName.indexOf(".");
+			String extension = rawFileName.substring(idx, rawFileName.length());
+			fileName = team.getTeamName() + extension;
+			try {
+				file.transferTo(new File(path+fileName)); //파일 생성
+			} catch (IllegalStateException | IOException e) {
+				System.out.println(e);
+			}
+		}
+		// emblem 지정
+		team.setEmblem(fileName);
+		
+		// 팀등록
+		teamDAO.addTeam(team);
+		// 등록한 팀명으로 teamId 불러오기, teamId랑 teamMemberId 설정
+		int teamId = teamDAO.getTeamIdByTeamName(team.getTeamName());
+		Team team2 = new Team();
+		team2.setTeamId(teamId);
+		teamMember.setTeam(team2);
+		String teamMemberId = teamId + "-" + teamMember.getUser().getEmail();
+		teamMember.setTeamMemberId(teamMemberId);
+		//본인을 팀원, 구단주로 등록
+		teamMemberDAO.addTeamMember(teamMember);
+	}
+	
+	//FT03
+	public String checkDupleTeamName(String teamName) throws SQLException {
+		return teamDAO.checkDupleTeamName(teamName);
+	}
+	
+	//FT04
+	@Override
+	public List<Team> searchTeamsByFilter(TeamFilter teamFilter) throws SQLException {
+		List<Team> teams = teamDAO.searchTeamsByFilter(teamFilter);
+		return teams;
+	}
+	
 	
 	//TNN :
 	@Override

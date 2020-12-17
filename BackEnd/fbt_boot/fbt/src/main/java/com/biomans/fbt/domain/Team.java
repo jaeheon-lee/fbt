@@ -1,6 +1,9 @@
 package com.biomans.fbt.domain;
 
+import java.io.File;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class Team {
 	private int teamId;
@@ -19,6 +22,7 @@ public class Team {
 	private List<MatchSchedule> matchSchedules;
 	private double teamManner;
 	private double teamAbility;
+	private int totalRatedNum;
 	private int totalNum;
 
 	public Team() {}
@@ -26,7 +30,7 @@ public class Team {
 	public Team(int teamId, String teamName, String emblem, String area, String stadiumInfo, String uniformColor,
 			int uniformType, String foundingDate, String teamRegDate, String account, String bank,
 			List<TeamScore> teamScores, List<TeamMember> teamMembers, List<MatchSchedule> matchSchedules,
-			double teamManner, double teamAbility, int totalNum) {
+			double teamManner, double teamAbility, int totalRatedNum, int totalNum) {
 		super();
 		this.teamId = teamId;
 		this.teamName = teamName;
@@ -44,6 +48,7 @@ public class Team {
 		this.matchSchedules = matchSchedules;
 		this.teamManner = teamManner;
 		this.teamAbility = teamAbility;
+		this.totalRatedNum = totalRatedNum;
 		this.totalNum = totalNum;
 	}
 
@@ -175,6 +180,14 @@ public class Team {
 		this.teamAbility = teamAbility;
 	}
 
+	public int getTotalRatedNum() {
+		return totalRatedNum;
+	}
+
+	public void setTotalRatedNum(int totalRatedNum) {
+		this.totalRatedNum = totalRatedNum;
+	}
+
 	public int getTotalNum() {
 		return totalNum;
 	}
@@ -189,8 +202,8 @@ public class Team {
 				+ ", stadiumInfo=" + stadiumInfo + ", uniformColor=" + uniformColor + ", uniformType=" + uniformType
 				+ ", foundingDate=" + foundingDate + ", teamRegDate=" + teamRegDate + ", account=" + account + ", bank="
 				+ bank + ", teamScores=" + teamScores + ", teamMembers=" + teamMembers + ", matchSchedules="
-				+ matchSchedules + ", teamManner=" + teamManner + ", teamAbility=" + teamAbility + ", totalNum="
-				+ totalNum + "]";
+				+ matchSchedules + ", teamManner=" + teamManner + ", teamAbility=" + teamAbility + ", totalRatedNum="
+				+ totalRatedNum + ", totalNum=" + totalNum + "]";
 	}
 
 	

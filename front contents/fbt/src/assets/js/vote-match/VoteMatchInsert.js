@@ -69,7 +69,6 @@ export default {
       },
 
       //Input 별 부가 Dialog 중 해당 Dialog가 열리도록 토글 변수
-      dialogAwayTeam: false, // 상대팀 부분
       dialogStadium: false, // 경기장 부분
 
       // 상대팀 유형 관련 변수
@@ -161,20 +160,6 @@ export default {
       this.voteMatch.team.teamId = userInfo.teamId;
       this.matchSchedule.homeTeam.teamId = userInfo.teamId;
       this.matchSchedule.homeTeam.teamName = userInfo.teamName;
-    },
-    // 상대팀 유형 메소드
-    // 1: Radio를 통해 바꾸기 (자체 or 미정)
-    chooseAwayTeamTypeByRadio() {
-      if (this.awayTeamType == 0) this.matchSchedule.awayTeam.teamName = "미정";
-      if (this.awayTeamType == 1)
-        this.matchSchedule.awayTeam.teamName = this.matchSchedule.homeTeam.teamName;
-      this.matchSchedule.awayTeam.teamId = this.matchSchedule.homeTeam.teamId;
-    },
-    // 2: 상대팀명 검색을 통해 상대팀 지정하기(상대팀)
-    selectAwayTeam(teamId, teamName) {
-      this.matchSchedule.awayTeam.teamId = teamId;
-      this.matchSchedule.awayTeam.teamName = teamName;
-      this.dialogAwayTeam = false;
     },
     // 받은 date값 변환
     dateFomatter(i, event) {

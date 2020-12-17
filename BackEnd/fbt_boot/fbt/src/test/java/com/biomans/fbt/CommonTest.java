@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.Employ;
+import com.biomans.fbt.domain.Entry;
 import com.biomans.fbt.domain.MatchResult;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
@@ -30,18 +31,22 @@ import com.biomans.fbt.util.Filter;
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "EmployMapper.";
+	final String ns = "MatchScheduleMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Test
 	void contextLoads() throws ParseException {
-		Employ emp = new Employ();
-		int employId = 1;
-		emp.setEmployId(employId);
-		Employ employ = sqlSession.selectOne(ns+"getEmployDesc", employId);
-		System.out.println(employ);
+		HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+		searchCon.put("matchScheduleId", 6);
+		searchCon.put("teamId", 1);
+//		MatchSchedule m = sqlSession.selectOne(ns+"showMatchScheduleById", 3);
+//		System.out.println(m.getAwayTeam());
+		MatchSchedule m = sqlSession.selectOne(ns+"showMatchScheduleResult", searchCon);
+		System.out.println(m.getEntries());
+		System.out.println(m.getMatchResult());
+		System.out.println(m.getTeamScores());
 	}
 
 }

@@ -35,8 +35,8 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 	//V002-1
 	@Override
-	public List<VoteMatch> showVoteMatchNumByTeam(int teamId) throws SQLException {
-		return sqlSession.selectList(ns+"showVoteMatchNumByTeam", teamId);
+	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException {
+		return sqlSession.selectOne(ns+"showVoteMatchNumByVote", voteMatchId);
 	}
 	//V002-2
 	@Override
@@ -50,9 +50,9 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	}
 	//V003-2
 	@Override
-	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(int matchScheduleId) throws SQLException {
+	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(HashMap<String, Integer> searchCon) throws SQLException {
 		ArrayList<VoteMatchResult> voteMatchResults = new ArrayList<VoteMatchResult>();
-		voteMatchResults.addAll(sqlSession.selectList(ns+"showVoteMatchResultByScheduleId", matchScheduleId));
+		voteMatchResults.addAll(sqlSession.selectList(ns+"showVoteMatchResultByScheduleId", searchCon));
 		return voteMatchResults;
 	}
 	

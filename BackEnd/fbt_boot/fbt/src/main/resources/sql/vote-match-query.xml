@@ -133,16 +133,16 @@
 		JOIN vote_match v
 		ON vr.vote_match_id = v.vote_match_id
 	</sql>
-	<!-- V002-1: 팀별 명단 요약 정보 -->
-	<select id="showVoteMatchNumByTeam" parameterType="integer" resultMap="VoteMatchRM">
+	<!-- V002-1: 투표별 명단 요약 정보 -->
+	<select id="showVoteMatchNumByVote" parameterType="integer" resultMap="VoteMatchRM">
 		<include refid="showVoteMatchNum"/>
-		WHERE v.team_id = #{value}
+		WHERE v.vote_match_id = #{value}
 		GROUP BY vr.vote_match_id
 	</select>
 	<!-- V002-2: 경기 일정 별 투표 명단 요약 정보 -->
 	<select id="showVoteMatchNumByScheduleId" parameterType="hashMap" resultMap="VoteMatchRM">
 		<include refid="showVoteMatchNum"/>
-		WHERE v.match_schedule_id = #{value}
+		WHERE v.match_schedule_id = #{matchScheduleId}
 		AND v.team_id = #{teamId}
 		GROUP BY vr.vote_match_id
 	</select>
@@ -178,9 +178,10 @@
 		WHERE v.vote_match_id = #{value}
 	</select>
 	<!-- V003-2: 경기 일정별 투표 명단 보기 -->
-	<select id="showVoteMatchResultByScheduleId" parameterType="integer" resultMap="voteMatchResultRM">
+	<select id="showVoteMatchResultByScheduleId" parameterType="hashMap" resultMap="voteMatchResultRM">
 		<include refid="showVoteMatchResult"/>
-		WHERE v.match_schedule_id = #{value}
+		WHERE v.match_schedule_id = #{matchScheduleId}
+		AND v.team_id = #{teamId}
 	</select>
 	
 	<!-- V004: 경기 투표 등록 -->

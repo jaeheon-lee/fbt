@@ -17,13 +17,13 @@ public interface VoteMatchDAO {
 	//V001-2
 	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	//V002-1
-	public List<VoteMatch> showVoteMatchNumByTeam(int teamId) throws SQLException;
+	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException;
 	//V002-2
 	public VoteMatch showVoteMatchNumByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	//V003-1 
 	public List<VoteMatchResult> showVoteMatchResultByVote(int voteMatchId) throws SQLException;
 	//V003-2
-	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(int matchScheduleId)throws SQLException;
+	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	
 	//V004
 	public void addVoteMatch(VoteMatch voteMatch) throws SQLException;

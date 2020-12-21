@@ -128,6 +128,7 @@ insert into vote_match_result(vote_match_result_id,attendance, vote_match_id, te
 insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values(6, 2,4,'1-bioman3@gmail.com');
 insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, team_member_id) values(7, 1,6,'1-bioman3@gmail.com');
 insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, email) values(8, 1,6,'bioman7@gmail.com');
+insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, email) values(11, 1,8,'bioman7@gmail.com');
 
 
 -- invite

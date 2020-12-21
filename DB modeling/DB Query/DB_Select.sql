@@ -38,6 +38,8 @@ delete from team_score where match_schedule_id = 6;
 delete from entry where match_schedule_id = 6;
 delete from match_result where match_schedule_id = 6;
 update team set team_manner = 0, team_ability = 0 where team_id = 2;
+delete from employ_result where employ_result_id = 4;
+delete from entry where entry_id = 76;
 
 select * from emp_score;
 SELECT

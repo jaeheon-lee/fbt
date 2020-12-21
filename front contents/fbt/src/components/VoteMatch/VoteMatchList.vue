@@ -26,6 +26,7 @@
           </span>
         </v-col>
       </v-row>
+      <!-- 마감일시 끝 -->
       <!-- 기본 정보 -->
       <v-row>
         <!-- 홈팀 엠블럼 -->
@@ -112,7 +113,7 @@
                     >
                     <v-col
                       cols="4"
-                      class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                      class="textc-left mx-0 pl-2 px-0 pb-2"
                       style="padding-left:2px;padding-right:2px;"
                       >비용</v-col
                     >
@@ -158,25 +159,29 @@
                     >
                   </v-row>
                   <!--경기타입비용주차 끝-->
-                  <!--내용-->
-                  <!-- 내용 라벨 -->
-                  <v-row class="mx-0 px-0" v-if="!vote.isEndMatch">
-                    <v-col cols="12" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                      >투표 메모</v-col
-                    >
-                  </v-row>
-                  <!-- 내용 본문 -->
-                  <v-row class="mx-0 px-0" v-if="!vote.isEndMatch">
-                    <v-col cols="12" class="text-left pa-0"
-                      ><v-row
-                        class="ma-0 pa-3"
-                        justify="center"
-                        style="border:2px solid #AD1457;border-radius:25px;"
-                        >{{ vote.memo }}</v-row
-                      ></v-col
-                    >
-                  </v-row>
-                  <!--내용 끝 -->
+                  <!-- 투표 내용 - 투표페이지-->
+                  <div v-if="header.includes('voteMatch')">
+                    <!-- 투표 내용 라벨 -->
+                    <v-row class="mx-0 px-0">
+                      <v-col cols="12" class="textc-left mx-0 px-2 pb-2"
+                        >투표 메모</v-col
+                      >
+                    </v-row>
+                    <!-- 투표 내용 라벨 끝 -->
+                    <!-- 투표 내용 본문 -->
+                    <v-row class="mx-0 px-0">
+                      <v-col cols="12" class="text-left pa-0"
+                        ><v-row
+                          class="ma-0 pa-3"
+                          justify="center"
+                          style="border:2px solid #AD1457;border-radius:25px;"
+                          >{{ vote.memo }}</v-row
+                        ></v-col
+                      >
+                    </v-row>
+                    <!-- 투표 내용 본문 끝-->
+                  </div>
+                  <!-- 투표 내용 끝 -->
                 </div>
               </v-expand-transition>
             </v-col>
@@ -185,82 +190,41 @@
         <!-- 경기 상세정보 본문-끝-->
       </div>
       <!-- 경기상세 정보 끝 -->
-      <!--투표 & 취소, 대기버튼-->
-      <v-row class="ma-0 pa-0 mt-0" v-if="!vote.isEndMatch">
+      <!--투표 참/불 버튼 - 투표페이지-->
+      <v-row class="ma-0 pa-0 mt-0" v-if="header == 'voteMatch'">
         <v-col offset="2" cols="8">
           <!-- 투표 버튼 -->
-          <v-row class="justify-center" v-if="controlAttendBtnOnSchedule(vote)">
-            <v-btn
-              small
-              width="35px"
-              color="#AD1457"
-              class="mr-1"
-              @click.stop="doVote(vote, 1)"
-              >참 석</v-btn
-            >
-            <v-btn
-              small
-              width="35px"
-              color="rgba(235, 255, 0,0.7)"
-              class="ml-1"
-              @click.stop="doVote(vote, 0)"
-              >불참석</v-btn
-            >
-          </v-row>
+          <vote-btn :vote="vote" @do-vote="doVote"></vote-btn>
           <!--투표버튼 끝-->
-          <!-- 대기하기, 참석취소 버튼 -->
-          <v-row class="justify-center" v-if="header.includes('schedule')">
-            <v-btn
-              small
-              width="35px"
-              color="#AD1457"
-              class="mr-1"
-              v-if="controlWaitBtn(vote)"
-              @click.stop="doVote(vote, 2)"
-              >대기하기</v-btn
-            >
-            <v-btn
-              small
-              width="75px"
-              color="#AD1457"
-              class="mr-1"
-              v-if="controlCancelBtn(vote)"
-              @click.stop="doVote(vote, 0)"
-              >참석취소하기</v-btn
-            >
-          </v-row>
         </v-col>
       </v-row>
-      <!-- 지인 | 명단보기 버튼 -->
-      <v-row v-if="!vote.isEndMatch">
+      <!-- 대기, 참석취소 버튼 - 일정페이지 -->
+      <v-row
+        class="ma-0 pa-0 mt-0"
+        v-if="header == 'schedule' && !vote.isEndMatch"
+      >
+        <v-col offset="2" cols="8">
+          <wait-cancel-btn :vote="vote" @do-vote="doVote"></wait-cancel-btn>
+        </v-col>
+      </v-row>
+      <!-- 지인 | 명단보기 - 투표페이지 -->
+      <v-row v-if="header.includes('voteMatch')">
         <v-col class="py-0" offset="2" cols="8">
-          <v-row
-            id="vote-btn"
-            class="mx-0 mt-0 pt-0"
-            style="color:rgba(235, 255, 0,0.7)"
-          >
-            <v-col class="float-left">
-              <span @click="openMemberList(i)" style="cursor:pointer;"
-                >투표 명단 보기</span
-              >
-            </v-col>
-            <v-col>
-              <span
-                class="float-right"
-                style="cursor:pointer;"
-                @click="openFriendList(i)"
-                v-if="
-                  vote.voteMatchSetting.friendEmp == 1 &&
-                    controlAttendBtnOnSchedule(vote)
-                "
-                >지인 초대하기</span
-              >
-            </v-col>
-          </v-row>
+          <friend-member-list :vote="vote" :i="i"></friend-member-list>
         </v-col>
       </v-row>
-      <!-- 경기 참여 명단 -->
-      <div class="ma-0 pa-0" v-if="vote.isEndMatch">
+      <!-- 지인 | 명단보기 끝-->
+      <!-- 투표 명단보기 - 팀일정페이지 -->
+      <v-row v-if="header.includes('schedule')">
+        <v-col class="py-0" offset="2" cols="8">
+        </v-col>
+      </v-row>
+      <!-- 투표 명단보기 끝 -->
+      <!-- 경기 참여 명단 - 일정페이지(확정됐을 때)-->
+      <div
+        class="ma-0 pa-0"
+        v-if="header.includes('schedule') && vote.isEndMatch"
+      >
         <!-- 경기 참여 명단 라벨 -->
         <v-row style="color:rgba(235, 255, 0,0.7)">
           <v-col offset="2" cols="10">
@@ -407,121 +371,6 @@
         <!-- 경기 참여 명단 본문 끝 -->
       </div>
       <!-- 팀이 받은 점수 끝 -->
-      <!-- 지인 | 명단보기 버튼 끝-->
-      <!-- 명단 | 지인 초대 부분 -->
-      <v-row v-if="!vote.isEndMatch">
-        <v-col offset="2" cols="8">
-          <!-- 명단 -->
-          <v-expand-transition>
-            <div v-if="activeMemberList == i && openType == 0">
-              <v-divider></v-divider>
-              <!--투표 인원 내용-->
-              <v-row class="justify-space-between ma-0 pa-0 mt-4">
-                <div>총인원: {{ vote.totalNum }}명</div>
-                <div>투표인원: {{ vote.votedNum }}명</div>
-                <div>불참: {{ vote.abscentNum }}명</div>
-                <div>참여: {{ vote.attendNum }}명</div>
-              </v-row>
-              <v-row justify="end" class="ma-0 pa-0 my-3">
-                <div>지인: {{ vote.friendNum }}명</div>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row justify="end" class="ma-0 pa-0 mt-3 mb-5">
-                <div>경기참석 인원: {{ vote.totalAttend }}명</div>
-              </v-row>
-              <!--투표 인원 내용 끝-->
-              <v-row class="text-center">
-                <v-col offset="2" cols="5">
-                  닉네임/이메일
-                </v-col>
-                <v-col cols="2">
-                  참/불
-                </v-col>
-                <v-col class="ma-0 pa-0">
-                  <i
-                    id="member-close"
-                    class="material-icons md-18 float-right"
-                    @click="closeMemberList()"
-                    >close</i
-                  >
-                </v-col>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row
-                v-for="(result, i) in vote.voteMatchResults"
-                :key="i"
-                class="text-center"
-              >
-                <v-col offset="2" cols="5">
-                  {{ showNickEmail(result) }}
-                </v-col>
-                <v-col cols="2">
-                  {{ result.attendance | attendanceFliter }}
-                </v-col>
-              </v-row>
-            </div>
-          </v-expand-transition>
-          <!-- 지인 초대 -->
-          <v-expand-transition>
-            <div v-if="activeFriendList == i && openType == 1">
-              <v-divider></v-divider>
-              <v-row class="pt-3">
-                <v-col class="pr-0 pt-0" cols="10">
-                  <v-text-field
-                    class="ma-0 pa-0"
-                    v-model="inputEmail"
-                    placeholder="검색할 이메일을 입력해주세요."
-                    @keydown.enter="searchFriend"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="1" class="pt-1 pr-0 mx-0">
-                  <i class="material-icons md-18" @click.stop="searchFriend"
-                    >search</i
-                  >
-                </v-col>
-                <v-col cols="1" class="pa-0 pt-1">
-                  <i class="material-icons md-18" @click="closeFriendList()"
-                    >close</i
-                  >
-                </v-col>
-              </v-row>
-              <v-row class="text-center">
-                <v-col offset="2" cols="3">
-                  e-mail
-                </v-col>
-                <v-col cols="2">
-                  이름
-                </v-col>
-              </v-row>
-              <v-row
-                id="friend-list"
-                class="text-center"
-                v-for="(friend, j) in friends"
-                :key="j"
-              >
-                <v-col offset="2" cols="3">
-                  {{ friend.email }}
-                </v-col>
-                <v-col cols="2">
-                  {{ friend.name }}
-                </v-col>
-                <v-col cols="1" class="ma-0 mb-3 pa-0 text-center"
-                  ><v-btn
-                    class="ma-0 ml-8 pa-0"
-                    elevation="2"
-                    color="#6920A3"
-                    @click="inviteFriend(friend.email, vote.voteMatchId)"
-                    style="font-size: 0.65em"
-                    >초대하기</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </div>
-          </v-expand-transition>
-        </v-col>
-      </v-row>
-      <!-- 명단 | 지인 초대 부분 끝 -->
       <!-- 관리자 버튼 영역 -->
       <v-row v-if="controlManagerBtn(vote)">
         <v-col offset="2" cols="8">

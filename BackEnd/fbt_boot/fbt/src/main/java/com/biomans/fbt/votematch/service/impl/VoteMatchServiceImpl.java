@@ -40,18 +40,14 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		//1. 팀별 투표를 가져온다.
 		List<VoteMatch> voteMatchList = voteMatchDAO.showVoteMatchInfoByTeam(searchCon);
-		List<VoteMatch> numList = voteMatchDAO.showVoteMatchNumByTeam(searchCon.get("teamId"));
 		for(VoteMatch voteMatch1 : voteMatchList) {
 			// 2. 투표 명단 요약 삽입
-			for(VoteMatch voteMatch2 : numList) {
-				if(voteMatch1.getVoteMatchId() == voteMatch2.getVoteMatchId()) {
-					voteMatch1.setVotedNum(voteMatch2.getVotedNum());
-					voteMatch1.setAttendNum(voteMatch2.getAttendNum());
-					voteMatch1.setAbscentNum(voteMatch2.getAbscentNum());
-					voteMatch1.setFriendNum(voteMatch2.getFriendNum());
-					voteMatch1.setTotalAttend(voteMatch2.getAttendNum()+voteMatch2.getFriendNum());
-				}
-			}
+			VoteMatch desc = voteMatchDAO.showVoteMatchNumByVote(voteMatch1.getVoteMatchId());
+			voteMatch1.setVotedNum(desc.getVotedNum());
+			voteMatch1.setAttendNum(desc.getAttendNum());
+			voteMatch1.setAbscentNum(desc.getAbscentNum());
+			voteMatch1.setFriendNum(desc.getFriendNum());
+			voteMatch1.setTotalAttend(desc.getAttendNum() + desc.getFriendNum());
 			// 3. 투표 명단 삽입
 			ArrayList<VoteMatchResult> voteMatchResults = 
 					(ArrayList<VoteMatchResult>) voteMatchDAO.showVoteMatchResultByVote(voteMatch1.getVoteMatchId()); 
@@ -75,7 +71,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		//1. 경기 일정 별 투표 정보를 가져온다
 		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(searchCon);
 		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(searchCon);
-		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(matchScheduleId);
+		ArrayList<VoteMatchResult> voteMatchResults = voteMatchDAO.showVoteMatchResultByScheduleId(searchCon);
 		// 2. 경기 일정별 투표 명단 요약 삽입
 		if(num != null) {
 			voteMatch.setVotedNum(num.getVotedNum());

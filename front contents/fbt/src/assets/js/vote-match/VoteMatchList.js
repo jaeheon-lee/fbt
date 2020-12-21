@@ -1,5 +1,8 @@
 import axios from "axios";
 import KakaoLink from "@/components/Common/KakaoLink.vue";
+import VoteBtn from "@/components/VoteMatch/button/VoteBtn.vue";
+import WaitCancelBtn from "@/components/Schedule/button/WaitCancelBtn.vue";
+import FriendMemberList from "@/components/VoteMatch/toggle/FriendMemberList.vue";
 
 export default {
   name: "voteMatchList",
@@ -13,7 +16,10 @@ export default {
     votes: Array
   },
   components: {
-    "kakao-link": KakaoLink
+    "kakao-link": KakaoLink,
+    "vote-btn": VoteBtn,
+    "wait-cancel-btn": WaitCancelBtn,
+    "friend-member-list": FriendMemberList
   },
   data() {
     return {
@@ -23,13 +29,6 @@ export default {
       // 상세 정보 관련 변수
       activeDetail: null, // 해당 인덱스면 해당 인덱스를 가진 카드의 상세 정보 창을 연다.
 
-      // 지인 초대 관련 변수
-      inputEmail: null, //검색할 이메일
-      friends: [],
-
-      activeMemberList: null, //해당 인덱스이면 토글 연다
-      activeFriendList: null, //해당 인덱스이면 토글 연다
-      openType: -1, // 0이면 명단만을 연다 , 1이면 초대만을 연다
 
       // 일반 버튼 관련 변수
       attendBtnActive: false, // voteStatus = 1 이면 true => 참불 버튼은 연다
@@ -294,32 +293,13 @@ export default {
         return teamScore.user.email;
       }
     },
-    // 지인이면 이메일, 팀원이면 닉네임으로 출력하기
-    showNickEmail(result) {
-      if (result.teamMember) {
-        // 팀원이면
-        return result.teamMember.nickName;
-      } else {
-        //지인이면
-        return result.user.email;
-      }
-    },
     // ========================== 창 컨트롤 메소드===============================//
     // 상세정보 창 여닫기
     openDetail(i) {
       if (this.activeDetail == i) this.activeDetail = null;
       else this.activeDetail = i;
     },
-    // 명단보기 창 여닫기
-    openMemberList(i) {
-      if (this.activeMemberList == i) this.activeMemberList = null;
-      // 명단이 열려있다면 명단 닫기
-      else {
-        if (this.activeFriendList == i) this.activeFriendList = null; // 명단도 열려 있다면 명단 닫기
-        this.activeMemberList = i;
-        this.openType = 0;
-      }
-    },
+    
     // 참여명단보기 창 여닫기
     openAttendList(i) {
       if (this.activeAttendList == i) this.activeAttendList = null;
@@ -335,22 +315,6 @@ export default {
       else {
         this.activeScoreList = i;
       }
-    },
-    closeMemberList() {
-      this.activeMemberList = null;
-    },
-    // 지인 초대 창 여닫기
-    openFriendList(i) {
-      if (this.activeFriendList == i) this.activeFriendList = null;
-      // 초대가 열려있다면 초대 닫기
-      else {
-        if (this.activeMemberList == i) this.activeMemberList = null; // 명단도 열려 있다면 명단 닫기
-        this.activeFriendList = i;
-        this.openType = 1;
-      }
-    },
-    closeFriendList() {
-      this.activeFriendList = null;
     },
     //스코어 창 여닫기
     controlScore(vote) {
@@ -372,72 +336,9 @@ export default {
         return true;
       else return false;
     },
-    // 스케줄 페이지에서 참불 버튼 관리
-    controlAttendBtnOnSchedule(vote) {
-      //1. 투표 마감날이 지나면 표시 하지 않는다.
-      let today = new Date();
-      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
-      if (vote.dueDate < today) return false;
-
-      //2. 투표가 마감 되면 표시 하지 않는다.
-      if (vote.voteStatus == 1) return false;
-      return true;
-    },
-    // 대기, 참석취소 버튼 관리
-    controlWaitBtn(vote) {
-      // 대기버튼 기간적 조건: 인위 마감 후 + 기간적 마감 후 + 경기 시작 전
-      // -> 1. 기간적으로 표시하지 않기 : 기간적 조건의 반명제
-      let today = new Date();
-      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
-      // eslint-disable-next-line prettier/prettier
-      if (!(vote.voteStatus == 1 && vote.dueDate > today && vote.matchSchedule.startTime > today))
-        return false;
-
-      //2. 다음 로직 따른다
-      // eslint-disable-next-line prettier/prettier
-      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
-      // 로그인한 사람이 투표했는지, 했으면 해당 인덱스를 안 했으면 -1 리턴
-      let index = vote.voteMatchResults
-        .map(x => x.teamMember.teamMemberId)
-        .indexOf(teamMemberId);
-      // 참석을 눌렀는지
-      let attendance = -1;
-      if (index != -1) attendance = vote.voteMatchResults[index].attendance;
-      if (vote.voteMatchSetting.waiting == true && attendance != 1) {
-        // 대기 허용이고 참석을 누르지 않았다면 대기 버튼 출력
-        return true;
-      } else {
-        // 대기 불용이거나 참석을 누르지 않았다면 대기 버튼 숨기기
-        return false;
-      }
-    },
-    controlCancelBtn(vote) {
-      // 취소버튼 기간적 조건: 인위 마감 후 + 기간적 마감 후 + 경기 시작 전
-      // -> 1. 기간적으로 표시하지 않기 : 기간적 조건의 반명제
-      let today = new Date();
-      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
-      // eslint-disable-next-line prettier/prettier
-      if (!(vote.voteStatus == 1 && vote.dueDate > today && vote.matchSchedule.startTime > today))
-        return false;
-
-      //2. 다음 로직을 따른다
-      // eslint-disable-next-line prettier/prettier
-      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
-      // 로그인한 사람이 투표했는지, 했으면 해당 인덱스를 안 했으면 -1 리턴
-      let index = vote.voteMatchResults
-        .map(x => x.teamMember.teamMemberId)
-        .indexOf(teamMemberId);
-      // 참석을 눌렀는지
-      let attendance = -1;
-      if (index != -1) attendance = vote.voteMatchResults[index].attendance;
-      // 이미 투표 & 참석=>  취소 가능
-      if (attendance == 1) {
-        return true;
-      } else {
-        // 아니면 취소 불가
-        return false;
-      }
-    },
+    
+    
+    
     //추가인원받기 버튼 조절 메소드
     controlAdditionBtn(vote) {
       let cancelNumber = vote.voteMatchSetting.cancelNumber;
@@ -528,17 +429,7 @@ export default {
       if (value == 1) return "주차가능";
       else return "주차불가능";
     },
-    attendanceFliter(value) {
-      if (value == 1) {
-        //참이라면
-        return "참";
-      } else if (value == 0) {
-        // 불이라면
-        return "불";
-      } else {
-        return "대기";
-      }
-    },
+    
     // ================== 경기 참여 명단 ============================//
     countTotalNum(entries) {
       return entries.length;

@@ -6,11 +6,9 @@
 	<!-- S001 -->
 	<select id="showMatchScheduleById" parameterType="integer" resultMap="matchScheduleRM">
 		SELECT
-		match_schedule_id, start_time, duration, cost, writer, reg_date, content, stadium_name, 
-		stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, 
-		match_type, home_team_id, away_team_id, is_confirmed
-		FROM match_schedule
-		WHERE match_schedule_id = #{value}
+		<include refid="matchScheduleColumn"/>
+		FROM match_schedule m
+		WHERE m.match_schedule_id = #{value}
 	</select>
 	<!-- S002: 방금 등록된 일정 ID 출력 -->
 	<select id="showLatestMatchScheduleIdById" parameterType="integer" resultType="integer">
@@ -43,21 +41,24 @@
 	</update>
 	
 	<!-- S005-1: 등록된 팀 경기 일정 기간 별 출력 -->
-	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultType="matchSchedule">
+	<select id="showMatchSchduleByTeamPeriod" parameterType="searchKey" resultMap="matchScheduleRM">
 		SELECT
-		match_schedule_id, start_time, match_type,
-		date_add(start_time, interval duration hour) end_time
-		FROM match_schedule
-		WHERE (home_team_id = #{teamId} OR away_team_id = #{teamId})
-		AND (start_time >= #{startTime} 
-		AND #{endTime} >= start_time)
-		AND is_confirmed = 1
+		<include refid="matchScheduleColumn"/>,
+		<include refid="awatTeamColumn"/>
+		FROM match_schedule m
+		JOIN team t2
+		ON m.away_team_id = t2.team_id
+		WHERE (m.home_team_id = #{teamId} OR m.away_team_id = #{teamId})
+		AND (m.start_time >= #{startTime} 
+		AND #{endTime} >= m.start_time)
+		AND m.is_confirmed = 1
 	</select>
 	<!-- S005-2: 등록된 개인 경기 일정 기간 별 출력 -->
 	<!-- 1. 자신이 속한 팀의 모든 경기 일정 -->
-	<select id="showMatchSchduleByUserPeriod" parameterType="hashMap" resultType="matchSchedule">
+	<select id="showMatchSchduleByUserPeriod" parameterType="hashMap" resultMap="matchScheduleRM">
 		SELECT
-		distinct m.match_schedule_id, m.start_time, m.match_type
+		distinct m.match_schedule_id, m.start_time, m.match_type,
+		m.home_team_id, m.away_team_id
 		FROM team_member tm
 		JOIN team t
 		ON t.team_id = tm.team_id
@@ -199,10 +200,20 @@
 	<resultMap type="matchSchedule" id="matchScheduleRM">
 		<id column="match_schedule_id" property="matchScheduleId"/>
 		<result column="start_time" property="startTime"/>
-		<result column="match_type" property="matchType"/>
-		<result column="stadium_name" property="stadiumName"/>
-		<result column="duration" property="duration"/>
 		<result column="end_time" property="endTime"/>
+		<result column="duration" property="duration"/>
+		<result column="cost" property="cost"/>
+		<result column="writer" property="writer"/>
+		<result column="regDate" property="regDate"/>
+		<result column="stadium_name" property="stadiumName"/>
+		<result column="stadium_type" property="stadiumType"/>
+		<result column="stadium_address" property="stadiumAddress"/>
+		<result column="stadium_x" property="stadiumX"/>
+		<result column="stadium_y" property="stadiumY"/>
+		<result column="stadium_parking" property="stadiumParking"/>
+		<result column="stadium_shower" property="stadiumShower"/>
+		<result column="match_type" property="matchType"/>
+		<result column="is_confirmed" property="isConfirmed"/>
 		<association property="homeTeam" javaType="team">
 			<id column="home_team_id" property="teamId"/>
 			<result column="home_emblem" property="emblem"/>
@@ -277,20 +288,53 @@
 			</association>
 		</collection>
 	</resultMap>
-	<select id="showMatchScheduleResult" parameterType="hashMap" resultMap="matchScheduleRM">
-		SELECT
-		m.match_schedule_id, m.start_time, m.match_type, m.stadium_name, m.duration,
-		date_add(m.start_time, interval m.duration hour) end_time,
-		t.team_id home_team_id, t.emblem home_emblem, t.team_name home_team_name,
-		t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name,
-		ent.entry_id, ent.email, ent.attendance, ent.type, ent.match_score, ent.goal, ent.assist,
-		tm.team_member_id, tm.nick_name,
+	<sql id="matchScheduleColumn">
+		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.content, m.stadium_name, 
+		m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
+		m.match_type, m.home_team_id, m.away_team_id, m.is_confirmed,
+		date_add(m.start_time, interval m.duration hour) end_time
+	</sql>
+	<sql id="homeTeamColumn">
+		t.team_id home_team_id, t.emblem home_emblem, t.team_name home_team_name
+	</sql>
+	<sql id="awatTeamColumn">
+		t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name
+	</sql>
+	<sql id="entryColumn">
+		ent.entry_id, ent.email, ent.attendance, ent.type, ent.match_score, ent.goal, ent.assist
+	</sql>
+	<sql id="entryTeamMemberColumn">
+		tm.team_member_id, tm.nick_name
+	</sql>
+	<sql id="teamScoreColumn">
 		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
 		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
 		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
-		ts.defence, ts.emp_email, ts.team_taker_id,
-		t3.team_id team_giver_id, t3.team_name team_giver_name,
+		ts.defence, ts.emp_email, ts.team_taker_id
+	</sql>
+	<sql id="scoreGiverTeamColumn">
+		t3.team_id team_giver_id, t3.team_name team_giver_name
+	</sql>
+	<sql id="matchResultColumn">
 		mr.home_score, mr.away_score
+	</sql>
+	<!-- S010-1: 팀별 경기 시작 전 경기 일정 출력 -->
+	<select id="showMatchScheduleBefore">
+		<include refid="matchScheduleColumn"/>,
+		<include refid="homeTeamColumn"/>,
+		<include refid="awatTeamColumn"/>,
+	</select>
+	<!-- S010-2: 팀별 완료된 경기 일정 출력 -->
+	<select id="showMatchScheduleResult" parameterType="hashMap" resultMap="matchScheduleRM">
+		SELECT
+		<include refid="matchScheduleColumn"/>,
+		<include refid="homeTeamColumn"/>,
+		<include refid="awatTeamColumn"/>,
+		<include refid="entryColumn"/>,
+		<include refid="entryTeamMemberColumn"/>,
+		<include refid="teamScoreColumn"/>,
+		<include refid="scoreGiverTeamColumn"/>,
+		<include refid="matchResultColumn"/>
 		FROM match_schedule m
 		JOIN team t
 		ON t.team_id = m.home_team_id

@@ -140,7 +140,8 @@ export default {
           color: this.colors[this.selectColorIdx(isEndMatch)],
           matchScheduleId: matchSchedule[i].matchScheduleId,
           eventId: i,
-          isEndMatch: isEndMatch
+          isEndMatch: isEndMatch,
+          awayTeamId: matchSchedule[i].awayTeam.teamId
           // timed: false
         });
       }
@@ -156,21 +157,23 @@ export default {
       else return 0; // 끝나지 않았으면 그린
     },
     // ===================== 경기 정보 관련 메소드 =========================== //
-    // 스케쥴Id별 투표 출력(, FV03)
+    // 스케쥴Id별 투표 출력(FS07, FV03)
     showMatchScheduleInfo({ event }) {
       this.infoActive = true;
-      let matchScheduleId = event.matchScheduleId;
-      let isEndMatch = event.isEndMatch;
+      this.event = event;
+      console.log(this.event);
+      let matchScheduleId = this.event.matchScheduleId;
+      let isEndMatch = this.event.isEndMatch;
       if (isEndMatch) {
         // FS07
-        this.showEndMatchInfo(event, matchScheduleId);
+        this.showEndMatchInfo(matchScheduleId);
       } else {
         //FS03
-        this.showNotEndMatchInfo(event, matchScheduleId);
+        this.showNotEndMatchInfo(matchScheduleId);
       }
     },
     //FS07
-    showEndMatchInfo(event, matchScheduleId) {
+    showEndMatchInfo(matchScheduleId) {
       this.isEmp = false;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       if (!teamId) teamId = 0;
@@ -178,11 +181,10 @@ export default {
         .get("/match-schedule/5/" + matchScheduleId + "/" + teamId)
         .then(response => {
           let matchSchedule = response.data;
-          console.log(matchSchedule);
           let vote = {};
           vote.matchSchedule = matchSchedule;
           // 끝난 경기인지에 대한 정보 담고
-          vote.isEndMatch = event.isEndMatch;
+          vote.isEndMatch = this.event.isEndMatch;
           // 용병이 용병 뛴 경리를 보는지 확인 for 경기 결과 작성
           let entries = matchSchedule.entries;
           let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
@@ -207,14 +209,16 @@ export default {
         });
     },
     //FS03
-    showNotEndMatchInfo(event, matchScheduleId) {
+    showNotEndMatchInfo(matchScheduleId) {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      let awayTeamId = this.event.awayTeamId;
       axios
-        .get("/vote-match/2/" + matchScheduleId + "/" + teamId)
+        // eslint-disable-next-line prettier/prettier
+        .get("/vote-match/2/" + matchScheduleId + "/" + teamId + "/" + awayTeamId)
         .then(response => {
           let vote = response.data;
           // 끝난 경기인지에 대한 정보 담고
-          vote.isEndMatch = event.isEndMatch;
+          vote.isEndMatch = this.event.isEndMatch;
           // 리스트에 보낼 통에 담고
           this.votes = [];
           this.votes.push(vote);

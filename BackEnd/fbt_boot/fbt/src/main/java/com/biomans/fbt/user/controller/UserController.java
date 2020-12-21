@@ -96,7 +96,6 @@ public class UserController {
 			User user = userService.LoginByEmail(searchCon);
 			Session session = new Session();
 			if (user != null) session = makeSession(user);
-			System.out.println(session);
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

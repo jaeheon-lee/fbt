@@ -55,7 +55,7 @@ public class VoteMatchController {
 			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(searchCon);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
 		}catch(RuntimeException e) {
-//			e.printStackTrace();
+			System.out.println(e);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}

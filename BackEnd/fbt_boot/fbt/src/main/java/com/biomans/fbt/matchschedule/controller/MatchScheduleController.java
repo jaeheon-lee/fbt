@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
@@ -87,7 +88,7 @@ public class MatchScheduleController {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", teamId);
-			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleResult(searchCon);
+			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleResultByTeam(searchCon);
 			return new ResponseEntity(matchSchedule,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -133,7 +134,6 @@ public class MatchScheduleController {
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", teamId);
 			HashMap<String, List<User>> friendEmployMap = matchScheduleService.showAttendFriendEmploy(searchCon);
-			System.out.println(friendEmployMap);
 			return new ResponseEntity(friendEmployMap,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -141,7 +141,7 @@ public class MatchScheduleController {
 	}
 
 	//FS11
-	@GetMapping("/match-schedule/6/{matchScheduleId}/{teamId}")
+	@GetMapping("/match-schedule/7/{matchScheduleId}/{teamId}")
 	public ResponseEntity showMatchResultCollection(@PathVariable int matchScheduleId,
 			@PathVariable int teamId) throws SQLException {
 		try {
@@ -149,7 +149,6 @@ public class MatchScheduleController {
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", teamId);
 			MatchResultCollection mrc = matchScheduleService.showMatchResultCollection(searchCon);
-			System.out.println(mrc);
 			return new ResponseEntity(mrc,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -187,6 +186,47 @@ public class MatchScheduleController {
 		}
 	}
 	
+	//FS14
+	@GetMapping("/match-schedule/8/{matchScheduleId}/{email}")
+	public ResponseEntity showMatchScheduleResultByUser(@PathVariable String email,
+			@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("matchScheduleId", matchScheduleId);
+			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleResultByUser(searchCon, email);
+			return new ResponseEntity(matchSchedule,HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FS15
+	@PostMapping("/match-schedule/3")
+	public ResponseEntity addTeamScore(@RequestBody TeamScore teamScore) throws SQLException {
+		try {
+			teamScore.setTeamGiver(null);
+			matchScheduleService.addTeamScore(teamScore);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FS16
+	@PutMapping("/match-schedule/3")
+	public ResponseEntity updateTeamScore(@RequestBody TeamScore teamScore) throws SQLException {
+		try {
+			System.out.println(teamScore);
+			matchScheduleService.updateTeamScore(teamScore);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	//S001: 일정 등록
 	@PostMapping("/match-schedule")
 	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {
@@ -209,30 +249,5 @@ public class MatchScheduleController {
 		}
 	}
 	
-	
-	
 
-	
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	//S011
-	@PostMapping("/match-schedule/3")
-	public ResponseEntity searchTeams(@RequestBody TeamScore teamScore) throws SQLException {
-		try {
-			teamScore.setTeamGiver(null);
-			matchScheduleService.addTeamScore(teamScore);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			System.out.println(e);
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
 }

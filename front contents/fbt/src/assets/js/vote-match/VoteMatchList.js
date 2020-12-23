@@ -3,6 +3,7 @@ import KakaoLink from "@/components/Common/KakaoLink.vue";
 import VoteBtn from "@/components/VoteMatch/button/VoteBtn.vue";
 import WaitCancelBtn from "@/components/Schedule/button/WaitCancelBtn.vue";
 import FriendMemberList from "@/components/VoteMatch/toggle/FriendMemberList.vue";
+import MemberList from "@/components/Schedule/toggle/MemberList.vue";
 
 export default {
   name: "voteMatchList",
@@ -12,6 +13,8 @@ export default {
     // From VoteMatch
     isEnd: Boolean,
     isManager: Boolean,
+    // ScheduleBody
+    awayVote: Object,
     // From ScheduleBody & VoteMatch
     votes: Array
   },
@@ -19,16 +22,19 @@ export default {
     "kakao-link": KakaoLink,
     "vote-btn": VoteBtn,
     "wait-cancel-btn": WaitCancelBtn,
-    "friend-member-list": FriendMemberList
+    "friend-member-list": FriendMemberList,
+    "member-list": MemberList
   },
   data() {
     return {
       // 투표 변수
       voteMatchResults: [],
 
+      // 용병 점수 변수
+      empScores: [],
+
       // 상세 정보 관련 변수
       activeDetail: null, // 해당 인덱스면 해당 인덱스를 가진 카드의 상세 정보 창을 연다.
-
 
       // 일반 버튼 관련 변수
       attendBtnActive: false, // voteStatus = 1 이면 true => 참불 버튼은 연다
@@ -46,6 +52,7 @@ export default {
 
       // 받은 점수 관련 변수
       activeScoreList: null,
+      activeEmpScoreList: null, //empScore
 
       // 카카오 공유하기 관련 변수
       dialogKakao: null,
@@ -247,7 +254,6 @@ export default {
     },
     // 경기 확정하기 (FV16)
     confirmMatchSchedule(vote) {
-      console.log(vote);
       let matchScheduleId = vote.matchSchedule.matchScheduleId;
       let teamId = vote.matchSchedule.homeTeam.teamId;
       let awayTeamId = 0;
@@ -263,7 +269,43 @@ export default {
         .catch(error => {
           console.log(error);
           alert("경기확정에 실패했습니다.");
+        });
+    },
+    // FU02
+    showEmpScore(matchScheduleId) {
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      this.$axios
+        .get("/user/5/" + email + "/" + matchScheduleId)
+        .then(response => {
+          this.empScores = response.data;
+          for (let i = 0; i < this.empScores.length; i++) {
+            let empScore = this.empScores[i];
+            let empManner =
+              empScore.mannerPromise +
+              empScore.mannerContact +
+              empScore.mannerRule +
+              empScore.mannerBodyFight +
+              empScore.mannerSlang +
+              empScore.mannerSmoking +
+              empScore.mannerUniform +
+              empScore.mannerPayment +
+              empScore.mannerArrangement +
+              empScore.mannerReferee +
+              empScore.mannerTackle;
+            empManner /= 11;
+            let empAbility =
+              empScore.forward + empScore.middle + empScore.defence;
+            empAbility /= 3;
+            empScore.empManner = empManner;
+            empScore.empAbility = empAbility;
+            this.empScores[i] = empScore;
+          }
         })
+        .catch(error => {
+          console.log(error);
+          alert("점수를 받아오는 데 실패했습니다.");
+        })
+        .finally();
     },
     // 새로고침
     refresh(matchScheduleId) {
@@ -299,7 +341,6 @@ export default {
       if (this.activeDetail == i) this.activeDetail = null;
       else this.activeDetail = i;
     },
-    
     // 참여명단보기 창 여닫기
     openAttendList(i) {
       if (this.activeAttendList == i) this.activeAttendList = null;
@@ -308,12 +349,22 @@ export default {
         this.activeAttendList = i;
       }
     },
-    // 받은점수보기 창 여닫기
-    openScoreList(i) {
+    // 팀 받은점수보기 창 여닫기
+    openTeamScoreList(i) {
       if (this.activeScoreList == i) this.activeScoreList = null;
       // 명단이 열려있다면 명단 닫기
       else {
         this.activeScoreList = i;
+      }
+    },
+    // 용병 받은점수보기 창 여닫기
+    controlEmpScoreList(i, vote) {
+      if (this.activeEmpScoreList == i) {
+        this.activeEmpScoreList = null;
+      } else {
+        let matchScheduleId = vote.matchSchedule.matchScheduleId;
+        this.showEmpScore(matchScheduleId);
+        this.activeEmpScoreList = i;
       }
     },
     //스코어 창 여닫기
@@ -336,9 +387,7 @@ export default {
         return true;
       else return false;
     },
-    
-    
-    
+
     //추가인원받기 버튼 조절 메소드
     controlAdditionBtn(vote) {
       let cancelNumber = vote.voteMatchSetting.cancelNumber;
@@ -429,7 +478,7 @@ export default {
       if (value == 1) return "주차가능";
       else return "주차불가능";
     },
-    
+
     // ================== 경기 참여 명단 ============================//
     countTotalNum(entries) {
       return entries.length;

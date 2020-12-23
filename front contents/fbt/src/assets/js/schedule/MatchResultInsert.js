@@ -436,7 +436,7 @@ export default {
       let matchScheduleId = this.vote.matchSchedule.matchScheduleId;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       this.$axios
-        .get("/match-schedule/6/" + matchScheduleId + "/" + teamId)
+        .get("/match-schedule/7/" + matchScheduleId + "/" + teamId)
         .then(response => {
           let collection = response.data;
           this.matchResult = collection.matchResult;

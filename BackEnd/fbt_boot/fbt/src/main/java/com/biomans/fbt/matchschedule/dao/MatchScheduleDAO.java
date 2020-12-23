@@ -30,6 +30,7 @@ public interface MatchScheduleDAO {
 	// S005-2
 	public List<MatchSchedule> showMatchSchduleByUserPeriod(HashMap<String, String> searchCon) throws SQLException;
 	public List<MatchSchedule> showMatchScheduleByEmployPeriod(HashMap<String, String> searchCon) throws SQLException;
+	public List<MatchSchedule> showMatchScheduleByFriendPeriod(HashMap<String, String> searchCon) throws SQLException;
 	// S006: 일정 수정
 	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
 	// S007
@@ -70,4 +71,5 @@ public interface MatchScheduleDAO {
 	public AvgScore getAvgTeamScore(int takerTeamId) throws SQLException;
 	// S021
 	public AvgScore getAvgEmpScore(String email) throws SQLException;
+
 }

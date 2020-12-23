@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
@@ -19,7 +20,7 @@ public interface MatchScheduleService {
 	// FV16
 	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 	//FS07
-	public MatchSchedule showMatchScheduleResult(HashMap<String, Integer> searchCon) throws SQLException;
+	public MatchSchedule showMatchScheduleResultByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	// FS09
 	public List<TeamMember> showAttendVotedMember(HashMap<String, Integer> searchCon) throws SQLException;
 	// FS10
@@ -30,7 +31,12 @@ public interface MatchScheduleService {
 	public void updateMatchResult(MatchResultCollection matchResultCollection) throws SQLException;
 	//FS12
 	public List<MatchSchedule> showMatchSchduleByUserPeriod(HashMap<String, String> searchCon) throws SQLException;
-	
+	//FS14
+	public MatchSchedule showMatchScheduleResultByUser(HashMap<String, Integer> searchCon, String email) throws SQLException;
+	//FS15
+	public void addTeamScore(TeamScore teamScore) throws SQLException;
+	//FS16
+	public void updateTeamScore(TeamScore teamScore) throws SQLException;
 	
 	
 	//S001: 일정 등록
@@ -47,7 +53,6 @@ public interface MatchScheduleService {
 	public void addMatchResultCollection(MatchResultCollection matchResultCollection) throws SQLException;
 	// S010
 	
-	// S011
-	public void addTeamScore(TeamScore teamScore) throws SQLException;
+	
 	
 }

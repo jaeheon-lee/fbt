@@ -2,7 +2,9 @@ package com.biomans.fbt.user.dao;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.User;
 
 public interface UserDAO {
@@ -16,4 +18,6 @@ public interface UserDAO {
 	public User LoginByEmail(HashMap<String, String> searchCon) throws SQLException;
 	//U004
 	public User showUserInfo(String email) throws SQLException;
+	// U005
+	public List<EmpScore> showEmpScore(HashMap<String, String> searchCon) throws SQLException;
 }

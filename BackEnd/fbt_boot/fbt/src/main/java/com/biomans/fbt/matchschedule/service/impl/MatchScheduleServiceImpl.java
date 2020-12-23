@@ -51,18 +51,18 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	//FS07
 	@Override
 	@Transactional
-	public MatchSchedule showMatchScheduleResult(HashMap<String, Integer> searchCon) throws SQLException {
+	public MatchSchedule showMatchScheduleResultByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		MatchSchedule matchSchedule = matchScheduleDAO.showMatchScheduleResult(searchCon);
 		
 		// 받은 팀 평가 점수 삽입. 단, 자신 팀이 받은 것만 걸러낸다.
 		List<TeamScore> teamScores = matchSchedule.getTeamScores();
 		List<TeamScore> selectedTeamScores = new ArrayList<TeamScore>();
+		int teamId = searchCon.get("teamId");
 		if(teamScores.size() > 0) {
 			for(TeamScore ts : teamScores) {
-//				//0. 자신이 받은 것만
-//				int teamId = searchCon.get("teamId");
-//				int teamTakerId = ts.getTeamTaker().getTeamId();
-//				if(teamId != teamTakerId) continue;
+				//0. 자신이 받은 것만
+				int teamTakerId = ts.getTeamTaker().getTeamId();
+				if(teamId != teamTakerId) continue;
 				//1. 평가당 매너 평균 구하기
 				double sumManner = ts.getMannerArrangement() + ts.getMannerBodyFight() +ts.getMannerContact()
 					+ ts.getMannerPayment() + ts.getMannerPromise() + ts.getMannerReferee() + ts.getMannerRule()
@@ -74,6 +74,17 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 				selectedTeamScores.add(ts);
 			}
 			matchSchedule.setTeamScores(selectedTeamScores);
+		}
+		List<Entry> entries = matchSchedule.getEntries();
+		List<Entry> selectedEntries = new ArrayList<Entry>();
+		if(entries.size() > 0) {
+			for(Entry entry : entries) {
+				// 자신의 팀 엔트리만
+				int entryTeamId = entry.getTeam().getTeamId();
+				if(teamId != entryTeamId) continue;
+				selectedEntries.add(entry);
+			}
+			matchSchedule.setEntries(selectedEntries);
 		}
 		return matchSchedule;
 	}
@@ -324,8 +335,53 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		if(empSchedules.size() > 0) {
 			totalUserSchedule.addAll(empSchedules );
 		}
+		// 지인 일정이 하나라도 있으면 개인 일정에 넣는다
+		List<MatchSchedule> friendSchedules = matchScheduleDAO.showMatchScheduleByFriendPeriod(searchCon);
+		if(friendSchedules.size() > 0) {
+			totalUserSchedule.addAll(friendSchedules);
+		}
 		return totalUserSchedule;
 	}
+	
+	//FS14
+	@Override
+	public MatchSchedule showMatchScheduleResultByUser(HashMap<String, Integer> searchCon, String email) throws SQLException {
+		MatchSchedule matchSchedule = matchScheduleDAO.showMatchScheduleResult(searchCon);
+		//1. 자신의 속한 팀의 teamId를 먼저 찾는다
+		List<Entry> entries = matchSchedule.getEntries();
+		int teamId = 0;
+		for(Entry entry : entries) {
+			String entryEmail = "";
+			if(entry.getUser() != null) entryEmail = entry.getUser().getEmail();
+			if(email.equals(entryEmail)) {
+				teamId = entry.getTeam().getTeamId();
+				break;
+			}
+		}
+		//2. 자신의 속한 팀의 entry만 가져온다
+		List<Entry> selectedEntries = new ArrayList<Entry>();
+		for(Entry entry : entries) {
+			int entryTeamId = entry.getTeam().getTeamId();
+			if(teamId != entryTeamId) continue;
+			selectedEntries.add(entry);
+		}
+		matchSchedule.setEntries(selectedEntries);
+		
+		return matchSchedule;
+	}
+	
+	// FS15
+	@Override
+	public void addTeamScore(TeamScore teamScore) throws SQLException {
+		matchScheduleDAO.addTeamScore(teamScore);
+	}
+	
+	//FS16
+	@Override
+	public void updateTeamScore(TeamScore teamScore) throws SQLException {
+		matchScheduleDAO.updateTeamScore(teamScore);
+	}
+
 	
 	//S001: 일정 등록
 	@Override
@@ -358,9 +414,5 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	
 	
 	
-	// S011
-	public void addTeamScore(TeamScore teamScore) throws SQLException {
-		matchScheduleDAO.addTeamScore(teamScore);
-	}
 
 }

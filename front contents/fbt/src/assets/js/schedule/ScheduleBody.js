@@ -18,6 +18,8 @@ export default {
     return {
       //vote vo
       votes: [],
+      // awayVote vo
+      awayVote: {},
       // 캘린더 기본 변수
       type: "month",
       types: ["month", "week", "day"],
@@ -47,6 +49,9 @@ export default {
       //수정, 작성 결정 변수
       isUpdate: false,
 
+      // 용병 수정 시, 기존 평가 변수
+      teamScoreByEmp: {},
+
       // 기본변수
       loading: false,
       errored: false
@@ -55,21 +60,51 @@ export default {
   computed: {
     sendingHeader: function() {
       if (this.isManager) return "scheduleManager";
+      else if (this.isUser) return "scheduleUser";
       else return "schedule";
     },
     controlWriteBtn: function() {
       let vote = this.votes[0];
-      if (vote && (this.isManager || this.isEmp)) {
-        if (vote.isEndMatch && vote.matchSchedule.entries.length == 0) return true;
-      }
-      return false;
+      if (!vote) return false;
+      if (!vote.isEndMatch) return false;
+      if (vote.matchSchedule.entries.length > 0) return false;
+      return true;
     },
     controlUpdateBtn: function() {
       let vote = this.votes[0];
-      if (vote && (this.isManager || this.isEmp)) {
-        if (vote.isEndMatch && vote.matchSchedule.entries.length > 0) return true;
+      if (!vote) return false;
+      if (!vote.isEndMatch) return false;
+      if (vote.matchSchedule.entries.length == 0) return false;
+      return true;
+    },
+    controlUserWriteBtn: function() {
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      let vote = this.votes[0];
+      if (!vote) return false;
+      if (!vote.isEndMatch) return false;
+      let teamScores = vote.matchSchedule.teamScores;
+      for (let i = 0; i < teamScores.length; i++) {
+        if (teamScores[i].user) {
+          if (email == teamScores[i].user.email) return false;
+        }
       }
-      return false;
+      return true;
+    },
+    controlUserUpdateBtn: function() {
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      let vote = this.votes[0];
+      if (!vote) return false;
+      if (!vote.isEndMatch) return false;
+      let teamScores = vote.matchSchedule.teamScores;
+      for (let i = 0; i < teamScores.length; i++) {
+        if (teamScores[i].user) {
+          if (email == teamScores[i].user.email) {
+            this.teamScoreByEmp = teamScores[i];
+            return true;
+          }
+        }
+      }
+      return true;
     }
   },
   methods: {
@@ -133,6 +168,10 @@ export default {
         let isEndMatch = false;
         const name = matchSchedule[i].matchType + "경기";
         let startTime = new Date(matchSchedule[i].startTime);
+        let homeTeamId = null;
+        let awayTeamId = null;
+        if (matchSchedule[i].homeTeam) homeTeamId = matchSchedule[i].homeTeam.teamId;
+        if (matchSchedule[i].awayTeam) awayTeamId = matchSchedule[i].awayTeam.teamId;
         if (startTime < today) isEndMatch = true;
         events.push({
           name: name,
@@ -141,7 +180,8 @@ export default {
           matchScheduleId: matchSchedule[i].matchScheduleId,
           eventId: i,
           isEndMatch: isEndMatch,
-          awayTeamId: matchSchedule[i].awayTeam.teamId
+          homeTeamId: homeTeamId,
+          awayTeamId: awayTeamId
           // timed: false
         });
       }
@@ -161,21 +201,24 @@ export default {
     showMatchScheduleInfo({ event }) {
       this.infoActive = true;
       this.event = event;
-      console.log(this.event);
       let matchScheduleId = this.event.matchScheduleId;
       let isEndMatch = this.event.isEndMatch;
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       if (isEndMatch) {
         // FS07
-        this.showEndMatchInfo(matchScheduleId);
+        if (teamId) this.showEndMatchInfoByTeam(matchScheduleId, teamId);
+        else this.showEndMatchInfoByUser(matchScheduleId);
       } else {
         //FS03
-        this.showNotEndMatchInfo(matchScheduleId);
+        this.showNotEndMatchInfo(matchScheduleId, teamId);
+        if (this.event.homeTeamId != this.event.awayTeamId) {
+          this.showAwayVoteMatchInfo(this.event.awayTeamId, matchScheduleId);
+        }
       }
     },
     //FS07
-    showEndMatchInfo(matchScheduleId) {
+    showEndMatchInfoByTeam(matchScheduleId, teamId) {
       this.isEmp = false;
-      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       if (!teamId) teamId = 0;
       axios
         .get("/match-schedule/5/" + matchScheduleId + "/" + teamId)
@@ -185,15 +228,6 @@ export default {
           vote.matchSchedule = matchSchedule;
           // 끝난 경기인지에 대한 정보 담고
           vote.isEndMatch = this.event.isEndMatch;
-          // 용병이 용병 뛴 경리를 보는지 확인 for 경기 결과 작성
-          let entries = matchSchedule.entries;
-          let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
-          for (let i = 0; i < entries.length; i++) {
-            // 타입이 용병이고 그 용병의 이메일이 현재 접속자와 같다면
-            if (entries[i].type == 2 && email == entries[i].user.email) {
-              this.isEmp = true;
-            }
-          }
           // 리스트에 보낼 통에 담고
           this.votes = [];
           this.votes.push(vote);
@@ -208,13 +242,37 @@ export default {
           // nativeEvent.stopPropagation();
         });
     },
-    //FS03
-    showNotEndMatchInfo(matchScheduleId) {
-      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
-      let awayTeamId = this.event.awayTeamId;
+    //FS13
+    showEndMatchInfoByUser(matchScheduleId) {
+      this.isEmp = true;
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       axios
-        // eslint-disable-next-line prettier/prettier
-        .get("/vote-match/2/" + matchScheduleId + "/" + teamId + "/" + awayTeamId)
+        .get("/match-schedule/8/" + matchScheduleId + "/" + email)
+        .then(response => {
+          let matchSchedule = response.data;
+          let vote = {};
+          vote.matchSchedule = matchSchedule;
+          // 끝난 경기인지에 대한 정보 담고
+          vote.isEndMatch = this.event.isEndMatch;
+          // 리스트에 보낼 통에 담고
+          this.votes = [];
+          this.votes.push(vote);
+          console.log(vote);
+          // 화면 이동
+          location.href = "#matchInfo";
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+          // nativeEvent.stopPropagation();
+        });
+    },
+    //FS03
+    showNotEndMatchInfo(matchScheduleId, teamId) {
+      axios
+        .get("/vote-match/2/" + matchScheduleId + "/" + teamId)
         .then(response => {
           let vote = response.data;
           // 끝난 경기인지에 대한 정보 담고
@@ -224,6 +282,22 @@ export default {
           this.votes.push(vote);
           // 화면 이동
           location.href = "#matchInfo";
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+          // nativeEvent.stopPropagation();
+        });
+    },
+    showAwayVoteMatchInfo(awayTeamId, matchSchedule) {
+      axios
+        .get("/vote-match/2/" + matchSchedule + "/" + awayTeamId)
+        .then(response => {
+          this.awayVote = response.data;
+          // 끝난 경기인지에 대한 정보 담고
+          this.awayVote.isEndMatch = this.event.isEndMatch;
         })
         .catch(() => {
           this.errored = true;

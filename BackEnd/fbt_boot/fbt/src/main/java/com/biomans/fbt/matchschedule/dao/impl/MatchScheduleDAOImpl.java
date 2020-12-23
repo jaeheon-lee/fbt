@@ -67,6 +67,10 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	public List<MatchSchedule> showMatchScheduleByEmployPeriod(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showMatchScheduleByEmployPeriod", searchCon);
 	}
+	@Override
+	public List<MatchSchedule> showMatchScheduleByFriendPeriod(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showMatchScheduleByFriendPeriod", searchCon);
+	}
 	
 	//S006 일정 수정
 	@Override

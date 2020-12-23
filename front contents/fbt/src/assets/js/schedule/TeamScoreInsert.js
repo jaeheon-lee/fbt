@@ -1,7 +1,8 @@
 export default {
   name: "team-score-insert",
   props: {
-    matchScheduleId: Number
+    matchScheduleId: Number,
+    teamScoreByEmp: Object
   },
   data() {
     return {
@@ -54,12 +55,16 @@ export default {
     };
   },
   created() {
-    let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
-    this.teamScore.matchSchedule.matchScheduleId = this.matchScheduleId;
-    this.teamScore.user.email = email;
+    if (this.teamScoreByEmp) {
+      this.teamScore = this.teamScoreByEmp;
+    } else {
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      this.teamScore.matchSchedule.matchScheduleId = this.matchScheduleId;
+      this.teamScore.user.email = email;
+    }
   },
   mounted() {
-    this.findEmpTeam();
+    if (!this.teamScoreByEmp) this.findEmpTeam();
   },
   computed: {},
   methods: {
@@ -77,7 +82,8 @@ export default {
         })
     },
     // ============== 제출====================== //
-    submitMatchResult() {
+    //FS15
+    submitTeamScore() {
       this.$axios
         .post("/match-schedule/3", this.teamScore)
         .then(() => {
@@ -90,6 +96,21 @@ export default {
         .finally(() => {
           location.reload();
         });
+    },
+    //FS16
+    updateTeamScore() {
+      this.$axios
+        .put("/match-schedule/3", this.teamScore)
+        .then(() => {
+          alert("수정이 완료됐습니다.");
+        })
+        .catch(error => {
+          console.log(error);
+          alert("수정에 실패했습니다.");
+        })
+        .finally(() => {
+          location.reload();
+        })
     }
   }
 };

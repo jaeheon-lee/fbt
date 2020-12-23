@@ -265,6 +265,9 @@ values('75', NULL, '1', 'bioman17@gmail.com', 1,'2', '1', '5', '0', '0');
 INSERT INTO
 entry(entry_id, team_member_id, match_schedule_id, email, team_id,attendance, type, match_score, goal, assist)
 values('76', NULL, '1', 'bioman7@gmail.com', 1,'2', '2', '7', '0', '1');
+INSERT INTO
+entry(entry_id, team_member_id, match_schedule_id, email, team_id,attendance, type, match_score, goal, assist)
+values('77', '2-bioman6@gmail.com', '1',  null, 2, '2', '1', '7', '0', '1');
 
 -- match_result
 INSERT INTO

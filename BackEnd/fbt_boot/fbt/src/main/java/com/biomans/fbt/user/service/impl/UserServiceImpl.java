@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.User;
@@ -23,6 +24,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void addUser(User user) throws SQLException {
 		userDAO.addUser(user);
+	}
+	
+	//FS13
+	@Override
+	public List<EmpScore> showEmpScore(HashMap<String, String> searchCon) throws SQLException {
+		return userDAO.showEmpScore(searchCon);
 	}
 	
 	//U002

@@ -106,5 +106,40 @@
 		ON u.email = ent.email
 		WHERE u.email = #{value}
 	</select>
+	<!-- U005: 용병으로서 받은 점수 -->
+	<resultMap type="empScore" id="empScoreRM">
+		<id column="emp_score_id" property="empScoreId"/>
+		<result column="manner_promise" property="mannerPromise"/>
+		<result column="manner_contact" property="mannerContact"/>
+		<result column="manner_rule" property="mannerRule"/>
+		<result column="manner_body_fight" property="mannerBodyFight"/>
+		<result column="manner_slang" property="mannerSlang"/>
+		<result column="manner_smoking" property="mannerSmoking"/>
+		<result column="manner_uniform" property="mannerUniform"/>
+		<result column="manner_payment" property="mannerPayment"/>
+		<result column="manner_arrangement" property="mannerArrangement"/>
+		<result column="manner_referee" property="mannerReferee"/>
+		<result column="manner_tackle" property="mannerTackle"/>
+		<result column="forward" property="forward"/>
+		<result column="middle" property="middle"/>
+		<result column="defence" property="defence"/>
+		<association property="teamGiver" javaType="team">
+			<id column="team_id" property="teamId"/>
+			<result column="team_name" property="teamName"/>
+		</association>
+	</resultMap>
+	<select id="showEmpScore" parameterType="hashMap" resultMap="empScoreRM">
+		SELECT
+		es.emp_score_id, es.manner_promise, es.manner_contact, es.manner_rule, es.manner_body_fight, es.manner_slang, 
+		es.manner_smoking, es.manner_uniform, es.manner_payment,
+		es.manner_arrangement, es.manner_referee, es.manner_tackle, es.forward, es.middle, 
+		es.defence, es.emp_email,
+		t.team_id, t.team_name
+		FROM emp_score es
+		JOIN team t
+		On t.team_id = es.team_giver_id
+		WHERE match_schedule_id = #{matchScheduleId}
+		AND emp_email = #{email}
+	</select>
 
 </mapper>

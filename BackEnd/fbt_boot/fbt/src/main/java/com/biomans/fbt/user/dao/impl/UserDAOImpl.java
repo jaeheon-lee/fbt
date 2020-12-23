@@ -2,11 +2,13 @@ package com.biomans.fbt.user.dao.impl;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.user.dao.UserDAO;
 
@@ -45,5 +47,11 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public User showUserInfo(String email) throws SQLException {
 		return sqlSession.selectOne(ns+"showUserInfo", email);
+	}
+	
+	//U005
+	@Override
+	public List<EmpScore> showEmpScore(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showEmpScore", searchCon);
 	}
 }

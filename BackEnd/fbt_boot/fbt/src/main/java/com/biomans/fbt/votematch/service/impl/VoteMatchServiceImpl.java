@@ -67,7 +67,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	@Override
 	@Transactional
 	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException {
-		int matchScheduleId = searchCon.get("matchScheduleId");
 		//1. 경기 일정 별 투표 정보를 가져온다
 		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoByScheduleId(searchCon);
 		VoteMatch num = voteMatchDAO.showVoteMatchNumByScheduleId(searchCon);

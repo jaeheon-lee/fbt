@@ -202,4 +202,6 @@ public class VoteMatch {
 				+ totalNum + ", votedNum=" + votedNum + ", abscentNum=" + abscentNum + ", attendNum=" + attendNum
 				+ ", friendNum=" + friendNum + ", totalAttend=" + totalAttend + "]";
 	}
+
+	
 }

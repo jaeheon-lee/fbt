@@ -22,10 +22,12 @@
       </v-col>
     </v-row>
     <!-- 지인 | 명단보기 버튼 끝 -->
-    <!-- 명단 -->
+    <!-- 홈팀 명단 -->
     <v-expand-transition>
       <div v-if="activeHomeMemberList == i && openType == 0">
         <v-divider></v-divider>
+        <!-- 명단 라벨 -->
+        <v-row justify="center" class="mt-3">[홈팀 투표 명단]</v-row>
         <!--투표 인원 내용-->
         <v-row class="justify-space-between mx-5 mt-4">
           <div>총인원: {{ vote.totalNum }}명</div>
@@ -64,7 +66,52 @@
         </v-row>
       </div>
     </v-expand-transition>
-    <!-- 명단 끝 -->
+    <!-- 홈팀 명단 끝 -->
+    <!-- 어웨이팀 명단 -->
+    <v-expand-transition>
+      <div v-if="activeAwayMemberList == i && openType == 1">
+        <v-divider></v-divider>
+        <!-- 명단 라벨 -->
+        <v-row justify="center" class="mt-3">[어웨이팀 투표 명단]</v-row>
+        <!--투표 인원 내용-->
+        <v-row class="justify-space-between mx-5 mt-4">
+          <div>총인원: {{ awayVote.totalNum }}명</div>
+          <div>투표인원: {{ awayVote.votedNum }}명</div>
+          <div>불참: {{ awayVote.abscentNum }}명</div>
+          <div>참여: {{ awayVote.attendNum }}명</div>
+        </v-row>
+        <v-row justify="end" class="mx-5 my-3">
+          <div>지인: {{ awayVote.friendNum }}명</div>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row justify="end" class="mx-5 mt-3 mb-5">
+          <div>경기참석 인원: {{ awayVote.totalAttend }}명</div>
+        </v-row>
+        <!--투표 인원 내용 끝-->
+        <v-row class="text-center mx-5">
+          <v-col offset="2" cols="5">
+            닉네임/이메일
+          </v-col>
+          <v-col cols="2">
+            참/불
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row
+          v-for="(result, i) in awayVote.voteMatchResults"
+          :key="i"
+          class="text-center mx-5"
+        >
+          <v-col offset="2" cols="5">
+            {{ showNickEmail(result) }}
+          </v-col>
+          <v-col cols="2">
+            {{ result.attendance | attendanceFliter }}
+          </v-col>
+        </v-row>
+      </div>
+    </v-expand-transition>
+    <!-- 어웨이팀 명단 끝 -->
   </div>
 </template>
 
@@ -73,7 +120,8 @@ export default {
   name: "member-list",
   props: {
     vote: Object,
-    i: Number
+    i: Number,
+    awayVote: Object
   },
   data() {
     return {
@@ -95,7 +143,7 @@ export default {
         return result.user.email;
       }
     },
-    // 명단보기 창 여닫기
+    // 홈팀명단보기 창 여닫기
     controlHomeMemberList(i) {
       if (this.activeHomeMemberList == i) this.activeHomeMemberList = null;
       // 명단이 열려있다면 명단 닫기
@@ -105,7 +153,7 @@ export default {
         this.openType = 0;
       }
     },
-    // 지인 초대 창 여닫기
+    // 어웨팀명단보기 창 여닫기
     controlAwayMemberList(i) {
       if (this.activeAwayMemberList == i) this.activeAwayMemberList = null;
       // 초대가 열려있다면 초대 닫기

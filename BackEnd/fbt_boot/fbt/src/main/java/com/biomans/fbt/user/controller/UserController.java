@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Assignment;
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.User;
@@ -42,7 +43,21 @@ public class UserController {
 		}
 	}
 	
-	
+	//FU02
+	@GetMapping("/user/5/{email}/{matchScheduleId}")
+	public ResponseEntity showEmpScore(@PathVariable String email,
+			@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			HashMap<String, String> searchCon = new HashMap<String, String>();
+			searchCon.put("email", email);
+			searchCon.put("matchScheduleId", matchScheduleId+"");
+			List<EmpScore> empScores = userService.showEmpScore(searchCon);
+			return new ResponseEntity(empScores, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
 	
 	//U001
 	@PostMapping("/user")

@@ -287,7 +287,20 @@
       <v-btn class="float-right" text @click="e1 = 2">
         이전
       </v-btn>
-      <v-btn class="float-right" color="primary" @click="submitMatchResult">
+      <v-btn
+        class="float-right"
+        color="primary"
+        @click="updateTeamScore"
+        v-if="teamScoreByEmp"
+      >
+        수정
+      </v-btn>
+      <v-btn
+        class="float-right"
+        color="primary"
+        @click="submitTeamScore"
+        v-else
+      >
         확인
       </v-btn>
     </v-container>

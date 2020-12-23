@@ -215,12 +215,13 @@
       </v-row>
       <!-- 지인 | 명단보기 끝-->
       <!-- 투표 명단보기 - 팀일정페이지 -->
-      <v-row v-if="header.includes('schedule')">
+      <v-row v-if="header.includes('schedule') && !vote.isEndMatch">
         <v-col class="py-0" offset="2" cols="8">
+          <member-list :vote="vote" :i="i" :awayVote="awayVote"></member-list>
         </v-col>
       </v-row>
       <!-- 투표 명단보기 끝 -->
-      <!-- 경기 참여 명단 - 일정페이지(확정됐을 때)-->
+      <!-- 경기 참여 명단 - 일정페이지(확정됐을 때) + 개인일정-->
       <div
         class="ma-0 pa-0"
         v-if="header.includes('schedule') && vote.isEndMatch"
@@ -313,11 +314,14 @@
       </div>
       <!-- 경기 참여 명단 끝 -->
       <!-- 팀이 받은 점수 -->
-      <div class="ma-0 pa-0" v-if="vote.isEndMatch">
+      <div class="ma-0 pa-0" v-if="header != 'scheduleUser' && vote.isEndMatch">
         <!-- 팀이 받은 점수 라벨 -->
         <v-row style="color:rgba(235, 255, 0,0.7)">
           <v-col offset="2" cols="10" class="my-0 py-0">
-            <span class="mx-3" @click="openScoreList(i)" style="cursor:pointer;"
+            <span
+              class="mx-3"
+              @click="openTeamScoreList(i)"
+              style="cursor:pointer;"
               >받은 점수 보기</span
             >
           </v-col>
@@ -368,9 +372,72 @@
             </v-col>
           </v-expand-transition>
         </v-row>
-        <!-- 경기 참여 명단 본문 끝 -->
       </div>
       <!-- 팀이 받은 점수 끝 -->
+      <!-- 용병/지인이 받은 점수 -->
+      <div
+        class="ma-0 pa-0 mt-2"
+        v-if="header == 'scheduleUser' && vote.isEndMatch"
+      >
+        <!-- 용병/지인이 받은 점수 라벨 -->
+        <v-row style="color:rgba(235, 255, 0,0.7)">
+          <v-col offset="2" cols="10" class="my-0 py-0">
+            <span
+              class="mx-3"
+              @click="controlEmpScoreList(i, vote)"
+              style="cursor:pointer;"
+              >받은 점수 보기</span
+            >
+          </v-col>
+        </v-row>
+        <!-- 용병/지인이 받은 점수 라벨 끝 -->
+        <!--용병/지인이 받은 점수 본문 -->
+        <v-row class="ma-0 pa-0">
+          <v-expand-transition>
+            <v-col offset="2" cols="8" v-if="activeEmpScoreList == i">
+              <!-- 명단 -->
+              <v-divider></v-divider>
+              <!--투표 인원 내용 끝-->
+              <v-row class="text-center">
+                <v-col cols="6">
+                  부여한 사람
+                </v-col>
+                <v-col cols="2">
+                  경기력
+                </v-col>
+                <v-col cols="2">
+                  매너
+                </v-col>
+                <v-col class="ma-0 py-2">
+                  <i
+                    id="member-close"
+                    class="material-icons md-18 float-right"
+                    @click="activeEmpScoreList = null"
+                    >close</i
+                  >
+                </v-col>
+              </v-row>
+              <v-divider></v-divider>
+              <v-row
+                v-for="(empScore, j) in empScores"
+                :key="j"
+                class="text-center"
+              >
+                <v-col cols="6">
+                  {{ getGiverName(empScore) }}
+                </v-col>
+                <v-col cols="2">
+                  {{ empScore.empManner | showTeamScore }}
+                </v-col>
+                <v-col cols="2">
+                  {{ empScore.empAbility | showTeamScore }}
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-expand-transition>
+        </v-row>
+      </div>
+      <!--용병/지인이 받은 점수 점수 끝 -->
       <!-- 관리자 버튼 영역 -->
       <v-row v-if="controlManagerBtn(vote)">
         <v-col offset="2" cols="8">

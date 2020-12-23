@@ -50,9 +50,10 @@
             </v-sheet>
           </v-row>
           <!-- date-picker 끝 -->
-          <!-- 선택된 일정의 경기 정보 -->
+          <!-- 선택된 일정의 경기 정보 & 경기작성/수정 버튼 -->
           <div id="matchInfo" v-if="infoActive">
-            <v-row class="py-0 my-0 mt-5 px-0 mx-5">
+            <!-- 팀일정일 때 -->
+            <v-row class="py-0 my-0 mt-5 px-0 mx-5" v-if="isManager">
               <v-col class="ma-0 pa-0">
                 <span>경기 정보</span>
                 <span
@@ -71,6 +72,28 @@
                 >
               </v-col>
             </v-row>
+            <!-- 팀일정일 때 끝 -->
+            <!-- 개인일정일 때 -->
+            <v-row class="py-0 my-0 mt-5 px-0 mx-5" v-if="isUser">
+              <v-col class="ma-0 pa-0">
+                <span>경기 정보</span>
+                <span
+                  class="float-right"
+                  style="cursor:pointer"
+                  @click="openWritePage"
+                  v-if="controlUserWriteBtn"
+                  >팀 평가하기</span
+                >
+                <span
+                  class="float-right"
+                  style="cursor:pointer"
+                  @click="openUpdatePage"
+                  v-if="controlUserUpdateBtn"
+                  >팀 평가 수정하기</span
+                >
+              </v-col>
+            </v-row>
+            <!-- 개인일정일 때 끝 -->
             <v-row class="py-0 my-0 px-0 mx-5">
               <v-divider color="white"></v-divider>
             </v-row>
@@ -78,6 +101,7 @@
               <v-col cols="12">
                 <vote-match-list
                   :votes="votes"
+                  :awayVote="awayVote"
                   :header="sendingHeader"
                   @refresh="showNotEndMatchInfo"
                 ></vote-match-list>
@@ -109,7 +133,7 @@
           <div id="empMatchResult" v-if="empWriteActive && !infoActive">
             <v-row class="py-0 my-0 mt-5 px-0 mx-5">
               <v-col class="ma-0 pa-0">
-                <span>용병 경기 결과 작성</span>
+                <span>팀 평가하기</span>
               </v-col>
             </v-row>
             <v-row class="py-0 my-0 px-0 mx-5">
@@ -118,6 +142,7 @@
             <v-row class="py-0 my-0 px-0 mx-2">
               <v-col cols="12">
                 <team-score-insert
+                  :teamScoreByEmp="teamScoreByEmp"
                   :matchScheduleId="votes[0].matchSchedule.matchScheduleId"
                 ></team-score-insert>
               </v-col>

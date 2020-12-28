@@ -198,4 +198,10 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	public AvgScore getAvgEmpScore(String email) throws SQLException {
 		return sqlSession.selectOne(ns+"getAvgEmpScore", email);
 	}
+	
+	// S022
+	@Override
+	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException {
+		return sqlSession.selectList(ns+"showFutureSchedule", teamId);
+	}
 }

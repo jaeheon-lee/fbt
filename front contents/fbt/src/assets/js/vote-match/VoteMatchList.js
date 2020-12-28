@@ -316,7 +316,7 @@ export default {
       if (team) {
         return require("@/assets/image/emblem/" + team.emblem);
       } else {
-        return require("@/assets/image/emblem/emptyFC.png");
+        return require("@/assets/image/emblem/emptyFC.svg");
       }
     },
     // 이메일, 닉네임으로 구분

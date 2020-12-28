@@ -37,12 +37,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "team" */ "../views/Team.vue")
   },
   {
-    path: "/managerMenu",
-    name: "managerMenu",
-    component: () =>
-      import(/* webpackChunkName: "managerMenu" */ "../views/ManagerMenu.vue")
-  },
-  {
     path: "/allTeamMemberMenu",
     name: "allTeamMemberMenu",
     component: () =>
@@ -148,14 +142,22 @@ const routes = [
   {
     path: "/teamInsert",
     name: "teamInsert",
-    component: () => import("@/views/TeamInsert.vue"),
-    props: true
+    component: () => import("@/views/TeamInsert.vue")
   },
   {
     path: "/searchTeam",
     name: "searchTeam",
-    component: () => import("@/views/SearchTeam.vue"),
-    props: true
+    component: () => import("@/views/SearchTeam.vue")
+  },
+  {
+    path: "/teamHome",
+    name: "teamHome",
+    component: () => import("@/views/TeamHome.vue")
+  },
+  {
+    path: "/myPage",
+    name: "myPage",
+    component: () => import("@/views/MyPage.vue")
   }
 ];
 

@@ -17,22 +17,24 @@
           justify="center"
         >
           <v-carousel-item
-            v-for="(slide, i) in slides"
+            v-for="(team, i) in teams"
             :key="i"
             style="position:relative text-align:center;"
           >
             <v-img
-              :src="imageTrans(slide)"
-              aspect-ratio="1.5"
+              :src="imageTrans(team.emblem)"
+              aspect-ratio="1"
+              contain
+              width="50%"
               class="mx-0 my-0"
-              style="opacity:0.5;"
+              style="opacity:0.5;cursor:pointer;"
             >
             </v-img>
             <div
               class="mt-4"
               style="opacity:0.7; text-shadow:1.5px 1.5px #cccccc; left: 0;top:0; width: 100%;font-size:30px;position:absolute;"
             >
-              {{ imageNameProcessing(slide) }}
+              {{ team.teamName }}
             </div>
           </v-carousel-item>
         </v-carousel>
@@ -44,6 +46,8 @@
 export default {
   data() {
     return {
+      teams: [],
+
       colors: ["#AD145750", "#AD145750", "#AD145750", "#AD145750", "#AD145750"],
       slides: [
         "레알마드리드.jpg",
@@ -54,12 +58,24 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.showBelongedTeam();
+  },
   methods: {
-    imageTrans(pic) {
-      return require("../assets/image/" + pic);
+    //FU03
+    showBelongedTeam() {
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      this.$axios
+        .get("/user/6/" + email)
+        .then(response => {
+          this.teams = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    imageNameProcessing(pic) {
-      return pic.split(".")[0];
+    imageTrans(pic) {
+      return require("@/assets/image/emblem/" + pic);
     }
   }
 };

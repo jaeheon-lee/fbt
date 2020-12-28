@@ -66,13 +66,18 @@
               class="mx-0 px-0"
               style="border:0px;"
               :class="{ 'btn-on-purple': page == 4 }"
-              @click="page = 4"
+              @click="openDelete"
               >팀 해체</v-btn
             >
           </v-col>
         </v-row>
         <!-- 가이드 버튼 끝 -->
-        <member-manage class=""></member-manage>
+        <member-manage v-if="page == 1"></member-manage>
+        <join-request v-if="page == 2"></join-request>
+        <update-team-info v-if="page == 3"></update-team-info>
+        <v-dialog v-model="deleteDialog">
+          <delete-team @cancel-delete="cancelDelete"></delete-team>
+        </v-dialog>
       </v-col>
     </v-row>
   </v-container>
@@ -80,14 +85,31 @@
 
 <script>
 import MemberManage from "@/components/Team/MemberManage.vue";
+import JoinRequest from "@/components/Team/JoinRequest.vue";
+import UpdateTeamInfo from "@/components/Team/UpdateTeamInfo.vue";
+import DeleteTeam from "@/components/Team/DeleteTeam.vue";
 export default {
   name: "team-manage",
   components: {
-    "member-manage": MemberManage
+    "member-manage": MemberManage,
+    "join-request": JoinRequest,
+    "update-team-info": UpdateTeamInfo,
+    "delete-team": DeleteTeam
   },
   data: () => ({
-    page: 1
-  })
+    page: 1,
+    deleteDialog: false
+  }),
+  methods: {
+    openDelete() {
+      this.page = 4;
+      this.deleteDialog = true;
+    },
+    cancelDelete() {
+      this.deleteDialog = false;
+      this.page = 1;
+    }
+  }
 };
 </script>
 <style scroped src="@/assets/css/common/barButton.css"></style>

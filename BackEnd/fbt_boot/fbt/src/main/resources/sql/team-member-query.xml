@@ -20,12 +20,14 @@
 			<id column="email" property="email"/>
 			<result column="name" property="name"/>
 			<result column="phone_num" property="phoneNum"/>
+			<result column="position" property="position"/>
+			<result column="area" property="area"/>
 		</association>
 	</resultMap>
 	<sql id="showMemberFactorBasic">
 		SELECT 
 		tm.team_member_id, tm.member_reg_date, tm.member_level, tm.reg_status, tm.nick_name,
-		u.email, u.name, u.phone_num
+		u.email, u.name, u.phone_num, u.position, u.area
 	</sql>
 	<sql id="showMemberJoinBasic">
 		From team_member tm
@@ -59,4 +61,39 @@
 		WHERE tm.team_member_id = #{value}
 		AND tm.reg_status > 0
 	</select>
+	
+	<!-- TM003: 특정 맴버 등급 변환 -->
+	<update id="changeMemberLever" parameterType="teamMember">
+		UPDATE team_member
+		SET member_level = #{memberLevel}
+		WHERE team_member_id = #{teamMemberId}
+	</update>
+	
+	<!-- TM004: 팀원 강퇴 -->
+	<delete id="deleteMember" parameterType="string">
+		DELETE FROM team_member
+		WHERE team_member_id = #{value}
+	</delete>
+	
+	<!-- TM005: 특정 팀의 신청인원 출력 -->
+	<select id="showApplyMemberByTeam" parameterType="integer" resultMap="teamMemberRM">
+		<include refid="showMemberFactorBasic"/>
+		<include refid="showMemberJoinBasic"/>
+		WHERE tm.team_id = #{value}
+		AND tm.reg_status = 0
+	</select>
+	
+	<!-- TM006: 가입 요청 수락 -->
+	<update id="acceptApplyMember" parameterType="string">
+		UPDATE team_member
+		SET reg_status = 1
+		WHERE team_member_id = #{value}
+	</update>
+	
+	<!-- TM007: 회원 이미지 변경 -->
+	<update id="changeImg" parameterType="user">
+		UPDATE user
+		SET image = #{image}
+		WHERE email = #{email}
+	</update>
 </mapper>

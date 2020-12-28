@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.user.service.UserService;
@@ -59,7 +61,44 @@ public class UserController {
 		}
 	}
 	
-	//U001
+	//FU03
+	@GetMapping("/user/6/{email}")
+	public ResponseEntity showBelongedTeam(@PathVariable String email) throws SQLException {
+		try {
+			List<Team> list = userService.showBelongedTeam(email);
+			return new ResponseEntity(list, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FU04
+	@GetMapping("/user/7/{email}")
+	public ResponseEntity getPass(@PathVariable String email) throws SQLException {
+		try {
+			String pass = userService.getPass(email);
+			return new ResponseEntity(pass, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FU05
+	@PutMapping("/user/1")
+	public ResponseEntity updateUser(@RequestBody User user) throws SQLException {
+		try {
+			System.out.println(user);
+			userService.updateUser(user);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FU06
 	@PostMapping("/user")
 	public ResponseEntity addUser(@RequestBody User user) throws SQLException {
 		try {
@@ -90,9 +129,7 @@ public class UserController {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("apiType", apiType);
 			searchCon.put("apiKey", apiKey);
-			User user = userService.LoginByApi(searchCon);
-			Session session = new Session();
-			if (user != null) session = makeSession(user);
+			Session session = userService.LoginByApi(searchCon);
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -108,33 +145,11 @@ public class UserController {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("email", email);
 			searchCon.put("pass", pass);
-			User user = userService.LoginByEmail(searchCon);
-			Session session = new Session();
-			if (user != null) session = makeSession(user);
+			Session session = userService.LoginByEmail(searchCon);
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
-	}
-	
-	public Session makeSession(User user) {
-		Session session = new Session();
-		session.setEmail(user.getEmail());
-		session.setName(user.getName());
-		session.setImage(user.getImage());
-		List<TeamMember> list = user.getTeamMembers();
-		List<HashMap<String, String>> teams = new ArrayList<HashMap<String, String>>();
-		for (TeamMember tm : list) {
-			HashMap<String, String> team = new HashMap<String, String>();
-			team.put("teamId", tm.getTeam().getTeamId()+"");
-			team.put("teamName", tm.getTeam().getTeamName());
-			team.put("teamMemberId", tm.getTeamMemberId());
-			team.put("nickName", tm.getNickName());
-			team.put("memberLevel", tm.getMemberLevel()+"");
-			teams.add(team);
-		}
-		session.setTeams(teams);
-		return session;
 	}
 }

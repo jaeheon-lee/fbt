@@ -37,6 +37,8 @@ public interface MatchScheduleService {
 	public void addTeamScore(TeamScore teamScore) throws SQLException;
 	//FS16
 	public void updateTeamScore(TeamScore teamScore) throws SQLException;
+	//FS17
+	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException;
 	
 	
 	//S001: 일정 등록

@@ -195,4 +195,34 @@
 		WHERE team_name = #{value}
 	</select>
 	
+	<!-- T009: 팀정보 가져오기 -->
+	<select id="showTeamInfo" parameterType="integer" resultType="team">
+		SELECT
+		team_id, team_name, emblem, area, stadium_info, uniform_color, uniform_type, 
+		founding_date, team_reg_date, account, bank
+		FROM team
+		WHERE team_id = #{value}
+	</select>
+	
+	<!-- T010: 팀정보 수정하기 -->
+	<update id="updateTeamInfo" parameterType="team">
+		UPDATE `team`
+		SET
+		`team_name` = #{teamName},
+		`emblem` = #{emblem},
+		`area` = #{area},
+		`stadium_info` = #{stadiumInfo},
+		`uniform_color` = #{uniformColor},
+		`uniform_type` = #{uniformType},
+		`founding_date` = #{foundingDate},
+		`account` = #{account},
+		`bank` = #{bank}
+		WHERE `team_id` = #{teamId}
+	</update>
+	
+	<!-- T011: 팀해체하기 -->
+	<delete id="deleteTeam" parameterType="integer">
+		DELETE FROM team
+		WHERE team_id = #{value}
+	</delete>
 </mapper>

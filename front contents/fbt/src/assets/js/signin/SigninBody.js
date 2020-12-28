@@ -1,10 +1,14 @@
 export default {
-  name: "sign-in",
+  name: "sign-in-body",
   props: {
     id: String,
-    type: Number
+    type: Number,
+    header: String
   },
   data: () => ({
+    // 수정, 가입 조절 변수
+    doChangePass: true,
+
     user: {
       email: null,
       pass: "",
@@ -29,7 +33,6 @@ export default {
     siGun: null,
     rules: {
       required: value => !!value || "필수항목",
-      pass: value => value.length >= 8 || "8자 이상이어야 합니다.",
       phone: value => {
         const pattern = /^\d{3}-\d{3,4}-\d{4}$/;
         return pattern.test(value) || "xxx-xxxx-xxxx 형식으로 입력해주세요";
@@ -93,6 +96,7 @@ export default {
     ]
   }),
   mounted() {
+    // input setting
     let today = new Date();
     let toyear = parseInt(today.getFullYear());
     let startYear = toyear - 5;
@@ -105,6 +109,11 @@ export default {
     }
     for (let i = 1; i < 32; i++) {
       this.day.push(i);
+    }
+    // 수정인지, 회원가입인지
+    if (this.header == "update") {
+      this.showUserInfo();
+      this.doChangePass = false;
     }
   },
   computed: {
@@ -138,13 +147,49 @@ export default {
           .catch(() => {});
       }
     },
-    // 제출
+    //FU01
+    showUserInfo() {
+      let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      this.$axios
+        .get("/user/4/" + email)
+        .then(response => {
+          this.user = response.data;
+          let bornDate = this.user.bornDate.split("-");
+          this.getYear = parseInt(bornDate[0]);
+          this.getMonth = parseInt(bornDate[1]);
+          this.getDay = parseInt(bornDate[2]);
+          let area = this.user.area.split(" ");
+          this.siDo = area[0];
+          this.siGun = area[1];
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    //FU04
+    changePass() {
+      this.doChangePass = true;
+    },
+    //FU05
+    updateUser() {
+      this.dataHandle();
+      this.$axios
+        .put("/user/1", this.user)
+        .then(() => {
+          alert("정보를 수정했습니다.");
+        })
+        .catch(error => {
+          console.log(error);
+          alert("수정에 실패했습니다");
+        })
+        .finally(() => {
+          location.reload();
+        });
+    },
+    // FU06
     submitUser() {
       // 1. 받은 변수 중 병합할 것 합치기
-      // eslint-disable-next-line prettier/prettier
-      let bornDate = new Date(this.getYear + "-" + this.getMonth + "-" + this.getDay);
-      this.user.bornDate = this.$moment(bornDate).format("yyyy-MM-DD");
-      this.user.area = this.siDo + " " + this.siGun;
+      this.dataHandle();
 
       // 2. 소셜로그인 시, 받은 id를 apikey로 넘기기
       if (this.id) this.user.apiKey = this.id;
@@ -158,8 +203,14 @@ export default {
           this.$router.push("/home");
         })
         .catch(() => {
-          alert("회원가입에 실패했습니다.")
-        })
+          alert("회원가입에 실패했습니다.");
+        });
+    },
+    dataHandle() {
+      // eslint-disable-next-line prettier/prettier
+      let bornDate = new Date(this.getYear + "-" + this.getMonth + "-" + this.getDay);
+      this.user.bornDate = this.$moment(bornDate).format("yyyy-MM-DD");
+      this.user.area = this.siDo + " " + this.siGun;
     }
   }
 };

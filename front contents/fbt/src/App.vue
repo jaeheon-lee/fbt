@@ -180,7 +180,7 @@ export default {
         target: "allTeamMemberMenu",
         title: "팀 메뉴",
         items: [
-          { title: "팀홈" },
+          { title: "팀홈", target: "teamHome" },
           { title: "투표", target: "voteMatch" },
           { title: "일정", target: "schedule" },
           { title: "활동" },
@@ -192,13 +192,13 @@ export default {
         title: "개인 메뉴",
         target: "privateMenu",
         items: [
-          { title: "홈" },
+          { title: "홈", target: "home" },
           { title: "개인 전체일정", target: "scheduleUser" },
           { title: "팀 찾기", target: "searchTeam" },
           { title: "팀 만들기", target: "teamInsert" },
           { title: "용병", target: "employ" },
           { title: "전체 알림" },
-          { title: "개인정보" }
+          { title: "마이페이지", target: "myPage" }
         ]
       }
     ]
@@ -248,7 +248,7 @@ export default {
       userInfo.teamName = subItem.title;
       userInfo.memberLevel = subItem.memberLevel;
       sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
-      this.$router.push("/").catch(error => {
+      this.$router.push("/teamHome").catch(error => {
         if (error.name == "NavigationDuplicated") {
           location.reload();
         }

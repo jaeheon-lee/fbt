@@ -6,7 +6,9 @@
           <v-icon>mdi-login-variant</v-icon>
         </v-list-item-avatar>
         <v-list-item-content pa-0>
-          <v-list-item-title class="title" style="font-family:nexon!important;line-height:2"
+          <v-list-item-title
+            class="title"
+            style="font-family:nexon!important;line-height:2"
             >로그인</v-list-item-title
           >
         </v-list-item-content>

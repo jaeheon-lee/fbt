@@ -24,12 +24,19 @@
 	<!-- U003 -->
 	<resultMap type="user" id="UserRM">
 		<id column="email" property="email"/>
-		<result column="image" property="image"/>
 		<result column="name" property="name"/>
 		<result column="phone_num" property="phoneNum"/>
-		<result column="area" property="area"/>
+		<result column="user_reg_date" property="userRegDate"/>
+		<result column="recent_login" property="recentLogin"/>
 		<result column="main_foot" property="mainFoot"/>
 		<result column="position" property="position"/>
+		<result column="height" property="height"/>
+		<result column="weight" property="weight"/>
+		<result column="was_pro" property="wasPro"/>
+		<result column="gender" property="gender"/>
+		<result column="born_date" property="bornDate"/>
+		<result column="area" property="area"/>
+		<result column="image" property="image"/>
 		<result column="emp_ability" property="empAbility"/>
 		<result column="emp_manner" property="empManner"/>
 		<result column="total_emp_attend" property="totalEmpAttend"/>
@@ -62,7 +69,7 @@
 	</resultMap>
 	<sql id="Login">
 		SELECT
-		u.email, u.image, u.name,
+		u.email, u.image, u.name, u.image,
 		t.team_id, t.team_name,
 		tm.team_member_id, tm.nick_name, tm.member_level
 		FROM user u
@@ -87,7 +94,7 @@
 	<!-- U004: 회원정보출력 -->
 	<select id="showUserInfo" parameterType="string" resultMap="UserRM">
 		SELECT
-		u.email, u.pass, u.name, u.phone_num, u.user_reg_date, u.recent_login, u.main_foot, u.position, u.height, 
+		u.email, u.name, u.phone_num, u.user_reg_date, u.recent_login, u.main_foot, u.position, u.height, u.image,
 		u.weight, u.was_pro, u.gender, u.born_date, u.area, u.image, u.api_key, u.api_type, u.emp_ability, u.emp_manner,
 		es.emp_score_id, es.emp_email, es.manner_promise, es.manner_contact, es.manner_rule, es.manner_body_fight, es.manner_slang, 
 		es.manner_smoking, es.manner_uniform, es.manner_payment,
@@ -141,5 +148,43 @@
 		WHERE match_schedule_id = #{matchScheduleId}
 		AND emp_email = #{email}
 	</select>
-
+	
+	<!-- U006: 자신이 속한 팀 가져오기 -->
+	<select id="showBelongedTeam" parameterType="string" resultType="team">
+		SELECT
+		t.team_id, t.team_name, t.emblem
+		FROM team t
+		JOIN team_member tm
+		ON t.team_id = tm.team_id
+		WHERE tm.email = #{value}
+	</select>
+	
+	<!-- U007: 비밀번호 가져오기 -->
+	<select id="getPass" parameterType="string" resultType="string">
+		SELECT
+		pass
+		FROM user
+		WHERE email = #{value}
+	</select>
+	
+	<!-- U008: 회원 정보 수정 -->
+	<update id="updateUser" parameterType="user">
+		UPDATE `user`
+		SET
+		<if test="pass != null">
+		`pass` = #{pass},
+		</if>
+		`name` = #{name},
+		`phone_num` = #{phoneNum},
+		`main_foot` = #{mainFoot},
+		`position` = #{position},
+		`height` = #{height},
+		`weight` = #{weight},
+		`was_pro` = #{wasPro},
+		`gender` = #{gender},
+		`born_date` = #{bornDate},
+		`area` = #{area},
+		`image` = #{image}
+		WHERE `email` = #{email}
+	</update>
 </mapper>

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.biomans.fbt.domain.EmpScore;
+import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.user.dao.UserDAO;
 
@@ -53,5 +54,23 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public List<EmpScore> showEmpScore(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showEmpScore", searchCon);
+	}
+	
+	//U006
+	@Override
+	public List<Team> showBelongedTeam(String email) throws SQLException {
+		return sqlSession.selectList(ns+"showBelongedTeam", email);
+	}
+	
+	//U007
+	@Override
+	public String getPass(String email) throws SQLException {
+		return sqlSession.selectOne(ns+"getPass", email);
+	}
+	
+	//U008
+	@Override
+	public void updateUser(User user) throws SQLException {
+		sqlSession.update(ns+"updateUser", user);
 	}
 }

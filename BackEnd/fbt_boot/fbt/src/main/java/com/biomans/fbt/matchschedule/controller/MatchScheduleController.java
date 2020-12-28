@@ -227,6 +227,18 @@ public class MatchScheduleController {
 		}
 	}
 	
+	//FS17
+	@GetMapping("/match-schedule/9/{teamId}")
+	public ResponseEntity showFutureSchedule(@PathVariable int teamId) throws SQLException {
+		try {
+			List<MatchSchedule> list = matchScheduleService.showFutureSchedule(teamId);
+			return new ResponseEntity(list,HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
 	//S001: 일정 등록
 	@PostMapping("/match-schedule")
 	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {

@@ -27,4 +27,10 @@ public interface TeamDAO {
 	public Team showTeamInfoForAutoWrite(HashMap<String, String> searchCon) throws SQLException;
 	//T008
 	public int getTeamIdByTeamName(String teamName) throws SQLException;
+	//T009
+	public Team showTeamInfo(int teamId) throws SQLException;
+	//T010
+	public void updateTeamInfo(Team team) throws SQLException;
+	//T011
+	public void deleteTeam(int teamId) throws SQLException;
 }

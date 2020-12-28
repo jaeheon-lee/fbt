@@ -72,4 +72,21 @@ public class TeamDAOImpl implements TeamDAO{
 		return sqlSession.selectOne(ns+"getTeamIdByTeamName", teamName);
 	}
 	
+	//T009
+	@Override
+	public Team showTeamInfo(int teamId) throws SQLException {
+		return sqlSession.selectOne(ns+"showTeamInfo", teamId);
+	}
+	
+	//T010
+	@Override
+	public void updateTeamInfo(Team team) throws SQLException {
+		sqlSession.update(ns+"updateTeamInfo", team);
+	}
+	
+	//T011
+	@Override
+	public void deleteTeam(int teamId) throws SQLException {
+		sqlSession.delete(ns+"deleteTeam", teamId);
+	}
 }

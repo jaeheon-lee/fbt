@@ -4,7 +4,8 @@ INSERT INTO api_category(api_type, api_name) VALUES(1, "Kakao");
 INSERT INTO api_category(api_type, api_name) VALUES(2, "naver");
 
 -- user
-INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, api_key, height, weight, was_pro, gender, born_date, area, api_type) VALUES('bioman1@gmail.com','1234','bioman1','010-1234-5678',sysdate(),sysdate(),'왼발','FW',null,180,80,1,1,'1995-06-01', '서울 성동구', 0);
+INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, api_key, height, weight, was_pro, gender, born_date, area, api_type, image) 
+VALUES('bioman1@gmail.com','1234','bioman1','010-1234-5678',sysdate(),sysdate(),'왼발','FW',null,180,80,1,1,'1995-06-01', '서울 성동구', 0 ,"bioman1@gmail.com.jpg");
 INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, api_key, height, weight, was_pro, gender, born_date, area, api_type) VALUES('bioman2@gmail.com','1234','bioman2','010-1234-5678',sysdate(),sysdate(),'오른발','MF',null,174,70,1,0,'1995-06-01', '서울 성동구', 0);
 INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, api_key, height, weight, was_pro, gender, born_date, area, api_type) VALUES('bioman3@gmail.com','1234','bioman3','010-1234-5678',sysdate(),sysdate(),'왼발','DF',null,179,77,0,0,'1995-06-01', '서울 성동구', 0);
 INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, api_key, height, weight, was_pro, gender, born_date, area, api_type) VALUES('bioman4@gmail.com','1234','bioman4','010-1234-5678',sysdate(),sysdate(),'오른발','FW',null,175,75,0,0,'1995-06-01', '서울 성동구', 0);
@@ -24,9 +25,9 @@ INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main
 INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, height, weight, was_pro, gender, born_date, area, image, api_key, api_type) VALUES('wpdud94@naver.com', '12345678', '강제영', '010-5043-5765', '2020-12-05 16:08:55', '2020-12-05 16:08:55', '오른발', 'DF', '171', '70', '0', '0', '1995-06-01', NULL, NULL, '1549194656', '0');
 
 -- team
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('왕십리FC','왕십리FC201018.png','서울 성동구','성동구 구장','red',1,'2016-01-01',sysdate(),'1234','기업');
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('답십리FC','답십리FC201018.png','서울 성동구','응봉동 구장','blue',0,'2017-01-01',sysdate(),'5678','하나');
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('대구FC','대구FC201018.jpg','대구 달서구','달서구 구장','green',0,'2018-01-01',sysdate(),'2345','기업');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('왕십리FC','왕십리FC201018.png','서울 성동구','성동구 구장','빨강',1,'2016-01-01',sysdate(),'1234','기업');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('답십리FC','답십리FC201018.png','서울 성동구','응봉동 구장','파랑',0,'2017-01-01',sysdate(),'5678','하나');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('대구FC','대구FC201018.jpg','대구 달서구','달서구 구장','초록',0,'2018-01-01',sysdate(),'2345','기업');
 
 -- team_member
 INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_status, team_id, email, nick_name)VALUES('1-bioman1@gmail.com',sysdate(),4,1,1,'bioman1@gmail.com','nick1');

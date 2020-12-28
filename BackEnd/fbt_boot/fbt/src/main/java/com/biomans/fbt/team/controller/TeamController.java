@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,6 +85,46 @@ public class TeamController {
 			return new ResponseEntity(teams, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FT05
+	@GetMapping("/team/5/{teamId}")
+	public ResponseEntity showTeamInfo(@PathVariable int teamId) throws SQLException {
+		try {
+			Team team = teamService.showTeamInfo(teamId);
+			return new ResponseEntity(team, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FT06
+	@PutMapping("/team/1/{beforeUrl}")
+	public ResponseEntity addTeam(@RequestPart(value="file", required=false) MultipartFile file,
+			@RequestPart(value="team") Team team,
+			@PathVariable String beforeUrl,
+			HttpServletRequest request) throws SQLException {
+		try {
+			String root = request.getSession().getServletContext().getRealPath("/").substring(0, 11);
+			String path = root + "front contents\\fbt\\src\\assets\\image\\emblem\\";
+			teamService.updateTeamInfo(team, file, beforeUrl, path);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//FT07
+	@DeleteMapping("/team/1/{teamId}")
+	public ResponseEntity deleteTeam(@PathVariable int teamId) throws SQLException {
+		try {
+			teamService.deleteTeam(teamId);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
 	

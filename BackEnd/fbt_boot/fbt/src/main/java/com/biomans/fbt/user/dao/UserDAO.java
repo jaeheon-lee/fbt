@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.biomans.fbt.domain.EmpScore;
+import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.User;
 
 public interface UserDAO {
@@ -20,4 +21,10 @@ public interface UserDAO {
 	public User showUserInfo(String email) throws SQLException;
 	// U005
 	public List<EmpScore> showEmpScore(HashMap<String, String> searchCon) throws SQLException;
+	//U006
+	public List<Team> showBelongedTeam(String email) throws SQLException;
+	//U007
+	public String getPass(String email) throws SQLException;
+	//U008
+	public void updateUser(User user) throws SQLException;
 }

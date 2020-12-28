@@ -11,7 +11,9 @@
       <!-- 마감일시 -->
       <v-row class="ma-0 pa-0">
         <v-col cols="12" class="text-left" style="font-size: 0.75em">
-          <span class="mr-2"
+          <span
+            class="mr-2"
+            v-if="vote.voteStatus == 1 && vote.matchSchedule.isConfirmed == 0"
             >투표 마감일시 : {{ vote.dueDate | extractSecond }}</span
           >
           <span

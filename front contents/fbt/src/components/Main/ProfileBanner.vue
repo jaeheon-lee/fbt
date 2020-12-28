@@ -3,7 +3,10 @@
     <v-list-item height="64" link align-center>
       <v-list-item height="64" justify-center pa-0>
         <v-list-item-avatar>
-          <v-img src="@/assets/image/손흥민.jpg" v-if="userInfo.image" />
+          <v-img
+            :src="require('@/assets/image/user/' + userInfo.image)"
+            v-if="userInfo.image"
+          />
           <v-icon v-else>mdi-account-circle</v-icon>
         </v-list-item-avatar>
         <v-list-item-content pa-0>

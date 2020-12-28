@@ -17,6 +17,12 @@ public interface TeamService {
 	public void addTeam(Team team, MultipartFile file, String path, TeamMember teamMember) throws SQLException;
 	//FT03
 	public String checkDupleTeamName(String teamName) throws SQLException;
+	//FT05
+	public Team showTeamInfo(int teamId) throws SQLException;
+	//FT06
+	public void updateTeamInfo(Team team, MultipartFile file, String beforeUrl, String path) throws SQLException;
+	//FT07
+	public void deleteTeam(int teamId) throws SQLException;
 	//T006: 팀 검색
 	public List<Team> searchTeams(HashMap<String, String> searchCon) throws SQLException;
 	//T006-1: 팀 필터 검색

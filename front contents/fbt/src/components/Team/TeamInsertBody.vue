@@ -48,12 +48,11 @@
                 <!-- 팀엠블럼 -->
                 <v-row class="pt-6">
                   <v-file-input
-                    class="mx-15"
+                    class="mx-7 pr-8"
                     label="팀 엠블럼"
                     placeholder="팀 엠블럼 이미지를 업로드해주세요"
                     dense
-                    prepend-icon=""
-                    prepend-inner-icon="mdi-camera"
+                    prepend-icon="mdi-camera"
                     accept="image/png, image/jpeg, image/jpg"
                     show-size
                     :rules="[rules.image]"
@@ -218,7 +217,7 @@
 <script>
 import MapVue from "@/components/Map/Map.vue";
 export default {
-  name: "team-insert",
+  name: "team-insert-body",
   components: {
     "map-vue": MapVue
   },
@@ -365,12 +364,7 @@ export default {
         .catch(error => {
           console.log(error);
           alert("팀 등록에 실패했습니다.");
-        })
-        .finally(() => {
-          alert("다시 로그인해주세요");
-          sessionStorage.removeItem("userInfo");
-          location.href = this.$http + "/loginSignin";
-        })
+        });
     }
   }
 };

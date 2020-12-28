@@ -69,7 +69,6 @@ public class TeamServiceImpl implements TeamService{
 	@Transactional
 	public void addTeam(Team team, MultipartFile file, String path, TeamMember teamMember) throws SQLException {
 		String fileName = "";
-		System.out.println(teamMember.getUser());
 		// 파일 업로드 & 저장
 		if(file != null) {
 			// 파일명 양식: teamName.확장자 
@@ -100,17 +99,57 @@ public class TeamServiceImpl implements TeamService{
 	}
 	
 	//FT03
+	@Override
 	public String checkDupleTeamName(String teamName) throws SQLException {
 		return teamDAO.checkDupleTeamName(teamName);
 	}
 	
 	//FT04
-	@Override
+	@Override 
 	public List<Team> searchTeamsByFilter(TeamFilter teamFilter) throws SQLException {
 		List<Team> teams = teamDAO.searchTeamsByFilter(teamFilter);
 		return teams;
 	}
 	
+	//FT05
+	@Override
+	public Team showTeamInfo(int teamId) throws SQLException {
+		return teamDAO.showTeamInfo(teamId);
+	}
+	
+	//FT06
+	@Override
+	@Transactional
+	public void updateTeamInfo(Team team, MultipartFile file, String beforeUrl, String path) throws SQLException {
+		String fileName = "";
+		//1. 이미지를 수정하는지 확인한다
+		if(beforeUrl != null) {
+			// 수정한다면 그리고 기존 url이 기본 이미지가 아니라면 기존 이미지를 삭제한다
+			File img = new File(path + beforeUrl);
+			if(img.exists() && !beforeUrl.equals("emptyFC.svg")) img.delete();
+			// 기본이미지로 수정인지, 다른 이미지로 수정인지 확인한다
+			if(file != null) { // 다른 이미지라면 파일명을 양식(teamName.확장자)대로 하고 새로운 파일을 생성한다
+				String rawFileName = file.getOriginalFilename();
+				int idx = rawFileName.indexOf(".");
+				String extension = rawFileName.substring(idx, rawFileName.length());
+				fileName = team.getTeamName() + extension;
+				team.setEmblem(fileName);
+				try {
+					file.transferTo(new File(path+fileName)); //파일 생성
+				} catch (IllegalStateException | IOException e) {
+					System.out.println(e);
+				}
+			}
+			// 기본이미지라면 null로 받아왔기 때문에 그냥 넘어간다
+		}
+		teamDAO.updateTeamInfo(team);
+	}
+	
+	//FT07
+	@Override
+	public void deleteTeam(int teamId) throws SQLException {
+		teamDAO.deleteTeam(teamId);
+	}
 	
 	//TNN :
 	@Override

@@ -71,5 +71,7 @@ public interface MatchScheduleDAO {
 	public AvgScore getAvgTeamScore(int takerTeamId) throws SQLException;
 	// S021
 	public AvgScore getAvgEmpScore(String email) throws SQLException;
+	// S022
+	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException; 
 
 }

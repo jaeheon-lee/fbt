@@ -134,11 +134,11 @@
                 <v-img
                   class="mb-5"
                   :src="getEmbUrl(team)"
-                  aspect-ratio="1.2"
+                  aspect-ratio="1.6"
                   contain
                 />
               </v-col>
-              <v-col cols="4" class="my-0 py-0 pl-6 pt-2">
+              <v-col cols="4" class="my-0 py-0 pl-6">
                 <!-- 홈팀 이름 -->
                 <v-row> 팀명 : {{ team.teamName }} </v-row>
                 <v-row class="my-2"> 활동지역: {{ team.area }} </v-row>
@@ -152,7 +152,7 @@
                   class="mt-5"
                   color="#6920A3"
                   @click="controlNickInsert(i)"
-                  v-if="chechTeamMember(team)"
+                  v-if="checkTeamMember(team)"
                   >팀원 신청</v-btn
                 >
                 <v-btn class="mt-5" color="#6920A3" disabled v-else
@@ -318,7 +318,8 @@ export default {
           alert("신청에 실패했습니다.");
         })
         .finally(() => {
-          this.activeNickName = false;
+          this.arrangeFilter();
+          this.activeNickName = null;
           this.nickName = null;
         })
     },
@@ -335,7 +336,7 @@ export default {
       if (team) {
         return require("@/assets/image/emblem/" + team.emblem);
       } else {
-        return require("@/assets/image/emblem/emptyFC.png");
+        return require("@/assets/image/emblem/emptyFC.svg");
       }
     },
     // 닉네임 창 여닫기
@@ -344,7 +345,7 @@ export default {
       else this.activeNickName = i;
     },
     // 팀원 신청 조절 메소드
-    chechTeamMember(team) {
+    checkTeamMember(team) {
       let teamMembers = team.teamMembers;
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       for (let i = 0; i < teamMembers.length; i++) {

@@ -533,4 +533,22 @@
 		WHERE emp_email = #{value}
 		GROUP BY emp_email
 	</select>
+	
+	<!-- S022: 향후 경기일정 가져오기 -->
+	<select id="showFutureSchedule" parameterType="integer" resultMap="matchScheduleRM">
+		SELECT
+		<include refid="matchScheduleColumn"/>,
+		t1.team_name home_team_name, t1.emblem home_emblem,
+		t2.team_name away_team_name, t2.emblem away_emblem
+		FROM match_schedule m
+		JOIN team t1
+		ON t1.team_id = m.home_team_id
+		JOIN team t2
+		ON t2.team_id = m.away_team_id
+		WHERE is_confirmed = 1
+		AND start_time > sysdate()
+		AND #{teamId} in (home_team_id, away_team_id)
+		ORDER BY start_time ASC
+		LIMIT 5
+	</select>
 </mapper>

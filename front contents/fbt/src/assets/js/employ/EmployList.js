@@ -197,7 +197,7 @@ export default {
       if (team) {
         return require("@/assets/image/emblem/" + team.emblem);
       } else {
-        return require("@/assets/image/emblem/emptyFC.png");
+        return require("@/assets/image/emblem/emptyFC.svg");
       }
     },
     // 상세정보 창 여닫기

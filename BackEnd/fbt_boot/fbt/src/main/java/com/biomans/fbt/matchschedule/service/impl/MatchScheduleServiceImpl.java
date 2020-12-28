@@ -381,6 +381,12 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	public void updateTeamScore(TeamScore teamScore) throws SQLException {
 		matchScheduleDAO.updateTeamScore(teamScore);
 	}
+	
+	//FS17
+	@Override
+	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException {
+		return matchScheduleDAO.showFutureSchedule(teamId);
+	}
 
 	
 	//S001: 일정 등록

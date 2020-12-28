@@ -166,7 +166,7 @@ export default {
       if (team) {
         if (team.emblem) return require("@/assets/image/emblem/" + team.emblem);
       } else {
-        return require("@/assets/image/emblem/emptyFC.png");
+        return require("@/assets/image/emblem/emptyFC.svg");
       }
     },
     // ============== 팀원 출결 입력 ====================== //

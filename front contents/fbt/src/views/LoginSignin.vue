@@ -82,6 +82,7 @@
                     hide-details
                     label="e-mail"
                     v-model="email"
+                    autofocus
                   ></v-text-field>
                 </span>
               </v-row>

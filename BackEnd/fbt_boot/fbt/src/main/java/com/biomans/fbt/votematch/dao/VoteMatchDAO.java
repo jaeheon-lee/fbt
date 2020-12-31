@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
@@ -16,6 +16,8 @@ public interface VoteMatchDAO {
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//V001-2
 	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
+	//V001-3
+	public VoteMatch showVoteMatchInfoById(int voteMatchId) throws SQLException;
 	//V002-1
 	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException;
 	//V002-2
@@ -43,8 +45,6 @@ public interface VoteMatchDAO {
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
 	//V012
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
-	//V013
-	public void inviteFriend(Invite invite) throws SQLException;
 	//V014-1
 	public void deleteVoteMatchByVoteMatchId(int voteMatchId) throws SQLException;
 	//V014-1

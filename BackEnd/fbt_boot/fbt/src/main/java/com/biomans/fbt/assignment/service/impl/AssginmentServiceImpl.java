@@ -91,7 +91,7 @@ public class AssginmentServiceImpl implements AssignmentService{
 	public void updateResStatus(Assignment assignment) throws SQLException {
 		AssignmentReservation assignRes = assignment.getAssignmentReservations().get(0);
 		// 수락이면 
-		if(assignRes.getReservationStatus() == 1) {
+		if(assignRes.getReservationStatus() == 2) {
 			//기존 투표를 지운다
 			int matchScheduleId = assignment.getMatchSchedule().getMatchScheduleId();
 			int teamGiverId = assignment.getTeamGiver().getTeamId();

@@ -9,7 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
@@ -33,6 +33,12 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"showVoteMatchInfoByScheduleId", searchCon);
 	}
+	//V001-3
+	@Override
+	public VoteMatch showVoteMatchInfoById(int voteMatchId) throws SQLException {
+		return sqlSession.selectOne(ns+"showVoteMatchInfoById", voteMatchId);
+	}
+	
 	//V002-1
 	@Override
 	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException {
@@ -104,12 +110,7 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"searchFriend", searchCon);
 	}
-	//V013
-	@Override
-	public void inviteFriend(Invite invite) throws SQLException {
-		sqlSession.insert(ns+"inviteFriend", invite);
-		
-	}
+	
 	//V014-1
 	@Override
 	public void deleteVoteMatchByVoteMatchId(int voteMatchId) throws SQLException {

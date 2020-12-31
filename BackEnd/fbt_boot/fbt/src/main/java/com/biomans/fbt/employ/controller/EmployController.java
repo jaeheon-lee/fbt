@@ -1,6 +1,7 @@
 package com.biomans.fbt.employ.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,16 +15,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.Employ;
 import com.biomans.fbt.domain.EmployResult;
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Team;
+import com.biomans.fbt.domain.User;
 import com.biomans.fbt.employ.service.EmployService;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
+import com.biomans.fbt.notice.service.NoticeService;
 import com.biomans.fbt.util.Filter;
+import com.biomans.fbt.util.NoticeFactor;
 
 @RestController
 @CrossOrigin(origins= {"*"}, maxAge=6000)
@@ -33,6 +39,9 @@ public class EmployController {
 	
 	@Autowired
 	private MatchScheduleService matchScheduleService;
+	
+	@Autowired
+	private NoticeService noticeService;
 	
 	//FE01
 	@PostMapping("/employ")
@@ -104,9 +113,21 @@ public class EmployController {
 	
 	//FE03
 	@PostMapping("/employ-result")
-	public ResponseEntity doApplyEmploy(@RequestBody EmployResult employRes) throws SQLException {
+	public ResponseEntity doApplyEmploy(@RequestBody Employ employ) throws SQLException {
 		try {
+			System.out.println(employ);
+			EmployResult employRes = employ.getEmployResults().get(0);
 			employService.doApplyEmploy(employRes);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			nf.setType("applyEmploy");
+			nf.setEmploy(employ);
+			nf.setEmployRes(employRes);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -119,7 +140,23 @@ public class EmployController {
 	public ResponseEntity updateResStatus(@RequestBody Employ employ) throws SQLException {
 		try {
 			EmployResult employRes = employ.getEmployResults().get(0);
-			employService.updateResStatus(employRes, employ);
+//			employService.updateResStatus(employRes, employ);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			String type = "";
+			int status = employRes.getEmpResultStatus();
+			if(status == 1) type = "acceptEmployApply";
+			else if(status == -1) type = "refuseEmployApply";
+			nf.setType(type);
+			nf.setTeamName(employ.getTeamGiver().getTeamName());
+			nf.setEmploy(employ);
+			nf.setEmployRes(employRes);
+			
+			
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -155,12 +192,40 @@ public class EmployController {
 	//FE12, FE13
 	@DeleteMapping("/employ-result/{employId}/{email}")
 	public ResponseEntity deleteEmployRes(@PathVariable String employId, 
-			@PathVariable String email) throws SQLException {
+			@PathVariable String email,
+			@RequestParam(value="takerTeamId") int takerTeamId,
+			@RequestParam(value="teamName") String teamName,
+			@RequestParam(value="takerEmail") String takerEmail,
+			@RequestParam(value="startTime") String startTime) throws SQLException {
 		try {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("email", email);
 			searchCon.put("employId", employId);
 			employService.deleteEmployRes(searchCon);
+			
+			Notice notice = new Notice();
+			Team teamGiver = null;
+			User giverUser = new User();
+			giverUser.setEmail(email);
+			Team teamTaker = new Team();
+			teamTaker.setTeamId(takerTeamId);
+			List<User> takerUsers = new ArrayList<User>();
+			User takerUser = new User();
+			takerUser.setEmail(takerEmail);
+			takerUsers.add(takerUser);
+			String content = email + "님이 ";
+			content += startTime.split(" ")[0] + "일자 경기 용병신청취소했습니다.";
+			String pageName = "employManager-cancelEmployApply";
+			
+			notice.setGiverTeam(teamGiver);
+			notice.setGiverUser(giverUser);
+			notice.setTakerTeam(teamTaker);
+			notice.setTakerUsers(takerUsers);
+			notice.setContent(content);
+			notice.setPageName(pageName);
+			//2-2. 알림을 보낸다.
+			noticeService.addNotice(notice);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

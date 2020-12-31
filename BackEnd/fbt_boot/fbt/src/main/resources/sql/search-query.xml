@@ -165,6 +165,13 @@
 		</where>
 	</select>
 	
+	<!-- M002-3 searchId로 매치 찾기 -->
+	<select id="getSearchById" parameterType="integer" resultMap="searchRM">
+		<include refid="showSearchFactorBasic"/>
+		<include refid="showSearchJoinBasic"/>
+		WHERE s.search_id = #{value}
+	</select>
+	
 	<!-- M003: 매치검색 -->
 	<select id="searchMatchByFilter" parameterType="filter" resultMap="searchRM">
 		<include refid="showSearchFactorBasic"/>,
@@ -265,7 +272,7 @@
 	<delete id="deleteSeachRes" parameterType="hashMap">
 		DELETE FROM search_reservation 
 		WHERE search_id = #{searchId}
-		AND team_id_taker = #{teamTakerId}
+		AND team_id_taker = #{teamIdTaker}
 	</delete>
 	
 	<!-- M010: 체크를 위한 정보 가져오가 -->
@@ -293,7 +300,7 @@
 	<!-- M011: 해당 신청 매치 상태 완료로 변경 -->
 	<update id="completeSearch" parameterType="hashMap">
 		UPDATE search_reservation
-		SET reservation_status = 2
+		SET reservation_status = 3
 		WHERE search_id = #{searchId}
 		AND team_id_taker = #{takerTeamId}
 	</update>

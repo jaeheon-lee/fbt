@@ -3,13 +3,53 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="NoticeMapper">
+	<!-- N001: 알림 추가 -->
 	<insert id="addNotice" parameterType="notice">
 		INSERT INTO
-		notice(content, date, team_id, team_member_id)
+		notice(giver_team_id, giver_email, taker_team_id, taker_email, vote_match_id, content, page_name, reg_date, is_read)
 		VALUES
-		<foreach collection="teamMembers" item="Integer" separator=",">
-			(#{content}, #{date}, #{team.teamId}, #{Integer})
+		<foreach collection="takerUsers" item="takerUser" separator=",">
+			(#{giverTeam.teamId}, #{giverUser.email}, #{takerTeam.teamId}, #{takerUser.email}, #{voteMatch.voteMatchId},
+			#{content}, #{pageName}, sysdate(), 0)
 		</foreach>
 	</insert>
+	
+	<!-- N002: 회원의 알림 가져오기 -->
+	<resultMap type="notice" id="noticeRM">
+		<id column="notice_id" property="noticeId"/>
+		<result column="content" property="content"/>
+		<result column="page_name" property="pageName"/>
+		<result column="reg_date" property="regDate"/>
+		<result column="is_read" property="isRead"/>
+		<association property="giverTeam" javaType="team">
+			<id column="giver_team_id" property="teamId"/>
+			<result column="giver_team_name" property="teamName"/>
+			<result column="giver_emblem" property="emblem"/>
+		</association>
+		<association property="giverUser" javaType="user">
+			<id column="giver_email" property="email"/>
+		</association>
+		<association property="takerTeam" javaType="team">
+			<id column="taker_team_id" property="teamId"/>
+		</association>
+		<association property="takerUser" javaType="user">
+			<id column="taker_email" property="email"/>
+		</association>
+		<association property="voteMatch" javaType="voteMatch">
+			<id column="vote_match_id" property="voteMatchId"/>
+		</association>
+	</resultMap>
+	<select id="showNoticesByUser" parameterType="string" resultMap="noticeRM">
+		SELECT
+		n.notice_id, n.giver_team_id, n.giver_email, n.taker_team_id, n.taker_email, n.vote_match_id, 
+		n.content, n.page_name, n.reg_date, n.is_read,
+		gt.team_name giver_team_name, gt.emblem giver_emblem
+		FROM notice n
+		LEFT OUTER JOIN team gt
+		ON n.giver_team_id = gt.team_id
+		WHERE taker_email = #{value}
+		AND n.reg_date BETWEEN DATE_ADD(NOW(),INTERVAL -1 MONTH ) AND NOW()
+		ORDER BY n.reg_date DESC
+	</select>
 
 </mapper>

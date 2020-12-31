@@ -15,7 +15,7 @@ public interface SearchService {
 	//FM02
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
 	//FM03
-	public void doApplySearch(SearchReservation searchRes) throws SQLException;
+	public void doApplySearch(Search search) throws SQLException;
 	//FM04, FM12
 	public List<Search> showRegisteredSearchByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//FM05, FM13

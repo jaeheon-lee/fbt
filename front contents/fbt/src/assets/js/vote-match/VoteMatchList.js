@@ -80,24 +80,68 @@ export default {
     // 투표하기 (FV05, FV06, FS05 ,FS06)
     doVote(vote, result) {
       // 필요한 정보를 담는다.
-      // eslint-disable-next-line prettier/prettier
-      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
+      // 지인 투표인지 확인하고 지인과 팀원 투표에 따라 변수를 달리 담는다
       let voteMatchResult = {
-        voteMatchId: vote.voteMatchId,
+        voteMatchId: null,
+        attendance: null,
         teamMember: {
-          teamMemberId: teamMemberId
+          teamMemberId: null
         },
-        attendance: result
+        user: {
+          email: null
+        }
       };
+      voteMatchResult.voteMatchId = vote.voteMatchId;
+      voteMatchResult.attendance = result;
+      if (!vote.isFriend) {
+        voteMatchResult.teamMember.teamMemberId = JSON.parse(
+          sessionStorage.getItem("userInfo")
+        ).teamMemberId;
+        voteMatchResult.user = null;
+      } else {
+        voteMatchResult.user.email = JSON.parse(
+          sessionStorage.getItem("userInfo")
+        ).email;
+        voteMatchResult.teamMember = null;
+      }
       vote.voteMatchResult = voteMatchResult;
+      // 알람에 필요한 정보를 받는다
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
 
-      // 수정인지 등록인지 판별한다
-      // eslint-disable-next-line prettier/prettier
-      let idx = vote.voteMatchResults.map(x=> x.teamMember.teamMemberId).indexOf(teamMemberId);
+      // 수정인지 등록인지 판별한다. 지인과 팀원에 따라
+      let idx = -1;
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo"))
+        .teamMemberId;
+      let email =
+        JSON.parse(sessionStorage.getItem("userInfo")).email + " (지인)";
+      console.log(vote);
+      if (vote.voteMatchResults) {
+        if (!vote.isFriend) {
+          //팀원이면
+          for (let i = 0; i < vote.voteMatchResults.length; i++) {
+            let member = vote.voteMatchResults[i].teamMember;
+            if (!member) continue;
+            if (member.teamMemberId == teamMemberId) {
+              idx = i;
+              break;
+            }
+          }
+        } else {
+          //지인이면
+          for (let i = 0; i < vote.voteMatchResults.length; i++) {
+            let user = vote.voteMatchResults[i].user;
+            if (!user) continue;
+            if (user.email == email) {
+              idx = i;
+              break;
+            }
+          }
+        }
+      }
       // 투표를 하지 않았다면 => 등록 (Fv05, FV06)
       if (idx == -1) {
         axios
-          .post("/vote-match-result", vote)
+          .post("/vote-match-result?teamName=" + teamName, vote)
           .then(() => {
             alert("투표가 완료됐습니다.");
           })
@@ -121,12 +165,14 @@ export default {
             this.refresh(vote.matchSchedule.matchScheduleId);
           });
       }
+      this.$emit("refresh");
     },
     // 투표 마감하기 FV07
     endVote(vote) {
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       vote.voteStatus = 1;
       axios
-        .put("/vote-match/1", vote)
+        .put("/vote-match/1?teamName=" + teamName, vote)
         .then(() => {
           alert("투표가 마감됐습니다.");
           this.sendingVote = vote;
@@ -151,50 +197,6 @@ export default {
         })
         .finally(() => {
           this.refresh(vote.matchSchedule.matchScheduleId);
-        });
-    },
-    // 지인찾기 FV09
-    searchFriend() {
-      axios
-        .get(
-          "/user/1?email=" +
-            this.inputEmail +
-            "&teamId=" +
-            JSON.parse(sessionStorage.getItem("userInfo")).teamId
-        )
-        .then(response => {
-          this.loading = true;
-          this.friends = response.data;
-        })
-        .catch(() => {
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    // 지인초대하기 FV09
-    inviteFriend(email, voteMatchId) {
-      let invite = {
-        teamMember: {
-          teamMemberId: JSON.parse(sessionStorage.getItem("userInfo"))
-            .teamMemberId
-        },
-        user: {
-          email: email
-        },
-        voteMatch: {
-          voteMatchId: voteMatchId
-        }
-      };
-      axios
-        .post("/vote-match/invite", invite)
-        .then(() => {
-          alert("초대가 완료됐습니다.");
-          this.dialogKakao = true;
-        })
-        .catch(() => {
-          alert("초대에 실패했습니다.");
         });
     },
     // 추가 인원받기: FV10

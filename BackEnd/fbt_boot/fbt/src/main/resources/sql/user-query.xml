@@ -88,7 +88,9 @@
 	<select id="LoginByEmail" parameterType="hashMap" resultMap="UserRM">
 		<include refid="Login"/>
 		WHERE u.email = #{email}
-		AND u.pass = #{pass}
+		<if test="pass != null">
+			AND u.pass = #{pass}
+		</if>
 	</select>
 	
 	<!-- U004: 회원정보출력 -->

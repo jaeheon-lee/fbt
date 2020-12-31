@@ -6,7 +6,12 @@ export default {
   name: "search",
   props: {
     menu: Number,
-    matchScheduleId: Number
+    matchScheduleId: Number,
+    // 알림에서 넘어올 때 변수
+    type: String,
+    pageR: Number,
+    registeredStageR: Number,
+    appliedStageR: Number
   },
   components: {
     "search-insert": SearchInsert,
@@ -25,7 +30,25 @@ export default {
   },
   created() {
     if (this.menu) this.page = this.menu;
+    if (this.type) this.navigatePage();
   },
   methods: {
+    navigatePage() {
+      switch (this.type) {
+        case "applySearch":
+        case "fillNumber":
+          this.page = this.pageR;
+          this.registeredStage = this.registeredStageR;
+          break;
+        case "acceptSearch":
+          this.page = this.pageR;
+          this.appliedStage = this.appliedStageR;
+          break;
+        case "refuseSearch":
+          this.page = this.pageR;
+          this.appliedStage = this.appliedStageR;
+          break;
+      }
+    }
   }
 };

@@ -21,6 +21,7 @@ const routes = [
   {
     path: "/voteMatch",
     name: "voteMatch",
+    props: true,
 
     component: () =>
       import(/* webpackChunkName: "vote" */ "../views/VoteMatch.vue")
@@ -158,6 +159,11 @@ const routes = [
     path: "/myPage",
     name: "myPage",
     component: () => import("@/views/MyPage.vue")
+  },
+  {
+    path: "/notice",
+    name: "notice",
+    component: () => import("@/views/Notice.vue")
   }
 ];
 

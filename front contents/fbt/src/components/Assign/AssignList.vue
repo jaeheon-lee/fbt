@@ -424,10 +424,16 @@
                 small
                 color="#6920A3"
                 v-if="registeredStage > 2"
-                @click="deleteAssign(assign)"
-                >목록 삭제</v-btn
+                @click="completeAssign(assign)"
+                >확정하기</v-btn
               >
             </v-row>
+            <v-dialog v-model="activeCheckComplete">
+              <check-complete-search
+                :assign="assign"
+                @close="closeDialog"
+              ></check-complete-search>
+            </v-dialog>
             <!-- 신청 매치  -->
             <v-row class="ma-0 pa-0 pb-3 justify-center">
               <!-- 인원파악신청 버튼: 3단계까지 -->

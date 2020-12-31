@@ -20,6 +20,8 @@ public interface SearchDAO {
 	public List<Search> showRegisteredSearchByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//M002-2
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
+	//M002-3
+	public Search getSearchById(int searchId) throws SQLException;
 	//M003
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException;
 	//M004

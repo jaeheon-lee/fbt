@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.biomans.fbt.domain.Invite;
+import com.biomans.fbt.domain.Search;
+import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
+import com.biomans.fbt.notice.dao.NoticeDAO;
+import com.biomans.fbt.notice.service.NoticeService;
+import com.biomans.fbt.teammember.dao.TeamMemberDAO;
+import com.biomans.fbt.teammember.service.TeamMemberService;
+import com.biomans.fbt.util.NoticeFactor;
 import com.biomans.fbt.votematch.service.VoteMatchService;
 
 @RestController
@@ -28,6 +34,12 @@ import com.biomans.fbt.votematch.service.VoteMatchService;
 public class VoteMatchController {
 	@Autowired
 	private VoteMatchService voteMatchService;
+	
+	@Autowired
+	private NoticeService noticeService;
+	
+	@Autowired 
+	private TeamMemberService teamMemberService;
 	
 	//FV01, FV02, FS02
 	@GetMapping("/vote-match/1/{teamId}")
@@ -40,6 +52,8 @@ public class VoteMatchController {
 			List<VoteMatch> list = voteMatchService.showVoteMatchInfoByTeam(searchCon);
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {
+			System.out.println(e);
+			e.printStackTrace();
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
@@ -62,9 +76,23 @@ public class VoteMatchController {
 	
 	//FV04
 	@PostMapping("/vote-match")
-	public ResponseEntity addVoteMatchAndSetting(@RequestBody VoteMatch voteMatch) throws SQLException{
+	public ResponseEntity addVoteMatchAndSetting(@RequestBody VoteMatch voteMatch,
+			@RequestParam(value="teamName") String teamName) throws SQLException{
 		try {
+			//1. 투표 등록한다
 			voteMatchService.addVoteMatchAndSetting(voteMatch);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			nf.setType("addVoteMatch");
+			nf.setTeamName(teamName);
+			nf.setVoteMatch(voteMatch);
+			List<TeamMember> members = teamMemberService.showMembersByTeamId(voteMatch.getTeam().getTeamId());
+			nf.setTeamMembers(members);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -74,10 +102,23 @@ public class VoteMatchController {
 	
 	//FV05
 	@PostMapping("/vote-match-result")
-	public ResponseEntity addAttendance(@RequestBody VoteMatch voteMatch) throws SQLException {
-		try {
-			VoteMatchResult voteMatchResult = voteMatch.getVoteMatchResult();		
-			voteMatchService.addAttendance(voteMatchResult, voteMatch);
+	public ResponseEntity addAttendance(@RequestBody VoteMatch voteMatch,
+			@RequestParam(value="teamName") String teamName) throws SQLException {
+		try {			
+			VoteMatchResult voteMatchResult = voteMatch.getVoteMatchResult();
+			System.out.println(voteMatchResult);
+			int searchId =  voteMatchService.addAttendance(voteMatchResult, voteMatch);
+			if(searchId != 0 ) {
+				NoticeFactor nf = new NoticeFactor();
+				nf.setType("fillNumber");
+				nf.setTeamName(teamName);
+				nf.setVoteMatch(voteMatch);
+				Search search = new Search();
+				search.setSearchId(searchId);
+				nf.setSearch(search);
+				//2-2. 알림을 보낸다.
+				noticeService.addNoticeByCase(nf);
+			}
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -99,10 +140,26 @@ public class VoteMatchController {
 	
 	//FV07
 	@PutMapping("/vote-match/1")
-	public ResponseEntity endVoteMatch(@RequestBody VoteMatch voteMatch) throws SQLException {
+	public ResponseEntity endVoteMatch(@RequestBody VoteMatch voteMatch,
+			@RequestParam(value="teamName", required = false) String teamName) throws SQLException {
 		try {
+			//1. 투표를 마감한다.
+			//1-1. 마감이라는 것을 표시
 			int type = 0;
-			voteMatchService.updateVoteMatch(voteMatch, type);
+			//1-2. 마감하기
+			voteMatchService.updateVoteMatch(voteMatch, type, teamName);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			nf.setType("endVoteMatch");
+			nf.setTeamName(teamName);
+			nf.setVoteMatch(voteMatch);
+			List<TeamMember> members = teamMemberService.showMembersByTeamId(voteMatch.getTeam().getTeamId());
+			nf.setTeamMembers(members);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -123,16 +180,6 @@ public class VoteMatchController {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
-	//FV09
-	@PostMapping("/vote-match/invite")
-	public ResponseEntity inviteFriend(@RequestBody Invite invite) throws SQLException{
-		try {
-			voteMatchService.inviteFriend(invite);
-			return new ResponseEntity(HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
 	
 	//FV10
 	@PutMapping("/vote-match-setting")
@@ -146,10 +193,26 @@ public class VoteMatchController {
 	}
 	//FV14
 	@PutMapping("/vote-match/2")
-	public ResponseEntity updateVoteMatch(@RequestBody VoteMatch voteMatch) throws SQLException {
+	public ResponseEntity updateVoteMatch(@RequestBody VoteMatch voteMatch,
+			@RequestParam(value="teamName", required=false) String teamName) throws SQLException {
 		try {
+			//1. 투표를 수정한다
+			//1-1. 수정이라는 것을 표시
 			int type = 1;
-			voteMatchService.updateVoteMatch(voteMatch, type);
+			//1-2. 수정한다.
+			voteMatchService.updateVoteMatch(voteMatch, type, teamName);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			nf.setType("updateVoteMatch");
+			nf.setTeamName(teamName);
+			nf.setVoteMatch(voteMatch);
+			List<TeamMember> members = teamMemberService.showMembersByTeamId(voteMatch.getTeam().getTeamId());
+			nf.setTeamMembers(members);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -169,6 +232,19 @@ public class VoteMatchController {
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//FV01, FV02, FS02
+	@GetMapping("/vote-match/4/{voteMatchId}")
+	public ResponseEntity showVoteMatchInfoByTeam(@PathVariable int voteMatchId) throws SQLException {
+		try {
+			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoById(voteMatchId);
+			return new ResponseEntity(voteMatch, HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			e.printStackTrace();
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}

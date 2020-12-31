@@ -14,18 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
+import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchSetting;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
+import com.biomans.fbt.notice.dao.NoticeDAO;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.search.service.SearchService;
 import com.biomans.fbt.team.dao.TeamDAO;
 import com.biomans.fbt.teammember.dao.TeamMemberDAO;
 import com.biomans.fbt.util.Filter;
+import com.biomans.fbt.util.NoticeFactor;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
 @Service
@@ -37,13 +41,10 @@ public class SearchServiceImpl implements SearchService{
 	private MatchScheduleDAO matchScheduleDAO;
 	
 	@Autowired 
-	public VoteMatchDAO voteMatchDAO;
+	private VoteMatchDAO voteMatchDAO;
 	
 	@Autowired
-	public TeamDAO teamDAO;
-	
-	@Autowired
-	public TeamMemberDAO teamMemberDAO;
+	private TeamDAO teamDAO;
 
 	//FM01
 	@Override
@@ -71,7 +72,8 @@ public class SearchServiceImpl implements SearchService{
 	
 	//FM03
 	@Override
-	public void doApplySearch(SearchReservation searchRes) throws SQLException {
+	public void doApplySearch(Search search) throws SQLException {
+		SearchReservation searchRes = search.getSearchReservations().get(0);
 		searchDAO.doApplySearch(searchRes);
 	}
 	
@@ -208,9 +210,11 @@ public class SearchServiceImpl implements SearchService{
 		con.put("takerTeamId", takerTeamId);
 		con.put("matchScheduleId", matchScheduleId);
 		matchScheduleDAO.addAwayTeam(con);
-		// 매치글 삭제
-		int searchId = search.getSearchId();
-		searchDAO.deleteSearch(searchId);
+		// 매치 확정
+		HashMap<String, String> searchCon = new HashMap<String, String>();
+		searchCon.put("takerTeamId", takerTeamId+"");
+		searchCon.put("searchId", search.getSearchId()+"");
+		searchDAO.completeSearch(searchCon);
 	}
 
 	//FM17

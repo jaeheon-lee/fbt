@@ -153,6 +153,9 @@
 			<if test="isApply == 1">
 				ar.reservation_status = #{reservationStatus}
 				AND ar.team_id_taker = #{teadTakerId}
+				<if test="reservationStatus == 0">
+					AND due_date > sysdate()
+				</if>
 			</if>
 		</where>
 	</select>
@@ -261,7 +264,6 @@
 		due_date = #{dueDate},
 		content = #{content}
 		WHERE assignment_id = #{assignmentId};
-
 	</update>
 	
 </mapper>

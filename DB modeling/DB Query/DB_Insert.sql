@@ -25,7 +25,7 @@ INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main
 INSERT INTO user(email, pass, name, phone_num, user_reg_date, recent_login, main_foot, position, height, weight, was_pro, gender, born_date, area, image, api_key, api_type) VALUES('wpdud94@naver.com', '12345678', '강제영', '010-5043-5765', '2020-12-05 16:08:55', '2020-12-05 16:08:55', '오른발', 'DF', '171', '70', '0', '0', '1995-06-01', NULL, NULL, '1549194656', '0');
 
 -- team
-INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('왕십리FC','왕십리FC201018.png','서울 성동구','성동구 구장','빨강',1,'2016-01-01',sysdate(),'1234','기업');
+INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('왕십리FC','왕십리FC.png','서울 성동구','성동구 구장','빨강',1,'2016-01-01',sysdate(),'1234','기업');
 INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('답십리FC','답십리FC201018.png','서울 성동구','응봉동 구장','파랑',0,'2017-01-01',sysdate(),'5678','하나');
 INSERT INTO team(team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, team_reg_date, account, bank) VALUES('대구FC','대구FC201018.jpg','대구 달서구','달서구 구장','초록',0,'2018-01-01',sysdate(),'2345','기업');
 
@@ -132,9 +132,8 @@ insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, e
 insert into vote_match_result(vote_match_result_id, attendance, vote_match_id, email) values(11, 1,8,'bioman7@gmail.com');
 
 
--- invite
-insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman16@gmail.com', 1);
-insert into invite(team_member_id, email, vote_match_id) values('1-bioman1@gmail.com', 'bioman17@gmail.com', 1);
+-- notice
+
 
 -- search
 INSERT INTO

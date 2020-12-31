@@ -1,6 +1,7 @@
 package com.biomans.fbt.search.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +22,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
+import com.biomans.fbt.domain.TeamMember;
+import com.biomans.fbt.domain.User;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
+import com.biomans.fbt.notice.service.NoticeService;
 import com.biomans.fbt.search.service.SearchService;
+import com.biomans.fbt.teammember.service.TeamMemberService;
 import com.biomans.fbt.util.Filter;
+import com.biomans.fbt.util.NoticeFactor;
 
 @RestController
 @CrossOrigin(origins= {"*"}, maxAge=6000)
@@ -38,6 +45,12 @@ public class SearchController {
 	
 	@Autowired
 	private MatchScheduleService matchScheduleService;
+	
+	@Autowired
+	private NoticeService noticeService;
+	
+	@Autowired 
+	private TeamMemberService teamMemberService;
 	
 	//FM01
 	@PostMapping("/search")
@@ -63,9 +76,21 @@ public class SearchController {
 	}
 	//FM03
 	@PostMapping("/search-reservation")
-	public ResponseEntity doApplySearch(@RequestBody SearchReservation searchRes) throws SQLException {
+	public ResponseEntity doApplySearch(@RequestBody Search search,
+			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {
-			searchService.doApplySearch(searchRes);
+			searchService.doApplySearch(search);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			nf.setType("applySearch");
+			nf.setTeamName(teamName);
+			nf.setSearch(search);
+			nf.setSearchRes(search.getSearchReservations().get(0));
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -133,10 +158,26 @@ public class SearchController {
 	
 	//FM08, FM09, FM11
 	@PutMapping("/search-reservation/1")
-	public ResponseEntity updateResStatus(@RequestBody Search search) throws SQLException {
+	public ResponseEntity updateResStatus(@RequestBody Search search,
+			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {
 			SearchReservation searchRes = search.getSearchReservations().get(0);
 			searchService.updateResStatus(search, searchRes);
+			
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			String type = "";
+			int status = searchRes.getReservationStatus();
+			if(status == 1) type = "acceptSearch";
+			else if(status == -1) type = "refuseSearch";
+			nf.setType(type);
+			nf.setTeamName(teamName);
+			nf.setSearch(search);
+			nf.setSearchRes(searchRes);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -159,9 +200,28 @@ public class SearchController {
 	
 	//FM15
 	@PutMapping("/search/2")
-	public ResponseEntity completeSearch(@RequestBody Search search) throws SQLException {
+	public ResponseEntity completeSearch(@RequestBody Search search,
+			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {
 			searchService.completeSearch(search);
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			SearchReservation searchRes = new SearchReservation();
+			for(SearchReservation sr : search.getSearchReservations()) {
+				if(sr.getReservationStatus() == 2) {
+					searchRes = sr;
+					break;
+				}
+			}
+			NoticeFactor nf = new NoticeFactor();
+			String type = "completeSearch";
+			int status = searchRes.getReservationStatus();
+			nf.setType(type);
+			nf.setTeamName(teamName);
+			nf.setSearch(search);
+			nf.setSearchRes(searchRes);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -172,12 +232,38 @@ public class SearchController {
 	//FM17
 	@DeleteMapping("/search-reservation/{searchId}/{teamId}")
 	public ResponseEntity deleteSeachRes(@PathVariable int searchId,
-			@PathVariable int teamId) throws SQLException {
+			@PathVariable int teamId,
+			@RequestParam(value="teamName") String teamName,
+			@RequestParam(value="msgTeamTakerId") int msgTeamTakerId,
+			@RequestParam(value="msgTaker") String msgTaker) throws SQLException {
 		try {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("searchId", searchId);
 			searchCon.put("teamIdTaker", teamId);
+			System.out.println(searchCon);
 			searchService.deleteSeachRes(searchCon);
+			
+			Notice notice = new Notice();
+			Team teamGiver = new Team();
+			teamGiver.setTeamId(teamId);
+			Team teamTaker = new Team();
+			teamTaker.setTeamId(msgTeamTakerId);
+			List<User> takerUsers = new ArrayList<User>();
+			User takerUser = new User();
+			String email = msgTaker.split("-")[1];
+			takerUser.setEmail(email);
+			takerUsers.add(takerUser);
+			String content = teamName + "에서 ";
+			content += "인원파악취소을 했습니다.";
+			String pageName = "search-cancelSearchApply";
+			
+			notice.setGiverTeam(teamGiver);
+			notice.setTakerTeam(teamTaker);
+			notice.setTakerUsers(takerUsers);
+			notice.setContent(content);
+			notice.setPageName(pageName);
+			//2-2. 알림을 보낸다.
+			noticeService.addNotice(notice);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

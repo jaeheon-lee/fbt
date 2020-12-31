@@ -153,8 +153,9 @@ export default {
       selectedSearch.searchReservations.push(searchRes);
       // eslint-disable-next-line prettier/prettier
       selectedSearch.matchSchedule.writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       axios
-        .put("/search-reservation/1", selectedSearch)
+        .put("/search-reservation/1?teamName=" + teamName, selectedSearch)
         .then(() => {
           axios
             .put("/search-reservation/2", selectedSearch)
@@ -176,8 +177,9 @@ export default {
       searchRes.reservationStatus = -1;
       selectedSearch.searchReservations = [];
       selectedSearch.searchReservations.push(searchRes);
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       axios
-        .put("/search-reservation/1", selectedSearch)
+        .put("/search-reservation/1?teamName=" + teamName, selectedSearch)
         .then(() => {
           this.refreshRegistered();
           if (i == 0) alert("인원파악신청을 거절했습니다.");
@@ -205,8 +207,22 @@ export default {
     // FM17
     deleteSearchRes(search) {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
+      let msgTeamTakerId = search.teamGiver.teamId;
+      let msgTaker = search.teamMember.teamMemberId;
       axios
-        .delete("/search-reservation/" + search.searchId + "/" + teamId)
+        .delete(
+          "/search-reservation/" +
+            search.searchId +
+            "/" +
+            teamId +
+            "?teamName=" +
+            teamName +
+            "&msgTeamTakerId=" +
+            msgTeamTakerId +
+            "&msgTaker=" +
+            msgTaker
+        )
         .then(() => {
           this.refreshApplied();
           alert("취소했습니다.");
@@ -234,8 +250,10 @@ export default {
           teamMemberId: teamMemberId
         }
       };
+      search.searchReservations[0] = searchRes;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       axios
-        .post("/search-reservation/", searchRes)
+        .post("/search-reservation?teamName=" + teamName, search)
         .then(() => {
           this.$parent.$parent.page = 4;
           alert("인원파악신청을 완료했습니다.");

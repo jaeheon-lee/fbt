@@ -13,7 +13,7 @@
         <v-col cols="12" class="text-left" style="font-size: 0.75em">
           <span
             class="mr-2"
-            v-if="vote.voteStatus == 1 && vote.matchSchedule.isConfirmed == 0"
+            v-if="vote.voteStatus == 0 && vote.matchSchedule.isConfirmed == 0"
             >투표 마감일시 : {{ vote.dueDate | extractSecond }}</span
           >
           <span
@@ -35,17 +35,19 @@
         <v-col
           offset="2"
           cols="2"
-          class="pt-1 text-center"
+          class="pt-1 text-center justify-center"
           style="font-size: 1.5em"
         >
           <v-img
-            class="mb-5"
+            class="mb-5 justify-center"
             :src="getEmbUrl(vote.matchSchedule.homeTeam)"
             aspect-ratio="1.2"
             contain
           />
           <!-- 홈팀 이름 -->
-          {{ vote.matchSchedule.homeTeam.teamName }}
+          <span>
+            {{ vote.matchSchedule.homeTeam.teamName }}
+          </span>
         </v-col>
         <!-- 경기 간략 정보 -->
         <v-col id="match-info" cols="4" md="4" class="pt-0 text-center">
@@ -80,13 +82,15 @@
         <!-- 어웨이 엠블럼 -->
         <v-col cols="2" class="pt-1 text-center" style="font-size: 1.5em">
           <v-img
-            class="mb-5"
+            class="ml-2 mb-5"
             :src="getEmbUrl(vote.matchSchedule.awayTeam)"
             aspect-ratio="1.2"
             contain
           />
           <!-- 어웨이 팀이름 -->
-          {{ vote.matchSchedule.awayTeam | showAwayTeamName }}
+          <span class="ml-2">
+            {{ vote.matchSchedule.awayTeam | showAwayTeamName }}
+          </span>
         </v-col>
       </v-row>
       <!-- 기본 정보 끝 -->
@@ -193,7 +197,7 @@
       </div>
       <!-- 경기상세 정보 끝 -->
       <!--투표 참/불 버튼 - 투표페이지-->
-      <v-row class="ma-0 pa-0 mt-0" v-if="header == 'voteMatch'">
+      <v-row class="ma-0 pa-0 mt-0" v-if="header.includes('voteMatch')">
         <v-col offset="2" cols="8">
           <!-- 투표 버튼 -->
           <vote-btn :vote="vote" @do-vote="doVote"></vote-btn>

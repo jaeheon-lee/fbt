@@ -5,7 +5,8 @@ export default {
     "vote-match-list": VoteMatchList
   },
   props: {
-    isManager: Boolean
+    isManager: Boolean,
+    isEndR: Boolean
   },
   data() {
     return {
@@ -14,6 +15,9 @@ export default {
       // 투표 중과 투표 완료 구분 변수 동시에 버튼에 색 입히기
       isEnd: false
     };
+  },
+  created() {
+    if (this.isEndR) this.isEnd = this.isEndR;
   },
   mounted() {
     this.showVoteInfo();

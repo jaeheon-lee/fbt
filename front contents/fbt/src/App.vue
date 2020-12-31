@@ -51,28 +51,19 @@
       <v-footer app class="pa-0 mx-0">
         <v-container pa-0 mx-0 fluid>
           <v-row justify="center" class="ma-0">
-            <v-menu top :offset-y="offset">
-              <template v-slot:activator="{ on, attrs }">
-                <div col cols="2" class="footerWrap" v-bind="attrs" v-on="on">
-                  <div class="footerIcon">
-                    <img src="./assets/image/알림.svg" />
-                  </div>
-                  <div class="footerCon">
-                    <span>알림</span>
-                  </div>
-                </div>
-              </template>
-              <v-list style="width: 100%; max-width: 300px;">
-                <v-list-item
-                  style=" overflow: hidden;text-overflow: ellipsis; "
-                  v-for="(notice, index) in notices"
-                  :key="index"
-                  @click.stop
-                >
-                  <v-list-item-title>{{ notice.title }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <div
+              col
+              cols="2"
+              class="footerWrap"
+              @click="$router.push({ name: 'notice' })"
+            >
+              <div class="footerIcon">
+                <img src="./assets/image/알림.svg" />
+              </div>
+              <div class="footerCon">
+                <span>알림</span>
+              </div>
+            </div>
             <div
               col
               cols="2"
@@ -197,7 +188,7 @@ export default {
           { title: "팀 찾기", target: "searchTeam" },
           { title: "팀 만들기", target: "teamInsert" },
           { title: "용병", target: "employ" },
-          { title: "전체 알림" },
+          { title: "전체 알림", target: "notice" },
           { title: "마이페이지", target: "myPage" }
         ]
       }
@@ -295,5 +286,9 @@ export default {
 
 .noShow {
   display: none;
+}
+
+.footerWrap {
+  cursor: pointer;
 }
 </style>

@@ -16,7 +16,11 @@
           class="float-right"
           style="cursor:pointer;"
           @click="controlFriendList(i)"
-          v-if="vote.voteMatchSetting.friendEmp == 1 && vote.voteStatus == 0"
+          v-if="
+            vote.voteMatchSetting.friendEmp == 1 &&
+              vote.voteStatus == 0 &&
+              !vote.isFriend
+          "
           >지인 초대하기</span
         >
       </v-col>
@@ -85,26 +89,29 @@
             >
           </v-col>
           <v-col cols="1" class="pa-0 pt-1">
-            <i class="material-icons md-18" @click="activeFriendList == null"
+            <i class="material-icons md-18" @click="activeFriendList = null"
               >close</i
             >
           </v-col>
         </v-row>
         <v-row class="text-center">
-          <v-col offset="2" cols="3">
+          <v-col offset="2" cols="4">
             e-mail
           </v-col>
           <v-col cols="2">
             이름
           </v-col>
         </v-row>
+        <v-row class="mx-3 mb-3">
+          <v-divider color="white"></v-divider>
+        </v-row>
         <v-row
           id="friend-list"
-          class="text-center"
+          class="text-center my-1"
           v-for="(friend, j) in friends"
           :key="j"
         >
-          <v-col offset="2" cols="3">
+          <v-col offset="2" cols="4">
             {{ friend.email }}
           </v-col>
           <v-col cols="2">
@@ -146,6 +153,58 @@ export default {
   },
   computed: {},
   methods: {
+    // 지인찾기 FV09
+    searchFriend() {
+      this.$axios
+        .get(
+          "/user/1?email=" +
+            this.inputEmail +
+            "&teamId=" +
+            JSON.parse(sessionStorage.getItem("userInfo")).teamId
+        )
+        .then(response => {
+          this.loading = true;
+          this.friends = response.data;
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    // 지인초대하기 FV09
+    inviteFriend(email, voteMatchId) {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      let content = userInfo.name + "님이 " + userInfo.teamName + "의 경기에 초청했습니다.";
+      content += " 클릭하여 확인해주세요.";
+      let notice = {
+        giverTeam: {
+          teamId: userInfo.teamId
+        },
+        giverUser: {
+          email: userInfo.email
+        },
+        takerUser: {
+          email: email
+        },
+        voteMatch: {
+          voteMatchId: voteMatchId
+        },
+        content: content
+      };
+      notice.takerUsers = [];
+      notice.takerUsers.push(notice.takerUser);
+      this.$axios
+        .post("/notice/1", notice)
+        .then(() => {
+          alert("초대가 완료됐습니다.");
+          this.dialogKakao = true;
+        })
+        .catch(() => {
+          alert("초대에 실패했습니다.");
+        });
+    },
     // 지인이면 이메일, 팀원이면 닉네임으로 출력하기
     showNickEmail(result) {
       if (result.teamMember) {

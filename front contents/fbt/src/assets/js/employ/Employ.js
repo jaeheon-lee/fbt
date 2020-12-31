@@ -5,7 +5,12 @@ export default {
   name: "employ",
   props: {
     menu: Number,
-    matchScheduleId: Number
+    matchScheduleId: Number,
+    // 알림에서 넘어올 때 변수
+    type: String,
+    pageR: Number,
+    registeredStageR: Number,
+    appliedStageR: Number
   },
   components: {
     "search-employ": SearchEmploy,
@@ -22,6 +27,11 @@ export default {
   },
   created() {
     if (this.menu) this.page = this.menu;
+    if (this.type) {
+      this.page = this.pageR;
+      this.registeredStage = this.registeredStageR;
+      this.appliedStage = this.appliedStageR;
+    }
   },
   methods: {}
 };

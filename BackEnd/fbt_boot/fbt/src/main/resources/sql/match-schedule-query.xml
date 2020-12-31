@@ -50,7 +50,7 @@
 		ON m.away_team_id = t2.team_id
 		WHERE (m.home_team_id = #{teamId} OR m.away_team_id = #{teamId})
 		AND (m.start_time >= #{startTime} 
-		AND #{endTime} >= m.start_time)
+		AND  date_add(#{endTime}, interval +1 day)>= m.start_time)
 		AND m.is_confirmed = 1
 	</select>
 	<!-- S005-2: 등록된 개인 경기 일정 기간 별 출력 -->
@@ -66,7 +66,7 @@
 		ON (m.home_team_id = t.team_id or m.away_team_id = t.team_id)
 		WHERE tm.email = #{email}
 		AND (start_time >= #{startTime} 
-		AND #{endTime} >= start_time)
+		AND date_add(#{endTime}, interval +1 day) >= start_time)
 		AND is_confirmed = 1
 	</select>
 	<!-- 2. 용병으로 뛰고 있는 모든 경기 일정 -->
@@ -81,7 +81,7 @@
 		WHERE er.email = #{email}
 		AND er.emp_result_status = 1
 		AND (start_time >= #{startTime} 
-		AND #{endTime} >= start_time)
+		AND date_add(#{endTime}, interval +1 day) >= start_time)
 		AND is_confirmed = 1
 	</select>
 	<!-- 3. 지인으로 뛰고 있는 모든 경기 일정 -->
@@ -96,7 +96,7 @@
 		WHERE vr.email = #{email}
 		AND vr.attendance = 1
 		AND (start_time >= #{startTime} 
-		AND #{endTime} >= start_time)
+		AND date_add(#{endTime}, interval +1 day) >= start_time)
 		AND m.is_confirmed = 1
 	
 	</select>

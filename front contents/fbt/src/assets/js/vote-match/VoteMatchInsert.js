@@ -134,11 +134,12 @@ export default {
   methods: {
     // 경기 투표 등록(FV04)
     submitVoteMatch() {
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       this.voteMatch.matchSchedule = this.matchSchedule;
       this.voteMatch.voteMatchSetting = this.voteMatchSetting;
       this.submitting = true;
       axios
-        .post("/vote-match", this.voteMatch)
+        .post("/vote-match?teamName=" + teamName, this.voteMatch)
         .then(() => {
           alert("등록이 완료됐습니다.");
           // 카카오 공유하기 기능 사용 여부를 묻는다.

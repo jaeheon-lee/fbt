@@ -118,6 +118,7 @@ export default {
         " " +
         this.matchSchedule.stadiumName;
     }
+    console.log(this.voteMatch);
   },
   mounted() {},
   computed: {
@@ -159,8 +160,9 @@ export default {
       this.vote.matchSchedule = this.matchSchedule;
       this.vote.voteMatchSetting = this.voteMatchSetting;
       this.submitting = true;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       axios
-        .put("/vote-match/2", this.voteMatch)
+        .put("/vote-match/2?teamName=" + teamName, this.voteMatch)
         .then(() => {
           alert("수정이 완료됐습니다.");
           // 카카오 공유하기 기능 사용 여부를 묻는다.
@@ -173,20 +175,6 @@ export default {
         .finally(() => {
           this.submitting = false;
         });
-    },
-    // 상대팀 유형 메소드
-    // 1: Radio를 통해 바꾸기 (자체 or 미정)
-    chooseAwayTeamTypeByRadio() {
-      if (this.awayTeamType == 0) this.matchSchedule.awayTeam.teamName = "미정";
-      if (this.awayTeamType == 1)
-        this.matchSchedule.awayTeam.teamName = this.matchSchedule.homeTeam.teamName;
-      this.matchSchedule.awayTeam.teamId = this.matchSchedule.homeTeam.teamId;
-    },
-    // 2: 상대팀명 검색을 통해 상대팀 지정하기(상대팀)
-    selectAwayTeam(teamId, teamName) {
-      this.matchSchedule.awayTeam.teamId = teamId;
-      this.matchSchedule.awayTeam.teamName = teamName;
-      this.dialogAwayTeam = false;
     },
     // 받은 date값 변환
     dateFomatter(i, date) {

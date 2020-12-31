@@ -108,9 +108,20 @@
 	<!-- V001-1: 팀별 투표 및 경기 일정 정보 -->
 	<select id="showVoteMatchInfoByTeam" parameterType="hashMap" resultMap="VoteMatchRM" >
 		<include refid="showVoteMatchInfo"/>
-		WHERE v.vote_status = #{voteStatus}
-		AND tm.team_id = #{teamId}
-		AND m.start_time > sysdate() 
+		<where>
+		tm.team_id = #{teamId}
+		AND m.start_time > sysdate()
+			<choose>
+				<when test="voteStatus == 0">
+					AND v.vote_status = #{voteStatus}
+					AND v.due_date > sysdate()
+				</when>
+				<otherwise>
+					AND (v.vote_status = #{voteStatus}
+						OR sysdate() > v.due_date)
+				</otherwise>
+			</choose>
+		</where>
 		ORDER BY v.due_date ASC
 	</select>
 	<!-- V001-2: 경기 일정 별 투표 및 경기 일정 정보 -->
@@ -118,6 +129,12 @@
 		<include refid="showVoteMatchInfo"/>
 		WHERE v.match_schedule_id = #{matchScheduleId}
 		AND v.team_id = #{teamId}
+	</select>
+	
+	<!-- V001-3: 아이디로 투표 및 경기 일정 정보 가져오기 -->
+	<select id="showVoteMatchInfoById" parameterType="integer" resultMap="VoteMatchRM">
+		<include refid="showVoteMatchInfo"/>
+		WHERE v.vote_match_id = #{value}
 	</select>
 	
 	
@@ -274,12 +291,6 @@
 		)
 		AND u.email like '%${email}%'
 	</select>
-	<!-- V013 : 지인초청하기 -->
-	<insert id="inviteFriend" parameterType="invite">
-		INSERT INTO
-		invite(team_member_id, email, vote_match_id)
-		VALUES(#{teamMember.teamMemberId}, #{user.email}, #{voteMatch.voteMatchId})
-	</insert>
 	<!-- V014-1 : 경기 투표 Id로 투표 삭제 -->
 	<delete id="deleteVoteMatchByVoteMatchId" parameterType="integer">
 		DELETE FROM vote_match

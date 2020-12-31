@@ -146,8 +146,25 @@ export default {
     // FE12 
     deleteEmployRes(employ) {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
+      let takerTeamId = employ.teamGiver.teamId;
+      let takerEmail = employ.teamMember.teamMemberId.split("-")[1];
+      let startTime = employ.matchSchedule.startTime;
+      let teamName = employ.teamGiver.teamName;
       axios
-        .delete("/employ-result/" + employ.employId + "/" + email)
+        .delete(
+          "/employ-result/" +
+            employ.employId +
+            "/" +
+            email +
+            "?takerTeamId=" +
+            takerTeamId +
+            "&teamName=" +
+            teamName +
+            "&takerEmail=" +
+            takerEmail +
+            "&startTime=" +
+            startTime
+        )
         .then(() => {
           this.showAppliedEmployByUser();
           alert("취소했습니다.");
@@ -158,6 +175,7 @@ export default {
     },
     // 용병신청하기(FE03)
     doApply(employ) {
+      console.log(employ);
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       let teamIdGiver = employ.teamGiver.teamId;
@@ -166,15 +184,16 @@ export default {
         alert("자기 팀글입니다.");
         return false;
       }
-      // let writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
       let employRes = {
         employId: employ.employId,
         user: {
           email: email
         }
       };
+      employ.employResults = [];
+      employ.employResults.push(employRes);
       axios
-        .post("/employ-result/", employRes)
+        .post("/employ-result?", employ)
         .then(() => {
           this.$parent.$parent.page = 2;
           alert("용병신청을 완료했습니다.");

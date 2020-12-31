@@ -37,6 +37,11 @@ public class SearchDAOImpl implements SearchDAO{
 	public List<Search> showRegisteredSearchAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showRegisteredSearchAppliedByTeam", searchCon);
 	}
+	//M002-3
+	@Override
+	public Search getSearchById(int searchId) throws SQLException {
+		return sqlSession.selectOne(ns+"getSearchById", searchId);
+	}
 	//M003
 	@Override
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException {

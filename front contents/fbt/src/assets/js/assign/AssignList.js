@@ -1,5 +1,6 @@
 import axios from "axios";
 import TeamInfo from "@/components/Team/TeamInfo.vue";
+import CheckCompleteSearch from "@/components/dialog/CheckCompleteSearch.vue";
 
 export default {
   name: "assign-list",
@@ -10,7 +11,8 @@ export default {
     whichBtnActive: Array
   },
   components: {
-    "team-info": TeamInfo
+    "team-info": TeamInfo,
+    "check-complete-search": CheckCompleteSearch
   },
   data() {
     return {
@@ -21,6 +23,8 @@ export default {
       activeTeamList: null, // 신청 팀리스트 토글
       activeTeamInfo: null, // 팀상세보기 토글
       activeRegisterTeam: null, // 등록팀 상세보기 토글
+
+      activeCheckComplete: false, // 팀 확정 전 의사묻는 다이어로그
 
       // get 변수
       loading: false,
@@ -95,6 +99,13 @@ export default {
         .get("/assignment/2/" + teamId + "/" + reservationStatus + "/" + isApply)
         .then(response => {
           this.assigns = response.data;
+          // 양도완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
+          if (this.registeredStage == 4) {
+            for (let i = 0; i < this.assigns.length; i++) {
+              // eslint-disable-next-line prettier/prettier
+              this.assigns[i].matchSchedule.homeTeam = this.assigns[i].assignmentReservations[0].teamTaker;
+            }
+          }
         })
         .catch(() => {
           this.errored = true;
@@ -127,6 +138,13 @@ export default {
         .catch(() => {
           alert("끌어올리기에 실패했습니다.");
         });
+    },
+    // FA16
+    completeAssign() {
+      this.activeCheckComplete = true;
+    },
+    closeDialog() {
+      this.activeCheckComplete = false;
     },
     // FA08
     acceptApply(assignmentRes, assign) {
@@ -162,8 +180,22 @@ export default {
     // FA14
     deleteAssignRes(assign) {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
+      let msgTeamTakerId = assign.teamGiver.teamId;
+      let msgTaker = assign.teamMember.teamMemberId;
       axios
-        .delete("/assign-reservation/" + assign.assignmentId + "/" + teamId)
+        .delete(
+          "/assign-reservation/" +
+            assign.assignmentId +
+            "/" +
+            teamId +
+            "?teamName=" +
+            teamName +
+            "&msgTeamTakerId=" +
+            msgTeamTakerId +
+            "&msgTaker=" +
+            msgTaker
+        )
         .then(() => {
           this.refreshApplied();
           alert("취소했습니다.");
@@ -174,6 +206,7 @@ export default {
     },
     // FA03
     doApply(assign) {
+      console.log(assign);
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let teamIdGiver = assign.teamGiver.teamId;
       // 자기글에 신청하면 다시 되돌린다
@@ -182,17 +215,21 @@ export default {
         return false;
       }
       let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       let assignmentRes = {
         assignmentId: assign.assignmentId,
         teamTaker: {
-          teamId: teamIdTaker
+          teamId: teamIdTaker,
+          teamName: teamName
         },
         teamMember: {
           teamMemberId: teamMemberId
         }
       };
+      assign.assignmentReservations = [];
+      assign.assignmentReservations.push(assignmentRes);
       axios
-        .post("/assignment-reservation/", assignmentRes)
+        .post("/assignment-reservation/", assign)
         .then(() => {
           this.$parent.$parent.page = 4;
           alert("양도신청을 완료했습니다.");
@@ -201,7 +238,7 @@ export default {
           alert("양도신청에 실패했습니다.");
         });
     },
-    //FM18
+    //FA15
     updateAssign(assign) {
       this.$router.push({
         name: "assignUpdate",

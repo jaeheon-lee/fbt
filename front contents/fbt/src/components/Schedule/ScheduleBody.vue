@@ -42,8 +42,8 @@
                 :event-overlap-mode="mode"
                 :event-overlap-threshold="30"
                 :event-color="getEventColor"
-                @change="getEvents"
-                @click:event="showMatchScheduleInfo"
+                @change="getEventsInit"
+                @click:event="showMatchScheduleInfoByClick"
                 width="100"
                 color="primary"
               ></v-calendar>
@@ -103,7 +103,8 @@
                   :votes="votes"
                   :awayVote="awayVote"
                   :header="sendingHeader"
-                  @refresh="showNotEndMatchInfo"
+                  @refresh="showMatchScheduleInfoByRefresh"
+                  @refresh-monthly="getEventFresh"
                 ></vote-match-list>
               </v-col>
             </v-row>

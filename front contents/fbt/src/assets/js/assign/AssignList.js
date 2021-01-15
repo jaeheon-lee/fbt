@@ -1,6 +1,6 @@
 import axios from "axios";
 import TeamInfo from "@/components/Team/TeamInfo.vue";
-import CheckCompleteSearch from "@/components/dialog/CheckCompleteSearch.vue";
+import CheckCompleteApply from "@/components/dialog/CheckCompleteApply.vue";
 
 export default {
   name: "assign-list",
@@ -12,7 +12,7 @@ export default {
   },
   components: {
     "team-info": TeamInfo,
-    "check-complete-search": CheckCompleteSearch
+    "check-complete-apply": CheckCompleteApply
   },
   data() {
     return {
@@ -25,6 +25,10 @@ export default {
       activeRegisterTeam: null, // 등록팀 상세보기 토글
 
       activeCheckComplete: false, // 팀 확정 전 의사묻는 다이어로그
+
+      // 완료된 팀 정보 관련 변수
+      acceptedTeamId: null,
+      acceptedTeamMemberId: null,
 
       // get 변수
       loading: false,
@@ -102,8 +106,15 @@ export default {
           // 양도완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
           if (this.registeredStage == 4) {
             for (let i = 0; i < this.assigns.length; i++) {
+              let index = this.assigns[i].assignmentReservations
+                .map(x => x.reservationStatus)
+                .indexOf(1);
               // eslint-disable-next-line prettier/prettier
-              this.assigns[i].matchSchedule.homeTeam = this.assigns[i].assignmentReservations[0].teamTaker;
+              this.assigns[i].matchSchedule.homeTeam = this.assigns[i].assignmentReservations[index].teamTaker;
+              // eslint-disable-next-line prettier/prettier
+              this.acceptedTeamId = this.assigns[i].assignmentReservations[index].teamTaker.teamId;
+              // eslint-disable-next-line prettier/prettier
+              this.acceptedTeamMemberId = this.assigns[i].assignmentReservations[index].teamMember.teamMemberId;
             }
           }
         })
@@ -160,6 +171,10 @@ export default {
         .catch(() => {
           alert("양도신청 수락에 실패했습니다.");
           this.refreshRegistered();
+        })
+        .finally(() => {
+          this.$parent.registeredStage = 4;
+          this.$parent.$parent.registeredStage = 4;
         });
     },
     //FA09
@@ -206,7 +221,6 @@ export default {
     },
     // FA03
     doApply(assign) {
-      console.log(assign);
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let teamIdGiver = assign.teamGiver.teamId;
       // 자기글에 신청하면 다시 되돌린다
@@ -214,7 +228,8 @@ export default {
         alert("자기글입니다.");
         return false;
       }
-      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo"))
+        .teamMemberId;
       let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       let assignmentRes = {
         assignmentId: assign.assignmentId,

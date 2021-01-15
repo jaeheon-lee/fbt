@@ -111,6 +111,7 @@
 		<where>
 		tm.team_id = #{teamId}
 		AND m.start_time > sysdate()
+		AND m.is_confirmed is NULL
 			<choose>
 				<when test="voteStatus == 0">
 					AND v.vote_status = #{voteStatus}
@@ -256,18 +257,23 @@
 		WHERE s.match_schedule_id = #{matchScheduleId}
 		AND sr.team_id_taker = #{takerTeamId}
 	</select>
-	<!-- V010: 투표 수정하기 -->
+	<!-- V010-1: id로 투표 수정하기 -->
 	<update id="updateVoteMatch" parameterType="voteMatch">
 		UPDATE vote_match
 		SET
-		vote_match_id = #{voteMatchId},
-		team_id = #{team.teamId},
-		match_schedule_id = #{matchSchedule.matchScheduleId},
-		memo = #{memo},
-		due_date = #{dueDate},
+		<if test="team != null or team.teamId != 0">
+			team_id = #{team.teamId},
+		</if>
+		<if test="memo != null">
+			memo = #{memo},
+		</if>
+		<if test="dueDate != null">
+			due_date = #{dueDate},
+		</if>
 		vote_status = #{voteStatus},
-		vote_reg_date = #{voteRegDate},
-		writer = #{writer}
+		<if test="writer != null">
+			writer = #{writer}
+		</if>
 		WHERE vote_match_id = #{voteMatchId};
 	</update>
 	<!-- V011 : 투표 설정 수정 -->
@@ -325,6 +331,13 @@
 			AND m.home_team_id = #{teamId}
 		</if>
 	</select>
+	<!-- V017: 실패된 팀 투표 삭제하기 -->
+	<delete id="deleteVoteMatchOfFailedTeam" parameterType="hashMap">
+		DELETE FROM vote_match
+		WHERE match_schedule_id = #{matchScheduleId}
+		AND team_id != #{takerTeamId}
+		AND team_id != #{giverTeamId}
+	</delete>
 	
 
 	

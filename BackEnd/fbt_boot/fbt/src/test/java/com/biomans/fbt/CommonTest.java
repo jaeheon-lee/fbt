@@ -1,6 +1,7 @@
 package com.biomans.fbt;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,29 +25,32 @@ import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.User;
+import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
+import com.biomans.fbt.matchschedule.service.MatchScheduleService;
 import com.biomans.fbt.util.Attendance;
 import com.biomans.fbt.util.Filter;
 
 @SpringBootTest
 class CommonTest {
 	
-	final String ns = "MatchScheduleMapper.";
+	final String ns = "VoteMatchMapper.";
 	
 	@Autowired
 	private SqlSession sqlSession;
+	
+	@Autowired
+	private MatchScheduleService matchScheduleService;
 
 	@Test
 	void contextLoads() throws ParseException {
-		HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
-		searchCon.put("matchScheduleId", 6);
-		searchCon.put("teamId", 1);
-//		MatchSchedule m = sqlSession.selectOne(ns+"showMatchScheduleById", 3);
-//		System.out.println(m.getAwayTeam());
-		MatchSchedule m = sqlSession.selectOne(ns+"showMatchScheduleResult", searchCon);
-		System.out.println(m.getEntries());
-		System.out.println(m.getMatchResult());
-		System.out.println(m.getTeamScores());
+		VoteMatch v = new VoteMatch();
+		v.setMatchScheduleId(1);
+		v.setTeamId(1);
+		List<VoteMatch> vlist = sqlSession.selectList(ns+"getVoteMatch", v);
+		for(VoteMatch voteMatch : vlist) {
+			System.out.println(voteMatch);
+		}
 	}
 
 }

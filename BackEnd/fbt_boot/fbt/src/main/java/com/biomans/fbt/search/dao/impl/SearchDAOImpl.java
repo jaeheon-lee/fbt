@@ -42,6 +42,11 @@ public class SearchDAOImpl implements SearchDAO{
 	public Search getSearchById(int searchId) throws SQLException {
 		return sqlSession.selectOne(ns+"getSearchById", searchId);
 	}
+	//M002-4
+	@Override
+	public Search getSearchSearchResById(int searchId) throws SQLException {
+		return sqlSession.selectOne(ns+"getSearchSearchResById", searchId);
+	}
 	//M003
 	@Override
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException {

@@ -159,6 +159,14 @@
 			</if>
 		</where>
 	</select>
+	<!-- A002-3: Id로 assignmet와 그 신청 결과 가져오가 -->
+	<select id="getAssignmentById" parameterType="integer" resultMap="assignmentRM">
+		<include refid="showAssignmentFactorBasic"/>,
+		<include refid="showAssignmentFactorApplied"/>
+		<include refid="showAssignmentJoinBasic"/>
+		<include refid="showAssignmentJoinApplied"/>
+		WHERE a.assignment_id = #{value}
+	</select>
 	
 	<!-- A003: 양도검색 -->
 	<select id="searchAssignmentByFilter" parameterType="filter" resultMap="assignmentRM">
@@ -167,6 +175,8 @@
 		<include refid="showAssignmentJoinBasic"/>
 		<include refid="showAssignmentJoinApplied"/>
 		<where>
+		m.start_time > sysdate() 
+		AND ar.reservation_status != 2
 			<!-- 경기일 -->
 			<if test="date != null">
 				AND m.start_time LIKE "${date}%"
@@ -265,5 +275,11 @@
 		content = #{content}
 		WHERE assignment_id = #{assignmentId};
 	</update>
-	
+	<!-- A011: 나머지 신청 양도 상태 실패로 변경 -->
+	<update id="failAssign" parameterType="hashMap">
+		UPDATE assignment_reservation
+		SET reservation_status = -1
+		WHERE assignment_id = #{assignmentId}
+		AND team_id_taker != #{takerTeamId}
+	</update>
 </mapper>

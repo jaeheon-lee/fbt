@@ -164,6 +164,12 @@ const routes = [
     path: "/notice",
     name: "notice",
     component: () => import("@/views/Notice.vue")
+  },
+  {
+    path: "/scheduleUpdate",
+    name: "scheduleUpdate",
+    component: () => import("@/views/update/ScheduleUpdate.vue"),
+    props: true
   }
 ];
 

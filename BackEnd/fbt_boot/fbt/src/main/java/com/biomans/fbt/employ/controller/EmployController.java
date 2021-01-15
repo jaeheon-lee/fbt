@@ -139,24 +139,34 @@ public class EmployController {
 	@PutMapping("/employ-result/1")
 	public ResponseEntity updateResStatus(@RequestBody Employ employ) throws SQLException {
 		try {
-			EmployResult employRes = employ.getEmployResults().get(0);
-//			employService.updateResStatus(employRes, employ);
+			Boolean isUpdated = false;
+			try {
+				employService.updateResStatus(employ);
+				isUpdated = true;
+			}catch (Exception e) {
+				isUpdated = false;
+			}
 			
 			//2. 알림 보낸다
-			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
-			NoticeFactor nf = new NoticeFactor();
-			String type = "";
-			int status = employRes.getEmpResultStatus();
-			if(status == 1) type = "acceptEmployApply";
-			else if(status == -1) type = "refuseEmployApply";
-			nf.setType(type);
-			nf.setTeamName(employ.getTeamGiver().getTeamName());
-			nf.setEmploy(employ);
-			nf.setEmployRes(employRes);
-			
-			
-			//2-2. 알림을 보낸다.
-			noticeService.addNoticeByCase(nf);
+			if(isUpdated == true) {
+				List<EmployResult> employRess = employ.getEmployResults();
+				for(EmployResult employRes : employRess) {
+					//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+					NoticeFactor nf = new NoticeFactor();
+					String type = "";
+					int status = employRes.getEmpResultStatus();
+					if(status == 1) type = "acceptEmployApply";
+					else if(status == -1) type = "refuseEmployApply";
+					else type = "completeEmployApply";
+					nf.setType(type);
+					nf.setTeamName(employ.getTeamGiver().getTeamName());
+					nf.setEmploy(employ);
+					nf.setEmployRes(employRes);
+					
+					//2-2. 알림을 보낸다.
+					noticeService.addNoticeByCase(nf);
+				}
+			}
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -244,6 +254,9 @@ public class EmployController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	//FE15
+	
 	
 	//E002-1
 	@GetMapping("/employ/3/{matchScheduleId}")

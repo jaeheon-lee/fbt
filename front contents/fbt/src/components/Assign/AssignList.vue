@@ -345,6 +345,35 @@
               </v-col>
             </v-row>
             <!-- 신청 팀리스트 끝 -->
+            <!-- 완료팀 정보/연락처 -->
+            <div v-if="registeredStage == 4">
+              <!-- 라벨 -->
+              <v-row style="color:rgba(235, 255, 0,0.7)">
+                <v-col offset="2" cols="10">
+                  <span
+                    id="match-info-detail-btn"
+                    @click="controlTeamInfoToggle(i)"
+                    style="cursor:pointer;"
+                    >완료팀 정보 및 연락처 보기</span
+                  >
+                </v-col>
+              </v-row>
+              <!-- 라벨 끝 -->
+              <!-- 본문 -->
+              <v-row>
+                <v-col offset="2" cols="8">
+                  <v-expand-transition>
+                    <team-info
+                      :teamId="acceptedTeamId"
+                      :teamMemberId="acceptedTeamMemberId"
+                      v-if="activeTeamInfo == i"
+                    ></team-info>
+                  </v-expand-transition>
+                </v-col>
+              </v-row>
+              <!-- 본문 끝 -->
+            </div>
+            <!-- 완료팀 정보/연락처 끝-->
             <!-- 관리자 버튼 영역 -->
             <!-- 매치 검색 시 -->
             <v-row
@@ -414,7 +443,7 @@
                 small
                 color="#6920A3"
                 @click="updateAssign(assign)"
-                v-if="registeredStage == 1"
+                v-if="registeredStage == 1 || registeredStage == 3"
                 >양도글 수정하기</v-btn
               >
               <v-btn
@@ -429,10 +458,10 @@
               >
             </v-row>
             <v-dialog v-model="activeCheckComplete">
-              <check-complete-search
+              <check-complete-apply
                 :assign="assign"
                 @close="closeDialog"
-              ></check-complete-search>
+              ></check-complete-apply>
             </v-dialog>
             <!-- 신청 매치  -->
             <v-row class="ma-0 pa-0 pb-3 justify-center">

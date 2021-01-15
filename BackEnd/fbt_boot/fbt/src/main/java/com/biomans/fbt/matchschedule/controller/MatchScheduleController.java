@@ -19,12 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
+import com.biomans.fbt.teammember.service.TeamMemberService;
 import com.biomans.fbt.util.MatchResultCollection;
+import com.biomans.fbt.util.NoticeFactor;
 import com.biomans.fbt.util.SearchKey;
 
 @RestController
@@ -32,6 +35,9 @@ import com.biomans.fbt.util.SearchKey;
 public class MatchScheduleController {
 	@Autowired
 	private MatchScheduleService matchScheduleService;
+	
+	@Autowired
+	private TeamMemberService teamMemberService;
 	
 	//FS01
 	@GetMapping("/match-schedule/2/{matchScheduleId}")
@@ -63,15 +69,13 @@ public class MatchScheduleController {
 	}
 	
 	//FV16
-	@PutMapping("/match-schedule/1/{matchScheduleId}/{teamId}/{awayTeamId}")
+	@PutMapping("/match-schedule/1/{matchScheduleId}/{homeTeamId}")
 	public ResponseEntity confirmMatchSchedule(@PathVariable int matchScheduleId,
-			@PathVariable int teamId,
-			@PathVariable int awayTeamId) throws SQLException {
+			@PathVariable int homeTeamId) throws SQLException {
 		try {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("matchScheduleId", matchScheduleId);
-			searchCon.put("teamId", teamId);
-			searchCon.put("awayTeamId", awayTeamId);
+			searchCon.put("teamId", homeTeamId);
 			matchScheduleService.confirmMatchSchedule(searchCon);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -179,6 +183,7 @@ public class MatchScheduleController {
 			searchCon.put("startTime", startTime);
 			searchCon.put("endTime", endTime);
 			List<MatchSchedule> list = matchScheduleService.showMatchSchduleByUserPeriod(searchCon);
+			System.out.println(list);
 			return new ResponseEntity(list,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -218,7 +223,6 @@ public class MatchScheduleController {
 	@PutMapping("/match-schedule/3")
 	public ResponseEntity updateTeamScore(@RequestBody TeamScore teamScore) throws SQLException {
 		try {
-			System.out.println(teamScore);
 			matchScheduleService.updateTeamScore(teamScore);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -239,17 +243,26 @@ public class MatchScheduleController {
 		}
 	}
 	
-	//S001: 일정 등록
-	@PostMapping("/match-schedule")
-	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {
+	//FS18
+	@PutMapping("/match-schedule/4")
+	public ResponseEntity updateMatchSchedule(@RequestBody MatchSchedule matchSchedule,
+			@RequestParam(value="updatingTeamId") int updatingTeamId) throws SQLException {
 		try {
-			matchScheduleService.addMatchSchedule(matchSchedule);
+			matchScheduleService.updateMatchSchedule(matchSchedule);
+			
+			// 자기 팀에게 알림을 보낸다
+			Notice notice = new Notice();
+//			notice.set
+			
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
+			System.out.println(e);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	// S004: 일정 삭제
+	
+	// FS19: 일정 삭제
 	@DeleteMapping("/match-schedule/{matchScheduleId}")
 	public ResponseEntity deleteMatchSchedule(@PathVariable int matchScheduleId) throws SQLException {
 		try {
@@ -260,6 +273,18 @@ public class MatchScheduleController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	//S001: 일정 등록
+	@PostMapping("/match-schedule")
+	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {
+		try {
+			matchScheduleService.addMatchSchedule(matchSchedule);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	
 
 }

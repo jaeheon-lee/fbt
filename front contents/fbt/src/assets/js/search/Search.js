@@ -41,10 +41,8 @@ export default {
           this.registeredStage = this.registeredStageR;
           break;
         case "acceptSearch":
-          this.page = this.pageR;
-          this.appliedStage = this.appliedStageR;
-          break;
         case "refuseSearch":
+        case "failSearch":
           this.page = this.pageR;
           this.appliedStage = this.appliedStageR;
           break;

@@ -46,7 +46,7 @@
 		<include refid="matchScheduleColumn"/>,
 		<include refid="awayTeamColumn"/>
 		FROM match_schedule m
-		JOIN team t2
+		LEFT OUTER JOIN team t2
 		ON m.away_team_id = t2.team_id
 		WHERE (m.home_team_id = #{teamId} OR m.away_team_id = #{teamId})
 		AND (m.start_time >= #{startTime} 
@@ -70,24 +70,26 @@
 		AND is_confirmed = 1
 	</select>
 	<!-- 2. 용병으로 뛰고 있는 모든 경기 일정 -->
-	<select id="showMatchScheduleByEmployPeriod" parameterType="hashMap" resultType="matchSchedule">
+	<select id="showMatchScheduleByEmployPeriod" parameterType="hashMap" resultMap="matchScheduleRM">
 		SELECT
-		m.match_schedule_id, m.start_time, m.match_type
+		m.match_schedule_id, m.start_time, m.match_type,
+		m.home_team_id, m.away_team_id
 		FROM match_schedule m
 		JOIN employ e
 		ON e.match_schedule_id = m.match_schedule_id
 		JOIN employ_result er
 		ON e.employ_id = er.employ_id
 		WHERE er.email = #{email}
-		AND er.emp_result_status = 1
+		AND er.emp_result_status = 2
 		AND (start_time >= #{startTime} 
 		AND date_add(#{endTime}, interval +1 day) >= start_time)
 		AND is_confirmed = 1
 	</select>
 	<!-- 3. 지인으로 뛰고 있는 모든 경기 일정 -->
-	<select id="showMatchScheduleByFriendPeriod" parameterType="string" resultType="matchSchedule">
+	<select id="showMatchScheduleByFriendPeriod" parameterType="string" resultMap="matchScheduleRM">
 		SELECT
-		m.match_schedule_id, m.start_time, m.match_type
+		m.match_schedule_id, m.start_time, m.match_type,
+		m.home_team_id, m.away_team_id
 		FROM match_schedule m
 		JOIN vote_match v
 		ON v.match_schedule_id = m.match_schedule_id
@@ -104,24 +106,54 @@
 	<!-- S006: 일정 수정 -->
 	<update id="updateMatchSchedule" parameterType="matchSchedule">
 		UPDATE match_schedule
-		SET
-		start_time = #{startTime},
-		duration = #{duration},
-		cost = #{cost},
-		writer = #{writer},
-		reg_date = #{regDate},
-		content = #{content},
-		stadium_name = #{stadiumName},
-		stadium_type = #{stadiumType},
-		stadium_address = #{stadiumAddress},
-		stadium_x = #{stadiumX},
-		stadium_y = #{stadiumY},
-		stadium_parking = #{stadiumParking},
-		stadium_shower = #{stadiumShower},
-		match_type = #{matchType},
-		home_team_id = #{homeTeam.teamId},
-		away_team_id = #{awayTeam.teamId}
-		WHERE match_schedule_id = #{matchScheduleId};
+		<set>
+			<if test="startTime != null">
+				`start_time` = #{startTime},
+			</if>
+			<if test="duration != 0">
+				`duration` = #{duration},
+			</if>
+			<if test="cost != -1">
+				`cost` = #{cost},
+			</if>
+			<if test="writer != null">
+				`writer` = #{writer},
+			</if>
+			<if test="regDate != null">
+				`reg_date` = #{regDate},
+			</if>
+			<if test="content != null">
+				`content` = #{content},
+			</if>
+			<if test="stadiumName != null">
+				`stadium_name` = #{stadiumName},
+			</if>
+			<if test="stadiumType != null">
+				`stadium_type` = #{stadiumType},
+			</if>
+			<if test="stadiumAddress != null">
+				`stadium_address` = #{stadiumAddress},
+			</if>
+			<if test="stadiumX != 0">
+				`stadium_x` = #{stadiumX},
+			</if>
+			<if test="stadiumX != 0">
+				`stadium_y` = #{stadiumY},
+			</if>
+			<if test="stadiumParking != -1">
+				`stadium_parking` = #{stadiumParking},
+			</if>
+			<if test="stadiumParking != -1">
+				`stadium_shower` = #{stadiumShower},
+			</if>
+			<if test="matchType != null">
+				`match_type` = #{matchType},
+			</if>
+			<if test="isConfirmed != -1">
+				`is_confirmed` = #{isConfirmed},
+			</if>
+		</set>
+		WHERE `match_schedule_id` = #{matchScheduleId}
 	</update>
 	
 	<!-- S007 -->
@@ -388,8 +420,8 @@
 	<update id="confirmMatchSchedule" parameterType="hashMap">
 		UPDATE match_schedule
 		SET is_confirmed = 1
-		<if test="awayTeamId == 0">
-		, away_team_id = #{teamId}
+		<if test="teamId != 0">
+			,away_team_id = #{teamId}
 		</if>
 		WHERE match_schedule_id = #{matchScheduleId}
 	</update>

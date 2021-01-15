@@ -206,7 +206,6 @@ export default {
         .get("/user/3/" + this.email + "/" + this.pass)
         .then(response => {
           this.user = response.data;
-          console.log(this.user);
           // 소셜로그인 했는데 회원이 아니라면
           if (this.user.email == null) {
             alert("일치하는 계정이 없습니다. 확인해주세요");

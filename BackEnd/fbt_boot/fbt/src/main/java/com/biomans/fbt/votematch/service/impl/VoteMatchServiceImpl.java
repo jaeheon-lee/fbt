@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
+import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.User;
@@ -88,7 +89,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 			voteMatch.setTotalAttend(num.getAttendNum()+num.getFriendNum());
 		}
 		// 3. 경기 일정별 투표 명단 삽입
-		voteMatch.setVoteMatchResults(voteMatchResults);
+		if(voteMatchResults.size() > 0) voteMatch.setVoteMatchResults(voteMatchResults);
 		// 4. 투표 명단 가공: 지인 추가
 		for(VoteMatchResult voteMatchResult : voteMatchResults) {
 			if(voteMatchResult.getUser() != null) {
@@ -96,6 +97,8 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 				voteMatchResult.getUser().setEmail( email + " (지인)");
 			}
 		}
+		// 5. 용병이 있다면, 용병 명단 담기
+		
 		return voteMatch;
 	}
 	
@@ -142,11 +145,16 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 				int minNumber = attendance.getMinNumber();
 				int totalNumber = attendance.getTotalFriend() + attendance.getTotalMember();
 				int resStatus = attendance.getReservationStatus();
-				searchCon.put("searchId", attendance.getSearchId()+"");
 				if(minNumber <= totalNumber && resStatus != -1) {
 				// 넘겼다면
 					// 해당 신청 매치 인원파악 완료
-					searchDAO.completeSearch(searchCon);
+					SearchReservation searchRes = new SearchReservation();
+					searchRes.setSearchId(attendance.getSearchId());
+					searchRes.setReservationStatus(2);
+					Team teamTaker = new Team();
+					teamTaker.setTeamId(voteMatch.getTeam().getTeamId());
+					searchRes.setTeamTaker(teamTaker);
+					searchDAO.updateResStatus(searchRes);
 					// 나머지 신청 매치 실패
 					searchDAO.failSearch(searchCon);
 					// 알림 보내기
@@ -199,6 +207,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	
 	//FV17
 	@Override
+	@Transactional
 	public VoteMatch showVoteMatchInfoById(int voteMatchId) throws SQLException {
 		VoteMatch voteMatch = voteMatchDAO.showVoteMatchInfoById(voteMatchId);
 		//1. 경기 일정 별 투표 정보를 가져온다

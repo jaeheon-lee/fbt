@@ -44,13 +44,7 @@ public class SearchController {
 	public static HashMap<Integer, Integer> search;
 	
 	@Autowired
-	private MatchScheduleService matchScheduleService;
-	
-	@Autowired
 	private NoticeService noticeService;
-	
-	@Autowired 
-	private TeamMemberService teamMemberService;
 	
 	//FM01
 	@PostMapping("/search")
@@ -204,24 +198,34 @@ public class SearchController {
 			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {
 			searchService.completeSearch(search);
-			//2. 알림 보낸다
-			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			
+//			//2. 알림 보낸다
+//			//2-1. 알림 보낼 때 필요한 정보 정리 & 확정자와 실패자에게 따로 알림을 보낸다.
+			Search newSearch = searchService.getSearchSearchResById(search.getSearchId());
 			SearchReservation searchRes = new SearchReservation();
-			for(SearchReservation sr : search.getSearchReservations()) {
-				if(sr.getReservationStatus() == 2) {
+			SearchReservation selectedSearchRes = search.getSearchReservations().get(0);
+			for(SearchReservation sr : newSearch.getSearchReservations()) {
+				if(sr.getTeamTaker().getTeamId() == selectedSearchRes.getTeamTaker().getTeamId()) {
 					searchRes = sr;
-					break;
+					NoticeFactor nf = new NoticeFactor();
+					nf.setType("completeSearch");
+					nf.setTeamName(teamName);
+					nf.setSearch(newSearch);
+					nf.setSearchRes(searchRes);
+					//2-2. 알림을 보낸다.
+					noticeService.addNoticeByCase(nf);
+				} else {
+					searchRes = sr;
+					NoticeFactor nf = new NoticeFactor();
+					nf.setType("failSearch");
+					nf.setTeamName(teamName);
+					nf.setSearch(newSearch);
+					nf.setSearchRes(searchRes);
+					//2-2. 알림을 보낸다.
+					noticeService.addNoticeByCase(nf);
 				}
 			}
-			NoticeFactor nf = new NoticeFactor();
-			String type = "completeSearch";
-			int status = searchRes.getReservationStatus();
-			nf.setType(type);
-			nf.setTeamName(teamName);
-			nf.setSearch(search);
-			nf.setSearchRes(searchRes);
-			//2-2. 알림을 보낸다.
-			noticeService.addNoticeByCase(nf);
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

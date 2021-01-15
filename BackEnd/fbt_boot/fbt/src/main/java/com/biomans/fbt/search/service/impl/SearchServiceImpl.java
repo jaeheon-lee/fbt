@@ -14,22 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.biomans.fbt.domain.MatchSchedule;
-import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
-import com.biomans.fbt.domain.TeamMember;
-import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchSetting;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
-import com.biomans.fbt.notice.dao.NoticeDAO;
 import com.biomans.fbt.search.dao.SearchDAO;
 import com.biomans.fbt.search.service.SearchService;
 import com.biomans.fbt.team.dao.TeamDAO;
-import com.biomans.fbt.teammember.dao.TeamMemberDAO;
 import com.biomans.fbt.util.Filter;
-import com.biomans.fbt.util.NoticeFactor;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
 @Service
@@ -132,6 +126,7 @@ public class SearchServiceImpl implements SearchService{
 			// 자동 투표 생성 메소드
 			addVoteMatchBySearch(search, searchRes);
 		} else if (searchRes.getReservationStatus() == -1) {
+			// 거절이면, 만들어진 투표를 삭제한다.
 			int matchScheduleId = search.getMatchSchedule().getMatchScheduleId();
 			int teamId = search.getSearchReservations().get(0).getTeamTaker().getTeamId();
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
@@ -203,18 +198,30 @@ public class SearchServiceImpl implements SearchService{
 	@Override
 	@Transactional
 	public void completeSearch(Search search) throws SQLException {
-		// awayTeam 등록
+		// awayTeam 등록 + 일정 확정
 		int takerTeamId = search.getSearchReservations().get(0).getTeamTaker().getTeamId();
 		int matchScheduleId = search.getMatchSchedule().getMatchScheduleId();
 		HashMap<String, Integer> con = new HashMap<String, Integer>();
 		con.put("takerTeamId", takerTeamId);
 		con.put("matchScheduleId", matchScheduleId);
+		System.out.println(con);
 		matchScheduleDAO.addAwayTeam(con);
 		// 매치 확정
 		HashMap<String, String> searchCon = new HashMap<String, String>();
 		searchCon.put("takerTeamId", takerTeamId+"");
 		searchCon.put("searchId", search.getSearchId()+"");
 		searchDAO.completeSearch(searchCon);
+		// 나머지 팀 실패시키기
+		searchDAO.failSearch(searchCon);
+		// 나머지 팀의 투표 삭제하기
+		con.put("giverTeamId", search.getTeamGiver().getTeamId());
+		voteMatchDAO.deleteVoteMatchOfFailedTeam(con);
+	}
+	
+	//FM15
+	@Override
+	public Search getSearchSearchResById(int searchId) throws SQLException {
+		return searchDAO.getSearchSearchResById(searchId);
 	}
 
 	//FM17

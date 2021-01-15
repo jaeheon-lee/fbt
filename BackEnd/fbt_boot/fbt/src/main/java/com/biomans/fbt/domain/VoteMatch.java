@@ -10,7 +10,9 @@ public class VoteMatch {
 	private String voteRegDate;
 	private String writer;
 	private int friendEmp;
+	private int teamId;
 	private Team team;
+	private int matchScheduleId;
 	private MatchSchedule matchSchedule;
 	private VoteMatchSetting voteMatchSetting;
 	private VoteMatchResult voteMatchResult;
@@ -25,9 +27,10 @@ public class VoteMatch {
 	public VoteMatch() {}
 
 	public VoteMatch(int voteMatchId, String memo, String dueDate, int voteStatus, String voteRegDate, String writer,
-			int friendEmp, Team team, MatchSchedule matchSchedule, VoteMatchSetting voteMatchSetting,
-			VoteMatchResult voteMatchResult, ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum,
-			int abscentNum, int attendNum, int friendNum, int totalAttend) {
+			int friendEmp, int teamId, Team team, int matchScheduleId, MatchSchedule matchSchedule,
+			VoteMatchSetting voteMatchSetting, VoteMatchResult voteMatchResult,
+			ArrayList<VoteMatchResult> voteMatchResults, int totalNum, int votedNum, int abscentNum, int attendNum,
+			int friendNum, int totalAttend) {
 		super();
 		this.voteMatchId = voteMatchId;
 		this.memo = memo;
@@ -36,7 +39,9 @@ public class VoteMatch {
 		this.voteRegDate = voteRegDate;
 		this.writer = writer;
 		this.friendEmp = friendEmp;
+		this.teamId = teamId;
 		this.team = team;
+		this.matchScheduleId = matchScheduleId;
 		this.matchSchedule = matchSchedule;
 		this.voteMatchSetting = voteMatchSetting;
 		this.voteMatchResult = voteMatchResult;
@@ -105,12 +110,28 @@ public class VoteMatch {
 		this.friendEmp = friendEmp;
 	}
 
+	public int getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(int teamId) {
+		this.teamId = teamId;
+	}
+
 	public Team getTeam() {
 		return team;
 	}
 
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	public int getMatchScheduleId() {
+		return matchScheduleId;
+	}
+
+	public void setMatchScheduleId(int matchScheduleId) {
+		this.matchScheduleId = matchScheduleId;
 	}
 
 	public MatchSchedule getMatchSchedule() {
@@ -197,11 +218,11 @@ public class VoteMatch {
 	public String toString() {
 		return "VoteMatch [voteMatchId=" + voteMatchId + ", memo=" + memo + ", dueDate=" + dueDate + ", voteStatus="
 				+ voteStatus + ", voteRegDate=" + voteRegDate + ", writer=" + writer + ", friendEmp=" + friendEmp
-				+ ", team=" + team + ", matchSchedule=" + matchSchedule + ", voteMatchSetting=" + voteMatchSetting
-				+ ", voteMatchResult=" + voteMatchResult + ", voteMatchResults=" + voteMatchResults + ", totalNum="
-				+ totalNum + ", votedNum=" + votedNum + ", abscentNum=" + abscentNum + ", attendNum=" + attendNum
-				+ ", friendNum=" + friendNum + ", totalAttend=" + totalAttend + "]";
+				+ ", teamId=" + teamId + ", team=" + team + ", matchScheduleId=" + matchScheduleId + ", matchSchedule="
+				+ matchSchedule + ", voteMatchSetting=" + voteMatchSetting + ", voteMatchResult=" + voteMatchResult
+				+ ", voteMatchResults=" + voteMatchResults + ", totalNum=" + totalNum + ", votedNum=" + votedNum
+				+ ", abscentNum=" + abscentNum + ", attendNum=" + attendNum + ", friendNum=" + friendNum
+				+ ", totalAttend=" + totalAttend + "]";
 	}
 
-	
 }

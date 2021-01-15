@@ -39,15 +39,8 @@
             <v-img
               contain
               height="120"
-              :src="require('@/assets/image/util/vest.svg')"
+              :src="selectUniform"
               class="mt-0 mb-2"
-              v-if="team.uniformType == 1"
-            ></v-img>
-            <v-img
-              contain
-              height="120"
-              :src="require('@/assets/image/util/shirt.svg')"
-              v-else
             ></v-img>
           </v-col>
           <!-- 유니폼 끝 -->
@@ -115,7 +108,7 @@
                   <v-col class="mx-4 my-0 px-0 py-0">
                     <span class="float-left">1. 약속을 잘 지켰어요.</span>
                     <span class="float-right">
-                      {{ this.avgManners.mannerPromise }}
+                      {{ this.avgManners.mannerPromise | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -123,17 +116,15 @@
                   <v-col class="mx-4 my-0 px-0 py-0">
                     <span class="float-left">2. 연락이 잘 됐어요.</span>
                     <span class="float-right">
-                      {{ this.avgManners.mannerContact }}
+                      {{ this.avgManners.mannerContact | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col class="mx-4 my-0 px-0 py-0">
-                    <span class="float-left"
-                      >3. 경기 중 룰을 잘 지켰어요.</span
-                    >
+                    <span class="float-left">3. 경기 중 룰을 잘 지켰어요.</span>
                     <span class="float-right">
-                      {{ this.avgManners.mannerRule }}
+                      {{ this.avgManners.mannerRule | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -143,7 +134,7 @@
                       >4. 경기 중 몸싸움이 심하지 않았어요.</span
                     >
                     <span class="float-right">
-                      {{ this.avgManners.mannerBodyFight }}
+                      {{ this.avgManners.mannerBodyFight | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -153,7 +144,7 @@
                       >5. 반말/욕설을 하지 않았어요.</span
                     >
                     <span class="float-right">
-                      {{ this.avgManners.mannerSlang }}
+                      {{ this.avgManners.mannerSlang | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -163,7 +154,7 @@
                       >6. 담배를 아무데서나 피지 않았어요.</span
                     >
                     <span class="float-right">
-                      {{ this.avgManners.mannerSmoking }}
+                      {{ this.avgManners.mannerSmoking | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -173,17 +164,15 @@
                       >7. 태클을 심하게 하지 않았어요.</span
                     >
                     <span class="float-right">
-                      {{ this.avgManners.mannerTackle }}
+                      {{ this.avgManners.mannerTackle | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col class="mx-4 my-0 px-0 py-0">
-                    <span class="float-left"
-                      >8. 심판을 돌아가며 봐줬어요.</span
-                    >
+                    <span class="float-left">8. 심판을 돌아가며 봐줬어요.</span>
                     <span class="float-right">
-                      {{ this.avgManners.mannerReferee }}
+                      {{ this.avgManners.mannerReferee | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -193,7 +182,7 @@
                       >9. 유니폼 혹은 조끼를 잘 입고왔어요.</span
                     >
                     <span class="float-right">
-                      {{ this.avgManners.mannerUniform }}
+                      {{ this.avgManners.mannerUniform | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -203,7 +192,7 @@
                       >10. 대여료 입금을 제시간에 했어요.</span
                     >
                     <span class="float-right">
-                      {{ this.avgManners.mannerPayment }}
+                      {{ this.avgManners.mannerPayment | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -211,7 +200,7 @@
                   <v-col class="mx-4 my-0 px-0 py-0">
                     <span class="float-left">11. 뒷정리를 잘 했어요.</span>
                     <span class="float-right">
-                      {{ this.avgManners.mannerArrangement }}
+                      {{ this.avgManners.mannerArrangement | toFix2 }}
                     </span>
                   </v-col>
                 </v-row>
@@ -298,6 +287,10 @@ export default {
         mannerUniform: 0
       },
 
+      // 유니폼 컬러 관련 변수
+      // eslint-disable-next-line prettier/prettier
+      uniformColors: ["검정", "하얀", "빨강", "주황", "노랑", "초록", "파랑", "남색", "보라"],
+
       loadingCompleted: false,
       loading: false,
       error: false
@@ -318,6 +311,17 @@ export default {
     phoneNum: function() {
       if (this.loadingCompleted) return this.team.teamMembers[0].user.phoneNum;
       else return null;
+    },
+    selectUniform: function() {
+      if (this.team.teamId) {
+        let path = "assets/image/util/";
+        let uniformType = "shirt";
+        if (this.team.uniformType == 1) uniformType = "vest";
+        let uniformColor = this.team.uniformColor;
+        path += uniformType + "_" + uniformColor + ".svg";
+        return require("@/" + path);
+      }
+      return null;
     }
   },
   methods: {
@@ -382,7 +386,6 @@ export default {
         let win = "승리 " + "(" + score + ")";
         let lose = "패배 " + "(" + score + ")";
         if (teamId == homeTeamId) {
-          console.log(1);
           // 승이면 승이라고, 패면 패라고 리턴
           if (ms.matchResult.homeResult == 1) {
             return win;
@@ -400,6 +403,10 @@ export default {
     }
   },
   filters: {
+    // 소수점 관ㄹ;
+    toFix2(value) {
+      return value.toFixed(1);
+    },
     // ======================= 받은 점수 =========================//
     showTeamScore(value) {
       if (value < 2) {

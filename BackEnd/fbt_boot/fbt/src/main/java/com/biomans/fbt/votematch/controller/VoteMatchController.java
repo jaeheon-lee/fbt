@@ -1,4 +1,4 @@
-package com.biomans.fbt.votematch.controller;
+	package com.biomans.fbt.votematch.controller;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -59,16 +59,19 @@ public class VoteMatchController {
 	}
 	
 	//FV03
-	@GetMapping("vote-match/2/{matchScheduleId}/{teamId}")
+	@GetMapping("/vote-match/2/{matchScheduleId}/{teamId}")
 	public ResponseEntity showVoteMatchInfoByScheduleId(@PathVariable int matchScheduleId,
 			@PathVariable int teamId) throws SQLException {
 		try {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", teamId);
+			System.out.println(searchCon);
 			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(searchCon);
+			System.out.println("da : " + voteMatch);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
 		}catch(RuntimeException e) {
+			e.printStackTrace();
 			System.out.println(e);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}

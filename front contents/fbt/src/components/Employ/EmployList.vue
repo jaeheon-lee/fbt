@@ -330,23 +330,13 @@
                             </v-row>
                           </v-col>
                           <!-- 수락했다면 -->
-                          <v-col
-                            cols="3"
-                            v-if="
-                              registeredStage == 1 && res.empResultStatus == 1
-                            "
-                          >
+                          <v-col cols="3" v-if="res.empResultStatus > 0">
                             <v-row class="justify-center">
                               수락됨
                             </v-row>
                           </v-col>
                           <!-- 거절했다면 -->
-                          <v-col
-                            cols="3"
-                            v-if="
-                              registeredStage == 1 && res.empResultStatus == -1
-                            "
-                          >
+                          <v-col cols="3" v-if="res.empResultStatus == -1">
                             <v-row class="justify-center">
                               거절됨
                             </v-row>
@@ -461,7 +451,7 @@
                 small
                 color="#6920A3"
                 @click="updateEmploy(employ)"
-                v-if="registeredStage == 1"
+                v-if="registeredStage < 3"
                 >수정하기</v-btn
               >
               <v-btn
@@ -473,6 +463,16 @@
                 v-if="registeredStage > 1"
                 @click="deleteEmploy(employ)"
                 >목록 삭제</v-btn
+              >
+              <v-btn
+                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#6920A3"
+                v-if="registeredStage == 3"
+                @click="completeEmploy(employ)"
+                >용병 확정하기</v-btn
               >
             </v-row>
             <!-- 신청 용병 창 -->

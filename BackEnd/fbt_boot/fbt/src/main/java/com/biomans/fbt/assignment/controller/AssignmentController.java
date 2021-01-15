@@ -143,27 +143,52 @@ public class AssignmentController {
 	@PutMapping("/assignment-reservation/1")
 	public ResponseEntity updateResStatus(@RequestBody Assignment assignment) throws SQLException {
 		try {
-			assignmentService.updateResStatus(assignment);
+			Boolean isUpdated = false;
 			
-			AssignmentReservation assignmentRes = assignment.getAssignmentReservations().get(0);
-			//2. 알림 보낸다
-			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
-			NoticeFactor nf = new NoticeFactor();
-			String type = "";
-			int status = assignmentRes.getReservationStatus();
-			if(status == 1) type = "acceptAssign";
-			else if(status == -1) type = "refuseAssign";
-			else type = "completeAssign";
-			nf.setType(type);
-			nf.setTeamName(assignment.getTeamGiver().getTeamName());
-			nf.setAssign(assignment);
-			nf.setAssignRes(assignmentRes);
-			//2-2. 알림을 보낸다.
-			noticeService.addNoticeByCase(nf);
+			try {
+				assignmentService.updateResStatus(assignment);
+				isUpdated = true;
+			} catch(Exception e) {
+				isUpdated = false;
+				System.out.println("수정에 실패");
+			}
+			
+			if(isUpdated == true) {
+				AssignmentReservation assignmentRes = assignment.getAssignmentReservations().get(0);
+				//2. 알림 보낸다
+				//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+				NoticeFactor nf = new NoticeFactor();
+				String type = ""; 
+				int status = assignmentRes.getReservationStatus();
+				if(status == 1) type = "acceptAssign";
+				else if(status == -1) type = "refuseAssign";
+				else type = "completeAssign";
+				nf.setType(type);
+				nf.setTeamName(assignment.getTeamGiver().getTeamName());
+				nf.setAssign(assignment);
+				nf.setAssignRes(assignmentRes);
+				//2-2. 알림을 보낸다.
+				noticeService.addNoticeByCase(nf);
+				//2-3. 양도 확정이면 실패된 팀들에게 알림을 보낸다
+				if(type.equals("completeAssign")) {
+					Assignment a = assignmentService.getAssignmentById(assignment.getAssignmentId());
+					List<AssignmentReservation> ars = a.getAssignmentReservations();
+					for(AssignmentReservation ar : ars) {
+						// 확정하기로한 팀이면 넘어간다.
+						if(assignmentRes.getTeamTaker().getTeamId() == ar.getTeamTaker().getTeamId()) continue;
+						NoticeFactor nf2 = new NoticeFactor();
+						String type2 = "failAssign"; 
+						nf2.setType(type2);
+						nf2.setTeamName(assignment.getTeamGiver().getTeamName());
+						nf2.setAssign(assignment);
+						nf2.setAssignRes(ar);
+						noticeService.addNoticeByCase(nf2);
+					}
+				}
+			}
 			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
-			e.printStackTrace();
 			System.out.println(e);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}

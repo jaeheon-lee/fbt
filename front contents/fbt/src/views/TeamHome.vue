@@ -209,7 +209,6 @@ export default {
             let vote = { isEndMatch: false, matchSchedule: matchSchedules[i] };
             this.votes.push(vote);
           }
-          console.log(this.votes);
         })
         .catch(() => {
           this.errored = true;

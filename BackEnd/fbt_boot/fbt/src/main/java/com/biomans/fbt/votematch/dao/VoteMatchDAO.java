@@ -12,6 +12,12 @@ import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
 
 public interface VoteMatchDAO {
+	
+	//
+	public List<VoteMatchResult> getVoteMatchResults(HashMap<String, String> con) throws SQLException;
+	
+	
+	
 	//V001-1
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//V001-2
@@ -39,7 +45,7 @@ public interface VoteMatchDAO {
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	//V009
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException;
-	//V010
+	//V010-1
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException;
 	//V011
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
@@ -53,7 +59,8 @@ public interface VoteMatchDAO {
 	public VoteMatch showVoteMatchBasicByScheduleTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//V016
 	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException;
-	
+	//V017
+	public void deleteVoteMatchOfFailedTeam(HashMap<String, Integer> con) throws SQLException;	
 	
 	//V011 : 투표 결과 삭제
 	public void deleteVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;

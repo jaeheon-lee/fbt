@@ -20,6 +20,7 @@ export default {
       votes: [],
       // awayVote vo
       awayVote: {},
+
       // 캘린더 기본 변수
       type: "month",
       types: ["month", "week", "day"],
@@ -29,6 +30,10 @@ export default {
       value: "",
       events: [],
       colors: ["green", "grey darken-1"],
+
+      // 새로 고침을 위한 변수
+      start: null, //월 초일
+      end: null, // 월 말일
       event: {},
 
       // 검색어 보내는 변수
@@ -109,8 +114,18 @@ export default {
   },
   methods: {
     // ===================== 켈린더 관련 메소드 =========================== //
-    //해당 월 일정 가져오기
-    getEvents({ start, end }) {
+    // 처음 해당 월 일정 가져오기
+    getEventsInit({ start, end }) {
+      this.start = start;
+      this.end = end;
+      this.getEvents(start, end);
+    },
+    // 새로고침으로 해당 월 일정 가져오기
+    getEventFresh() {
+      this.infoActive = false;
+      this.getEvents(this.start, this.end);
+    },
+    getEvents(start, end) {
       this.loading = true;
       const events = [];
       if (this.isUser) {
@@ -170,15 +185,17 @@ export default {
         let startTime = new Date(matchSchedule[i].startTime);
         let homeTeamId = null;
         let awayTeamId = null;
-        if (matchSchedule[i].homeTeam) homeTeamId = matchSchedule[i].homeTeam.teamId;
-        if (matchSchedule[i].awayTeam) awayTeamId = matchSchedule[i].awayTeam.teamId;
+        if (matchSchedule[i].homeTeam)
+          homeTeamId = matchSchedule[i].homeTeam.teamId;
+        if (matchSchedule[i].awayTeam)
+          awayTeamId = matchSchedule[i].awayTeam.teamId;
         if (startTime < today) isEndMatch = true;
         events.push({
           name: name,
           start: matchSchedule[i].startTime.slice(0, 16),
           color: this.colors[this.selectColorIdx(isEndMatch)],
           matchScheduleId: matchSchedule[i].matchScheduleId,
-          eventId: i,
+          eventI: i,
           isEndMatch: isEndMatch,
           homeTeamId: homeTeamId,
           awayTeamId: awayTeamId
@@ -197,8 +214,17 @@ export default {
       else return 0; // 끝나지 않았으면 그린
     },
     // ===================== 경기 정보 관련 메소드 =========================== //
+    // 클릭했을 때 투표 출력
+    showMatchScheduleInfoByClick({ event }) {
+      this.event = event;
+      this.showMatchScheduleInfo(event);
+    },
+    // 새로고침으로 투표 재출력
+    showMatchScheduleInfoByRefresh() {
+      this.showMatchScheduleInfo(this.event);
+    },
     // 스케쥴Id별 투표 출력(FS07, FV03)
-    showMatchScheduleInfo({ event }) {
+    showMatchScheduleInfo(event) {
       this.infoActive = true;
       this.event = event;
       let matchScheduleId = this.event.matchScheduleId;
@@ -210,6 +236,7 @@ export default {
         else this.showEndMatchInfoByUser(matchScheduleId);
       } else {
         //FS03
+        teamId = this.event.homeTeamId;
         this.showNotEndMatchInfo(matchScheduleId, teamId);
         if (this.event.homeTeamId != this.event.awayTeamId) {
           this.showAwayVoteMatchInfo(this.event.awayTeamId, matchScheduleId);
@@ -257,7 +284,6 @@ export default {
           // 리스트에 보낼 통에 담고
           this.votes = [];
           this.votes.push(vote);
-          console.log(vote);
           // 화면 이동
           location.href = "#matchInfo";
         })

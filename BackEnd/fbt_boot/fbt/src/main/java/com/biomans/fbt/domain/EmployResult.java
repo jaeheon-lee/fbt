@@ -3,15 +3,17 @@ package com.biomans.fbt.domain;
 public class EmployResult {
 	private int employResultId;
 	private int employId;
+	private String email;
 	private User user;
 	private int empResultStatus;
 	
 	public EmployResult() {}
 
-	public EmployResult(int employResultId, int employId, User user, int empResultStatus) {
+	public EmployResult(int employResultId, int employId, String email, User user, int empResultStatus) {
 		super();
 		this.employResultId = employResultId;
 		this.employId = employId;
+		this.email = email;
 		this.user = user;
 		this.empResultStatus = empResultStatus;
 	}
@@ -32,6 +34,14 @@ public class EmployResult {
 		this.employId = employId;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -50,10 +60,8 @@ public class EmployResult {
 
 	@Override
 	public String toString() {
-		return "EmployResult [employResultId=" + employResultId + ", employId=" + employId + ", user=" + user
-				+ ", empResultStatus=" + empResultStatus + "]";
+		return "EmployResult [employResultId=" + employResultId + ", employId=" + employId + ", email=" + email
+				+ ", user=" + user + ", empResultStatus=" + empResultStatus + "]";
 	}
-	
-	
-	
+
 }

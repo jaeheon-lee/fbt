@@ -1,6 +1,6 @@
 import axios from "axios";
 import TeamInfo from "@/components/Team/TeamInfo.vue";
-import CheckCompleteSearch from "@/components/dialog/CheckCompleteSearch.vue";
+import CheckCompleteApply from "@/components/dialog/CheckCompleteApply.vue";
 
 export default {
   name: "search-list",
@@ -12,12 +12,17 @@ export default {
   },
   components: {
     "team-info": TeamInfo,
-    "check-complete-search": CheckCompleteSearch
+    "check-complete-apply": CheckCompleteApply
   },
   data() {
     return {
       // 매치 변수
       searches: [],
+
+      // 완료팀 정보가져오기 변수
+      acceptedTeamId: null,
+      acceptedTeamMemberId: null,
+
       // 토글 변수
       activeDetail: null, // 상세보기 토글
       activeTeamList: null, // 신청 팀리스트 토글
@@ -109,8 +114,15 @@ export default {
           // 매치완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
           if (this.registeredStage == 5) {
             for (let i = 0; i < this.searches.length; i++) {
+              let index = this.searches[i].searchReservations
+                .map(x => x.reservationStatus)
+                .indexOf(2);
               // eslint-disable-next-line prettier/prettier
-              this.searches[i].matchSchedule.awayTeam = this.searches[i].searchReservations[0].teamTaker;
+              this.searches[i].matchSchedule.awayTeam = this.searches[i].searchReservations[index].teamTaker;
+              // eslint-disable-next-line prettier/prettier
+              this.acceptedTeamId = this.searches[i].searchReservations[index].teamTaker.teamId;
+              // eslint-disable-next-line prettier/prettier
+              this.acceptedTeamMemberId = this.searches[i].searchReservations[index].teamMember.teamMemberId;
             }
           }
         })
@@ -284,7 +296,7 @@ export default {
       if (this.activeDetail == i) this.activeDetail = null;
       else this.activeDetail = i;
     },
-    //등록팀 상세정보보기 창 여닫기
+    //등록팀/완료팀 상세정보보기 창 여닫기
     openTeamDetail(i) {
       if (this.activeRegisterTeam == i) this.activeRegisterTeam = null;
       else this.activeRegisterTeam = i;

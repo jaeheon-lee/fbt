@@ -21,13 +21,7 @@ select * from notice;
 delete from notice;
 ALTER TABLE `notice` AUTO_INCREMENT = 0;
 update user set image = 'bioman1@gmail.com.jpg' where email = 'bioman1@gmail.com';
-
-select * 
-from match_schedule
-where (home_team_id = 1 or away_team_id = 1)
-and is_confirmed = 1
-and start_time between '2020-12-01' and '2020-12-31 22:00';
-
-DELETE FROM search_reservation 
-		WHERE search_id = 4
-		AND team_id_taker = 3
+UPDATE assignment_reservation
+SET reservation_status = -1
+WHERE assignment_id = 1
+AND team_id_taker != 2;

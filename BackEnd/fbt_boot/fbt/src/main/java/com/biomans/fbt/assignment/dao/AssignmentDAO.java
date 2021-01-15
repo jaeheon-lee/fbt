@@ -1,13 +1,11 @@
 package com.biomans.fbt.assignment.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
-import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.util.Filter;
 
 public interface AssignmentDAO {
@@ -17,7 +15,9 @@ public interface AssignmentDAO {
 	public List<Assignment> showRegisteredAssignByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//A002-2
 	public List<Assignment> showRegisteredAssignAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException;
-	//A003
+	//A002-3
+	public Assignment getAssignmentById(int assignmentId) throws SQLException;
+ 	//A003
 	public List<Assignment> searchAssignmentByFilter(Filter filter) throws SQLException;
 	//A004
 	public void doApplyAssignment(AssignmentReservation assignmentRes) throws SQLException;
@@ -31,4 +31,6 @@ public interface AssignmentDAO {
 	public void deleteAssignRes(HashMap<String, Integer> searchCon) throws SQLException;
 	//A009
 	public void updateAssignment(Assignment assignment) throws SQLException;
+	//A011
+	public void failAssign(HashMap<String, Integer> searchCon) throws SQLException;
 }

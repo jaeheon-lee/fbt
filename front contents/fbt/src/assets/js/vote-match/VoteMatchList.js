@@ -254,23 +254,22 @@ export default {
         }
       });
     },
-    // 경기 확정하기 (FV16)
+    // 투표 상 경기 확정하기 (FV16)
     confirmMatchSchedule(vote) {
       let matchScheduleId = vote.matchSchedule.matchScheduleId;
-      let teamId = vote.matchSchedule.homeTeam.teamId;
-      let awayTeamId = 0;
-      if (vote.matchSchedule.awayTeam) {
-        awayTeamId = vote.matchSchedule.awayTeam.teamId;
-      }
+      let homeTeamId = vote.matchSchedule.homeTeam.teamId;
       this.$axios
         // eslint-disable-next-line prettier/prettier
-        .put("/match-schedule/1/" + matchScheduleId + "/" + teamId + "/" + awayTeamId)
+        .put("/match-schedule/1/" + matchScheduleId + "/" + homeTeamId)
         .then(() => {
           alert("경기가 확정됐습니다.");
         })
         .catch(error => {
           console.log(error);
           alert("경기확정에 실패했습니다.");
+        })
+        .finally(() => {
+          this.refresh();
         });
     },
     // FU02
@@ -308,6 +307,31 @@ export default {
           alert("점수를 받아오는 데 실패했습니다.");
         })
         .finally();
+    },
+    //FS18
+    updateSchedule(vote) {
+      this.$router.push({
+        name: "scheduleUpdate",
+        params: {
+          vote: vote
+        }
+      });
+    },
+    //FS19
+    deleteSchedule(vote) {
+      let matchScheduleId = vote.matchSchedule.matchScheduleId;
+      this.$axios
+        .delete("/match-schedule/" + matchScheduleId)
+        .then(() => {
+          alert("일정이 삭제되었습니다.");
+        })
+        .catch(error => {
+          console.log(error);
+          alert("일정 삭제에 실패했습니다.");
+        })
+        .finally(() => {
+          this.$emit("refresh-monthly");
+        });
     },
     // 새로고침
     refresh(matchScheduleId) {

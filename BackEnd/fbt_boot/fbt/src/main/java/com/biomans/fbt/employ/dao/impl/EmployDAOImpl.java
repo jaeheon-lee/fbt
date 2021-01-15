@@ -21,6 +21,14 @@ public class EmployDAOImpl implements EmployDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
+	
+	//
+	@Override
+	public List<EmployResult> getEmployResults(EmployResult employResult) throws SQLException {
+		return sqlSession.selectList(ns+"getEmployResult", employResult);
+	}
+	
+	
 	//E001
 	@Override
 	public void addEmploy(Employ employ) throws SQLException {

@@ -12,13 +12,10 @@ import com.biomans.fbt.assignment.dao.AssignmentDAO;
 import com.biomans.fbt.assignment.service.AssignmentService;
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
-import com.biomans.fbt.domain.Search;
-import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.domain.Team;
-import com.biomans.fbt.domain.TeamMember;
+import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.team.dao.TeamDAO;
-import com.biomans.fbt.teammember.dao.TeamMemberDAO;
 import com.biomans.fbt.util.Filter;
 import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
@@ -35,9 +32,6 @@ public class AssginmentServiceImpl implements AssignmentService{
 	
 	@Autowired
 	private TeamDAO teamDAO;
-	
-	@Autowired
-	private TeamMemberDAO teamMemberDAO;
 	
 	//FA01
 	@Override
@@ -98,7 +92,9 @@ public class AssginmentServiceImpl implements AssignmentService{
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", teamGiverId);
-			int voteMatchId = voteMatchDAO.showVoteMatchBasicByScheduleTeam(searchCon).getVoteMatchId();
+			VoteMatch v = voteMatchDAO.showVoteMatchBasicByScheduleTeam(searchCon);
+			int voteMatchId = 0;
+			if(v != null) voteMatchId = v.getVoteMatchId();
 			if(voteMatchId != 0) voteMatchDAO.deleteVoteMatchByVoteMatchId(voteMatchId);
 			
 			// 홈팀을 바꾼다
@@ -106,8 +102,22 @@ public class AssginmentServiceImpl implements AssignmentService{
 			con.put("takerTeamId", assignRes.getTeamTaker().getTeamId());
 			con.put("matchScheduleId", matchScheduleId);
 			matchScheduleDAO.changeHomeTeam(con);
+			
+			// 홈팀이 된 팀의 투표를 마감시킨다.
+//			v.setVoteStatus(1);
+//			voteMatchDAO.updateVoteMatch(v);
+			
+			//나머지 팀을 실패로 한다
+			con.put("assignmentId", assignment.getAssignmentId());
+			System.out.println(con);
+			assignmentDAO.failAssign(con);
 		}
 		assignmentDAO.updateResStatus(assignRes);
+	}
+	
+	//FA08, FA09
+	public Assignment getAssignmentById(int assignmentId) throws SQLException {
+		return assignmentDAO.getAssignmentById(assignmentId);
 	}
 	
 	//FA05, FA11

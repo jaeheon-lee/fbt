@@ -17,11 +17,11 @@ export default {
       matchSchedule: {
         startTime: null,
         duration: null,
-        cost: null,
+        cost: -1,
         writer: null,
         content: null,
         stadiumName: null,
-        stadiumType: null, //
+        stadiumType: -1, //
         stadiumAddress: null,
         stadiumX: null,
         stadiumY: null,
@@ -118,7 +118,6 @@ export default {
         " " +
         this.matchSchedule.stadiumName;
     }
-    console.log(this.voteMatch);
   },
   mounted() {},
   computed: {

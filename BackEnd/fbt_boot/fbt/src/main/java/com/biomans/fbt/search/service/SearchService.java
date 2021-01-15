@@ -34,4 +34,6 @@ public interface SearchService {
 	public void deleteSeachRes(HashMap<String, Integer> searchCon) throws SQLException;
 	//FM18
 	public void updateSearch(Search search) throws SQLException;
+	//FM15
+	public Search getSearchSearchResById(int searchId) throws SQLException;
 }

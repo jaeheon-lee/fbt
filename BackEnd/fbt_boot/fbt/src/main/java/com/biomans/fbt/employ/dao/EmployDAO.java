@@ -10,6 +10,11 @@ import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.util.Filter;
 
 public interface EmployDAO {
+	
+	//
+	public List<EmployResult> getEmployResults(EmployResult employResult) throws SQLException;
+	
+	
 	//E001
 	public void addEmploy(Employ employ) throws SQLException;
 	//E002-1

@@ -111,11 +111,11 @@
             <v-col offset="2" cols="8" class="my-0 py-0">
               <v-expand-transition>
                 <div id="match-info-detail">
-                  <!--경기타입비용주차-->
-                  <!-- 경기타입,비용,주차  라벨-->
+                  <!--경기장타입비용주차-->
+                  <!-- 경기장타입,비용,주차  라벨-->
                   <v-row class="mx-0 px-0">
                     <v-col cols="4" class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                      >경기타입</v-col
+                      >경기장타입</v-col
                     >
                     <v-col
                       cols="4"
@@ -128,16 +128,14 @@
                     >
                   </v-row>
                   <v-row class="mx-0 px-0">
-                    <!-- 경기타입, 비용, 주차 본문 -->
-                    <!-- 경기 타입 -->
+                    <!-- 경기장타입, 비용, 주차 본문 -->
+                    <!-- 경기장 타입 -->
                     <v-col cols="4" class="pa-0 pr-1"
                       ><v-row
                         class="ma-0 pa-3"
                         justify="center"
                         style="border:2px solid #AD1457;border-radius:25px;"
-                        >{{
-                          vote.matchSchedule.matchType | showMatchType
-                        }}</v-row
+                        >{{ vote.matchSchedule.stadiumType }}</v-row
                       ></v-col
                     >
                     <!-- 경기 비용 -->
@@ -479,6 +477,7 @@
               width="16%"
               small
               class="mr-2"
+              v-if="header == 'voteMatchManager'"
               @click="confirmMatchSchedule(vote)"
               >경기 확정하기</v-btn
             >
@@ -517,6 +516,24 @@
               @click="moveToRegister(vote, 2)"
               v-if="controlAssignmentBtn(vote)"
               >양도하기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="updateSchedule(vote)"
+              v-if="header == 'scheduleManager'"
+              >일정 수정하기</v-btn
+            >
+            <v-btn
+              elevation="3"
+              width="16%"
+              small
+              class="mr-2"
+              @click="deleteSchedule(vote)"
+              v-if="header == 'scheduleManager'"
+              >일정 삭제하기</v-btn
             >
           </v-row>
         </v-col>

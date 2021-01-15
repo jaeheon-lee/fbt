@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
-import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.util.Filter;
 
 public interface AssignmentService {
@@ -22,6 +21,8 @@ public interface AssignmentService {
 	public void doApplyAssignment(AssignmentReservation assignmentRes) throws SQLException;
 	//FA08, FA09
 	public void updateResStatus(Assignment assignment) throws SQLException;
+	//FA08, FA09
+	public Assignment getAssignmentById(int assignmentId) throws SQLException;
 	//FA05, FA11
 	public void deleteAssignment(int assignmentId) throws SQLException;
 	//FA06

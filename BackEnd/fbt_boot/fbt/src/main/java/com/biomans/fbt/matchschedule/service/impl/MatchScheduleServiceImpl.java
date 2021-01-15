@@ -18,17 +18,26 @@ import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.domain.User;
+import com.biomans.fbt.domain.VoteMatchResult;
+import com.biomans.fbt.employ.dao.EmployDAO;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
 import com.biomans.fbt.util.AvgScore;
 import com.biomans.fbt.util.MatchResultCollection;
 import com.biomans.fbt.util.ScoreDescInput;
 import com.biomans.fbt.util.SearchKey;
+import com.biomans.fbt.votematch.dao.VoteMatchDAO;
 
 @Service
 public class MatchScheduleServiceImpl implements MatchScheduleService {
 	@Autowired
 	private MatchScheduleDAO matchScheduleDAO;
+	
+	@Autowired
+	private VoteMatchDAO voteMatchDAO;
+	
+	@Autowired
+	private EmployDAO employDAO;
 	
 	//FS01
 	@Override
@@ -387,7 +396,18 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException {
 		return matchScheduleDAO.showFutureSchedule(teamId);
 	}
-
+	
+	//FS18
+	@Override
+	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
+		matchScheduleDAO.updateMatchSchedule(matchSchedule);
+	}
+	
+	//FS19: 일정 삭제
+	@Override
+	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
+		matchScheduleDAO.deleteMatchSchedule(matchScheduleId);
+	}
 	
 	//S001: 일정 등록
 	@Override
@@ -402,11 +422,7 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		return matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
 	}
 	
-	// S00N: 일정 삭제
-	@Override
-	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
-		matchScheduleDAO.deleteMatchSchedule(matchScheduleId);
-	}
+	
 
 	
 	

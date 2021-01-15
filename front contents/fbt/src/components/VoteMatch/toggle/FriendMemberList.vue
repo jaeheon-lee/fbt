@@ -46,7 +46,7 @@
         </v-row>
         <!--투표 인원 내용 끝-->
         <v-row class="text-center mx-5">
-          <v-col offset="2" cols="5">
+          <v-col cols="10">
             닉네임/이메일
           </v-col>
           <v-col cols="2">
@@ -59,7 +59,7 @@
           :key="i"
           class="text-center mx-5"
         >
-          <v-col offset="2" cols="5">
+          <v-col cols="10">
             {{ showNickEmail(result) }}
           </v-col>
           <v-col cols="2">

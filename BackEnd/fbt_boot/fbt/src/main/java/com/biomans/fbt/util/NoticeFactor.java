@@ -6,6 +6,7 @@ import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
 import com.biomans.fbt.domain.Employ;
 import com.biomans.fbt.domain.EmployResult;
+import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.SearchReservation;
@@ -15,6 +16,7 @@ import com.biomans.fbt.domain.VoteMatch;
 public class NoticeFactor {
 	private String type;
 	private String teamName;
+	private MatchSchedule matchSchedule;
 	private VoteMatch voteMatch;
 	private Search search;
 	private SearchReservation searchRes;
@@ -27,12 +29,13 @@ public class NoticeFactor {
 	
 	public NoticeFactor() {}
 
-	public NoticeFactor(String type, String teamName, VoteMatch voteMatch, Search search, SearchReservation searchRes,
-			Assignment assign, AssignmentReservation assignRes, List<TeamMember> teamMembers, Notice notice,
-			Employ employ, EmployResult employRes) {
+	public NoticeFactor(String type, String teamName, MatchSchedule matchSchedule, VoteMatch voteMatch, Search search,
+			SearchReservation searchRes, Assignment assign, AssignmentReservation assignRes,
+			List<TeamMember> teamMembers, Notice notice, Employ employ, EmployResult employRes) {
 		super();
 		this.type = type;
 		this.teamName = teamName;
+		this.matchSchedule = matchSchedule;
 		this.voteMatch = voteMatch;
 		this.search = search;
 		this.searchRes = searchRes;
@@ -58,6 +61,14 @@ public class NoticeFactor {
 
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
+	}
+
+	public MatchSchedule getMatchSchedule() {
+		return matchSchedule;
+	}
+
+	public void setMatchSchedule(MatchSchedule matchSchedule) {
+		this.matchSchedule = matchSchedule;
 	}
 
 	public VoteMatch getVoteMatch() {
@@ -134,9 +145,11 @@ public class NoticeFactor {
 
 	@Override
 	public String toString() {
-		return "NoticeFactor [type=" + type + ", teamName=" + teamName + ", voteMatch=" + voteMatch + ", search="
-				+ search + ", searchRes=" + searchRes + ", assign=" + assign + ", assignRes=" + assignRes
-				+ ", teamMembers=" + teamMembers + ", notice=" + notice + ", employ=" + employ + ", employRes="
-				+ employRes + "]";
+		return "NoticeFactor [type=" + type + ", teamName=" + teamName + ", matchSchedule=" + matchSchedule
+				+ ", voteMatch=" + voteMatch + ", search=" + search + ", searchRes=" + searchRes + ", assign=" + assign
+				+ ", assignRes=" + assignRes + ", teamMembers=" + teamMembers + ", notice=" + notice + ", employ="
+				+ employ + ", employRes=" + employRes + "]";
 	}
+
+	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
@@ -112,7 +113,8 @@ public class NoticeServiceImpl implements NoticeService {
 			pageName = "search-acceptSearch";
 			content = noticeFactor.getTeamName() + "에서 ";
 			content += noticeFactor.getSearch().getMatchSchedule().getStartTime().split(" ")[0]; 
-			content +="일자 경기에 인원파악수락을 했습니다. 클릭하여 확인해주세요.";
+			content +="일자 경기에 인원파악수락을 했습니다. 클릭하여 확인해주세요. ";
+			content += "해당 일정에 투표가 자동으로 생성됐습니다.";
 			teamMemberId = noticeFactor.getSearchRes().getTeamMember().getTeamMemberId();
 			takerUser.setEmail(teamMemberId.split("-")[1]);
 			takerUsers.add(takerUser);
@@ -124,7 +126,8 @@ public class NoticeServiceImpl implements NoticeService {
 			pageName = "search-refuseSearch";
 			content = noticeFactor.getTeamName() + "에서 ";
 			content += noticeFactor.getSearch().getMatchSchedule().getStartTime().split(" ")[0]; 
-			content += "일자 경기에 인원파악거절/중단을 했습니다. 클릭하여 확인해주세요.";
+			content += "일자 경기에 인원파악거절/중단을 했습니다. 클릭하여 확인해주세요. ";
+			content += "해당 경기에 생성된 투표는 삭제됩니다.";
 			teamMemberId = noticeFactor.getSearchRes().getTeamMember().getTeamMemberId();
 			takerUser.setEmail(teamMemberId.split("-")[1]);
 			takerUsers.add(takerUser);
@@ -151,6 +154,18 @@ public class NoticeServiceImpl implements NoticeService {
 			content = noticeFactor.getTeamName() + "에서 ";
 			content += noticeFactor.getSearch().getMatchSchedule().getStartTime().split(" ")[0]; 
 			content +="일자 경기를 확정했습니다.";
+			teamMemberId = noticeFactor.getSearchRes().getTeamMember().getTeamMemberId();
+			takerUser.setEmail(teamMemberId.split("-")[1]);
+			takerUsers.add(takerUser);
+			takerTeam = noticeFactor.getSearchRes().getTeamTaker();
+			break;
+			
+		case "failSearch": // 매치 실패
+			giverTeam = noticeFactor.getSearch().getTeamGiver();
+			pageName = "search-failSearch";
+			content = noticeFactor.getTeamName() + "와 "; 
+			content += noticeFactor.getSearch().getMatchSchedule().getStartTime().split(" ")[0]; 
+			content +="일자 경기에서 다른 팀이 확정되어, 상대팀 매칭에 실패했습니다.";
 			teamMemberId = noticeFactor.getSearchRes().getTeamMember().getTeamMemberId();
 			takerUser.setEmail(teamMemberId.split("-")[1]);
 			takerUsers.add(takerUser);
@@ -205,6 +220,18 @@ public class NoticeServiceImpl implements NoticeService {
 			takerTeam = noticeFactor.getAssignRes().getTeamTaker();
 			break;
 			
+		case "failAssign":
+			giverTeam = noticeFactor.getAssign().getTeamGiver();
+			pageName = "assign-failAssign";
+			content = noticeFactor.getTeamName() + "와의 ";
+			content += noticeFactor.getAssign().getMatchSchedule().getStartTime().split(" ")[0]; 
+			content +="일자 경기에서 다른 팀이 양도 확정되면서, 자동 취소가 실패처리됐습니다.";
+			teamMemberId = noticeFactor.getAssignRes().getTeamMember().getTeamMemberId();
+			takerUser.setEmail(teamMemberId.split("-")[1]);
+			takerUsers.add(takerUser);
+			takerTeam = noticeFactor.getAssignRes().getTeamTaker();
+			break;
+			
 		case "applyEmploy":
 			giverTeam = null;
 			giverUser = noticeFactor.getEmployRes().getUser();
@@ -242,7 +269,19 @@ public class NoticeServiceImpl implements NoticeService {
 			content += "일자 경기에 용병신청 거절했습니다.";
 			pageName = "employ-refuseEmployApply";
 			break;
-			
+		
+		case "completeEmployApply":
+			giverTeam = noticeFactor.getEmploy().getTeamGiver();
+			teamMemberId = noticeFactor.getEmploy().getTeamMember().getTeamMemberId();
+			giverUser.setEmail(teamMemberId.split("-")[1]);
+			takerTeam = null;
+			takerUser = noticeFactor.getEmployRes().getUser();
+			takerUsers.add(takerUser);
+			content = noticeFactor.getTeamName() + "에서 ";
+			content += noticeFactor.getEmploy().getMatchSchedule().getStartTime().split(" ")[0];
+			content += "일자 경기의 용병 확정했습니다. 일정을 확인하여 경기를 준비해주세요.";
+			pageName = "employ-completeEmployApply";
+			break;
 			
 		default:
 			break;

@@ -78,135 +78,137 @@
                 >
               </v-col>
             </v-row>
-            <v-row v-if="activeDetail == i">
-              <v-col offset="2" cols="8">
-                <v-expand-transition>
-                  <div id="match-info-detail">
-                    <!--경기타입비용주차-->
-                    <!-- 경기타입,비용,주차  라벨-->
-                    <v-row class="mx-0 px-0">
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >경기타입</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        style="padding-left:2px;padding-right:2px;"
-                        >비용</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >주차</v-col
-                      >
-                    </v-row>
-                    <!-- 경기타입, 비용, 주차 본문 -->
-                    <v-row class="mx-0 px-0">
-                      <!-- 경기 타입 -->
-                      <v-col cols="4" class="pa-0 pr-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{
-                            search.matchSchedule.matchType | showMatchType
-                          }}</v-row
-                        ></v-col
-                      >
-                      <!-- 경기 비용 -->
-                      <v-col
-                        cols="4"
-                        class="py-0"
-                        style="padding-left:2px;padding-right:2px;"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ search.matchSchedule.cost }}만원</v-row
-                        ></v-col
-                      >
-                      <!-- 경기장 주차여부 -->
-                      <v-col cols="4" class="pa-0 pl-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{
-                            search.matchSchedule.stadiumParking | showParking
-                          }}</v-row
-                        ></v-col
-                      >
-                    </v-row>
-                    <!--경기타입비용주차 끝-->
-                    <!-- 대기시간, 최소인원 -->
-                    <!--  대기시간, 최소인원  라벨-->
-                    <v-row class="mx-0 px-0">
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >대기시간</v-col
-                      >
-                      <v-col
-                        cols="4"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        style="padding-left:2px;padding-right:2px;"
-                        >최소인원</v-col
-                      >
-                    </v-row>
-                    <!--  대기시간, 최소인원  라벨 끝-->
-                    <!-- 대기시간, 최소인원 본문 -->
-                    <v-row class="mx-0 px-0">
-                      <!-- 대기시간 -->
-                      <v-col cols="4" class="pa-0 pr-1"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ search.waitingTime }} 시간</v-row
-                        ></v-col
-                      >
-                      <!-- 최소인원 -->
-                      <v-col
-                        cols="4"
-                        class="py-0"
-                        style="padding-left:2px;padding-right:2px;"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ search.minNumber }} 명
-                        </v-row>
-                      </v-col>
-                    </v-row>
-                    <!--대기시간, 최소인원 끝-->
-                    <!-- 대기시간, 최소인원 끝 -->
-                    <!--내용-->
-                    <!-- 내용 라벨 -->
-                    <v-row class="mx-0 px-0">
-                      <v-col
-                        cols="12"
-                        class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
-                        >내용</v-col
-                      >
-                    </v-row>
-                    <!-- 내용 본문 -->
-                    <v-row class="mx-0 px-0">
-                      <v-col cols="12" class="text-left pa-0"
-                        ><v-row
-                          class="ma-0 pa-3"
-                          justify="center"
-                          style="border:2px solid #AD1457;border-radius:25px;"
-                          >{{ search.content | content }}</v-row
-                        ></v-col
-                      >
-                    </v-row>
-                    <!--내용 끝 -->
-                  </div>
-                </v-expand-transition>
-              </v-col>
-            </v-row>
+            <v-expand-transition>
+              <v-row v-if="activeDetail == i">
+                <v-col offset="2" cols="8">
+                  <v-expand-transition>
+                    <div id="match-info-detail">
+                      <!--경기타입비용주차-->
+                      <!-- 경기타입,비용,주차  라벨-->
+                      <v-row class="mx-0 px-0">
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          >경기타입</v-col
+                        >
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          style="padding-left:2px;padding-right:2px;"
+                          >비용</v-col
+                        >
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          >주차</v-col
+                        >
+                      </v-row>
+                      <!-- 경기타입, 비용, 주차 본문 -->
+                      <v-row class="mx-0 px-0">
+                        <!-- 경기 타입 -->
+                        <v-col cols="4" class="pa-0 pr-1"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{
+                              search.matchSchedule.matchType | showMatchType
+                            }}</v-row
+                          ></v-col
+                        >
+                        <!-- 경기 비용 -->
+                        <v-col
+                          cols="4"
+                          class="py-0"
+                          style="padding-left:2px;padding-right:2px;"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{ search.matchSchedule.cost }}만원</v-row
+                          ></v-col
+                        >
+                        <!-- 경기장 주차여부 -->
+                        <v-col cols="4" class="pa-0 pl-1"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{
+                              search.matchSchedule.stadiumParking | showParking
+                            }}</v-row
+                          ></v-col
+                        >
+                      </v-row>
+                      <!--경기타입비용주차 끝-->
+                      <!-- 대기시간, 최소인원 -->
+                      <!--  대기시간, 최소인원  라벨-->
+                      <v-row class="mx-0 px-0">
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          >대기시간</v-col
+                        >
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          style="padding-left:2px;padding-right:2px;"
+                          >최소인원</v-col
+                        >
+                      </v-row>
+                      <!--  대기시간, 최소인원  라벨 끝-->
+                      <!-- 대기시간, 최소인원 본문 -->
+                      <v-row class="mx-0 px-0">
+                        <!-- 대기시간 -->
+                        <v-col cols="4" class="pa-0 pr-1"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{ search.waitingTime }} 시간</v-row
+                          ></v-col
+                        >
+                        <!-- 최소인원 -->
+                        <v-col
+                          cols="4"
+                          class="py-0"
+                          style="padding-left:2px;padding-right:2px;"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{ search.minNumber }} 명
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                      <!--대기시간, 최소인원 끝-->
+                      <!-- 대기시간, 최소인원 끝 -->
+                      <!--내용-->
+                      <!-- 내용 라벨 -->
+                      <v-row class="mx-0 px-0">
+                        <v-col
+                          cols="12"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          >내용</v-col
+                        >
+                      </v-row>
+                      <!-- 내용 본문 -->
+                      <v-row class="mx-0 px-0">
+                        <v-col cols="12" class="text-left pa-0"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{ search.content | content }}</v-row
+                          ></v-col
+                        >
+                      </v-row>
+                      <!--내용 끝 -->
+                    </div>
+                  </v-expand-transition>
+                </v-col>
+              </v-row>
+            </v-expand-transition>
             <!-- 경기 상세정보 끝 -->
             <!-- 등록 팀 상세보기 -->
             <div v-if="searchedSearch">
@@ -250,7 +252,7 @@
                 >
               </v-col>
             </v-row>
-            <!-- 팀리스트 본문 -->
+            <!-- 신청팀리스트 본문 -->
             <v-row v-if="registeredStage == 2 || registeredStage == 3">
               <v-col offset="2" cols="8">
                 <v-expand-transition>
@@ -380,7 +382,36 @@
                 </v-expand-transition>
               </v-col>
             </v-row>
-            <!-- 신청 팀리스트 끝 -->
+            <!-- 신청신청 팀리스트 끝 -->
+            <!-- 완료팀 정보/연락처 -->
+            <div v-if="registeredStage == 5">
+              <!-- 라벨 -->
+              <v-row style="color:rgba(235, 255, 0,0.7)">
+                <v-col offset="2" cols="10">
+                  <span
+                    id="match-info-detail-btn"
+                    @click="controlTeamInfoToggle(i)"
+                    style="cursor:pointer;"
+                    >완료팀 정보 및 연락처 보기</span
+                  >
+                </v-col>
+              </v-row>
+              <!-- 라벨 끝 -->
+              <!-- 본문 -->
+              <v-row>
+                <v-col offset="2" cols="8">
+                  <v-expand-transition>
+                    <team-info
+                      :teamId="acceptedTeamId"
+                      :teamMemberId="acceptedTeamMemberId"
+                      v-if="activeTeamInfo == i"
+                    ></team-info>
+                  </v-expand-transition>
+                </v-col>
+              </v-row>
+              <!-- 본문 끝 -->
+            </div>
+            <!-- 완료팀 정보/연락처 끝-->
             <!-- 관리자 버튼 영역 -->
             <!-- 매치 검색 시 -->
             <v-row
@@ -450,7 +481,7 @@
                 small
                 color="#6920A3"
                 @click="updateSearch(search)"
-                v-if="registeredStage == 1"
+                v-if="registeredStage == 1 || registeredStage == 4"
                 >매치글 수정하기</v-btn
               >
               <v-btn
@@ -492,10 +523,10 @@
                 >매치 완료</v-btn
               >
               <v-dialog v-model="activeCheckComplete">
-                <check-complete-search
+                <check-complete-apply
                   :search="search"
                   @close="activeCheckComplete = false"
-                ></check-complete-search>
+                ></check-complete-apply>
               </v-dialog>
             </v-row>
             <!-- 신청 매치  -->

@@ -35,7 +35,6 @@ export default {
   },
   methods: {
     navigatePage() {
-      console.log(this.appliedStageR);
       switch (this.type) {
         case "applyAssign":
           this.page = this.pageR;
@@ -43,6 +42,7 @@ export default {
           break;
         case "acceptAssign":
         case "refuseAssign":
+        case "failAssign":
           this.page = this.pageR;
           this.appliedStage = this.appliedStageR;
           break;

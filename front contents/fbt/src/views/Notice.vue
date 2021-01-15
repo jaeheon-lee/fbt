@@ -102,7 +102,6 @@ export default {
         .get("/notice/1/" + email)
         .then(response => {
           this.notices = response.data;
-          console.log(this.notices);
         })
         .catch(error => {
           console.log(error);
@@ -153,6 +152,7 @@ export default {
             };
             break;
           case "applySearch":
+          case "applyAssign":
             this.setTeam(takerTeam);
             params = {
               type: pageCon,
@@ -161,6 +161,8 @@ export default {
             };
             break;
           case "acceptSearch":
+          case "refuseAssign":
+          case "failAssign":
             this.setTeam(takerTeam);
             params = {
               type: pageCon,
@@ -169,6 +171,8 @@ export default {
             };
             break;
           case "refuseSearch":
+          case "acceptAssign":
+          case "failSearch":
             this.setTeam(takerTeam);
             params = {
               type: pageCon,
@@ -185,30 +189,6 @@ export default {
             };
             break;
 
-          case "applyAssign":
-            this.setTeam(takerTeam);
-            params = {
-              type: pageCon,
-              pageR: 3,
-              registeredStageR: 2
-            };
-            break;
-          case "acceptAssign":
-            this.setTeam(takerTeam);
-            params = {
-              type: pageCon,
-              pageR: 4,
-              appliedStageR: 3
-            };
-            break;
-          case "refuseAssign":
-            this.setTeam(takerTeam);
-            params = {
-              type: pageCon,
-              pageR: 4,
-              appliedStageR: 2
-            };
-            break;
           case "acceptEmployApply":
             params = {
               type: pageCon,
@@ -226,6 +206,14 @@ export default {
 
           case "completeSearch":
           case "completeAssign":
+            this.setTeam(takerTeam);
+            pageName = "scheduleManager";
+            break;
+
+          case "completeEmployApply":
+            pageName = "scheduleUser";
+            break;
+
           case "cancelSearchApply":
           case "cancelAssignApply":
           case "cancelEmployApply":

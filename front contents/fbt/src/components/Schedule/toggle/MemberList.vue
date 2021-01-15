@@ -16,7 +16,7 @@
           class="float-right"
           style="cursor:pointer;"
           @click="controlAwayMemberList(i)"
-          v-if="vote.matchSchedule.awayTeam"
+          v-if="controlAwayMemberListBtn"
           >어웨이팀 투표 명단 보기</span
         >
       </v-col>
@@ -131,7 +131,14 @@ export default {
       openType: null
     };
   },
-  computed: {},
+  computed: {
+    controlAwayMemberListBtn: function() {
+      let homeTeamId = this.vote.matchSchedule.homeTeam.teamId;
+      let awayTeamId = this.vote.matchSchedule.awayTeam.teamId;
+      if (homeTeamId == awayTeamId) return false;
+      return true;
+    }
+  },
   methods: {
     // 지인이면 이메일, 팀원이면 닉네임으로 출력하기
     showNickEmail(result) {

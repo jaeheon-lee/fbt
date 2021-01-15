@@ -165,10 +165,20 @@
 		</where>
 	</select>
 	
+	
 	<!-- M002-3 searchId로 매치 찾기 -->
 	<select id="getSearchById" parameterType="integer" resultMap="searchRM">
 		<include refid="showSearchFactorBasic"/>
 		<include refid="showSearchJoinBasic"/>
+		WHERE s.search_id = #{value}
+	</select>
+	
+	<!-- M002-4: searchId로 매치와 그 신청물 찾기 -->
+	<select id="getSearchSearchResById" parameterType="integer" resultMap="searchRM">
+		<include refid="showSearchFactorBasic"/>,
+		<include refid="showSearchFactorApplied"/>
+		<include refid="showSearchJoinBasic"/>
+		<include refid="showSearchJoinApplied"/>
 		WHERE s.search_id = #{value}
 	</select>
 	
@@ -180,6 +190,7 @@
 		<include refid="showSearchJoinApplied"/>
 		<where>
 		m.start_time > sysdate() 
+		<!-- AND sr.reservation_status != 3 -->
 			<!-- 경기일 -->
 			<if test="date != null">
 				AND m.start_time LIKE "${date}%"
@@ -322,6 +333,5 @@
 		content = #{content}
 		WHERE search_id = #{searchId};
 	</update>
-	
 	
 </mapper>

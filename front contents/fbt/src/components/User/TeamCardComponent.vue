@@ -1,12 +1,12 @@
 <template>
   <v-container fluid class="py-0 my-5 px-0 mx-0">
     <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
-      <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
+      <v-col xl="12" lg="12" cols="12" class="pa-0 ma-0">
         <span>가입한 팀</span>
       </v-col>
     </v-row>
     <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
-      <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
+      <v-col xl="12" lg="12" cols="12" class="pa-0 ma-0">
         <v-divider class="mb-1 px-5"></v-divider>
         <v-carousel
           cycle

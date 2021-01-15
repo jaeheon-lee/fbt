@@ -11,9 +11,6 @@
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <v-divider color="white"></v-divider>
-          <v-row justify="center" class="my-5">
-            경기 일정 수정을 원하시면 일정 페이지에서 진행해주세요.
-          </v-row>
           <!-- 매치 부분 -->
           <div>
             <!-- 대기가능시간, 최소인원, 마감시간 -->

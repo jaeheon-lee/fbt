@@ -1,7 +1,6 @@
 package com.biomans.fbt.assignment.dao.impl;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.biomans.fbt.assignment.dao.AssignmentDAO;
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
-import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.util.Filter;
 
 @Repository
@@ -39,6 +37,12 @@ final String ns = "AssignmentMapper.";
 	@Override
 	public List<Assignment> showRegisteredAssignAppliedByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showRegisteredAssignAppliedByTeam", searchCon);
+	}
+	
+	//A002-3
+	@Override
+	public Assignment getAssignmentById(int assignmentId) throws SQLException {
+		return sqlSession.selectOne(ns+"getAssignmentById", assignmentId);
 	}
 
 	//A003
@@ -82,6 +86,12 @@ final String ns = "AssignmentMapper.";
 	@Override
 	public void updateAssignment(Assignment assignment) throws SQLException {
 		sqlSession.update(ns+"updateAssignment", assignment);
+	}
+	
+	//A011
+	@Override
+	public void failAssign(HashMap<String, Integer> searchCon) throws SQLException {
+		sqlSession.update(ns+"failAssign", searchCon);
 	}
 	
 }

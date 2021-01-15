@@ -23,6 +23,18 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	//
+	@Override
+	public List<VoteMatchResult> getVoteMatchResults(HashMap<String, String> con) throws SQLException {
+		return sqlSession.selectList(ns+"getVoteMatchResultsByVoteMatchId", con);
+	}
+	
+	
+	
+	
+	
+	
+	
 	//V001-1
 	@Override
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
@@ -94,11 +106,10 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"checkBySearch", searchCon);
 	}
-	//V010
+	//V010-1
 	@Override
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatch", voteMatch);
-		
 	}
 	//V011
 	@Override
@@ -133,6 +144,12 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	@Override
 	public List<VoteMatch> loadEndedVoteMatch(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"loadEndedVoteMatch", searchCon);
+	}
+	
+	//V017
+	@Override
+	public void deleteVoteMatchOfFailedTeam(HashMap<String, Integer> con) throws SQLException {
+		sqlSession.delete(ns+"deleteVoteMatchOfFailedTeam", con);
 	}
 	
 

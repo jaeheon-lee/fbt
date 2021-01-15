@@ -175,7 +175,6 @@ export default {
     },
     // 용병신청하기(FE03)
     doApply(employ) {
-      console.log(employ);
       let teamIdTaker = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       let teamIdGiver = employ.teamGiver.teamId;
@@ -210,6 +209,26 @@ export default {
           pushedEmploy: employ
         }
       });
+    },
+    //FE15
+    completeEmploy(employ) {
+      for (let i = 0; i < employ.employResults.length; i++) {
+        employ.employResults[i].empResultStatus = 2;
+      }
+      this.$axios
+        .put("/employ-result/1?isComplete=" + true, employ)
+        .then(() => {
+          alert("용병이 확정되었습니다. 일정을 확인해주세요.")
+        })
+        .catch(error => {
+          console.log(error);
+          alert("용병 확정에 실패했습니다.");
+        })
+        .finally(() => {
+          this.$router.push({
+            name: "scheduleManager"
+          });
+        });
     },
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {

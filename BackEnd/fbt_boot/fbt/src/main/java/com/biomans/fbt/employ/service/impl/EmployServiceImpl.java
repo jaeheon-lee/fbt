@@ -98,25 +98,24 @@ public class EmployServiceImpl implements EmployService {
 	//FE07, FE08
 	@Override
 	@Transactional
-	public void updateResStatus(EmployResult employRes, Employ employ) throws SQLException {
+	public void updateResStatus(Employ employ) throws SQLException {
 		// 용병 신청 결과 상태 수정
-		employDAO.updateResStatus(employRes);
-		
-		// 수락 시, 수락인원(지금 가져오는 것은 수락 전 숫자이므로 + 1)이 모집인원 이상인지 확인
-		if(employRes.getEmpResultStatus() == 1) {
-			int acceptNum = employ.getAcceptNum() + 1;
-			int reqNumber = employ.getReqNumber();
-			
-			// 이상이면 경기 확정
-			if(acceptNum >= reqNumber) {
-				int matchScheduleId = employ.getMatchSchedule().getMatchScheduleId();
-				HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
-				searchCon.put("matchScheduleId", matchScheduleId);
-				MatchSchedule ms = matchScheduleDAO.showMatchScheduleByMatchScheduleId(matchScheduleId);
-				if(ms.getAwayTeam() == null) searchCon.put("awayTeamId", 0); 
-				else searchCon.put("awayTeamId", -1); 
-				matchScheduleDAO.confirmMatchSchedule(searchCon);
+		List<EmployResult> employRess = employ.getEmployResults();
+		for(EmployResult employRes : employRess) {
+			employDAO.updateResStatus(employRes);
+		}
+		// 만일 용병 확정이면 해당 일정을 확정한다. + 만일 상대팀이 없다면, 상대팀을 자기팀으로 
+		EmployResult sampleRes = employ.getEmployResults().get(0);
+		if(sampleRes.getEmpResultStatus() == 2) {
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("matchScheduleId", employ.getMatchSchedule().getMatchScheduleId());
+			// 상대팀 있는지 체크
+			if(employ.getMatchSchedule().getAwayTeam() == null) {
+				// 상대팀을 자기로
+				searchCon.put("teamId", employ.getMatchSchedule().getHomeTeam().getTeamId());
 			}
+			
+			matchScheduleDAO.confirmMatchSchedule(searchCon);
 		}
 	}
 	

@@ -18,39 +18,39 @@ public interface VoteMatchDAO {
 	
 	
 	
-	//V001-1
+	//V02-2
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException;
+	//V02-2
+	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException;
+	//V02-2
+	public List<VoteMatchResult> showVoteMatchResultByVote(int voteMatchId) throws SQLException;
 	//V001-2
 	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	//V001-3
 	public VoteMatch showVoteMatchInfoById(int voteMatchId) throws SQLException;
-	//V002-1
-	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException;
+	
 	//V002-2
 	public VoteMatch showVoteMatchNumByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
-	//V003-1 
-	public List<VoteMatchResult> showVoteMatchResultByVote(int voteMatchId) throws SQLException;
+	
 	//V003-2
 	public ArrayList<VoteMatchResult> showVoteMatchResultByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
 	
-	//V004
+	//V01-6
 	public void addVoteMatch(VoteMatch voteMatch) throws SQLException;
-	//V005
+	//V01-6
 	public int getLatestVoteMatchIdByTeam(int teamId) throws SQLException;
-	//V006
+	//V01-6
 	public void addVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
-	//V007
+	//V03-4
 	public void addAttendance(VoteMatchResult voteMatchResult) throws SQLException;
-	//V008
+	//V03-6
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
-	//V009
+	//V03-5
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException;
-	//V010-1
+	//V05-3, V06-1
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException;
 	//V011
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
-	//V012
-	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
 	//V014-1
 	public void deleteVoteMatchByVoteMatchId(int voteMatchId) throws SQLException;
 	//V014-1

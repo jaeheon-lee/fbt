@@ -6,7 +6,7 @@ import java.util.List;
 import com.biomans.fbt.domain.Notice;
 
 public interface NoticeDAO {
-	//N001
+	//Me01-2
 	public void addNotice(Notice notice) throws SQLException;
 	//N002
 	public List<Notice> showNoticesByUser(String email) throws SQLException;

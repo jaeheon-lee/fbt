@@ -6,7 +6,7 @@
       >
       <v-card-text>
         <v-row class="mt-5" justify="center">
-          <v-btn class="mr-7" elevation="2" color="#6920A3" @click="shareLink"
+          <v-btn class="mr-7" elevation="2" color="#6920A3" @click="writeLink"
             >예</v-btn
           >
           <v-btn elevation="2" color="#AD1457" @click="close">아니오</v-btn>

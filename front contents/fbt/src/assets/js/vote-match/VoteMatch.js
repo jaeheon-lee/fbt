@@ -13,7 +13,12 @@ export default {
       //vote vot
       votes: [],
       // 투표 중과 투표 완료 구분 변수 동시에 버튼에 색 입히기
-      isEnd: false
+      isEnd: false,
+
+      // 기본 변수
+      loading: false,
+      errored: false,
+      empty: false
     };
   },
   created() {
@@ -39,8 +44,24 @@ export default {
     }
   },
   methods: {
-    // 팀별 투표 출력 (FV01, FV02)
+    /**
+     * V02-1
+     * 투표 상태 설정: isEnd = false (투표 중) / = true (투표 완료)
+     */
+    setIsEnd(status) {
+      this.isEnd = status;
+    },
+    /**
+     * V02-2
+     * 상위 컴포넌트에 따라 voteStatus를 0(진행 중)과 1(마감) 지정한다
+     * 해당 teamId와 voteStatus를 보낸다
+     * 백으로부터 받은 투표 데이터를 voteMatchList.vue에 보내어 출력한다.
+     * @author 강제영
+     * @version 1.0
+     */
     showVoteInfo() {
+      this.empty = false;
+      this.loading = true;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let voteStatus = 0;
       if (this.isEnd) voteStatus = 1; // 진행이냐 마감에 따라 다르게 출력하기
@@ -49,12 +70,15 @@ export default {
         .get("/vote-match/1/" + teamId + "?voteStatus=" + voteStatus)
         .then(response => {
           this.votes = response.data;
+          if (this.votes.length == 0) this.empty = true;
         })
         .catch(() => {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
         });
     }
   }

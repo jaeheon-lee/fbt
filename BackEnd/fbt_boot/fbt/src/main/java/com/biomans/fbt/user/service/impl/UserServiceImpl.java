@@ -100,4 +100,10 @@ public class UserServiceImpl implements UserService {
 	public User showUserInfo(String email) throws SQLException {
 		return userDAO.showUserInfo(email);
 	}
+	
+	//V04-1
+	@Override
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
+		return userDAO.searchFriend(searchCon);
+	}
 }

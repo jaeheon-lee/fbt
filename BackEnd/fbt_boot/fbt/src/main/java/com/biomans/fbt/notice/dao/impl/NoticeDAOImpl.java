@@ -17,7 +17,7 @@ public class NoticeDAOImpl implements NoticeDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
-	//N001
+	//Me01-2
 	@Override
 	public void addNotice(Notice notice) throws SQLException {
 		sqlSession.insert(ns+"addNotice", notice);

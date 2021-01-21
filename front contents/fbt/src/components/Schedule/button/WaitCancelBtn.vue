@@ -34,7 +34,6 @@ export default {
   methods: {
     // 대기, 참석취소 버튼 관리
     controlWaitBtn(vote) {
-      console.log(vote);
       // 투표한 사람이 아무도 없으면 대기버튼
       if (!vote.voteMatchResults) return true;
       // 대기버튼 기간적 조건: 인위 마감 후 + 기간적 마감 후 + 경기 시작 전

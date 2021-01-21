@@ -16,7 +16,7 @@
                 large
                 width="100%"
                 class="mx-0 px-0"
-                @click="isEnd = false"
+                @click="setIsEnd(false)"
                 :class="{ 'btn-on-red': !isEnd }"
                 >투표중</v-btn
               >
@@ -29,7 +29,7 @@
                 width="100%"
                 class="mx-0 px-0"
                 style="border:0px;"
-                @click="isEnd = true"
+                @click="setIsEnd(true)"
                 :class="{ 'btn-on-red': isEnd }"
                 >투표완료</v-btn
               >
@@ -51,7 +51,12 @@
           <v-divider id="divider-vote"> inset </v-divider>
         </v-col>
       </v-row>
-      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
+      <v-row
+        fluid
+        justify="center"
+        class="py-0 my-0 px-0 mx-5"
+        v-if="!loading && !empty"
+      >
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <!-- 각 투표 리스트 출력 부분 -->
           <vote-match-list
@@ -62,6 +67,14 @@
           ></vote-match-list>
         </v-col>
       </v-row>
+      <!-- progress circle -->
+      <div v-else-if="loading">
+        <progress-circle></progress-circle>
+      </div>
+      <!-- progress circle 끝 -->
+      <!-- empty -->
+      <empty :ment="'투표가'" v-else></empty>
+      <!-- empty 끝 -->
     </v-container>
   </div>
 </template>

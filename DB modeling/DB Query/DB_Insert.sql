@@ -1,5 +1,5 @@
 -- api_category
-INSERT INTO api_category(api_type, api_name) VALUES(0, "자체");
+INSERT INTO api_category(api_type, api_name) VALUES(0, "email");
 INSERT INTO api_category(api_type, api_name) VALUES(1, "Kakao");
 INSERT INTO api_category(api_type, api_name) VALUES(2, "naver");
 
@@ -47,12 +47,53 @@ INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_statu
 INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_status, team_id, email, nick_name)VALUES('3-bioman15@gmail.com', sysdate(),0,1,3,'bioman15@gmail.com','nick15');
 INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_status, team_id, email, nick_name)VALUES('2-bioman1@gmail.com',sysdate(),0,1,2,'bioman1@gmail.com','nick1');
 
--- match_schedule
-INSERT INTO match_schedule(match_schedule_id, home_team_id, away_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name,
- stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, is_confirmed)
-VALUES(1, '1', 2, '2020-10-15 09:00:00', '2', '10', 'nick1', '2020-10-18 14:18:06', '늦지 마시오', '뚝섬한강공원 축구장1', 
-'흙', '서울 광진구 자양동 410-1', 127.076336885325, 37.5280242726795, '1', '0', '11:11', 1
+-- match_schedule / vote_match / vote_match_setting / vote_match_result
+-- case 1
+INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
+VALUES('1', '2021-03-01 22:14:00', '2', '2', 'nick1', '2021-01-21 22:18:12', 'ㅇㅇ', NULL, '뚝섬한강공원 축구장1', '흙', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '1', '11:11', '1', NULL, NULL);
+INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
+VALUES('1', '1', '1', 'ㅋㅋ', '2021-02-28 22:14:00', '0', '2021-01-21 22:18:12', 'nick1');
+INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
+VALUES('1', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1');
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('1', '1', '1', '1-bioman1@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('2', '1', '1', '1-bioman2@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('3', '1', '0', '1-bioman3@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('4', '1', '1', NULL, 'bioman12@gmail.com');
+-- case 2
+INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
+VALUES('2', '2021-02-28 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '1', NULL, NULL
 );
+INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
+VALUES('2', '1', '2', 'ㅋㅋ', '2021-02-27 03:01:00', '0', '2021-01-22 03:02:04', 'nick1'
+);
+INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
+VALUES('2', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
+);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('5', '2', '1', '1-bioman1@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('6', '2', '1', '1-bioman2@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('7', '2', '1', '1-bioman3@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('8', '2', '1', '1-bioman4@gmail.com', NULL);
+insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
+values('9', '2', '1', '1-bioman5@gmail.com', NULL);
+-- case 3
+INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
+VALUES('3', '2021-02-15 04:40:00', '1', '1', 'nick1', '2021-01-22 04:41:08', 'dd', NULL, '뚝섬한강공원 축구장1', '흙', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '0', '5:5', '1', NULL, NULL
+);
+INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
+VALUES('3', '1', '3', 'zz', '2021-02-14 04:41:00', '1', '2021-01-22 04:41:08', 'nick1'
+);
+INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
+VALUES('3', '0', '-1', '0', '0', '0', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
+);
+
 INSERT INTO match_schedule(match_schedule_id, home_team_id, away_team_id, start_time, duration, cost, writer, reg_date, content, stadium_name,
  stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, is_confirmed)
 VALUES(2, '1', 2,'2020-12-22 09:00:00', '2', '10', 'nick1', '2020-10-18 14:18:06', '늦지 마시오', '뚝섬한강공원 축구장1', 

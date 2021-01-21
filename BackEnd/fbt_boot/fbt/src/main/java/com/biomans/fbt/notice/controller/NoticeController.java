@@ -22,7 +22,7 @@ public class NoticeController {
 	@Autowired
 	private NoticeService noticeService;
 	
-	//FV09
+	//V04-2
 	@PostMapping("/notice/1")
 	public ResponseEntity inviteFriend(@RequestBody Notice notice) throws SQLException {
 		try {

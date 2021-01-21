@@ -73,4 +73,10 @@ public class UserDAOImpl implements UserDAO{
 	public void updateUser(User user) throws SQLException {
 		sqlSession.update(ns+"updateUser", user);
 	}
+	
+	//V04-1
+	@Override
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"searchFriend", searchCon);
+	}
 }

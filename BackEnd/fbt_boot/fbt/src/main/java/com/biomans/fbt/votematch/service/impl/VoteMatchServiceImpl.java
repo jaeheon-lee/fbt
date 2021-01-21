@@ -40,7 +40,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 
 // ============================================================================================================ //	
 	
-	//FV01, FV02, FS02
+	//V02-2, FS02
 	@Override
 	@Transactional
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
@@ -102,7 +102,7 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		return voteMatch;
 	}
 	
-	//FV04
+	//V01-6
 	@Override
 	@Transactional
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException {
@@ -125,13 +125,18 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		voteMatchDAO.addVoteMatchSetting(voteMatch.getVoteMatchSetting());
 	}
 	
-	//FV05, FV06
+	//V03-4
 	@Override
 	@Transactional
 	public int addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException {
 		// FV05
 		voteMatchDAO.addAttendance(voteMatchResult);
-		// FV06
+		int result = checkMinNum(voteMatch);
+		return result;
+	}
+	//V03-5
+	@Override
+	public int checkMinNum(VoteMatch voteMatch) throws SQLException {
 		// 만일 상대방 찾기를 통해 투표를 하는 거라면
 		HashMap<String, String> searchCon = new HashMap<String, String>();
 		searchCon.put("voteMatchId", voteMatch.getVoteMatchId()+"");
@@ -165,14 +170,14 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		return 0;
 	}
 	
-	//FV05, FV06, FS05 ,FS06
+	//V03-6
 	@Override
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
 		voteMatchDAO.updateVoteMatchResult(voteMatchResult);
 		
 	}
 	
-	//FV07, FV14
+	//V05-3, V06-1
 	@Override
 	@Transactional
 	public void updateVoteMatch(VoteMatch voteMatch, int type, String teamName) throws SQLException {
@@ -180,15 +185,10 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		//투표수정이면 일정 수정까지 같이 한다.
 		if(type == 1) {
 			MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
+			System.out.println(matchSchedule);
 			matchScheduleDAO.updateMatchSchedule(matchSchedule);
 		}
 		
-	}
-	
-	//FV09
-	@Override
-	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
-		return voteMatchDAO.searchFriend(searchCon);
 	}
 	
 	//FV10

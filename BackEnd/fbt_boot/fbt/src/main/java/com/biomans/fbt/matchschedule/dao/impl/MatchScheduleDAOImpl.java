@@ -128,7 +128,7 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		sqlSession.update(ns+"changeHomeTeam", con);
 	}
 
-	// S012: 일정 삭제
+	// V06-1: 일정 삭제
 	@Override
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
 		sqlSession.delete(ns+"deleteMatchSchedule", matchScheduleId);

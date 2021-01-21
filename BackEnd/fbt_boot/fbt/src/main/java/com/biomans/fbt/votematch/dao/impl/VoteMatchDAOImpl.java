@@ -28,14 +28,7 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public List<VoteMatchResult> getVoteMatchResults(HashMap<String, String> con) throws SQLException {
 		return sqlSession.selectList(ns+"getVoteMatchResultsByVoteMatchId", con);
 	}
-	
-	
-	
-	
-	
-	
-	
-	//V001-1
+	//V02-2
 	@Override
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectList(ns+"showVoteMatchInfoByTeam", searchCon);
@@ -51,7 +44,7 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 		return sqlSession.selectOne(ns+"showVoteMatchInfoById", voteMatchId);
 	}
 	
-	//V002-1
+	//V02-2
 	@Override
 	public VoteMatch showVoteMatchNumByVote(int voteMatchId) throws SQLException {
 		return sqlSession.selectOne(ns+"showVoteMatchNumByVote", voteMatchId);
@@ -61,7 +54,7 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public VoteMatch showVoteMatchNumByScheduleId(HashMap<String, Integer> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"showVoteMatchNumByScheduleId", searchCon);
 	}
-	//V003-1
+	//V02-2
 	@Override
 	public List<VoteMatchResult> showVoteMatchResultByVote(int voteMatchId) throws SQLException {
 		return sqlSession.selectList(ns+"showVoteMatchResultByVote", voteMatchId);
@@ -74,39 +67,39 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 		return voteMatchResults;
 	}
 	
-	//V004
+	//V01-6
 	@Override
 	public void addVoteMatch(VoteMatch voteMatch) throws SQLException {
 		sqlSession.insert(ns+"addVoteMatch", voteMatch);
 		
 	}
-	//V005
+	//V01-6
 	@Override
 	public int getLatestVoteMatchIdByTeam(int teamId) throws SQLException {
 		return sqlSession.selectOne(ns+"getLatestVoteMatchIdByTeam", teamId);
 	}
-	//V006
+	//V01-6
 	@Override
 	public void addVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		sqlSession.insert(ns+"addVoteMatchSetting", voteMatchSetting);
 		
 	}
-	//V007
+	//V03-4
 	@Override
 	public void addAttendance(VoteMatchResult voteMatchResult) throws SQLException {
 		sqlSession.insert(ns+"addAttendance", voteMatchResult);
 		
 	}
-	//V008
+	//V03-6
 	@Override
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException {
 		sqlSession.update(ns+"updateAttendace", voteMatchResult);
 	}
-	//V009
+	//V03-5
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"checkBySearch", searchCon);
 	}
-	//V010-1
+	//V05-3, V06-1
 	@Override
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatch", voteMatch);
@@ -115,11 +108,6 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	@Override
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException {
 		sqlSession.update(ns+"updateVoteMatchSetting",voteMatchSetting);
-	}
-	//V012
-	@Override
-	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException {
-		return sqlSession.selectList(ns+"searchFriend", searchCon);
 	}
 	
 	//V014-1

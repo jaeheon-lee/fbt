@@ -22,9 +22,7 @@ import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
-import com.biomans.fbt.notice.dao.NoticeDAO;
 import com.biomans.fbt.notice.service.NoticeService;
-import com.biomans.fbt.teammember.dao.TeamMemberDAO;
 import com.biomans.fbt.teammember.service.TeamMemberService;
 import com.biomans.fbt.util.NoticeFactor;
 import com.biomans.fbt.votematch.service.VoteMatchService;
@@ -41,7 +39,7 @@ public class VoteMatchController {
 	@Autowired 
 	private TeamMemberService teamMemberService;
 	
-	//FV01, FV02, FS02
+	//V02-2, FS02
 	@GetMapping("/vote-match/1/{teamId}")
 	public ResponseEntity showVoteMatchInfoByTeam(@PathVariable int teamId,
 			@RequestParam(value="voteStatus") int voteStauts) throws SQLException {
@@ -53,7 +51,6 @@ public class VoteMatchController {
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
-			e.printStackTrace();
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}
@@ -66,9 +63,7 @@ public class VoteMatchController {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", teamId);
-			System.out.println(searchCon);
 			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(searchCon);
-			System.out.println("da : " + voteMatch);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			e.printStackTrace();
@@ -77,7 +72,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV04
+	//V01-6, Me01-1
 	@PostMapping("/vote-match")
 	public ResponseEntity addVoteMatchAndSetting(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName") String teamName) throws SQLException{
@@ -103,7 +98,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV05
+	// V03-4
 	@PostMapping("/vote-match-result")
 	public ResponseEntity addAttendance(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName") String teamName) throws SQLException {
@@ -129,7 +124,7 @@ public class VoteMatchController {
 		}
 	}
 
-	//FV05, FV06, FS05 ,FS06
+	//V03-6
 	@PutMapping("/vote-match-result")
 	public ResponseEntity updateVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {
@@ -141,7 +136,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV07
+	//V06-1
 	@PutMapping("/vote-match/1")
 	public ResponseEntity endVoteMatch(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName", required = false) String teamName) throws SQLException {
@@ -170,20 +165,6 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV09
-	@GetMapping("/user/1")
-	public ResponseEntity searchFriend(@RequestParam(value="email") String email, 
-			@RequestParam(value="teamId") String teamId) throws SQLException {
-		try {
-			HashMap<String, String> searchCon = new HashMap<String, String>();
-			searchCon.put("email", email);
-			searchCon.put("teamId", teamId);
-			return new ResponseEntity(voteMatchService.searchFriend(searchCon), HttpStatus.OK);
-		}catch(RuntimeException e) {
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-		}
-	}
-	
 	//FV10
 	@PutMapping("/vote-match-setting")
 	public ResponseEntity updateVoteMatchSetting(@RequestBody VoteMatchSetting voteMatchSetting) throws SQLException {
@@ -194,7 +175,7 @@ public class VoteMatchController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	//FV14
+	//V05-3
 	@PutMapping("/vote-match/2")
 	public ResponseEntity updateVoteMatch(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName", required=false) String teamName) throws SQLException {

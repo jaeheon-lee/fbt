@@ -1,4 +1,3 @@
-import axios from "axios";
 import MapVue from "@/components/Map/Map.vue";
 import KakaoLink from "@/components/Common/KakaoLink.vue";
 
@@ -20,7 +19,7 @@ export default {
         duration: null,
         cost: null,
         writer: null,
-        content: null,
+        homeContent: null,
         stadiumName: null,
         stadiumType: null, //
         stadiumAddress: null,
@@ -119,26 +118,63 @@ export default {
         this.voteMatch.writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
     }
   },
-  mounted() {},
   computed: {
-    cancelNumber: {
+    setStartTime: {
       get: function() {
-        if (this.voteMatchSetting.cancelNumber == -1) return 0;
-        else return this.voteMatchSetting.cancelNumber;
+        if (this.matchSchedule.startTime) {
+          let startTime = this.$moment(this.matchSchedule.startTime).format(
+            "yyyy-MM-DDThh:mm:ss"
+          );
+          return startTime;
+        }
       },
       set: function(newVal) {
-        this.voteMatchSetting.cancelNumber = newVal;
+        let result = this.checkStartTime(newVal);
+        if (result)
+          this.matchSchedule.startTime = this.$moment(newVal).format(
+            "YYYY-MM-DD HH:mm:ss"
+          )
+        else this.matchSchedule.startTime = null;
+      }
+    },
+    setDuration: {
+      get: function() {
+        return this.matchSchedule.duration;
+      },
+      set: function(newVal) {
+        let result = this.checkDuration(newVal);
+        if (result) this.matchSchedule.duration = newVal;
+      }
+    },
+    setDueDate: {
+      get: function() {
+        if (this.voteMatch.dueDate) {
+          let dueDate = this.$moment(this.voteMatch.dueDate).format(
+            "yyyy-MM-DDThh:mm:ss"
+          );
+          return dueDate;
+        }
+      },
+      set: function(newVal) {
+        this.voteMatch.dueDate = this.$moment(newVal).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
       }
     }
   },
   methods: {
-    // 경기 투표 등록(FV04)
+    // V01-6
     submitVoteMatch() {
+      let result = this.checkInsertValidation();
+      if (!result) return false;
+      let dueDateValid = this.checkDueDate(this.voteMatch.dueDate);
+      if (!dueDateValid) return false;
+
       let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       this.voteMatch.matchSchedule = this.matchSchedule;
       this.voteMatch.voteMatchSetting = this.voteMatchSetting;
       this.submitting = true;
-      axios
+      this.$axios
         .post("/vote-match?teamName=" + teamName, this.voteMatch)
         .then(() => {
           alert("등록이 완료됐습니다.");
@@ -153,7 +189,12 @@ export default {
           this.submitting = false;
         });
     },
-    // Session 내용 중 Insert에 필요한 정보 받기
+    /**
+     * V01-1
+     * created에서 SessionStorage에서 팀과 개인정보를 받아 voteMatch JSON에 삽입
+     * @author 강제영
+     * @version 1.0
+     */
     insertInfoFromSession() {
       let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
       this.matchSchedule.writer = userInfo.nickName;
@@ -162,38 +203,108 @@ export default {
       this.matchSchedule.homeTeam.teamId = userInfo.teamId;
       this.matchSchedule.homeTeam.teamName = userInfo.teamName;
     },
-    // 받은 date값 변환
-    dateFomatter(i, event) {
-      let dateTime = this.$moment(event.target.value).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      if (i == 0) this.matchSchedule.startTime = dateTime;
-      // 경기일시이면
-      else this.voteMatch.dueDate = dateTime; // 마감일시면
+
+    /**
+     * V01-2
+     * 경기일시의 유효성을 확인한다. 유효성은 입력날짜가 지금 시간보다 후여야 한다.
+     * 경기일시를 현재 날짜 이후로만 설정하도록 유도한다
+     * @param dateTime : 입력받은 날짜
+     * @author 강제영
+     * @version 1.0
+     */
+    checkStartTime(dateTime) {
+      let input = new Date(dateTime);
+      let today = new Date();
+      if (input < today) {
+        alert("지금 시간보다 늦은 시간으로 설정해주세요.");
+        document.getElementById("startTime").value = null;
+        return false;
+      }
+      return true;
     },
 
-    // T006: 팀 검색
-    searchTeams() {
-      this.loading = true;
-      axios
-        .get(
-          "/team/" +
-            this.inputTeamName +
-            "?homeTeamId=" +
-            this.matchSchedule.homeTeam.teamId
-        )
-        .then(response => {
-          this.awayTeams = response.data;
-        })
-        .catch(() => {
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+    /**
+     * V01-3
+     * 경기 시간 유효성 검사
+     * 경기 시간을 숫자, 1이상으로 유도한다.
+     * @param {*} duration : 입력받은 경기 시간
+     */
+    checkDuration(duration) {
+      if (duration.length == 0) return false;
+      if (duration < 1) {
+        alert("최소 경기시간은 1시간입니다.");
+        document.getElementById("duration").value = null;
+        return false;
+      }
+      if (isNaN(duration)) {
+        alert("숫자만 입력해야 합니다.");
+        document.getElementById("duration").value = null;
+        return false;
+      }
+      return true;
     },
 
-    // Map에서 받은  targetStadium 적용하기
+    /**
+     * V01-3
+     * 투표 마감일 유효성 검사
+     * 투표 마감일을 지금 시간보다 늦게, 경기 시간보다 빠르게 유도한다
+     * @param dueDate: 입력 받은 투표 기한
+     */
+    checkDueDate(dueDate) {
+      let input = new Date(dueDate);
+      let today = new Date();
+      let startTime = new Date(this.matchSchedule.startTime);
+      if (this.matchSchedule.startTime == null) {
+        alert("경기시간부터 입력해주세요.");
+        document.getElementById("dueDate").value = null;
+        return false;
+      }
+      if (input < today) {
+        alert("투표마감일을 지금 시간보다 늦게 설정해주세요.");
+        document.getElementById("dueDate").value = null;
+        return false;
+      }
+      if (input > startTime) {
+        alert("투표마감일을 경기 시간보다 빠르게 설정해주세요.");
+        document.getElementById("dueDate").value = null;
+        return false;
+      }
+      return true;
+    },
+
+    /**
+     * V01-5
+     * 필수입력란 입력했는지  확인한다.
+     */
+    checkInsertValidation() {
+      if (!this.matchSchedule.startTime) {
+        alert("경기 일시를 입력해주세요.");
+        return false;
+      }
+      if (!this.matchSchedule.duration) {
+        alert("경기 시간을 입력해주세요.");
+        return false;
+      }
+      if (!this.matchSchedule.stadiumName) {
+        alert("경기장 정보를 입력해주세요.");
+        return false;
+      }
+      if (!this.voteMatch.dueDate) {
+        alert("투표마감일을 입력해주세요.");
+        return false;
+      }
+      if (!this.matchSchedule.matchType) {
+        alert("경기타입을 입력해주세요.");
+        return false;
+      }
+      return true;
+    },
+
+    /**
+     * U01-1
+     * 카카오맵 API로부터 받은 지역 정보를 경기 일정 JSON에 맞기 할당한다
+     * @param {*} place : 지역명, 좌표 등 KakaoMap 페이지에서 온 지역 정보  JSON
+     */
     setTargetStadium(place) {
       this.matchSchedule.stadiumName = place.place_name;
       if (place.road_address_name) {
@@ -207,6 +318,8 @@ export default {
         this.matchSchedule.stadiumAddress + " " + place.place_name;
       this.dialogStadium = false;
     },
+
+    // kakao 단톡 공유 dialog 닫기
     closeKaokao() {
       this.dialogKakao = false;
       this.$emit("close");

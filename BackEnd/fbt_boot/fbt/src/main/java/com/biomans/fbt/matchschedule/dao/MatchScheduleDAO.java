@@ -48,7 +48,7 @@ public interface MatchScheduleDAO {
 	public MatchSchedule showMatchScheduleResult(HashMap<String, Integer> searchCon) throws SQLException;
 	// S011
 	public void changeHomeTeam(HashMap<String, Integer> con) throws SQLException;
-	// S012: 일정 삭제 
+	// V06-1: 일정 삭제 
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException;
 	// S013
 	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;

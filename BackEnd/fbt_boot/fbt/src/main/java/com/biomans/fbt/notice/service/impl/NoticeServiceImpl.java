@@ -28,7 +28,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Autowired
 	private SearchDAO searchDAO;
 	
-	//FV09
+	//Me01-2
 	@Override
 	public void addNotice(Notice notice) throws SQLException {
 		noticeDAO.addNotice(notice);
@@ -42,7 +42,7 @@ public class NoticeServiceImpl implements NoticeService {
 		return notices;
 	}
 	
-	// 
+	// Me01-1
 	@Override
 	public void addNoticeByCase(NoticeFactor noticeFactor) throws SQLException {
 		// 알림 등록

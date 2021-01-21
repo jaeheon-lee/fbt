@@ -4,7 +4,10 @@
     <v-container fluid class="py-0 my-7 px-0 mx-0">
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0 mb-2">
-          <span>투표 생성</span>
+          <span class="float-left">투표 생성</span>
+          <span class="float-right" style="font-size:0.8em"
+            >* 가 표시된 항목은 필수항목입니다.</span
+          >
         </v-col>
       </v-row>
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
@@ -60,8 +63,8 @@
           <!--경기 일시-->
           <!-- 경기 일시 라벨 -->
           <v-row class="mx-0 px-0">
-            <v-col cols="8" class="text-left mx-0 px-0 pb-2">경기 일시</v-col>
-            <v-col cols="4" class="text-left mx-0 px-0 pb-2">경기 시간</v-col>
+            <v-col cols="8" class="text-left mx-0 px-0 pb-2">경기 일시*</v-col>
+            <v-col cols="4" class="text-left mx-0 px-0 pb-2">경기 시간*</v-col>
           </v-row>
           <!-- 경기 일시 input -->
           <v-row class="mx-0 px-0">
@@ -73,9 +76,10 @@
               >
                 <v-col cols="12" class="ma-0 pa-0">
                   <input
+                    id="startTime"
                     type="datetime-local"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                    @change="dateFomatter(0, $event)"
+                    v-model="setStartTime"
                   />
                 </v-col>
               </v-row>
@@ -89,10 +93,10 @@
               >
                 <v-col offset="2" cols="5" class="ma-0 pa-0">
                   <input
-                    id="match-hour"
+                    id="duration"
                     type="text"
                     style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                    v-model="matchSchedule.duration"
+                    v-model="setDuration"
                   />
                 </v-col>
                 <v-col cols="3" class="ma-0 pa-0 text-center">
@@ -106,7 +110,7 @@
           <!-- 경기장 Label -->
           <v-row class="mx-0 px-0">
             <v-col cols="12" class="text-left mx-0 px-0 pb-2"
-              >경기장 정보</v-col
+              >경기장 정보*</v-col
             >
           </v-row>
           <!-- 경기장 Input -->
@@ -160,7 +164,7 @@
           <!-- 경기타입비용주차 Label -->
           <v-row class="mx-0 px-0">
             <v-col cols="4" class="text-left mx-0 pl-0 pr-1 px-0 pb-2"
-              >경기타입</v-col
+              >경기타입*</v-col
             >
             <v-col
               cols="4"
@@ -251,8 +255,8 @@
             </v-col>
           </v-row>
           <!--경기타입비용주차 끝-->
-          <!-- 경기장타입, 샤워여부 -->
-          <!-- 경기장타입, 샤워여부 Label-->
+          <!-- 경기장타입, 샤워여부, 투표마김일 -->
+          <!-- 경기장타입, 샤워여부, 투표마김일 Label-->
           <v-row class="mx-0 px-0">
             <v-col cols="4" class="text-left mx-0 pl-0 pr-1 px-0 pb-2"
               >경기장 타입</v-col
@@ -263,8 +267,11 @@
               style="padding-left:2px;padding-right:2px;"
               >샤워여부</v-col
             >
+            <v-col cols="4" class="text-left mx-0 pl-0 pr-1 px-0 pb-2"
+              >투표마감일*</v-col
+            >
           </v-row>
-          <!-- 경기장타입, 샤워여부 Input-->
+          <!-- 경기장타입, 샤워여부, 투표마감일 Input-->
           <v-row class="mx-0 px-0">
             <!-- 경기장 타입 input -->
             <v-col cols="4" class="pa-0 pr-1">
@@ -317,24 +324,7 @@
                 </select>
               </v-row>
             </v-col>
-          </v-row>
-          <!-- 경기장타입, 샤워여부 끝 -->
-          <!-- 투표마감일, 최소인원 -->
-          <!-- 투표마감일, 최소인원 label -->
-          <v-row class="mx-0 px-0">
-            <v-col cols="4" class="text-left mx-0 pl-0 pr-1 px-0 pb-2"
-              >투표마감일</v-col
-            >
-            <v-col
-              cols="4"
-              class="text-left mx-0 px-0 pb-2"
-              style="padding-left:2px;padding-right:2px;"
-              >최소인원</v-col
-            >
-          </v-row>
-          <!-- 투표마감일, 최소인원 label 끝 -->
-          <!-- 투표마감일, 최소인원 input -->
-          <v-row class="mx-0 px-0">
+            <!-- 투표마감일 -->
             <v-col cols="4" class="pa-0 pr-1">
               <v-row
                 class="ma-0 pa-3"
@@ -342,34 +332,15 @@
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
                 <input
+                  id="dueDate"
                   type="datetime-local"
                   style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                  @change="dateFomatter(1, $event)"
+                  v-model="setDueDate"
                 />
               </v-row>
             </v-col>
-            <v-col cols="4" class="pa-0 pr-1">
-              <v-row
-                class="ma-0 pa-3"
-                justify="center"
-                style="border:2px solid #AD1457;border-radius:25px;"
-              >
-                <v-col offset="2" cols="5" class="ma-0 pa-0">
-                  <input
-                    id="cancelNumber"
-                    type="text"
-                    style="display:inline-block;width:100%;text-align:center;color:#ffffff"
-                    v-model="cancelNumber"
-                  />
-                </v-col>
-                <v-col cols="3" class="ma-0 pa-0 text-center">
-                  명
-                </v-col>
-              </v-row>
-            </v-col>
           </v-row>
-          <!-- 투표마감일, 최소인원 input 끝 -->
-          <!-- 투표마감일, 최소인원 끝 -->
+          <!-- 경기장타입, 샤워여부, 투표마감일 끝 -->
           <!--일정 내용-->
           <!--일정 내용 Label-->
           <v-row class="mx-0 px-0">
@@ -384,7 +355,7 @@
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
                 <textarea
-                  v-model="matchSchedule.content"
+                  v-model="matchSchedule.homeContent"
                   cols="10000"
                   placeholder="일정에 남기고 싶은 말을 입력해주세요"
                   style="color:#ffffff"

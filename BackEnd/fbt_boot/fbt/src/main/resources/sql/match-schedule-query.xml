@@ -3,6 +3,137 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="MatchScheduleMapper">
+<resultMap type="matchSchedule" id="matchScheduleRM">
+		<id column="match_schedule_id" property="matchScheduleId"/>
+		<result column="start_time" property="startTime"/>
+		<result column="end_time" property="endTime"/>
+		<result column="duration" property="duration"/>
+		<result column="cost" property="cost"/>
+		<result column="writer" property="writer"/>
+		<result column="regDate" property="regDate"/>
+		<result column="stadium_name" property="stadiumName"/>
+		<result column="stadium_type" property="stadiumType"/>
+		<result column="stadium_address" property="stadiumAddress"/>
+		<result column="stadium_x" property="stadiumX"/>
+		<result column="stadium_y" property="stadiumY"/>
+		<result column="stadium_parking" property="stadiumParking"/>
+		<result column="stadium_shower" property="stadiumShower"/>
+		<result column="match_type" property="matchType"/>
+		<result column="is_confirmed" property="isConfirmed"/>
+		<result column="home_content" property="homeContent"/>
+		<result column="away_content" property="awayContent"/>
+		<association property="homeTeam" javaType="team">
+			<id column="home_team_id" property="teamId"/>
+			<result column="home_emblem" property="emblem"/>
+			<result column="home_team_name" property="teamName"/>
+		</association>
+		<association property="awayTeam" javaType="team">
+			<id column="away_team_id" property="teamId"/>
+			<result column="away_emblem" property="emblem"/>
+			<result column="away_team_name" property="teamName"/>
+		</association>
+		<association property="matchResult" javaType="matchResult">
+			<id column="match_schedule_id" property="matchScheduleId"/>
+			<result column="home_score" property="homeScore"/>
+			<result column="away_score" property="awayScore"/>
+		</association>
+		<collection property="entries" javaType="list" ofType="entry">
+			<id column="entry_id" property="entryId"/>
+			<result column="attendance" property="attendance"/>
+			<result column="type" property="type"/>
+			<result column="match_score" property="matchScore"/>
+			<result column="goal" property="goal"/>
+			<result column="assist" property="assist"/>
+			<association property="team" javaType="team">
+				<id column="ent_team_id" property="teamId"/>
+			</association>
+			<association property="user" javaType="user">
+				<id column="email" property="email"/>
+				<collection property="empScores" javaType="list" ofType="empScore">
+					<id column="emp_score_id" property="empScoreId"/>
+					<result column="manner_promise_e" property="mannerPromise"/>
+					<result column="manner_contact_e" property="mannerContact"/>
+					<result column="manner_rule_e" property="mannerRule"/>
+					<result column="manner_body_fight_e" property="mannerBodyFight"/>
+					<result column="manner_slang_e" property="mannerSlang"/>
+					<result column="manner_smoking_e" property="mannerSmoking"/>
+					<result column="manner_uniform_e" property="mannerUniform"/>
+					<result column="manner_payment_e" property="mannerPayment"/>
+					<result column="manner_arrangement_e" property="mannerArrangement"/>
+					<result column="manner_referee_e" property="mannerReferee"/>
+					<result column="manner_tackle_e" property="mannerTackle"/>
+					<result column="forward_e" property="forward"/>
+					<result column="middle_e" property="middle"/>
+					<result column="defence_e" property="defence"/>
+				</collection>
+			</association>
+			<association property="teamMember" javaType="teamMember">
+				<id column="team_member_id" property="teamMemberId"/>
+				<result column="nick_name" property="nickName"/>
+			</association>
+		</collection>
+		<collection property="teamScores" javaType="list" ofType="teamScore">
+			<id column="team_score_id" property="teamScoreId"/>
+			<result column="manner_promise" property="mannerPromise"/>
+			<result column="manner_contact" property="mannerContact"/>
+			<result column="manner_rule" property="mannerRule"/>
+			<result column="manner_body_fight" property="mannerBodyFight"/>
+			<result column="manner_slang" property="mannerSlang"/>
+			<result column="manner_smoking" property="mannerSmoking"/>
+			<result column="manner_uniform" property="mannerUniform"/>
+			<result column="manner_payment" property="mannerPayment"/>
+			<result column="manner_arrangement" property="mannerArrangement"/>
+			<result column="manner_referee" property="mannerReferee"/>
+			<result column="manner_tackle" property="mannerTackle"/>
+			<result column="forward" property="forward"/>
+			<result column="middle" property="middle"/>
+			<result column="defence" property="defence"/>
+			<association property="teamTaker" javaType="team">
+				<id column="team_taker_id" property="teamId"/>
+			</association>
+			<association property="teamGiver" javaType="team">
+				<id column="team_giver_id" property="teamId"/>
+				<result column="team_giver_name" property="teamName"/>
+			</association>
+			<association property="user" javaType="user">
+				<id column="emp_email" property="email"/>			
+			</association>
+		</collection>
+	</resultMap>
+	
+	<sql id="matchScheduleColumn">
+		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.home_content, m.away_content, m.stadium_name, 
+		m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
+		m.match_type, m.home_team_id, m.away_team_id, m.is_confirmed,
+		date_add(m.start_time, interval m.duration hour) end_time
+	</sql>
+	<sql id="homeTeamColumn">
+		t.team_id home_team_id, t.emblem home_emblem, t.team_name home_team_name
+	</sql>
+	<sql id="awayTeamColumn">
+		t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name
+	</sql>
+	<sql id="entryColumn">
+		ent.entry_id, ent.email, ent.attendance, ent.type, ent.match_score, ent.goal, ent.assist,
+		ent.team_id ent_team_id
+	</sql>
+	<sql id="entryTeamMemberColumn">
+		tm.team_member_id, tm.nick_name
+	</sql>
+	<sql id="teamScoreColumn">
+		ts.team_score_id,
+		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
+		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
+		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
+		ts.defence, ts.emp_email, ts.team_taker_id
+	</sql>
+	<sql id="scoreGiverTeamColumn">
+		t3.team_id team_giver_id, t3.team_name team_giver_name
+	</sql>
+	<sql id="matchResultColumn">
+		mr.home_score, mr.away_score
+	</sql>
+	
 	<!-- S001 -->
 	<select id="showMatchScheduleById" parameterType="integer" resultMap="matchScheduleRM">
 		SELECT
@@ -25,10 +156,10 @@
 	<insert id="addMatchSchedule" parameterType="matchSchedule">
 		INSERT INTO
 		match_schedule(home_team_id, away_team_id, start_time, duration, cost, writer, reg_date, 
-		content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, 
+		home_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, 
 		stadium_shower, match_type)
 		VALUES(#{homeTeam.teamId}, #{awayTeam.teamId},#{startTime}, #{duration}, #{cost}, #{writer},
-		sysdate(), #{content}, #{stadiumName}, #{stadiumType}, #{stadiumAddress}, #{stadiumX}, #{stadiumY},
+		sysdate(), #{homeContent}, #{stadiumName}, #{stadiumType}, #{stadiumAddress}, #{stadiumX}, #{stadiumY},
 		#{stadiumParking}, #{stadiumShower}, #{matchType})
 	</insert>
 	
@@ -122,8 +253,11 @@
 			<if test="regDate != null">
 				`reg_date` = #{regDate},
 			</if>
-			<if test="content != null">
-				`content` = #{content},
+			<if test="homeContent != null">
+				`home_content` = #{homeContent},
+			</if>
+			<if test="awayContent != null">
+				`away_content` = #{awayContent},
 			</if>
 			<if test="stadiumName != null">
 				`stadium_name` = #{stadiumName},
@@ -245,133 +379,6 @@
 	</select>
 	
 	<!-- S010 -->
-	<resultMap type="matchSchedule" id="matchScheduleRM">
-		<id column="match_schedule_id" property="matchScheduleId"/>
-		<result column="start_time" property="startTime"/>
-		<result column="end_time" property="endTime"/>
-		<result column="duration" property="duration"/>
-		<result column="cost" property="cost"/>
-		<result column="writer" property="writer"/>
-		<result column="regDate" property="regDate"/>
-		<result column="stadium_name" property="stadiumName"/>
-		<result column="stadium_type" property="stadiumType"/>
-		<result column="stadium_address" property="stadiumAddress"/>
-		<result column="stadium_x" property="stadiumX"/>
-		<result column="stadium_y" property="stadiumY"/>
-		<result column="stadium_parking" property="stadiumParking"/>
-		<result column="stadium_shower" property="stadiumShower"/>
-		<result column="match_type" property="matchType"/>
-		<result column="is_confirmed" property="isConfirmed"/>
-		<association property="homeTeam" javaType="team">
-			<id column="home_team_id" property="teamId"/>
-			<result column="home_emblem" property="emblem"/>
-			<result column="home_team_name" property="teamName"/>
-		</association>
-		<association property="awayTeam" javaType="team">
-			<id column="away_team_id" property="teamId"/>
-			<result column="away_emblem" property="emblem"/>
-			<result column="away_team_name" property="teamName"/>
-		</association>
-		<association property="matchResult" javaType="matchResult">
-			<id column="match_schedule_id" property="matchScheduleId"/>
-			<result column="home_score" property="homeScore"/>
-			<result column="away_score" property="awayScore"/>
-		</association>
-		<collection property="entries" javaType="list" ofType="entry">
-			<id column="entry_id" property="entryId"/>
-			<result column="attendance" property="attendance"/>
-			<result column="type" property="type"/>
-			<result column="match_score" property="matchScore"/>
-			<result column="goal" property="goal"/>
-			<result column="assist" property="assist"/>
-			<association property="team" javaType="team">
-				<id column="ent_team_id" property="teamId"/>
-			</association>
-			<association property="user" javaType="user">
-				<id column="email" property="email"/>
-				<collection property="empScores" javaType="list" ofType="empScore">
-					<id column="emp_score_id" property="empScoreId"/>
-					<result column="manner_promise_e" property="mannerPromise"/>
-					<result column="manner_contact_e" property="mannerContact"/>
-					<result column="manner_rule_e" property="mannerRule"/>
-					<result column="manner_body_fight_e" property="mannerBodyFight"/>
-					<result column="manner_slang_e" property="mannerSlang"/>
-					<result column="manner_smoking_e" property="mannerSmoking"/>
-					<result column="manner_uniform_e" property="mannerUniform"/>
-					<result column="manner_payment_e" property="mannerPayment"/>
-					<result column="manner_arrangement_e" property="mannerArrangement"/>
-					<result column="manner_referee_e" property="mannerReferee"/>
-					<result column="manner_tackle_e" property="mannerTackle"/>
-					<result column="forward_e" property="forward"/>
-					<result column="middle_e" property="middle"/>
-					<result column="defence_e" property="defence"/>
-				</collection>
-			</association>
-			<association property="teamMember" javaType="teamMember">
-				<id column="team_member_id" property="teamMemberId"/>
-				<result column="nick_name" property="nickName"/>
-			</association>
-		</collection>
-		<collection property="teamScores" javaType="list" ofType="teamScore">
-			<id column="team_score_id" property="teamScoreId"/>
-			<result column="manner_promise" property="mannerPromise"/>
-			<result column="manner_contact" property="mannerContact"/>
-			<result column="manner_rule" property="mannerRule"/>
-			<result column="manner_body_fight" property="mannerBodyFight"/>
-			<result column="manner_slang" property="mannerSlang"/>
-			<result column="manner_smoking" property="mannerSmoking"/>
-			<result column="manner_uniform" property="mannerUniform"/>
-			<result column="manner_payment" property="mannerPayment"/>
-			<result column="manner_arrangement" property="mannerArrangement"/>
-			<result column="manner_referee" property="mannerReferee"/>
-			<result column="manner_tackle" property="mannerTackle"/>
-			<result column="forward" property="forward"/>
-			<result column="middle" property="middle"/>
-			<result column="defence" property="defence"/>
-			<association property="teamTaker" javaType="team">
-				<id column="team_taker_id" property="teamId"/>
-			</association>
-			<association property="teamGiver" javaType="team">
-				<id column="team_giver_id" property="teamId"/>
-				<result column="team_giver_name" property="teamName"/>
-			</association>
-			<association property="user" javaType="user">
-				<id column="emp_email" property="email"/>			
-			</association>
-		</collection>
-	</resultMap>
-	<sql id="matchScheduleColumn">
-		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.content, m.stadium_name, 
-		m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
-		m.match_type, m.home_team_id, m.away_team_id, m.is_confirmed,
-		date_add(m.start_time, interval m.duration hour) end_time
-	</sql>
-	<sql id="homeTeamColumn">
-		t.team_id home_team_id, t.emblem home_emblem, t.team_name home_team_name
-	</sql>
-	<sql id="awayTeamColumn">
-		t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name
-	</sql>
-	<sql id="entryColumn">
-		ent.entry_id, ent.email, ent.attendance, ent.type, ent.match_score, ent.goal, ent.assist,
-		ent.team_id ent_team_id
-	</sql>
-	<sql id="entryTeamMemberColumn">
-		tm.team_member_id, tm.nick_name
-	</sql>
-	<sql id="teamScoreColumn">
-		ts.team_score_id,
-		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
-		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
-		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
-		ts.defence, ts.emp_email, ts.team_taker_id
-	</sql>
-	<sql id="scoreGiverTeamColumn">
-		t3.team_id team_giver_id, t3.team_name team_giver_name
-	</sql>
-	<sql id="matchResultColumn">
-		mr.home_score, mr.away_score
-	</sql>
 	<!-- S010: 팀별/개인별 완료된 경기 일정 출력 -->
 	<select id="showMatchScheduleResult" parameterType="hashMap" resultMap="matchScheduleRM">
 		SELECT
@@ -409,7 +416,7 @@
 		WHERE match_schedule_id = #{matchScheduleId}
 	</update>
 	
-	<!-- S012: 일정 삭제 -->
+	<!-- V06-2: 일정 삭제 -->
 	<delete id="deleteMatchSchedule" parameterType="integer">
 		DELETE
 		FROM match_schedule

@@ -198,7 +198,7 @@
       <v-row class="ma-0 pa-0 mt-0" v-if="header.includes('voteMatch')">
         <v-col offset="2" cols="8">
           <!-- 투표 버튼 -->
-          <vote-btn :vote="vote" @do-vote="doVote"></vote-btn>
+          <vote-btn :vote="vote" @do-vote="setVoteMatchResult"></vote-btn>
           <!--투표버튼 끝-->
         </v-col>
       </v-row>
@@ -444,11 +444,11 @@
       <!--용병/지인이 받은 점수 점수 끝 -->
       <!-- 관리자 버튼 영역 -->
       <v-row v-if="controlManagerBtn(vote)">
-        <v-col offset="2" cols="8">
+        <v-col>
           <v-row justify="center" class="ma-0 pa-0">
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="endVote(vote)"
@@ -457,7 +457,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="updateSetting('setWaiting', vote)"
@@ -466,7 +466,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="deleteVoteMatch(vote)"
@@ -474,16 +474,16 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
-              v-if="header == 'voteMatchManager'"
+              v-if="header == 'voteMatchManager' && isEnd"
               @click="confirmMatchSchedule(vote)"
               >경기 확정하기</v-btn
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="updateVoteMatch(vote)"
@@ -492,7 +492,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="moveToRegister(vote, 0)"
@@ -501,7 +501,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="moveToRegister(vote, 1)"
@@ -510,7 +510,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="moveToRegister(vote, 2)"
@@ -519,7 +519,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="updateSchedule(vote)"
@@ -528,7 +528,7 @@
             >
             <v-btn
               elevation="3"
-              width="16%"
+              width="10%"
               small
               class="mr-2"
               @click="deleteSchedule(vote)"

@@ -6,6 +6,12 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import moment from "moment";
 import VueMomentJS from "vue-momentjs";
+import ProgressCircle from "@/components/Common/ProgressCircle.vue";
+import Empty from "@/components/Common/Empty.vue";
+
+// 전역 컴포넌트
+Vue.component("progress-circle", ProgressCircle);
+Vue.component("empty", Empty);
 
 //Event Bus
 Vue.prototype.$EventBus = new Vue();

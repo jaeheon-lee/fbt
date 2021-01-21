@@ -10,10 +10,8 @@ export default {
     return {};
   },
   methods: {
-    // 공유하기
-    shareLink() {
-      //1. 공유글 만들기
-      //1-1. 투표 생성이라면
+    // U02-2
+    writeLink() {
       let title = "";
       let desc = "";
       let webUrl = "";
@@ -44,7 +42,11 @@ export default {
         btnTitle = "투표하러 가기";
       }
 
-      //2. 공유하기
+      this.shareLink(title, desc, webUrl, mobileWebUrl, btnTitle);
+    },
+
+    // U02-3
+    shareLink(title, desc, webUrl, mobileWebUrl, btnTitle) {
       window.Kakao.Link.sendDefault({
         objectType: "feed",
         content: {
@@ -65,11 +67,10 @@ export default {
             }
           }
         ]
-        // if (this.searchId) this.$router.push({ name: "search" });
-        //   else this.$router.push({ name: "voteMatchManager" });
       });
       this.$emit("close");
     },
+
     // 그냥 창닫기
     close() {
       this.$emit("close");

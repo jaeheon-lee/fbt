@@ -27,4 +27,6 @@ public interface UserDAO {
 	public String getPass(String email) throws SQLException;
 	//U008
 	public void updateUser(User user) throws SQLException;
+	//V04-1
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
 }

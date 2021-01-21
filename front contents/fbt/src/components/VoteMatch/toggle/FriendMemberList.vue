@@ -105,29 +105,39 @@
         <v-row class="mx-3 mb-3">
           <v-divider color="white"></v-divider>
         </v-row>
-        <v-row
-          id="friend-list"
-          class="text-center my-1"
-          v-for="(friend, j) in friends"
-          :key="j"
-        >
-          <v-col offset="2" cols="4">
-            {{ friend.email }}
-          </v-col>
-          <v-col cols="2">
-            {{ friend.name }}
-          </v-col>
-          <v-col cols="1" class="ma-0 mb-3 pa-0 text-center"
-            ><v-btn
-              class="ma-0 ml-8 pa-0"
-              elevation="2"
-              color="#6920A3"
-              @click="inviteFriend(friend.email, vote.voteMatchId)"
-              style="font-size: 0.65em"
-              >초대하기</v-btn
-            >
-          </v-col>
-        </v-row>
+        <div v-if="!loading && !empty">
+          <v-row
+            id="friend-list"
+            class="text-center my-1"
+            v-for="(friend, j) in friends"
+            :key="j"
+          >
+            <v-col offset="2" cols="4">
+              {{ friend.email }}
+            </v-col>
+            <v-col cols="2">
+              {{ friend.name }}
+            </v-col>
+            <v-col cols="1" class="ma-0 mb-3 pa-0 text-center"
+              ><v-btn
+                class="ma-0 ml-8 pa-0"
+                elevation="2"
+                color="#6920A3"
+                @click="inviteFriend(friend.email, vote.voteMatchId)"
+                style="font-size: 0.65em"
+                >초대하기</v-btn
+              >
+            </v-col>
+          </v-row>
+        </div>
+        <!-- progress circle -->
+        <div v-else-if="loading">
+          <progress-circle></progress-circle>
+        </div>
+        <!-- progress circle 끝 -->
+        <!-- empty -->
+        <empty :ment="'해당 유저가'" v-else></empty>
+        <!-- empty 끝 -->
       </div>
     </v-expand-transition>
     <!-- 지인 초대 끝 -->
@@ -148,13 +158,19 @@ export default {
       friends: [],
       activeMemberList: null,
       activeFriendList: null,
-      openType: null
+      openType: null,
+
+      // 기본 변수
+      loading: false,
+      errored: false,
+      empty: false
     };
   },
   computed: {},
   methods: {
-    // 지인찾기 FV09
+    // V04-1
     searchFriend() {
+      this.empty = false;
       this.$axios
         .get(
           "/user/1?email=" +
@@ -165,18 +181,24 @@ export default {
         .then(response => {
           this.loading = true;
           this.friends = response.data;
+          if (this.friends.length == 0) {
+            this.empty = true;
+          }
         })
         .catch(() => {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
         });
     },
-    // 지인초대하기 FV09
+    // V04-2
     inviteFriend(email, voteMatchId) {
       let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-      let content = userInfo.name + "님이 " + userInfo.teamName + "의 경기에 초청했습니다.";
+      let content =
+        userInfo.name + "님이 " + userInfo.teamName + "의 경기에 초청했습니다.";
       content += " 클릭하여 확인해주세요.";
       let notice = {
         giverTeam: {
@@ -234,7 +256,7 @@ export default {
         this.activeFriendList = i;
         this.openType = 1;
       }
-    },
+    }
   },
   filters: {
     attendanceFliter(value) {
@@ -247,7 +269,7 @@ export default {
       } else {
         return "대기";
       }
-    },
+    }
   }
 };
 </script>

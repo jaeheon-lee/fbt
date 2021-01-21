@@ -40,7 +40,7 @@ export default {
       if (vote.voteStatus == 1) return false;
       return true;
     },
-    // 투표하기
+    // V03
     doVote(vote, result) {
       this.$emit("do-vote", vote, result);
     }

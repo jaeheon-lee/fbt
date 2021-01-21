@@ -262,7 +262,7 @@ public class MatchScheduleController {
 		}
 	}
 	
-	// FS19: 일정 삭제
+	// V06-1: 일정 삭제
 	@DeleteMapping("/match-schedule/{matchScheduleId}")
 	public ResponseEntity deleteMatchSchedule(@PathVariable int matchScheduleId) throws SQLException {
 		try {

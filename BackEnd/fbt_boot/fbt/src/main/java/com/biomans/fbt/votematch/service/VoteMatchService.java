@@ -11,20 +11,20 @@ import com.biomans.fbt.domain.VoteMatchResult;
 import com.biomans.fbt.domain.VoteMatchSetting;
 
 public interface VoteMatchService {
-	//FV01, FV02, FS02
+	//V02-2, FS02
 	public List<VoteMatch> showVoteMatchInfoByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	//FV03
 	public VoteMatch showVoteMatchInfoByScheduleId(HashMap<String, Integer> searchCon) throws SQLException;
-	//FV04
+	//V01-6
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException;
-	//FV05, FV06
+	//V03-4
 	public int addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException;
-	//FV05, FV06, FS05 ,FS06
+	//V03-5
+	public int checkMinNum(VoteMatch voteMatch) throws SQLException;
+	//V03-6
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
-	//FV07, FV14
+	//V05-3, V06-1
 	public void updateVoteMatch(VoteMatch voteMatch, int type, String teamName) throws SQLException;
-	//FV09
-	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
 	//FV10
 	public void updateVoteMatchSetting(VoteMatchSetting voteMatchSetting) throws SQLException;
 	//FV15

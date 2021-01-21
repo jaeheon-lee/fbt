@@ -77,10 +77,9 @@ export default {
   },
   methods: {
     // ========================== 버튼 눌렀을 때 메소드 ===============================//
-    // 투표하기 (FV05, FV06, FS05 ,FS06)
-    doVote(vote, result) {
-      // 필요한 정보를 담는다.
-      // 지인 투표인지 확인하고 지인과 팀원 투표에 따라 변수를 달리 담는다
+    // V03-1
+    setVoteMatchResult(vote, result) {
+      // 투표 결과 입력에 필요한 기본 정보를 담는다.
       let voteMatchResult = {
         voteMatchId: null,
         attendance: null,
@@ -93,81 +92,96 @@ export default {
       };
       voteMatchResult.voteMatchId = vote.voteMatchId;
       voteMatchResult.attendance = result;
-      if (!vote.isFriend) {
-        voteMatchResult.teamMember.teamMemberId = JSON.parse(
-          sessionStorage.getItem("userInfo")
-        ).teamMemberId;
-        voteMatchResult.user = null;
-      } else {
-        voteMatchResult.user.email = JSON.parse(
-          sessionStorage.getItem("userInfo")
-        ).email;
-        voteMatchResult.teamMember = null;
-      }
       vote.voteMatchResult = voteMatchResult;
-      // 알람에 필요한 정보를 받는다
-      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
 
-      // 수정인지 등록인지 판별한다. 지인과 팀원에 따라
+      // 공통으로 쓰이는 SessionStorage를 선언한다
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
+      // 팀원과 지인에 따라 다른 메소드를 호출한다
+      if (!vote.isFriend) {
+        // 팀원에 따른 추가 정보를 담는다.
+        let teamMemberId = userInfo.teamMemberId;
+        voteMatchResult.teamMember.teamMemberId = teamMemberId;
+        voteMatchResult.user = null;
+        this.checkVotedOfMember(vote, teamMemberId);
+      } else {
+        let email = userInfo.email;
+        voteMatchResult.user.email = email;
+        voteMatchResult.teamMember = null;
+        this.checkVotedOfFriend(vote, email);
+      }
+    },
+
+    // V03-2
+    checkVotedOfMember(vote, teamMemberId) {
+      // 팀원이 이미 투표했는지를 판단하여 수정인지 등록인지 판별한다.
       let idx = -1;
-      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo"))
-        .teamMemberId;
-      let email =
-        JSON.parse(sessionStorage.getItem("userInfo")).email + " (지인)";
-      console.log(vote);
       if (vote.voteMatchResults) {
-        if (!vote.isFriend) {
-          //팀원이면
-          for (let i = 0; i < vote.voteMatchResults.length; i++) {
-            let member = vote.voteMatchResults[i].teamMember;
-            if (!member) continue;
-            if (member.teamMemberId == teamMemberId) {
-              idx = i;
-              break;
-            }
-          }
-        } else {
-          //지인이면
-          for (let i = 0; i < vote.voteMatchResults.length; i++) {
-            let user = vote.voteMatchResults[i].user;
-            if (!user) continue;
-            if (user.email == email) {
-              idx = i;
-              break;
-            }
+        //팀원이면
+        for (let i = 0; i < vote.voteMatchResults.length; i++) {
+          let member = vote.voteMatchResults[i].teamMember;
+          if (!member) continue;
+          if (member.teamMemberId == teamMemberId) {
+            idx = i;
+            break;
           }
         }
       }
-      // 투표를 하지 않았다면 => 등록 (Fv05, FV06)
-      if (idx == -1) {
-        axios
-          .post("/vote-match-result?teamName=" + teamName, vote)
-          .then(() => {
-            alert("투표가 완료됐습니다.");
-          })
-          .catch(() => {
-            alert("투표 중 오류가 발생했습니다.");
-          })
-          .finally(() => {
-            this.refresh(vote.matchSchedule.matchScheduleId);
-          });
-      } else {
-        // 이미 투표를 했다면 => 수정 (FV05)
-        axios
-          .put("/vote-match-result", voteMatchResult)
-          .then(() => {
-            alert("투표가 수정됐습니다.");
-          })
-          .catch(() => {
-            alert("수정 중 오류가 발생했습니다.");
-          })
-          .finally(() => {
-            this.refresh(vote.matchSchedule.matchScheduleId);
-          });
-      }
-      this.$emit("refresh");
+      if (idx == -1) return this.doVote(vote);
+      else return this.updateVote(vote);
     },
-    // 투표 마감하기 FV07
+
+    // V03-3
+    checkVotedOfFriend(vote, email) {
+      let idx = -1;
+      if (vote.voteMatchResults) {
+        //지인이면
+        for (let i = 0; i < vote.voteMatchResults.length; i++) {
+          let user = vote.voteMatchResults[i].user;
+          if (!user) continue;
+          if (user.email == email) {
+            idx = i;
+            break;
+          }
+        }
+      }
+      if (idx == -1) return this.doVote(vote);
+      else return this.updateVote(vote);
+    },
+
+    // V03-4
+    doVote(vote) {
+      // 알람에 필요한 정보를 받는다
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
+      axios
+        .post("/vote-match-result?teamName=" + teamName, vote)
+        .then(() => {
+          alert("투표가 완료됐습니다.");
+        })
+        .catch(() => {
+          alert("투표 중 오류가 발생했습니다.");
+        })
+        .finally(() => {
+          this.$emit("refresh");
+        });
+    },
+
+    // V03-5
+    updateVote(vote) {
+      axios
+        .put("/vote-match-result", vote.voteMatchResult)
+        .then(() => {
+          alert("투표가 수정됐습니다.");
+        })
+        .catch(() => {
+          alert("수정 중 오류가 발생했습니다.");
+        })
+        .finally(() => {
+          this.$emit("refresh");
+        });
+    },
+
+    // V06-1
     endVote(vote) {
       let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       vote.voteStatus = 1;
@@ -185,7 +199,7 @@ export default {
           this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
-    // 경기 취소하기 FV08
+    // V06-2
     deleteVoteMatch(vote) {
       axios
         .delete("/match-schedule/" + vote.matchSchedule.matchScheduleId)
@@ -199,7 +213,7 @@ export default {
           this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
-    // 추가 인원받기: FV10
+    // V06-3
     updateSetting(type, vote) {
       let notion = "";
       let voteMatchSetting = vote.voteMatchSetting;
@@ -245,7 +259,7 @@ export default {
         }
       });
     },
-    // 투표 수정하기 (FV14)
+    // V05-1
     updateVoteMatch(vote) {
       this.$router.push({
         name: "voteMatchUpdate",
@@ -414,13 +428,11 @@ export default {
       else return false;
     },
 
-    //추가인원받기 버튼 조절 메소드
+    // V06-3
     controlAdditionBtn(vote) {
-      let cancelNumber = vote.voteMatchSetting.cancelNumber;
-      let totalAttend = vote.totalAttend;
       let waiting = vote.voteMatchSetting.waiting;
       // eslint-disable-next-line prettier/prettier
-      if (vote.voteStatus == 1 && totalAttend > cancelNumber && !waiting){
+      if (vote.voteStatus == 1 && !waiting){
         // 마감 + 목표인원 도달했을 때 + 대기인원 안 받을 때
         return true;
       } else {
@@ -429,12 +441,10 @@ export default {
     },
     // 상대팀찾기 버튼 조절 변수
     controlSearchBtn(vote) {
-      let cancelNumber = vote.voteMatchSetting.cancelNumber;
-      let totalAttend = vote.totalAttend;
       let awayTeam = vote.matchSchedule.awayTeam;
       // eslint-disable-next-line prettier/prettier
-      if (vote.voteStatus == 1 && totalAttend < cancelNumber && !awayTeam){
-        // 마감되고 목표인원 도달하지 않았을 때 + 상대팀이 없을 때
+      if (vote.voteStatus == 1 && !awayTeam){
+        // 마감되고 + 상대팀이 없을 때
         return true;
       } else {
         return false;
@@ -442,13 +452,11 @@ export default {
     },
     // 양도하기 버튼 조절 변수
     controlAssignmentBtn(vote) {
-      let cancelNumber = vote.voteMatchSetting.cancelNumber;
-      let totalAttend = vote.totalAttend;
       let homeTeamId = vote.matchSchedule.homeTeam.teamId;
       let sessionTeamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       // eslint-disable-next-line prettier/prettier
-      if (vote.voteStatus == 1 && totalAttend < cancelNumber && homeTeamId == sessionTeamId){
-        // 마감되고 목표인원 도달하지 않았을 때 + 홈팀일 때
+      if (vote.voteStatus == 1 && homeTeamId == sessionTeamId){
+        // 마감되고 + 홈팀일 때
         return true;
       } else {
         return false;
@@ -456,10 +464,8 @@ export default {
     },
     // 용병찾기 버튼 조절 메소드
     controlEmployBtn(vote) {
-      let cancelNumber = vote.voteMatchSetting.cancelNumber;
-      let totalAttend = vote.totalAttend;
-      if (vote.voteStatus == 1 && totalAttend < cancelNumber) {
-        // 마감됨 + 목표인원에 도달하지 않았을 때
+      if (vote.voteStatus == 1) {
+        // 마감됨
         return true;
       } else {
         return false;
@@ -483,9 +489,11 @@ export default {
       return value.slice(11, 16);
     },
     showMatchType(value) {
-      let matchType = "축구";
-      if (value.split(":")[0] < 11) matchType = "풋살";
-      return value + " " + matchType + " 경기";
+      if (value) {
+        let matchType = "축구";
+        if (value.split(":")[0] < 11) matchType = "풋살";
+        return value + " " + matchType + " 경기";
+      }
     },
     isEmp(value) {
       if (value) {

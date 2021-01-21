@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.Assignment;
@@ -149,6 +150,21 @@ public class UserController {
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//V04-1
+	@GetMapping("/user/1")
+	public ResponseEntity searchFriend(@RequestParam(value="email") String email, 
+			@RequestParam(value="teamId") String teamId) throws SQLException {
+		try {
+			HashMap<String, String> searchCon = new HashMap<String, String>();
+			searchCon.put("email", email);
+			searchCon.put("teamId", teamId);
+			List<User> list = userService.searchFriend(searchCon);
+			return new ResponseEntity(list, HttpStatus.OK);
+		}catch(RuntimeException e) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 	}

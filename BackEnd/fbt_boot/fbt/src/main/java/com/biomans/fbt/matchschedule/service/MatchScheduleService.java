@@ -41,7 +41,7 @@ public interface MatchScheduleService {
 	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException;
 	//FS18
 	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
-	// FS19: 일정 삭제 
+	// V06-1: 일정 삭제 
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException;
 	
 	//S001: 일정 등록

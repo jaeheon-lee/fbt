@@ -28,5 +28,7 @@ public interface UserService {
 	public Session LoginByEmail(HashMap<String, String> searchCon) throws SQLException;
 	//U004
 	public User showUserInfo(String email) throws SQLException;
+	//V04-1
+	public List<User> searchFriend(HashMap<String, String> searchCon) throws SQLException;
 	
 }

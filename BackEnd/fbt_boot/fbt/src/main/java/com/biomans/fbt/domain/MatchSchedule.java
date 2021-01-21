@@ -10,7 +10,8 @@ public class MatchSchedule {
 	private int cost;
 	private String writer;
 	private String regDate;
-	private String content;
+	private String homeContent;
+	private String awayContent;
 	private String stadiumName;
 	private String stadiumType;
 	private String stadiumAddress;
@@ -33,10 +34,11 @@ public class MatchSchedule {
 	public MatchSchedule() {}
 
 	public MatchSchedule(int matchScheduleId, String startTime, String endTime, int duration, int cost, String writer,
-			String regDate, String content, String stadiumName, String stadiumType, String stadiumAddress,
-			double stadiumX, double stadiumY, int stadiumParking, int stadiumShower, String matchType, int isConfirmed,
-			Team homeTeam, Team awayTeam, VoteMatch voteMatch, Search search, Assignment assignment, Employ employ,
-			MatchResult matchResult, List<Entry> entries, List<TeamScore> teamScores) {
+			String regDate, String homeContent, String awayContent, String stadiumName, String stadiumType,
+			String stadiumAddress, double stadiumX, double stadiumY, int stadiumParking, int stadiumShower,
+			String matchType, int isConfirmed, Team homeTeam, Team awayTeam, VoteMatch voteMatch, Search search,
+			Assignment assignment, Employ employ, MatchResult matchResult, List<Entry> entries,
+			List<TeamScore> teamScores) {
 		super();
 		this.matchScheduleId = matchScheduleId;
 		this.startTime = startTime;
@@ -45,7 +47,8 @@ public class MatchSchedule {
 		this.cost = cost;
 		this.writer = writer;
 		this.regDate = regDate;
-		this.content = content;
+		this.homeContent = homeContent;
+		this.awayContent = awayContent;
 		this.stadiumName = stadiumName;
 		this.stadiumType = stadiumType;
 		this.stadiumAddress = stadiumAddress;
@@ -122,12 +125,20 @@ public class MatchSchedule {
 		this.regDate = regDate;
 	}
 
-	public String getContent() {
-		return content;
+	public String getHomeContent() {
+		return homeContent;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setHomeContent(String homeContent) {
+		this.homeContent = homeContent;
+	}
+
+	public String getAwayContent() {
+		return awayContent;
+	}
+
+	public void setAwayContent(String awayContent) {
+		this.awayContent = awayContent;
 	}
 
 	public String getStadiumName() {
@@ -278,12 +289,12 @@ public class MatchSchedule {
 	public String toString() {
 		return "MatchSchedule [matchScheduleId=" + matchScheduleId + ", startTime=" + startTime + ", endTime=" + endTime
 				+ ", duration=" + duration + ", cost=" + cost + ", writer=" + writer + ", regDate=" + regDate
-				+ ", content=" + content + ", stadiumName=" + stadiumName + ", stadiumType=" + stadiumType
-				+ ", stadiumAddress=" + stadiumAddress + ", stadiumX=" + stadiumX + ", stadiumY=" + stadiumY
-				+ ", stadiumParking=" + stadiumParking + ", stadiumShower=" + stadiumShower + ", matchType=" + matchType
-				+ ", isConfirmed=" + isConfirmed + ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", voteMatch="
-				+ voteMatch + ", search=" + search + ", assignment=" + assignment + ", employ=" + employ
-				+ ", matchResult=" + matchResult + ", entries=" + entries + ", teamScores=" + teamScores + "]";
+				+ ", homeContent=" + homeContent + ", awayContent=" + awayContent + ", stadiumName=" + stadiumName
+				+ ", stadiumType=" + stadiumType + ", stadiumAddress=" + stadiumAddress + ", stadiumX=" + stadiumX
+				+ ", stadiumY=" + stadiumY + ", stadiumParking=" + stadiumParking + ", stadiumShower=" + stadiumShower
+				+ ", matchType=" + matchType + ", isConfirmed=" + isConfirmed + ", homeTeam=" + homeTeam + ", awayTeam="
+				+ awayTeam + ", voteMatch=" + voteMatch + ", search=" + search + ", assignment=" + assignment
+				+ ", employ=" + employ + ", matchResult=" + matchResult + ", entries=" + entries + ", teamScores="
+				+ teamScores + "]";
 	}
-
 }

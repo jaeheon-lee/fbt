@@ -403,7 +403,7 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		matchScheduleDAO.updateMatchSchedule(matchSchedule);
 	}
 	
-	//FS19: 일정 삭제
+	//V06-1: 일정 삭제
 	@Override
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
 		matchScheduleDAO.deleteMatchSchedule(matchScheduleId);
@@ -421,20 +421,5 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException {
 		return matchScheduleDAO.showLatestMatchScheduleIdById(teamId);
 	}
-	
-	
-
-	
-	
-	
-
-	
-	
-	
-	
-	//S009
-	
-	
-	
 
 }

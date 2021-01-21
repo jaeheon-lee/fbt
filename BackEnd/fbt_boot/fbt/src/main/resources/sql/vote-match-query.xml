@@ -24,7 +24,8 @@
 			<result column="cost" property="cost"/>
 			<result column="writer" property="writer"/>
 			<result column="reg_date" property="regDate"/>
-			<result column="content" property="content"/>
+			<result column="home_content" property="homeContent"/>
+			<result column="away_content" property="awayContent"/>
 			<result column="stadium_name" property="stadiumName"/>
 			<result column="stadium_type" property="stadiumType"/>
 			<result column="stadium_address" property="stadiumAddress"/>
@@ -72,7 +73,8 @@
 		v.vote_match_id, v.vote_reg_date, v.due_date, v.memo, v.vote_status, v.team_id, v.writer
 	</sql>
 	<sql id="matchScheduleEntity">
-		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.content, m.stadium_name, 
+		m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.home_content, m.away_content, 
+		m.stadium_name, 
 		m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
 		m.match_type, m.home_team_id, m.away_team_id,
 		date_add(m.start_time, interval m.duration hour) end_time,
@@ -105,13 +107,13 @@
 		LEFT OUTER JOIN team t2
 		ON m.away_team_id = t2.team_id
 	</sql>
-	<!-- V001-1: 팀별 투표 및 경기 일정 정보 -->
+	<!-- V02-2: 팀별 투표 및 경기 일정 정보 -->
 	<select id="showVoteMatchInfoByTeam" parameterType="hashMap" resultMap="VoteMatchRM" >
 		<include refid="showVoteMatchInfo"/>
 		<where>
 		tm.team_id = #{teamId}
 		AND m.start_time > sysdate()
-		AND m.is_confirmed is NULL
+		AND (m.is_confirmed is NULL OR m.is_confirmed = 0)
 			<choose>
 				<when test="voteStatus == 0">
 					AND v.vote_status = #{voteStatus}
@@ -151,7 +153,7 @@
 		JOIN vote_match v
 		ON vr.vote_match_id = v.vote_match_id
 	</sql>
-	<!-- V002-1: 투표별 명단 요약 정보 -->
+	<!-- V02-2: 투표별 명단 요약 정보 -->
 	<select id="showVoteMatchNumByVote" parameterType="integer" resultMap="VoteMatchRM">
 		<include refid="showVoteMatchNum"/>
 		WHERE v.vote_match_id = #{value}
@@ -190,7 +192,7 @@
 			LEFT OUTER JOIN team_member tm
 			ON vr.team_member_id = tm.team_member_id
 		</sql>
-	<!-- V003-1: 투표별 경기 투표 명단 출력 -->
+	<!-- V02-2: 투표별 경기 투표 명단 출력 -->
 	<select id="showVoteMatchResultByVote" parameterType="integer" resultMap="voteMatchResultRM">
 		<include refid="showVoteMatchResult"/>
 		WHERE v.vote_match_id = #{value}
@@ -202,14 +204,14 @@
 		AND v.team_id = #{teamId}
 	</select>
 	
-	<!-- V004: 경기 투표 등록 -->
+	<!-- V01-6: 경기 투표 등록 -->
 	<insert id="addVoteMatch" parameterType="voteMatch">
 		INSERT INTO
 		vote_match(memo, due_date, vote_status, vote_reg_date, writer, team_id, match_schedule_id)
 		VALUES(#{memo}, #{dueDate}, 0, sysdate(), #{writer}, #{team.teamId}, 
 		#{matchSchedule.matchScheduleId})
 	</insert>
-	<!-- V005: 해당 팀에서 가장 최근에 등록한 투표 아이디 가져오가 -->
+	<!-- V01-6: 해당 팀에서 가장 최근에 등록한 투표 아이디 가져오가 -->
 	<select id="getLatestVoteMatchIdByTeam" parameterType="integer" resultType="integer">
 		SELECT
 		vote_match_id
@@ -218,7 +220,7 @@
 		ORDER BY vote_match_id DESC
 		LIMIT 1
 	</select>
-	<!-- V006: 경기 투표 설정 등록 -->
+	<!-- V01-6: 경기 투표 설정 등록 -->
 	<insert id="addVoteMatchSetting" parameterType="voteMatchSetting">
 		INSERT INTO 
 		vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, 
@@ -227,7 +229,8 @@
 		#{selfMaxNumber}, #{empDueDate}, #{empMinNumber}, #{awayMinNumber}, #{awayDueDate}, #{assignCost}, 
 		#{empCost}, #{searchCost})
 	</insert>
-	<!-- V007 : 참불 입력하기 -->
+	
+	<!-- V03-4 : 참불 입력하기 -->
 	<insert id="addAttendance" parameterType="voteMatchResult">
 		INSERT INTO
 		<if test="teamMember != null">
@@ -239,7 +242,7 @@
 			VALUES(#{voteMatchId}, #{user.email}, #{attendance})
 		</if>
 	</insert>
-	<!-- V008 : 투표 수정하기 -->
+	<!-- V03-6 : 투표 수정하기 -->
 	<update id="updateAttendace" parameterType="voteMatchResult">
 		UPDATE vote_match_result
 		SET attendance = #{attendance}
@@ -247,7 +250,7 @@
 		AND (team_member_id = #{teamMember.teamMemberId}
 		OR email = #{user.email})
 	</update>
-	<!-- V009: 상대방 찾기를 통한 투표인지 확인하기  -->
+	<!-- V03-5: 상대방 찾기를 통한 투표인지 확인하기  -->
 	<select id="checkBySearch" parameterType="hashMap" resultType="String">
 		SELECT
 		s.search_id
@@ -257,7 +260,7 @@
 		WHERE s.match_schedule_id = #{matchScheduleId}
 		AND sr.team_id_taker = #{takerTeamId}
 	</select>
-	<!-- V010-1: id로 투표 수정하기 -->
+	<!-- V05-3, V06-1: id로 투표 수정하기 -->
 	<update id="updateVoteMatch" parameterType="voteMatch">
 		UPDATE vote_match
 		SET
@@ -285,18 +288,7 @@
 		away_due_date = #{awayDueDate}, assign_cost = #{assignCost}, emp_cost = #{empCost}, search_cost = #{searchCost}
 		WHERE vote_match_id = #{voteMatchId}
 	</update>
-	<!-- V012: 지인 찾기 -->
-	<select id="searchFriend" parameterType="hashMap" resultType="user">
-		SELECT u.email, u.name
-		FROM user u
-		WHERE not exists (
-			SELECT distinct email
-			FROM team_member tm
-			WHERE u.email = tm.email
-			AND team_id = #{teamId}
-		)
-		AND u.email like '%${email}%'
-	</select>
+	
 	<!-- V014-1 : 경기 투표 Id로 투표 삭제 -->
 	<delete id="deleteVoteMatchByVoteMatchId" parameterType="integer">
 		DELETE FROM vote_match

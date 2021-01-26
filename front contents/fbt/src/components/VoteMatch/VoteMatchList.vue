@@ -208,7 +208,11 @@
         v-if="header == 'schedule' && !vote.isEndMatch"
       >
         <v-col offset="2" cols="8">
-          <wait-cancel-btn :vote="vote" @do-vote="doVote"></wait-cancel-btn>
+          <wait-cancel-btn
+            :vote="vote"
+            @do-vote="setVoteMatchResult"
+            @update-vote="setVoteMatchResult"
+          ></wait-cancel-btn>
         </v-col>
       </v-row>
       <!-- 지인 | 명단보기 - 투표페이지 -->
@@ -219,7 +223,9 @@
       </v-row>
       <!-- 지인 | 명단보기 끝-->
       <!-- 투표 명단보기 - 팀일정페이지 -->
-      <v-row v-if="header.includes('schedule') && !vote.isEndMatch">
+      <v-row
+        v-if="header.includes('schedule') && !vote.isEndMatch && !isByAssign"
+      >
         <v-col class="py-0" offset="2" cols="8">
           <member-list :vote="vote" :i="i" :awayVote="awayVote"></member-list>
         </v-col>
@@ -318,7 +324,7 @@
       </div>
       <!-- 경기 참여 명단 끝 -->
       <!-- 팀이 받은 점수 -->
-      <div class="ma-0 pa-0" v-if="header != 'scheduleUser' && vote.isEndMatch">
+      <div class="ma-0 pa-0" v-if="controlTeamScoreBtn(vote)">
         <!-- 팀이 받은 점수 라벨 -->
         <v-row style="color:rgba(235, 255, 0,0.7)">
           <v-col offset="2" cols="10" class="my-0 py-0">
@@ -367,10 +373,10 @@
                   {{ getGiverName(teamScore) }}
                 </v-col>
                 <v-col cols="2">
-                  {{ teamScore.teamAbility | showTeamScore }}
+                  {{ teamScore.avgAbility | showTeamScore }}
                 </v-col>
                 <v-col cols="2">
-                  {{ teamScore.teamManner | showTeamScore }}
+                  {{ teamScore.avgManner | showTeamScore }}
                 </v-col>
               </v-row>
             </v-col>
@@ -445,7 +451,11 @@
       <!-- 관리자 버튼 영역 -->
       <v-row v-if="controlManagerBtn(vote)">
         <v-col>
-          <v-row justify="center" class="ma-0 pa-0">
+          <v-row
+            justify="center"
+            class="ma-0 pa-0"
+            v-if="header == 'voteMatchManager'"
+          >
             <v-btn
               elevation="3"
               width="10%"
@@ -517,13 +527,18 @@
               v-if="controlAssignmentBtn(vote)"
               >양도하기</v-btn
             >
+          </v-row>
+          <v-row
+            justify="center"
+            class="ma-0 pa-0"
+            v-if="header == 'scheduleManager'"
+          >
             <v-btn
               elevation="3"
               width="10%"
               small
               class="mr-2"
               @click="updateSchedule(vote)"
-              v-if="header == 'scheduleManager'"
               >일정 수정하기</v-btn
             >
             <v-btn
@@ -532,7 +547,6 @@
               small
               class="mr-2"
               @click="deleteSchedule(vote)"
-              v-if="header == 'scheduleManager'"
               >일정 삭제하기</v-btn
             >
           </v-row>
@@ -542,7 +556,11 @@
     </v-card>
     <!-- 카카오 공유하기 창 -->
     <v-dialog v-model="dialogKakao">
-      <kakao-link :vote="sendingVote" @close="closeKaokao"></kakao-link>
+      <kakao-link
+        :vote="sendingVote"
+        :confirmedVote="confirmedVote"
+        @close="closeKaokao"
+      ></kakao-link>
     </v-dialog>
     <!-- 카카오 공유하기 창 끝 -->
   </div>

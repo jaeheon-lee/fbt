@@ -103,6 +103,7 @@
                   :votes="votes"
                   :awayVote="awayVote"
                   :header="sendingHeader"
+                  :isByAssign="isByAssign"
                   @refresh="showMatchScheduleInfoByRefresh"
                   @refresh-monthly="getEventFresh"
                 ></vote-match-list>

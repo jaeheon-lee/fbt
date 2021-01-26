@@ -23,7 +23,8 @@ export default {
 
       // get 변수
       loading: false,
-      errored: false
+      errored: false,
+      empty: false
     };
   },
   mounted() {
@@ -63,6 +64,7 @@ export default {
         .get("/employ/1/" + teamId + "/" + status)
         .then(response => {
           this.employs = response.data;
+          if (this.employs.length == 0) this.empty = true;
         })
         .catch(() => {
           this.errored = true;
@@ -92,6 +94,7 @@ export default {
         .get("/employ/2/" + email + "/" + empResultStatus)
         .then(response => {
           this.employs = response.data;
+          if (this.employs.length == 0) this.empty = true;
         })
         .catch(() => {
           this.errored = true;
@@ -286,6 +289,13 @@ export default {
       } else {
         return "미정";
       }
+    },
+    // 구하는 팀 표시 조절 메소드
+    controlStar(employ) {
+      let teamGiverId = employ.teamGiver.teamId;
+      let homeTeamId = employ.matchSchedule.homeTeam.teamId;
+      if (teamGiverId == homeTeamId) return true;
+      else return false;
     }
   },
   filters: {

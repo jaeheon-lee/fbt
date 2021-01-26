@@ -2,7 +2,15 @@
   <div>
     <v-container fluid class="ma-0 pa-0">
       <!-- 용병 찾기 리스트 -->
-      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
+      <!-- empty -->
+      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5" v-if="empty">
+        <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
+          <v-divider color="white" ></v-divider>
+          <empty :ment="'양도가'"></empty>
+        </v-col>
+      </v-row>
+      <!-- 양도 리스트 -->
+      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5" v-else>
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <v-divider color="white"></v-divider>
           <v-card
@@ -32,7 +40,8 @@
                   contain
                 />
                 <!-- 홈팀 이름 -->
-                {{ employ.matchSchedule.homeTeam.teamName }}
+                <v-icon v-if="controlStar(employ) == true">mdi-star</v-icon>
+                <span>{{ employ.matchSchedule.homeTeam.teamName }}</span>
               </v-col>
               <!-- 경기 간략 정보 -->
               <v-col id="match-info" cols="4" md="4" class="pt-1 text-center">
@@ -70,7 +79,8 @@
                   contain
                 />
                 <!-- 어웨이 팀이름 -->
-                {{ getAwayTeamName(employ.matchSchedule) }}
+                <v-icon v-if="controlStar(employ) == false">mdi-star</v-icon>
+                <span>{{ getAwayTeamName(employ.matchSchedule) }}</span>
               </v-col>
             </v-row>
             <!-- 경기 상세정보 -->

@@ -16,6 +16,8 @@ export default {
   mounted() {
   },
   methods: {
-   
+    changeRegisteredStage(stage) {
+      this.$emit("change-registered-stage", stage);
+    }
   }
 };

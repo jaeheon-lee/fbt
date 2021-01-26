@@ -57,7 +57,7 @@ export default {
       dialogStadium: false, // 경기장 부분
       dialogMatchSchedule: false, // 저장된 경기일정 부분
       //Input disable 관련 변수
-      updateDisabled: false, // 정보 받아오면 true, 직접 쓰면 false => 정보 수정 불가능하게
+      updateDisabled: true, // 직접 등록 불가
       //  경기장 관련 변수
       targetStadium: null, // 경기장 주소 및 이름 출력 변수
       // 경기 타입 관련 변수
@@ -166,6 +166,8 @@ export default {
     /* 공통 -----------------------------------------------------------------*/
     // FA01 
     addAssign() {
+      let result = this.checkValidation();
+      if (!result) return false;
       // eslint-disable-next-line prettier/prettier
       Axios
         .post("/assignment", this.assignment)
@@ -180,6 +182,14 @@ export default {
         .finally(() => {
 
         })
+    },
+    //
+    checkValidation() {
+      if (!this.assignment.dueDate) {
+        alert("마감 시간을 입력해주세요.");
+        return false;
+      }
+      return true;
     },
     // 세션 | props 정보 vo에 넣기
     insertInfoFromSessionProps() {

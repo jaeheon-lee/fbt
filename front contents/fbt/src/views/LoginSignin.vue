@@ -168,6 +168,11 @@
 <script>
 export default {
   name: "login",
+  props: {
+    fromNaverLogin: Boolean,
+    naverId: String,
+    naverType: Number
+  },
   data: () => ({
     // 로그인 관련 변수
     email: null,
@@ -181,21 +186,33 @@ export default {
     user: {},
 
     isLogin: true,
-    isSignin: false
+    isSignin: false,
+
+    // url 관련 변수
+    isFromUrl: false,
+    urlFactor: {}
   }),
   mounted() {
-    // 네이버 로그인 초기화 & 버튼 삽입
-    var naverLogin = new window.naver.LoginWithNaverId({
-      clientId: "A_OmJxJFCT9rk_ECJ0Uw",
-      callbackUrl: "http://localhost:8080/naver",
-      isPopup: false,
-      loginButton: { color: "green", type: 3, height: 60 }
-    });
-    naverLogin.init();
-    this.$emit("a");
+    // 네이버 로그인 후 다시 온 것을 체크
+    console.log(this.naverType);
+    if (this.fromNaverLogin) {
+      this.id = this.naverId;
+      this.type = this.naverType;
+      this.apiLogin();
+    } else {
+      // 네이버 로그인 초기화 & 버튼 삽입
+      var naverLogin = new window.naver.LoginWithNaverId({
+        clientId: "A_OmJxJFCT9rk_ECJ0Uw",
+        callbackUrl: this.$http + "/naver",
+        isPopup: false,
+        loginButton: { color: "green", type: 3, height: 60 }
+      });
+      naverLogin.init();
+      this.$emit("a");
+    }
   },
   methods: {
-    // ======================== 회원가입 =============================//
+    // ======================== 로그인 =============================//
     // 이메일을 통한 로그인
     emailLogin() {
       if (this.email == null || this.pass == null) {
@@ -213,8 +230,7 @@ export default {
           } else {
             alert("로그인됐습니다.");
             this.dialogLogin = false;
-            sessionStorage.setItem("userInfo", JSON.stringify(this.user));
-            location.href = this.$http + "/home";
+            this.setUserInfoInSession();
           }
         })
         .catch(error => {
@@ -241,8 +257,7 @@ export default {
             // 회원이라면
           } else {
             alert("로그인됐습니다.");
-            sessionStorage.setItem("userInfo", JSON.stringify(this.user));
-            location.href = this.$http + "/home";
+            this.setUserInfoInSession();
           }
         })
         .catch(error => {
@@ -250,8 +265,11 @@ export default {
           console.log(error);
         });
     },
-    // 로그인이 되면 세션에 입력
-    setSession() {},
+    setUserInfoInSession() {
+      sessionStorage.setItem("userInfo", JSON.stringify(this.user));
+      this.checkIsFromUrl();
+    },
+
     // 카카오 로그인: 토큰 받기
     kakaoLogin() {
       window.Kakao.Auth.login({
@@ -278,11 +296,12 @@ export default {
         }
       });
     },
+
     // 네이버 로그인
     naverLogin() {
       var naverLogin = new window.naver.LoginWithNaverId({
         clientId: "A_OmJxJFCT9rk_ECJ0Uw",
-        callbackUrl: "http://localhost:8080/naver",
+        callbackUrl: this.$http + "/naver",
         isPopup: false,
         loginButton: { color: "green", type: 3, height: 60 }
       });
@@ -292,6 +311,55 @@ export default {
     // 회원가입 창으로 이동
     moveToSignin() {
       this.$router.push("signin");
+    },
+    // ====================== Url 링크를 통한 경우 =============================/
+    setSessionStorageFromUrl() {
+      let urlInfo = JSON.stringify(this.urlFactor);
+      sessionStorage.setItem("urlInfo", urlInfo);
+      this.checkIsUrlInfo();
+    },
+    checkIsFromUrl() {
+      this.urlFactor = this.$route.query;
+      if (this.urlFactor.destination) {
+        this.isFromUrl = true;
+        this.setSessionStorageFromUrl();
+      } else {
+        location.href = this.$http + "/home";
+      }
+    },
+    checkIsUrlInfo() {
+      let urlInfo = JSON.parse(sessionStorage.getItem("urlInfo"));
+      if (urlInfo) {
+        this.selectTeam(urlInfo);
+      }
+    },
+    selectTeam(urlInfo) {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      if (!userInfo) return false;
+      let teams = userInfo.teams;
+      if (teams.length > 0) {
+        for (let i = 0; i < teams.length; i++) {
+          let teamId = teams[i].teamId;
+          console.log(teamId, urlInfo.teamId);
+          if (teamId == urlInfo.teamId) {
+            this.setTeamByUrl(teams[i], urlInfo);
+            break;
+          }
+        }
+      }
+    },
+    setTeamByUrl(team, urlInfo) {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      userInfo.teamId = team.teamId;
+      userInfo.teamMemberId = team.teamMemberId;
+      userInfo.nickName = team.nickName;
+      userInfo.teamName = team.teamName;
+      userInfo.memberLevel = team.memberLevel;
+      sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
+      this.moveToDestination(urlInfo);
+    },
+    moveToDestination(urlInfo) {
+      location.href = this.$http + "/" + urlInfo.destination;
     }
   }
 };

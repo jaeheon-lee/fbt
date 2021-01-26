@@ -104,7 +104,7 @@ public class AssignmentController {
 	
 	//FA02
 	@PostMapping("/assignment/3")
-	public ResponseEntity addAssignment(@RequestBody Filter filter) throws SQLException {
+	public ResponseEntity searchAssignmentByFilter(@RequestBody Filter filter) throws SQLException {
 		try {
 			List<Assignment> list = assignmentService.searchAssignmentByFilter(filter);
 			return new ResponseEntity(list, HttpStatus.OK);

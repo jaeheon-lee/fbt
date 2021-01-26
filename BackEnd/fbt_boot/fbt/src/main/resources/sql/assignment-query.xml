@@ -117,7 +117,7 @@
 				AND a.assignment_id NOT IN (
 					SELECT assignment_id 
 					FROM assignment_reservation 
-					WHERE reservation_status = 1
+					WHERE reservation_status = 2
 				)
 				AND sysdate() > due_date
 			</if>
@@ -138,7 +138,7 @@
 						AND a.assignment_id NOT IN (
 							SELECT assignment_id 
 							FROM assignment_reservation
-							WHERE reservation_status = 1
+							WHERE reservation_status IN (1, 2)
 						)
 						AND due_date > sysdate()
 					</if>
@@ -176,7 +176,6 @@
 		<include refid="showAssignmentJoinApplied"/>
 		<where>
 		m.start_time > sysdate() 
-		AND ar.reservation_status != 2
 			<!-- 경기일 -->
 			<if test="date != null">
 				AND m.start_time LIKE "${date}%"
@@ -228,8 +227,6 @@
 		<if test="order == 2">
 			ORDER BY t4.team_manner DESC
 		</if>
-			
-		<!-- 매너순 -->
 	</select>
 	
 	<!-- A004: 양도 신청 -->

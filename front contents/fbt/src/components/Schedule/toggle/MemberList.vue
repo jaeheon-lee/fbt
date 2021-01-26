@@ -131,6 +131,12 @@ export default {
       openType: null
     };
   },
+  watch: {
+    vote: function() {
+      this.activeHomeMemberList = null;
+      this.activeAwayMemberList = null;
+    }
+  },
   computed: {
     controlAwayMemberListBtn: function() {
       let homeTeamId = this.vote.matchSchedule.homeTeam.teamId;

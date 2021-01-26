@@ -1,10 +1,17 @@
 <template>
   <div>
     <v-container fluid class="py-0 my-7 px-0 mx-0">
+      <!-- 양도 생성 관련 공지 -->
+      <v-row fluid justify="center" class="py-0 my-3 px-0 mx-5">
+        투표 페이지 혹은 "저장된 경기 불러오기"를 통해 등록해주세요
+      </v-row>
       <!-- 양도 등록 Label -->
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0 mb-2">
           <span>양도 등록</span>
+          <span class="ml-5" style="font-size: 0.8em"
+            >* 가 표시된 항목은 필수항목입니다.</span
+          >
           <span
             class="mr-2 float-right"
             @click="loadMatchSchedule"
@@ -351,7 +358,7 @@
           <!-- 마감시간 -->
           <!--  마감시간 Label-->
           <v-row class="mx-0 px-0">
-            <v-col cols="4" class="text-left mx-0 px-0 pb-2">마감 시간</v-col>
+            <v-col cols="4" class="text-left mx-0 px-0 pb-2">마감 시간*</v-col>
           </v-row>
           <!-- 마감시간 Input -->
           <v-row class="mx-0 px-0">
@@ -385,7 +392,7 @@
                 style="border:2px solid #AD1457;border-radius:25px;"
               >
                 <textarea
-                  v-model="assignment.matchSchedule.content"
+                  v-model="assignment.matchSchedule.homeContent"
                   cols="10000"
                   placeholder="일정에 남기고 싶은 말을 입력해주세요"
                   style="color:#ffffff"
@@ -397,7 +404,9 @@
           <!--양도글 내용-->
           <!-- 양도글  내용 Label-->
           <v-row class="mx-0 px-0">
-            <v-col cols="12" class="text-left mx-0 px-0 pb-2">양도글 내용</v-col>
+            <v-col cols="12" class="text-left mx-0 px-0 pb-2"
+              >양도글 내용</v-col
+            >
           </v-row>
           <!--일정 내용 Input-->
           <v-row class="mx-0 px-0">

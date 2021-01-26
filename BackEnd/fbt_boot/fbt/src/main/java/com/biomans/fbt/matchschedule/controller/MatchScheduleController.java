@@ -39,7 +39,7 @@ public class MatchScheduleController {
 	@Autowired
 	private TeamMemberService teamMemberService;
 	
-	//FS01
+	//M01-1
 	@GetMapping("/match-schedule/2/{matchScheduleId}")
 	public ResponseEntity showMatchScheduleByMatchScheduleId(@PathVariable int matchScheduleId) throws SQLException {
 		try {
@@ -131,7 +131,7 @@ public class MatchScheduleController {
 	
 	//FS10
 	@GetMapping("/match-schedule/4/{matchScheduleId}/{teamId}")
-	public ResponseEntity showMatchScheduleById(@PathVariable int matchScheduleId,
+	public ResponseEntity showAttendFriendEmploy(@PathVariable int matchScheduleId,
 			@PathVariable int teamId) throws SQLException {
 		try {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
@@ -183,7 +183,6 @@ public class MatchScheduleController {
 			searchCon.put("startTime", startTime);
 			searchCon.put("endTime", endTime);
 			List<MatchSchedule> list = matchScheduleService.showMatchSchduleByUserPeriod(searchCon);
-			System.out.println(list);
 			return new ResponseEntity(list,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -201,6 +200,7 @@ public class MatchScheduleController {
 			MatchSchedule matchSchedule = matchScheduleService.showMatchScheduleResultByUser(searchCon, email);
 			return new ResponseEntity(matchSchedule,HttpStatus.OK);
 		}catch(RuntimeException e) {
+			e.printStackTrace();
 			System.out.println(e);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}

@@ -46,9 +46,9 @@ public class SearchController {
 	@Autowired
 	private NoticeService noticeService;
 	
-	//FM01
+	//M01-3
 	@PostMapping("/search")
-	public ResponseEntity addSearch1(@RequestBody Search search) throws SQLException {
+	public ResponseEntity addSearch(@RequestBody Search search) throws SQLException {
 		try {
 			searchService.addSearch(search);
 			return new ResponseEntity(HttpStatus.OK);
@@ -57,7 +57,7 @@ public class SearchController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	//FM02
+	//M02-2
 	@PostMapping("/search/2")
 	public ResponseEntity searchMatchByFilter(@RequestBody Filter filter) throws SQLException {
 		try {

@@ -96,6 +96,7 @@ export default {
     ]
   }),
   mounted() {
+    console.log(this.type);
     // input setting
     let today = new Date();
     let toyear = parseInt(today.getFullYear());
@@ -188,6 +189,9 @@ export default {
     },
     // FU06
     submitUser() {
+      let result = this.checkValidation();
+      if (!result) return false;
+
       // 1. 받은 변수 중 병합할 것 합치기
       this.dataHandle();
 
@@ -195,22 +199,62 @@ export default {
       if (this.id) this.user.apiKey = this.id;
       if (this.type) this.user.apiType = this.type;
 
+      console.log(this.user);
       // 3. 등록
       this.$axios
         .post("/user", this.user)
         .then(() => {
           alert("회원가입이 완료됐습니다.");
-          this.$router.push("/home");
+          this.$router.push("/loginSignin");
         })
         .catch(() => {
           alert("회원가입에 실패했습니다.");
         });
     },
+    checkValidation() {
+      let user = this.user;
+      if (!user.email) {
+        alert("이메일을 입력해주세요");
+        return false;
+      }
+      if (!user.pass) {
+        alert("비밀번호을 입력해주세요");
+        return false;
+      }
+      if (user.pass != user.pass2) {
+        alert("비밀번호을 확인해주세요");
+        return false;
+      }
+      if (user.pass.length < 8) {
+        alert("비밀번호를 8자 이상으로 해주세요");
+        return false;
+      }
+      if (!user.name) {
+        alert("이름을 입력해주세요");
+        return false;
+      }
+      if (!this.getYear || !this.getMonth || !this.getDay) {
+        alert("생년월일을 입력해주세요");
+        return false;
+      }
+      if (this.emailDuple) {
+        alert("중복된 이메일입니다.");
+        return false;
+      }
+      return true;
+    },
     dataHandle() {
       // eslint-disable-next-line prettier/prettier
-      let bornDate = new Date(this.getYear + "-" + this.getMonth + "-" + this.getDay);
+      let bornDateWritten = false;
+      if (this.getYear && this.getMonth && this.getDay) bornDateWritten = true;
+      let bornDate = "";
+      if (bornDateWritten) {
+        bornDate = new Date(this.getYear + "-" + this.getMonth + "-" + this.getDay);
+      }
       this.user.bornDate = this.$moment(bornDate).format("yyyy-MM-DD");
-      this.user.area = this.siDo + " " + this.siGun;
+      if (this.siDo || this.siGun) {
+        this.user.area = this.siDo + " " + this.siGun;
+      }
     }
   }
 };

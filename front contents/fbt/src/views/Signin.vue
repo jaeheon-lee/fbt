@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      header: " insert"
+      header: "insert"
     }
   }
 };

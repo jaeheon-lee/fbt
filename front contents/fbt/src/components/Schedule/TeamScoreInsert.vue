@@ -284,14 +284,11 @@
         <!-- 용병경기팀 경기력/매너 점수 입력 끝 -->
       </v-card>
 
-      <v-btn class="float-right" text @click="e1 = 2">
-        이전
-      </v-btn>
       <v-btn
         class="float-right"
         color="primary"
         @click="updateTeamScore"
-        v-if="teamScoreByEmp"
+        v-if="teamScoreByEmp.user"
       >
         수정
       </v-btn>

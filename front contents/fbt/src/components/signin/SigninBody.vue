@@ -12,13 +12,16 @@
           sm="8"
           xs="12"
         >
+          <span class="ml-5" style="font-size: 0.8em"
+            >* 가 표시된 항목은 필수항목입니다.</span
+          >
           <!-- page1 -->
           <v-card class="mx-5 py-4" v-if="page == 1">
             <!-- 이메일-->
             <v-row class="pt-6">
               <v-text-field
                 class="mx-15"
-                label="이메일"
+                label="이메일*"
                 placeholder="이메일을 입력해주세요"
                 dense
                 counter="50"
@@ -40,7 +43,7 @@
               <v-row class="mt-6">
                 <v-text-field
                   class="mx-15"
-                  label="비밀번호"
+                  label="비밀번호*"
                   placeholder="8자 이상 입력해주세요."
                   dense
                   counter="20"
@@ -53,7 +56,7 @@
               <v-row class="mt-6">
                 <v-text-field
                   class="mx-15"
-                  label="비밀번호 확인"
+                  label="비밀번호 확인*"
                   placeholder="비밀번호를 다시 입력해주세요"
                   dense
                   counter="20"
@@ -73,7 +76,7 @@
             <v-row class="mt-6">
               <v-text-field
                 class="mx-15"
-                label="이름"
+                label="이름*"
                 placeholder="이름을 입력해주세요."
                 dense
                 :rules="[rules.required]"
@@ -192,7 +195,7 @@
                   placeholder="생년"
                   outlined
                   :items="year"
-                  label="생년"
+                  label="생년*"
                   hide-details
                   v-model="getYear"
                 ></v-select>
@@ -203,7 +206,7 @@
                   placeholder="월"
                   outlined
                   :items="month"
-                  label="월"
+                  label="월*"
                   hide-details
                   v-model="getMonth"
                 ></v-select>
@@ -214,7 +217,7 @@
                   placeholder="일"
                   outlined
                   :items="day"
-                  label="일"
+                  label="일*"
                   hide-details
                   v-model="getDay"
                 ></v-select>

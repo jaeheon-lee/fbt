@@ -410,12 +410,14 @@ export default {
     // ============== 제출====================== //
     //FS08
     submitMatchResult() {
+      let isHomeTeam = this.checkIsHomeTeam();
       let entries = this.teamEntries.concat(this.empEntries);
       let matchResultCollection = {
         entries: entries,
         empScores: this.empScores,
         teamScore: this.teamScore,
-        matchResult: this.matchResult
+        matchResult: this.matchResult,
+        isHomeTeam: isHomeTeam
       };
       this.$axios
         .post("/match-schedule/2", matchResultCollection)
@@ -429,6 +431,14 @@ export default {
         .finally(() => {
           location.reload();
         });
+    },
+    // 홈팀인지 아닌지 체크하는 변수
+    checkIsHomeTeam() {
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      let matchSchedule = this.vote.matchSchedule;
+      let homeTeamId = matchSchedule.homeTeam.teamId;
+      if (teamId == homeTeamId) return true;
+      else return false;
     },
     // ============== 수정 시 ====================== //
     //FS11

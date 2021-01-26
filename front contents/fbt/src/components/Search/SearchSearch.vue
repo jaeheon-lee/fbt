@@ -181,7 +181,7 @@
               <v-btn
                 elevation="3"
                 class="mr-5"
-                @click="arrangeFilter"
+                @click="cleanSearch"
                 color="#6920A3"
                 >검색하기</v-btn
               >
@@ -199,12 +199,22 @@
         </v-col>
       </v-row>
       <!-- 검색 결과 라벨 끝-->
+      <!-- 검색 결과 본문 -->
       <search-list
         :searchedSearch="searchedSearch"
         :registeredStage="null"
         :appliedStage="null"
         :whichBtnActive="whichBtnActive"
       ></search-list>
+      <!-- 검색 결과 본문 끝 -->
+      <!-- empty -->
+      <empty :ment="'검색결과가'" v-if="empty && !loading"></empty>
+      <!-- empty 끝 -->
+      <!-- 마지막 표시 -->
+      <last v-if="isLast && !loading"></last>
+      <!-- 마지막 표시 끝 -->
+      <!-- progress-circle -->
+      <progress-circle v-if="loading"></progress-circle>
     </v-container>
   </div>
 </template>

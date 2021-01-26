@@ -55,7 +55,7 @@ export default {
     };
   },
   created() {
-    if (this.teamScoreByEmp) {
+    if (this.teamScoreByEmp.user) {
       this.teamScore = this.teamScoreByEmp;
     } else {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
@@ -64,7 +64,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.teamScoreByEmp) this.findEmpTeam();
+    if (!this.teamScoreByEmp.user) this.findEmpTeam();
   },
   computed: {},
   methods: {
@@ -84,6 +84,7 @@ export default {
     // ============== 제출====================== //
     //FS15
     submitTeamScore() {
+      console.log(this.teamScore);
       this.$axios
         .post("/match-schedule/3", this.teamScore)
         .then(() => {

@@ -60,7 +60,7 @@ export default {
       dialogStadium: false, // 경기장 부분
       dialogMatchSchedule: false, // 저장된 경기일정 부분
       //Input disable 관련 변수
-      updateDisabled: false, // 정보 받아오면 true, 직접 쓰면 false => 정보 수정 불가능하게
+      updateDisabled: true, // 직접 등록을 막는 변수
       //  경기장 관련 변수
       targetStadium: null, // 경기장 주소 및 이름 출력 변수
       // 경기 타입 관련 변수
@@ -189,8 +189,10 @@ export default {
         this.search.dueDate = dateTime; // 마감일시면
       }
     },
-    // 매치 등록(FM01)
+    // M01-3
     addSearch() {
+      let result = this.checkValidation();
+      if (!result) return false;
       // eslint-disable-next-line prettier/prettier
       Axios
         .post("/search", this.search)
@@ -206,6 +208,23 @@ export default {
 
         })
     },
+    // M01-5
+    checkValidation() {
+      if (!this.search.waitingTime) {
+        alert("대기가능시간을 입력해주세요");
+        return false;
+      }
+      if (!this.search.minNumber) {
+        alert("최소인원을 입력해주세요");
+        return false;
+      }
+      if (!this.search.dueDate) {
+        alert("마감 시간을 입력해주세요.");
+        return false;
+      }
+      return true;
+    },
+
     closeNaver() {
       this.dialogNaver = false;
       this.$emit("close");
@@ -218,7 +237,7 @@ export default {
       this.parkingSelected = true;
     },
     /* 투표 완료 후 버튼으로 넘어온 경우 --------------------------------------*/
-    //FS01
+    //M01-1
     showMatchScheduleInfo() {
       // eslint-disable-next-line prettier/prettier
       Axios
@@ -238,7 +257,7 @@ export default {
         });
     },
     /* 지정된 경기 불러오기 --------------------------------------*/
-    // 경기 불러오기(FV15)
+    // M01-2
     loadMatchSchedule() {
       this.dialogMatchSchedule = true;
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
@@ -254,7 +273,7 @@ export default {
           alert("정보를 불러오는 데 실패했습니다.");
         });
     },
-    //FS02
+    // M01-2
     selectMatch(matchSchedule) {
       this.search.matchSchedule = matchSchedule;
       this.targetStadium =

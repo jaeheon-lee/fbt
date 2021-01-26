@@ -8,10 +8,12 @@ import moment from "moment";
 import VueMomentJS from "vue-momentjs";
 import ProgressCircle from "@/components/Common/ProgressCircle.vue";
 import Empty from "@/components/Common/Empty.vue";
+import Last from "@/components/Common/Last.vue";
 
 // 전역 컴포넌트
 Vue.component("progress-circle", ProgressCircle);
 Vue.component("empty", Empty);
+Vue.component("last", Last);
 
 //Event Bus
 Vue.prototype.$EventBus = new Vue();
@@ -29,7 +31,7 @@ Vue.prototype.$axios = axios;
 // moment 라이브러리 전역 설정
 Vue.use(VueMomentJS, moment);
 
-// kakao 서비스 이용을 위한 초기화
+// kakao 공유하기 서비스 이용을 위한 초기화
 window.Kakao.init("26baced2916af3cfb52abda49077cd56");
 
 new Vue({

@@ -1,10 +1,17 @@
 <template>
   <div>
     <v-container fluid class="py-0 my-7 px-0 mx-0">
+      <!-- 매치 생성 관련 공지 -->
+      <v-row fluid justify="center" class="py-0 my-3 px-0 mx-5">
+        투표 페이지 혹은 "저장된 경기 불러오기"를 통해 등록해주세요
+      </v-row>
       <!-- 매치 생성 Label -->
       <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0 mb-2">
           <span>매치 생성</span>
+          <span class="ml-5" style="font-size: 0.8em"
+            >* 가 표시된 항목은 필수항목입니다.</span
+          >
           <span
             class="mr-2 float-right"
             @click="loadMatchSchedule"
@@ -366,7 +373,7 @@
                   style="border:2px solid #AD1457;border-radius:25px;"
                 >
                   <textarea
-                    v-model="search.matchSchedule.content"
+                    v-model="search.matchSchedule.homeContent"
                     cols="10000"
                     placeholder="일정에 남기고 싶은 말을 입력해주세요"
                     style="color:#ffffff"
@@ -383,12 +390,14 @@
             <!-- 대기가능시간, 최소인원, 마감시간 Label-->
             <v-row class="mx-0 px-0">
               <v-col cols="4" class="text-left mx-0 px-0 pb-2"
-                >대기 가능 시간</v-col
+                >대기 가능 시간*</v-col
               >
               <v-col cols="4" class="text-left mx-0 px-0 pb-2"
-                >상대편 최소 인원</v-col
+                >상대편 최소 인원*</v-col
               >
-              <v-col cols="4" class="text-left mx-0 px-0 pb-2">마감 시간</v-col>
+              <v-col cols="4" class="text-left mx-0 px-0 pb-2"
+                >마감 시간*</v-col
+              >
             </v-row>
             <!-- 대기가능시간, 최소인원, 마감시간 Input -->
             <v-row class="mx-0 px-0">

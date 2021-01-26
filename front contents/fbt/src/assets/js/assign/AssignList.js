@@ -32,7 +32,8 @@ export default {
 
       // get 변수
       loading: false,
-      errored: false
+      errored: false,
+      empty: false
     };
   },
   mounted() {
@@ -48,6 +49,7 @@ export default {
     },
     searchedAssigns: function() {
       this.assigns = this.searchedAssigns;
+      console.log(this.assigns);
     }
   },
   methods: {
@@ -61,6 +63,7 @@ export default {
         .get("/assignment/1/" + teamId + "/" + status)
         .then(response => {
           this.assigns = response.data;
+          if (this.assigns.length == 0) this.empty = true;
         })
         .catch(() => {
           this.errored = true;
@@ -103,6 +106,7 @@ export default {
         .get("/assignment/2/" + teamId + "/" + reservationStatus + "/" + isApply)
         .then(response => {
           this.assigns = response.data;
+          if (this.assigns.length == 0) this.empty = true;
           // 양도완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
           if (this.registeredStage == 4) {
             for (let i = 0; i < this.assigns.length; i++) {
@@ -173,8 +177,8 @@ export default {
           this.refreshRegistered();
         })
         .finally(() => {
-          this.$parent.registeredStage = 4;
-          this.$parent.$parent.registeredStage = 4;
+          let stage = 4;
+          this.$emit("change-registered-stage", stage);
         });
     },
     //FA09

@@ -1,6 +1,7 @@
 package com.biomans.fbt.assignment.service.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,7 +71,14 @@ public class AssginmentServiceImpl implements AssignmentService{
 	//FA02
 	@Override
 	public List<Assignment> searchAssignmentByFilter(Filter filter) throws SQLException {
-		return assignmentDAO.searchAssignmentByFilter(filter);
+		List<Assignment> assignments = new ArrayList<Assignment>();
+		List<Assignment> list = assignmentDAO.searchAssignmentByFilter(filter);
+		int page = filter.getPage();
+		if(list.size() > page) {
+			assignments.add(list.get(page));
+			if(list.size() - 1 >= page + 1) assignments.add(list.get(page + 1)); 
+		}
+		return assignments;
 	}
 	
 	//FA04
@@ -84,7 +92,7 @@ public class AssginmentServiceImpl implements AssignmentService{
 	@Transactional
 	public void updateResStatus(Assignment assignment) throws SQLException {
 		AssignmentReservation assignRes = assignment.getAssignmentReservations().get(0);
-		// 수락이면 
+		// 확정이면 
 		if(assignRes.getReservationStatus() == 2) {
 			//기존 투표를 지운다
 			int matchScheduleId = assignment.getMatchSchedule().getMatchScheduleId();
@@ -103,13 +111,12 @@ public class AssginmentServiceImpl implements AssignmentService{
 			con.put("matchScheduleId", matchScheduleId);
 			matchScheduleDAO.changeHomeTeam(con);
 			
-			// 홈팀이 된 팀의 투표를 마감시킨다.
-//			v.setVoteStatus(1);
-//			voteMatchDAO.updateVoteMatch(v);
+			// 해당 일정을 확정시킨다
+			con.put("teamId", assignRes.getTeamTaker().getTeamId());
+			matchScheduleDAO.confirmMatchSchedule(con);
 			
 			//나머지 팀을 실패로 한다
 			con.put("assignmentId", assignment.getAssignmentId());
-			System.out.println(con);
 			assignmentDAO.failAssign(con);
 		}
 		assignmentDAO.updateResStatus(assignRes);

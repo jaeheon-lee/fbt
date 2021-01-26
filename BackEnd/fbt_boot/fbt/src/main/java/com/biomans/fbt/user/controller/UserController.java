@@ -103,6 +103,7 @@ public class UserController {
 	@PostMapping("/user")
 	public ResponseEntity addUser(@RequestBody User user) throws SQLException {
 		try {
+			System.out.println(user);
 			userService.addUser(user);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -130,6 +131,7 @@ public class UserController {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("apiType", apiType);
 			searchCon.put("apiKey", apiKey);
+			System.out.println(searchCon);
 			Session session = userService.LoginByApi(searchCon);
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {

@@ -112,16 +112,18 @@
 		<include refid="showVoteMatchInfo"/>
 		<where>
 		tm.team_id = #{teamId}
-		AND m.start_time > sysdate()
-		AND (m.is_confirmed is NULL OR m.is_confirmed = 0)
 			<choose>
+				<!-- 진행 중 -->
 				<when test="voteStatus == 0">
 					AND v.vote_status = #{voteStatus}
 					AND v.due_date > sysdate()
 				</when>
+				<!-- 완료 -->
 				<otherwise>
 					AND (v.vote_status = #{voteStatus}
 						OR sysdate() > v.due_date)
+					AND (m.is_confirmed is NULL OR m.is_confirmed = 0)
+					AND m.start_time > sysdate()
 				</otherwise>
 			</choose>
 		</where>
@@ -316,11 +318,30 @@
 		FROM vote_match v
 		JOIN match_schedule m
 		ON v.match_schedule_id = m.match_schedule_id
+		<if test="type == 1">
+			LEFT OUTER JOIN search s
+			ON s.match_schedule_id = m.match_schedule_id
+		</if>
+		<if test="type == 2">
+			LEFT OUTER JOIN assignment a
+			ON a.match_schedule_id = m.match_schedule_id
+		</if>
+		<if test="type == 3">
+			LEFT OUTER JOIN employ e
+			ON e.match_schedule_id = m.match_schedule_id
+		</if>
 		WHERE v.vote_status = 1
 		AND  v.due_date > sysdate()
-		AND v.team_id = #{teamId}
-		<if test="type = 2">
-			AND m.home_team_id = #{teamId}
+		AND (m.is_confirmed is NULL OR m.is_confirmed = 0)
+		AND m.home_team_id = #{teamId}
+		<if test="type == 1">
+			AND s.search_id is NULL
+		</if>
+		<if test="type == 2">
+			AND a.assignment_id is NULL
+		</if>
+		<if test="type == 3">
+			AND e.employ_id is NULL
 		</if>
 	</select>
 	<!-- V017: 실패된 팀 투표 삭제하기 -->

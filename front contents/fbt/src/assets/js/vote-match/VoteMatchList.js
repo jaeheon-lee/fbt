@@ -15,6 +15,7 @@ export default {
     isManager: Boolean,
     // ScheduleBody
     awayVote: Object,
+    isByAssign: Boolean,
     // From ScheduleBody & VoteMatch
     votes: Array
   },
@@ -55,15 +56,15 @@ export default {
       activeEmpScoreList: null, //empScore
 
       // 카카오 공유하기 관련 변수
-      dialogKakao: null,
+      dialogKakao: false,
       sendingVote: null,
+      confirmedVote: null,
 
       //기본 변수
       errored: false,
       loading: true
     };
   },
-  mounted() {},
   computed: {
     votes2: function() {
       return this.votes;
@@ -196,7 +197,7 @@ export default {
           alert("투표 마감에 실패했습니다.");
         })
         .finally(() => {
-          this.refresh(vote.matchSchedule.matchScheduleId);
+          // this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
     // V06-2
@@ -235,7 +236,7 @@ export default {
           this.refresh(vote.matchSchedule.matchScheduleId);
         });
     },
-    // 매칭 등록으로 넘어가기(FV11, FV12, FV13)
+    // V06-5
     moveToRegister(vote, i) {
       const router = this.$router;
       let name = "";
@@ -268,7 +269,7 @@ export default {
         }
       });
     },
-    // 투표 상 경기 확정하기 (FV16)
+    // V06-4
     confirmMatchSchedule(vote) {
       let matchScheduleId = vote.matchSchedule.matchScheduleId;
       let homeTeamId = vote.matchSchedule.homeTeam.teamId;
@@ -277,13 +278,15 @@ export default {
         .put("/match-schedule/1/" + matchScheduleId + "/" + homeTeamId)
         .then(() => {
           alert("경기가 확정됐습니다.");
+          this.confirmedVote = vote;
+          this.dialogKakao = true;
         })
         .catch(error => {
           console.log(error);
           alert("경기확정에 실패했습니다.");
         })
         .finally(() => {
-          this.refresh();
+          // this.refresh();
         });
     },
     // FU02
@@ -409,6 +412,7 @@ export default {
     },
     //스코어 창 여닫기
     controlScore(vote) {
+      if (this.isByAssign) return false;
       if (vote.matchSchedule.matchResult) return true;
       else return false;
     },
@@ -439,7 +443,7 @@ export default {
         return false;
       }
     },
-    // 상대팀찾기 버튼 조절 변수
+    // V06-5
     controlSearchBtn(vote) {
       let awayTeam = vote.matchSchedule.awayTeam;
       // eslint-disable-next-line prettier/prettier
@@ -450,7 +454,7 @@ export default {
         return false;
       }
     },
-    // 양도하기 버튼 조절 변수
+    // V06-5
     controlAssignmentBtn(vote) {
       let homeTeamId = vote.matchSchedule.homeTeam.teamId;
       let sessionTeamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
@@ -462,7 +466,7 @@ export default {
         return false;
       }
     },
-    // 용병찾기 버튼 조절 메소드
+    // V06-5
     controlEmployBtn(vote) {
       if (vote.voteStatus == 1) {
         // 마감됨
@@ -471,11 +475,23 @@ export default {
         return false;
       }
     },
-    // 투표수정하기 버튼 조절 메소드
+    // V05-1
     controlUpdateBtn(vote) {
       // 투표 마감 전에만 수정 가능하다
       if (vote.voteStatus == 0) return true;
       else return false;
+    },
+    controlTeamScoreBtn(vote) {
+      let homeTeamId = vote.matchSchedule.homeTeam.teamId;
+      let awayTeamId = 0;
+      if (vote.matchSchedule.awayTeam) awayTeamId = vote.matchSchedule.awayTeam.teamId;
+      if (
+        homeTeamId != awayTeamId &&
+        this.header != "scheduleUser" &&
+        vote.isEndMatch
+      )
+        return true;
+      return false;
     }
     /* 투표 페이지 관련 메소드 -------------------------------------------*/
   },

@@ -68,7 +68,7 @@
               col
               cols="2"
               class="footerWrap"
-              @click="$router.push({ name: 'schedule' })"
+              @click="$router.push({ name: 'scheduleUser' })"
             >
               <div class="footerIcon">
                 <img src="./assets/image/일정.svg" />
@@ -77,25 +77,17 @@
                 <span>일정</span>
               </div>
             </div>
-            <div col cols="2" class="footerWrap">
-              <div class="footerIcon">
-                <img src="./assets/image/홈으로.svg" />
-              </div>
-              <div class="footerCon">
-                <span>팀홈</span>
-              </div>
-            </div>
             <div
               col
               cols="2"
               class="footerWrap"
-              @click="$router.push({ name: 'voteMatch' })"
+              @click="$router.push({ name: 'home' })"
             >
               <div class="footerIcon">
-                <img src="./assets/image/투표.svg" />
+                <img src="./assets/image/홈으로.svg" />
               </div>
               <div class="footerCon">
-                <span>투표</span>
+                <span>홈</span>
               </div>
             </div>
           </v-row>
@@ -173,9 +165,7 @@ export default {
         items: [
           { title: "팀홈", target: "teamHome" },
           { title: "투표", target: "voteMatch" },
-          { title: "일정", target: "schedule" },
-          { title: "활동" },
-          { title: "알림" }
+          { title: "일정", target: "schedule" }
         ]
       },
       {
@@ -195,29 +185,34 @@ export default {
     ]
   }),
   mounted() {
-    let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-    if (userInfo) {
-      // SessionStorage로부터 userInfo 담기
-      this.userInfo = userInfo;
-      // 팀 목록 삽입
-      let teams = this.userInfo.teams;
-      if (teams) {
-        for (let i = 0; i < teams.length; i++) {
-          this.items[0].items.push({
-            title: teams[i].teamName,
-            teamId: teams[i].teamId,
-            teamMemberId: teams[i].teamMemberId,
-            nickName: teams[i].nickName,
-            memberLevel: teams[i].memberLevel,
-            index: i
-          });
-        }
-      }
-    } else {
-      this.userInfo = null;
-    }
+    this.setUserInfo();
   },
   methods: {
+    // userInfo 담기
+    setUserInfo() {
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      if (userInfo) {
+        // SessionStorage로부터 userInfo 담기
+        this.userInfo = userInfo;
+        // 팀 목록 삽입
+        let teams = this.userInfo.teams;
+        if (teams) {
+          for (let i = 0; i < teams.length; i++) {
+            this.items[0].items.push({
+              title: teams[i].teamName,
+              teamId: teams[i].teamId,
+              teamMemberId: teams[i].teamMemberId,
+              nickName: teams[i].nickName,
+              memberLevel: teams[i].memberLevel,
+              index: i
+            });
+          }
+        }
+      } else {
+        this.userInfo = null;
+      }
+    },
+
     // 페이지 이동인지 팀세팅인지 가이드하는 메소드
     moveOrSet(item, subItem) {
       if (item.target == "team") {

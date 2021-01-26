@@ -41,7 +41,10 @@
         </v-col>
       </v-row>
       <!-- 등록 매치 현황 Label 끝-->
-      <assign-list :registeredStage="registeredStage"></assign-list>
+      <assign-list
+        :registeredStage="registeredStage"
+        @change-registered-stage="changeRegisteredStage"
+      ></assign-list>
     </v-container>
   </div>
 </template>

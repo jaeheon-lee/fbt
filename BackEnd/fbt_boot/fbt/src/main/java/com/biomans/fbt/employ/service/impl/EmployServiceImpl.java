@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.biomans.fbt.domain.Employ;
 import com.biomans.fbt.domain.EmployResult;
 import com.biomans.fbt.domain.MatchSchedule;
+import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.employ.dao.EmployDAO;
 import com.biomans.fbt.employ.service.EmployService;
@@ -71,12 +72,18 @@ public class EmployServiceImpl implements EmployService {
 	//FE02
 	@Override
 	public List<Employ> searchEmployByFilter(Filter filter) throws SQLException {
+		List<Employ> employs = new ArrayList<Employ>();
 		List<Employ> list = employDAO.searchEmployByFilter(filter);
-		// 모집 현황 삽입
-		for(Employ emp : list) {
-			setEmployDesc(emp);
+		int page = filter.getPage();
+		if(list.size() > page) {
+			employs.add(list.get(page));
+			if(list.size() - 1 >= page + 1) employs.add(list.get(page + 1)); 
 		}
-		return list;
+		for(Employ employ : employs) {
+			setEmployDesc(employ);
+		}
+		
+		return employs;
 	}
 	
 	//FE02, FE04, FE09, FE10

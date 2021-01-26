@@ -4,7 +4,8 @@ export default {
     dialogKakao: Boolean,
     voteMatch: Object, // 투표 생성 시 받는 vo
     vote: Object, // 투표 마감 시 받는 vo
-    updateVoteMatch: Object // 투표 수정 시 받는 vo
+    updateVoteMatch: Object, // 투표 수정 시 받는 vo
+    confirmedVote: Object // 투표 확정 시 받는 vo
   },
   data() {
     return {};
@@ -14,32 +15,39 @@ export default {
     writeLink() {
       let title = "";
       let desc = "";
-      let webUrl = "";
-      let mobileWebUrl = "";
+      let webUrl = this.$http;
+      let mobileWebUrl = this.$http;
       let btnTitle = "";
+      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       if (this.voteMatch) {
         // 생성이면 아래의 글로 공유한다.
         title = this.voteMatch.matchSchedule.matchType + " 경기 투표 생성";
         desc = this.voteMatch.dueDate.slice(0, -2) + "까지 투표부탁드립니다.";
-        webUrl = "http://localhost:8080/voteMatch";
-        mobileWebUrl = "http://localhost:8080/voteMatch";
+        webUrl += "/loginSignin?destination=voteMatch&teamId=" + teamId;
+        mobileWebUrl += "/loginSignin?destination=voteMatch&teamId=" + teamId;
         btnTitle = "투표하러 가기";
-      } else if (this.vote) {
-        // 마감이면 아래의 글로 공유한다
+      } else if (this.confirmedVote) {
+        // 확정이면 아래의 글로 공유한다
         title =
-          this.vote.matchSchedule.startTime.slice(0, -3) +
-          "일자 경기 투표 마감";
+          this.confirmedVote.matchSchedule.startTime.slice(0, -3) +
+          "일자 경기 투표 확정";
         desc = "일정확인해주세요";
-        webUrl = "http://localhost:8080/schedule";
-        mobileWebUrl = "http://localhost:8080/schedule";
+        webUrl += "/loginSignin?destination=schedule&teamId=" + teamId;
+        mobileWebUrl += "/loginSignin?destination=schedule&teamId=" + teamId;
         btnTitle = "일정 확인하러 가기";
       } else if (this.updateVoteMatch) {
         // 수정이면 아래의 글로 공유한다
         title = this.updateVoteMatch.matchSchedule.matchType + " 경기 투표 수정";
         desc = this.updateVoteMatch.dueDate.slice(0, -2) + "까지 투표부탁드립니다.";
-        webUrl = "http://localhost:8080/voteMatch";
-        mobileWebUrl = "http://localhost:8080/voteMatch";
+        webUrl += "/loginSignin?destination=voteMatch&teamId=" + teamId;
+        mobileWebUrl += "/loginSignin?destination=voteMatch&teamId=" + teamId;
         btnTitle = "투표하러 가기";
+      } else {
+        // 마감이면 아래의 글로 공유한다
+        title = this.vote.matchSchedule.matchType + " 경기 투표 마감";
+        webUrl += "/loginSignin?destination=voteMatch&teamId=" + teamId;
+        mobileWebUrl += "/loginSignin?destination=voteMatch&teamId=" + teamId;
+        btnTitle = "투표 확인하러 가기";
       }
 
       this.shareLink(title, desc, webUrl, mobileWebUrl, btnTitle);
@@ -68,12 +76,12 @@ export default {
           }
         ]
       });
-      this.$emit("close");
+      window.location.reload();
     },
 
     // 그냥 창닫기
     close() {
-      this.$emit("close");
+      window.location.reload();
     }
   }
 };

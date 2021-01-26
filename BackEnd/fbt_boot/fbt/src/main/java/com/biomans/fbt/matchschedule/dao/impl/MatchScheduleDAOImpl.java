@@ -90,8 +90,8 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		return sqlSession.selectList(ns+"showAttendVotedFriend", searchCon);
 	}
 	@Override
-	public List<User> showAcceptedEmploy(int matchScheduleId) throws SQLException {
-		return sqlSession.selectList(ns+"showAcceptedEmploy", matchScheduleId);
+	public List<User> showAcceptedEmploy(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectList(ns+"showAcceptedEmploy", searchCon);
 	}
 	
 	// S009

@@ -2,8 +2,11 @@
 <template>
   <div>
     <v-container fluid class="ma-0 pa-0">
+      <!-- empty -->
+      <v-divider color="white" class="mx-5" v-if="empty"></v-divider>
+      <empty :ment="'매치가'" v-if="empty"></empty>
       <!-- 매치 생성 본문 -->
-      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5">
+      <v-row fluid justify="center" class="py-0 my-0 px-0 mx-5" v-else>
         <v-col xl="6" lg="8" cols="12" class="pa-0 ma-0">
           <v-divider color="white"></v-divider>
           <v-card

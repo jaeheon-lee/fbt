@@ -2,6 +2,7 @@ package com.biomans.fbt.search.service.impl;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +62,15 @@ public class SearchServiceImpl implements SearchService{
 	//FM02
 	@Override
 	public List<Search> searchMatchByFilter(Filter filter) throws SQLException {
-		return searchDAO.searchMatchByFilter(filter);
+		List<Search> searches = new ArrayList<Search>();
+		List<Search> list = searchDAO.searchMatchByFilter(filter);
+		int page = filter.getPage();
+		if(list.size() > page) {
+			searches.add(list.get(page));
+			if(list.size() - 1 >= page + 1) searches.add(list.get(page + 1)); 
+		}
+		
+		return searches;
 	}
 	
 	//FM03

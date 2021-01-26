@@ -143,7 +143,7 @@ public class TeamController {
 		}
 	}
 	
-	//TN
+	// U03-2
 	@GetMapping("/team/2/{teamId}/{email}")
 	public ResponseEntity showTeamInfoForAutoWrite(@PathVariable String teamId,
 			@PathVariable String email) throws SQLException {

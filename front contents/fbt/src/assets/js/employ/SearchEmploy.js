@@ -26,7 +26,8 @@ export default {
         matchType: null,
         stadiumType: null,
         costType: -1,
-        order: 0
+        order: 0,
+        page: 0
       },
       // 검색 조건 토글 변수
       activeFilter: true, // 화면을 처음 열면 필터 먼저 연다
@@ -82,11 +83,23 @@ export default {
         { label: "등록일 최신순", value: 0 },
         { label: "실력 오름차순", value: 1 },
         { label: "매너 오름차순", value: 2 }
-      ]
+      ],
+      // 기본변수
+      loading: false,
+      errored: false,
+      empty: false,
+      isFirstSearch: false,
+      isLast: false
     };
+  },
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
   },
   mounted() {
     this.doSearch();
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
   computed: {
     //시도 설정 시, 시군 목록 다르게
@@ -96,6 +109,26 @@ export default {
     }
   },
   methods: {
+    //스크롤 이벤트 : 스크롤 바가 맨 밑에 있을 때
+    handleScroll() {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 1 &&
+        !this.isLast &&
+        !this.loading &&
+        !this.empty
+      ) {
+        this.arrangeFilter();
+      }
+    },
+    //
+    cleanSearch() {
+      this.searchedEmploys = [];
+      this.filter.page = 0;
+      this.isLast = false;
+      this.empty = false;
+      this.isFirstSearch = false;
+      this.arrangeFilter();
+    },
     // 검색하기 (FE02)
     arrangeFilter() {
       // 경기 시간 통합
@@ -134,16 +167,36 @@ export default {
       axios
         .post("/employ/2", this.filter)
         .then(response => {
-          this.searchedEmploys = response.data;
-          for (let i = 0; i < this.searchedEmploys.length; i++) {
-            this.controlEmployApplyBtn(this.searchedEmploys[i]);
+          if (this.isFirstSearch) {
+            setTimeout(() => {
+              this.searchedEmploys = this.searchedEmploys.concat(response.data);
+            }, 1000);
+          } else {
+            this.searchedEmploys = this.searchedEmploys.concat(response.data);
           }
+          // 결과가 없는지
+          if (response.data.length == 0 && !this.isFirstSearch) {
+            this.empty = true;
+          }
+          // 마지막 게시물인지
+          if (response.data.length < 2 && this.isFirstSearch) {
+            this.isLast = true;
+          } else {
+            // 아니면 page를 증가시킨다
+            this.filter.page += 2;
+          }
+          for (let j = 0; j < response.data.length; j++) {
+            this.controlEmployApplyBtn(response.data[j]);
+          }
+          this.isFirstSearch = true;
         })
         .catch(() => {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
         });
     },
     // 용병 검색 결과 출력 시, 이미 검색한 항목에 대해서 표시
@@ -159,7 +212,13 @@ export default {
         this.whichBtnActive.push(2);
         return;
       }
-      // 글이 완료됐는지 + 신청하지 않았는지
+      // 글이 완료됐는지
+      if (employ.matchSchedule.isConfirmed == 1) {
+        this.whichBtnActive.push(2);
+        return;
+      }
+
+      // 신청하지 않았는지
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       for (let i = 0; i < employRes.length; i++) {
         if (employRes[i].user.email == email) {

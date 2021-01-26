@@ -16,7 +16,7 @@
       color="#AD1457"
       class="mr-1"
       v-else
-      @click.stop="doVote(vote, 0)"
+      @click.stop="cancelAttend(vote, 0)"
       >참석취소하기</v-btn
     >
   </v-row>
@@ -36,14 +36,6 @@ export default {
     controlWaitBtn(vote) {
       // 투표한 사람이 아무도 없으면 대기버튼
       if (!vote.voteMatchResults) return true;
-      // 대기버튼 기간적 조건: 인위 마감 후 + 기간적 마감 후 + 경기 시작 전
-      // -> 1. 기간적으로 표시하지 않기 : 기간적 조건의 반명제
-      let today = new Date();
-      today = this.$moment(today).format("YYYY-MM-DD HH:mm:ss");
-      // eslint-disable-next-line prettier/prettier
-      if (!(vote.voteStatus == 1 && vote.dueDate > today && vote.matchSchedule.startTime > today))
-        return false;
-
       //2. 다음 로직 따른다
       // eslint-disable-next-line prettier/prettier
       let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
@@ -67,6 +59,9 @@ export default {
     },
     doVote(vote, result) {
       this.$emit("do-vote", vote, result);
+    },
+    cancelAttend(vote, result) {
+      this.$emit("update-vote", vote, result);
     }
   }
 };

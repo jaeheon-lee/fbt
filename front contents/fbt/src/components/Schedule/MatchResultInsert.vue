@@ -65,6 +65,7 @@
                     placeholder="0"
                     v-model="matchResult.homeScore"
                     v-if="isInnerMatch"
+                    style="width: 10%"
                   />
                   <span class="mr-3">vs</span>
                   <input
@@ -73,6 +74,7 @@
                     placeholder="0"
                     v-model="matchResult.awayScore"
                     v-if="isInnerMatch"
+                    style="width: 10%"
                   />
                   <span class="mr-3" v-if="!awayTeamSelectActive">{{
                     awayTeamName

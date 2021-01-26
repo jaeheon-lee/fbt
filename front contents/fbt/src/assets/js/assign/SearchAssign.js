@@ -24,7 +24,8 @@ export default {
         matchType: null,
         stadiumType: null,
         costType: -1,
-        order: 0
+        order: 0,
+        page: 0
       },
       // 매치 신청 버튼 조절 변수
       whichBtnActive: [], // 1이면 양도신청, 2이면 이미 신청한 글, 3이면 마감된 글
@@ -82,11 +83,24 @@ export default {
         { label: "날짜 최신순", value: 0 },
         { label: "실력 오름차순", value: 1 },
         { label: "매너 오름차순", value: 2 }
-      ]
+      ],
+
+      // 기본변수
+      loading: false,
+      errored: false,
+      empty: false,
+      isFirstSearch: false,
+      isLast: false
     };
+  },
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
   },
   mounted() {
     this.doSearch();
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
   computed: {
     //시도 설정 시, 시군 목록 다르게
@@ -96,6 +110,26 @@ export default {
     }
   },
   methods: {
+    //스크롤 이벤트 : 스크롤 바가 맨 밑에 있을 때
+    handleScroll() {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 1 &&
+        !this.isLast &&
+        !this.loading &&
+        !this.empty
+      ) {
+        this.arrangeFilter();
+      }
+    },
+    //
+    cleanSearch() {
+      this.searchedAssigns = [];
+      this.filter.page = 0;
+      this.isLast = false;
+      this.empty = false;
+      this.isFirstSearch = false;
+      this.arrangeFilter();
+    },
     // FA02
     arrangeFilter() {
       // 경기 시간 통합
@@ -130,20 +164,40 @@ export default {
     // FA02
     doSearch() {
       this.loading = true;
-      // eslint-disable-next-line prettier/prettier
       axios
         .post("/assignment/3", this.filter)
         .then(response => {
-          this.searchedAssigns = response.data;
-          for (let j = 0; j < this.searchedAssigns.length; j++) {
-            this.controlAssignApplyBtn(this.searchedAssigns[j]);
+          if (this.isFirstSearch) {
+            setTimeout(() => {
+              this.searchedAssigns = this.searchedAssigns.concat(response.data);
+            }, 1000);
+          } else {
+            this.searchedAssigns = this.searchedAssigns.concat(response.data);
           }
+          // 결과가 없는지
+          if (response.data.length == 0 && !this.isFirstSearch) {
+            this.empty = true;
+          }
+          // 마지막 게시물인지
+          if (response.data.length < 2 && this.isFirstSearch) {
+            this.isLast = true;
+          } else {
+            // 아니면 page를 증가시킨다
+            this.filter.page += 2;
+          }
+          for (let j = 0; j < response.data.length; j++) {
+            this.controlAssignApplyBtn(response.data[j]);
+          }
+          console.log(this.empty);
+          this.isFirstSearch = true;
         })
         .catch(() => {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
         });
     },
     // FA02
@@ -162,7 +216,7 @@ export default {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       for (let i = 0; i < assignRes.length; i++) {
         // 매치가 완료됐다면
-        if (assignRes[i].reservationStatus == 1) {
+        if (assignRes[i].reservationStatus == 2) {
           this.whichBtnActive.push(2);
           return;
         }

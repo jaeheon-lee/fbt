@@ -66,7 +66,6 @@ public class VoteMatchController {
 			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoByScheduleId(searchCon);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
 		}catch(RuntimeException e) {
-			e.printStackTrace();
 			System.out.println(e);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
@@ -98,7 +97,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	// V03-4
+	// V03-4, Me01-1
 	@PostMapping("/vote-match-result")
 	public ResponseEntity addAttendance(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName") String teamName) throws SQLException {
@@ -136,7 +135,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//V06-1
+	//V06-1, Me01-1
 	@PutMapping("/vote-match/1")
 	public ResponseEntity endVoteMatch(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName", required = false) String teamName) throws SQLException {
@@ -165,7 +164,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV10
+	// V06-3
 	@PutMapping("/vote-match-setting")
 	public ResponseEntity updateVoteMatchSetting(@RequestBody VoteMatchSetting voteMatchSetting) throws SQLException {
 		try {
@@ -175,7 +174,8 @@ public class VoteMatchController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	//V05-3
+	
+	//V05-3, Me01-1
 	@PutMapping("/vote-match/2")
 	public ResponseEntity updateVoteMatch(@RequestBody VoteMatch voteMatch,
 			@RequestParam(value="teamName", required=false) String teamName) throws SQLException {
@@ -204,7 +204,7 @@ public class VoteMatchController {
 		}
 	}
 	
-	//FV15
+	// M01-2
 	@GetMapping("vote-match/3/{teamId}/{type}")
 	public ResponseEntity loadEndedVoteMatch(@PathVariable int teamId,
 			@PathVariable int type) throws SQLException {
@@ -222,7 +222,7 @@ public class VoteMatchController {
 	
 	//FV01, FV02, FS02
 	@GetMapping("/vote-match/4/{voteMatchId}")
-	public ResponseEntity showVoteMatchInfoByTeam(@PathVariable int voteMatchId) throws SQLException {
+	public ResponseEntity showVoteMatchInfoById(@PathVariable int voteMatchId) throws SQLException {
 		try {
 			VoteMatch voteMatch = voteMatchService.showVoteMatchInfoById(voteMatchId);
 			return new ResponseEntity(voteMatch, HttpStatus.OK);
@@ -234,6 +234,7 @@ public class VoteMatchController {
 	}
 	
 	//V011: 투표 결과 삭제(지인 투표 불참 시)
+	@Deprecated
 	@DeleteMapping("/vote-match-result")
 	public ResponseEntity deleteVoteMatchResult(@RequestBody VoteMatchResult voteMatchResult) throws SQLException {
 		try {

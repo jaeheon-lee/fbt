@@ -179,6 +179,7 @@
     <registered-assign
       :registeredStage="registeredStage"
       :appliedStage="null"
+      @change-registered-stage="changeRegisteredStage"
       v-if="page == 3"
     ></registered-assign>
     <applied-assign

@@ -107,8 +107,27 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		List<EmpScore> empScores = matchResultCollection.getEmpScores();
 		TeamScore teamScore = matchResultCollection.getTeamScore();
 		MatchResult matchResult = matchResultCollection.getMatchResult();
+		Boolean isHomeTeam = matchResultCollection.getIsHomeTeam();
 		
-		// 부여하는 팀의 팀 평균 매너, 실력 수정
+		// 상태팀 점수 요약 입력
+		updateTeamScoreDesc(teamScore);
+		
+		// 용병 점수 요약 입력
+		updateEmpScoreDesc(empScores);
+		
+		// 2. matchRsult 입력
+		if(isHomeTeam == true) addMatchResult(matchResult);
+		
+		// 3. 각각 입력(for문 필요하면 사용)
+		addEntries(entries);
+		
+		addEmpScores(empScores);
+		
+		if(teamScore != null) matchScheduleDAO.addTeamScore(teamScore);
+		
+	}
+	
+	public void updateTeamScoreDesc(TeamScore teamScore) throws SQLException {
 		int teamTakerId = teamScore.getTeamTaker().getTeamId();
 		if(teamTakerId != 0) {
 			Team teamScoreDesc = matchScheduleDAO.getTeamScoreDesc(teamTakerId);
@@ -132,7 +151,9 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 			sdi.setTeamManner(newTeamManner);
 			matchScheduleDAO.updateTeamScoreDesc(sdi);
 		}
-		// 부여하는 용병의 매너, 실력 수정
+	}
+	
+	public void updateEmpScoreDesc(List<EmpScore> empScores) throws SQLException {
 		if(empScores.size() > 0) {
 			for(EmpScore es : empScores) {
 				String takerEmail = es.getUser().getEmail();
@@ -156,40 +177,42 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 				sdi.setEmpAbility(newTeamAbility);
 				sdi.setEmpManner(newTeamManner);
 				matchScheduleDAO.updateEmpScoreDesc(sdi);
-				
 			}
 		}
-		
-		// 2. 승패 입력
-		if(matchResult != null) {
-			int homeScore = matchResult.getHomeScore();
-			int awayScore = matchResult.getAwayScore();
-			if (homeScore > awayScore) {
-				matchResult.setHomeResult(1);
-				matchResult.setAwayResult(-1);
-			} else if (homeScore < awayScore) {
-				matchResult.setHomeResult(-1);
-				matchResult.setAwayResult(1);
-			} else {
-				matchResult.setHomeResult(0);
-				matchResult.setAwayResult(0);
+	}
+	
+	public void addMatchResult(MatchResult matchResult) throws SQLException {
+		 if(matchResult != null) {
+				int homeScore = matchResult.getHomeScore();
+				int awayScore = matchResult.getAwayScore();
+				if (homeScore > awayScore) {
+					matchResult.setHomeResult(1);
+					matchResult.setAwayResult(-1);
+				} else if (homeScore < awayScore) {
+					matchResult.setHomeResult(-1);
+					matchResult.setAwayResult(1);
+				} else {
+					matchResult.setHomeResult(0);
+					matchResult.setAwayResult(0);
+				}
+				matchScheduleDAO.addMatchResult(matchResult);
 			}
-			matchScheduleDAO.addMatchResult(matchResult);
-		}
-		
-		// 3. 각각 입력(for문 필요하면 사용)
+	 }
+	
+	public void addEntries(List<Entry> entries) throws SQLException {
 		if(entries.size()>0) {
 			for(Entry entry : entries) {
 				matchScheduleDAO.addEntry(entry);
 			}
 		}
+	}
+	
+	public void addEmpScores(List<EmpScore> empScores) throws SQLException {
 		if(empScores.size() > 0) {
 			for(EmpScore empScore : empScores) {
 				matchScheduleDAO.addEmpScore(empScore);
 			}
 		}
-		if(teamScore != null) matchScheduleDAO.addTeamScore(teamScore);
-		
 	}
 	
 	// FS09
@@ -207,7 +230,7 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		List<User> friendList = matchScheduleDAO.showAttendVotedFriend(searchCon);
 		// 2. 참여하기로 한 용병들을 불러온다
 		int matchScheduleId = searchCon.get("matchScheduleId");
-		List<User> employList = matchScheduleDAO.showAcceptedEmploy(matchScheduleId);
+		List<User> employList = matchScheduleDAO.showAcceptedEmploy(searchCon);
 		// 3. 합친다.
 		if(friendList.size() > 0) friendEmployMap.put("friendList", friendList);
 		if(employList.size() > 0) friendEmployMap.put("employList", employList);

@@ -137,8 +137,14 @@
 	<!-- S001 -->
 	<select id="showMatchScheduleById" parameterType="integer" resultMap="matchScheduleRM">
 		SELECT
-		<include refid="matchScheduleColumn"/>
+		<include refid="matchScheduleColumn"/>,
+		<include refid="homeTeamColumn"/>,
+		<include refid="awayTeamColumn"/>
 		FROM match_schedule m
+		JOIN team t
+		ON m.home_team_id = t.team_id
+		LEFT OUTER JOIN team t2
+		ON m.away_team_id = t2.team_id
 		WHERE m.match_schedule_id = #{value}
 	</select>
 	<!-- S002: 방금 등록된 일정 ID 출력 -->
@@ -322,7 +328,7 @@
 		AND u.email is not null
 	</select>
 	<!-- 참여하기로 한 용병 불러오기 -->
-	<select id="showAcceptedEmploy" parameterType="integer" resultType="user">
+	<select id="showAcceptedEmploy" parameterType="hashMap" resultType="user">
 		SELECT 
 		u.email, u.name
 		FROM employ e
@@ -330,8 +336,9 @@
 		ON e.employ_id = er.employ_id
 		JOIN user u
 		ON u.email = er.email
-		WHERE e.match_schedule_id = #{value}
-		AND er.emp_result_status = 1
+		WHERE e.match_schedule_id = #{matchScheduleId}
+		AND e.team_id_giver = #{teamId}
+		AND er.emp_result_status = 2
 	</select>
 	
 	<!-- S009 -->
@@ -406,6 +413,9 @@
 		LEFT OUTER JOIN match_result mr
 		ON mr.match_schedule_id = m.match_schedule_id
 		WHERE m.match_schedule_id = #{matchScheduleId}
+		<if test="teamId != null">
+			AND ent.team_id = #{teamId}
+		</if>
 	</select>
 	
 	<!-- S011 -->

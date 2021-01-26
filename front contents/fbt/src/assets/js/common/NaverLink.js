@@ -11,6 +11,7 @@ export default {
     };
   },
   methods: {
+    // U03-2
     getInfoForWrite() {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
@@ -19,7 +20,6 @@ export default {
         .then(response => {
           this.teamInfo = response.data;
           this.write();
-          this.shareLink();
         })
         .catch(() => {
           alert("에러가 발생했습니다.");
@@ -28,9 +28,11 @@ export default {
           this.close();
         })
     },
+    // U03-1
     close() {
       this.$emit("close");
     },
+    //U03-5
     shareLink() {
       //3. 공유하기 위한 타이틀/url 작성
       let title = "";
@@ -67,7 +69,7 @@ export default {
         encodedTitle;
       window.open(shareURL);
     },
-    // 자동글완성 및 클립보드 복사
+    // U03-3
     write() {
       // 1. 자동글 완성을 위한 변수 정리
       // eslint-disable-next-line prettier/prettier
@@ -99,6 +101,7 @@ export default {
       // 2. 복사
       this.copy(text);
     },
+    // U03-4
     copy(text) {
       var createInput = document.createElement("textarea");
       // 가상으로 가져올 태그에 만들어준 input 태그를 붙여줍니다.
@@ -110,6 +113,8 @@ export default {
       document.execCommand("copy");
       // 가상으로 붙여주었던 input 태그를 제거해줍니다.
       document.getElementById("textDiv").removeChild(createInput);
+      // api 실행
+      this.shareLink();
     },
     covertIntToString(value) {
       if (value < 2) {

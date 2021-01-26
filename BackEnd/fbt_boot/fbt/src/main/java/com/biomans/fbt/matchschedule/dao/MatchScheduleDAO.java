@@ -37,7 +37,7 @@ public interface MatchScheduleDAO {
 	public List<TeamMember> showAttendVotedMember(HashMap<String, Integer> searchCon) throws SQLException;
 	// S008
 	public List<User> showAttendVotedFriend(HashMap<String, Integer> searchCon) throws SQLException;
-	public List<User> showAcceptedEmploy(int matchScheduleId) throws SQLException;
+	public List<User> showAcceptedEmploy(HashMap<String, Integer> searchCon) throws SQLException;
 	// S009
 	public void addEntry(Entry entry) throws SQLException;
 	public void addMatchResult(MatchResult matchResult) throws SQLException;

@@ -47,6 +47,9 @@ export default {
           this.appliedStage = this.appliedStageR;
           break;
       }
+    },
+    changeRegisteredStage(stage) {
+      this.registeredStage = stage;
     }
   }
 };

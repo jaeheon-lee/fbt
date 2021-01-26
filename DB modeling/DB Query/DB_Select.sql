@@ -18,22 +18,21 @@ select * from entry;
 select * from match_result;
 select * from notice;
 
-SELECT *
+select * from match_schedule m join vote_match v on m.match_schedule_id = v.match_schedule_id
+left outer join search s on  s.match_schedule_id = m.match_schedule_id
+where s.search_id is null;
+
+select 
+m.match_schedule_id, m.start_time, m.duration, m.cost, m.writer, m.reg_date, m.home_content, m.away_content, m.stadium_name, 
+m.stadium_type, m.stadium_address, m.stadium_x, m.stadium_y, m.stadium_parking, m.stadium_shower, 
+m.match_type, m.home_team_id, m.away_team_id, m.is_confirmed,
+date_add(m.start_time, interval m.duration hour) end_time,
+t2.team_id away_team_id, t2.emblem away_emblem, t2.team_name away_team_name
 FROM match_schedule m
-LEFT OUTER JOIN vote_match v
-ON m.match_schedule_id = v.match_schedule_id
-LEFT OUTER JOIN(
-SELECT 
-team_id, count(team_member_id) total_num
-FROM team_member
-GROUP BY team_id
-) tm
-ON v.team_id = tm.team_id
-LEFT OUTER JOIN vote_match_setting vs
-ON vs.vote_match_id = v.vote_match_id
-JOIN team t 
-ON m.home_team_id = t.team_id
 LEFT OUTER JOIN team t2
 ON m.away_team_id = t2.team_id
-WHERE v.match_schedule_id = 3
-AND v.team_id = 1
+WHERE (m.home_team_id = 1 OR m.away_team_id = 1)
+AND (m.start_time >= '2021-02-01' 
+AND  date_add('2021-02-28', interval +1 day)>= m.start_time)
+AND m.is_confirmed = 1
+;

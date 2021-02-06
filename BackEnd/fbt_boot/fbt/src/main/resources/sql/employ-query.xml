@@ -138,7 +138,7 @@
 		<where>
 			er.email = #{email}
 			AND er.emp_result_status = #{empResultStatus}
-			AND m.is_confirmed != 1
+			AND (m.is_confirmed = 0 OR m.is_confirmed is NULL)
 			<if test="empResultStatus == 0">
 				AND e.due_date > sysdate()
 			</if>

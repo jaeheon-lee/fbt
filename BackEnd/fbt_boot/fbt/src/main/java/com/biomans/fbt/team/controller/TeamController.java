@@ -106,9 +106,10 @@ public class TeamController {
 			@PathVariable String beforeUrl,
 			HttpServletRequest request) throws SQLException {
 		try {
-			String root = request.getSession().getServletContext().getRealPath("/").substring(0, 11);
+			String root = request.getSession().getServletContext().getRealPath("/");
+			System.out.println(root);
 			String path = root + "front contents\\fbt\\src\\assets\\image\\emblem\\";
-			teamService.updateTeamInfo(team, file, beforeUrl, path);
+//			teamService.updateTeamInfo(team, file, beforeUrl, path);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

@@ -207,14 +207,11 @@ public class SearchServiceImpl implements SearchService{
 	@Override
 	@Transactional
 	public void completeSearch(Search search) throws SQLException {
-		// awayTeam 등록 + 일정 확정
 		int takerTeamId = search.getSearchReservations().get(0).getTeamTaker().getTeamId();
 		int matchScheduleId = search.getMatchSchedule().getMatchScheduleId();
 		HashMap<String, Integer> con = new HashMap<String, Integer>();
 		con.put("takerTeamId", takerTeamId);
 		con.put("matchScheduleId", matchScheduleId);
-		System.out.println(con);
-		matchScheduleDAO.addAwayTeam(con);
 		// 매치 확정
 		HashMap<String, String> searchCon = new HashMap<String, String>();
 		searchCon.put("takerTeamId", takerTeamId+"");

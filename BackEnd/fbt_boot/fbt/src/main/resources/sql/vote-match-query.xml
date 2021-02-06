@@ -117,6 +117,7 @@
 				<when test="voteStatus == 0">
 					AND v.vote_status = #{voteStatus}
 					AND v.due_date > sysdate()
+					AND (m.is_confirmed is NULL OR m.is_confirmed = 0)
 				</when>
 				<!-- 완료 -->
 				<otherwise>

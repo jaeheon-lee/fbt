@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/* 넥슨 폰트 */
+@font-face {
+    font-family: nexon;
+    src: url("../fonts/NEXONFootballGothicB.ttf");
+}
+
+/* 여백 초기화 */
+* {
+    font-family:'nexon';
+}
+
+/* a 링크 초기화 */
+a {
+    color: #222;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2698cb;
+}
+
+.row{
+    margin:0;
+}
+.col{
+    margin:0
+}

@@ -34,16 +34,13 @@
 		JOIN user u
 		ON tm.email = u.email
 	</sql>
-	<sql id="votedMemberByMatch">
-		JOIN vote_match_result vr
-		ON 	
-	</sql>
 	<!-- TM002-1: 팀별 팀원 출력 -->
 	<select id="showMembersByTeamId" parameterType="integer" resultMap="teamMemberRM">
 		<include refid="showMemberFactorBasic"/>
 		<include refid="showMemberJoinBasic"/>
 		WHERE team_id = #{value}
 		AND tm.reg_status > 0
+		ORDER BY member_level DESC
 	</select>
 	
 	<!-- TM002-2: 팀별, 이름별 팀원출력 -->

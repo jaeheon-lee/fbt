@@ -57,6 +57,50 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		matchScheduleDAO.confirmMatchSchedule(searchCon);
 	}
 	
+	@Override
+	public void addEntry(HashMap<String, Integer> searchCon) throws SQLException {
+		Entry entry = new Entry();
+		
+		//0. 엔트리 기본 세팅
+		Team team = new Team();
+		team.setTeamId(searchCon.get("teamId"));
+		entry.setTeam(team);
+		MatchSchedule matchSchedule = new MatchSchedule();
+		matchSchedule.setMatchScheduleId(searchCon.get("matchScheduleId"));
+		entry.setMatchSchedule(matchSchedule);
+		
+		//1. 참여하기로 한 팀원 불러오기
+		List<TeamMember> attendTeamMembers = matchScheduleDAO.showAttendVotedMember(searchCon);
+		if(attendTeamMembers.size()>0) {
+			for(TeamMember teamMember : attendTeamMembers) {
+				entry.setTeamMember(teamMember);
+				matchScheduleDAO.addEntry(entry);
+			}
+		}
+		
+		//2. 참여하기로 한 지인 불러오기
+		entry.setTeamMember(null);
+		List<User> attendFriends = matchScheduleDAO.showAttendVotedFriend(searchCon);
+		if(attendFriends.size()>0) {
+			for(User friend : attendFriends) {
+				entry.setUser(friend);
+				entry.setType(1);
+				matchScheduleDAO.addEntry(entry);
+			}
+		}
+		
+		//3. 참여하기로 한 용병 등록
+		List<User> acceptedEmploy = matchScheduleDAO.showAcceptedEmploy(searchCon);
+		if(acceptedEmploy.size()>0) {
+			for(User employ : acceptedEmploy) {
+				entry.setUser(employ);
+				entry.setType(2);
+				matchScheduleDAO.addEntry(entry);
+			}
+		}
+		
+	}
+	
 	//FS07
 	@Override
 	@Transactional
@@ -424,6 +468,12 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	@Override
 	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
 		matchScheduleDAO.updateMatchSchedule(matchSchedule);
+	}
+	
+	//
+	@Override
+	public void addAwayTeam(HashMap<String, Integer> searchCon) throws SQLException {
+		matchScheduleDAO.addAwayTeam(searchCon);
 	}
 	
 	//V06-1: 일정 삭제

@@ -46,6 +46,9 @@ public class SearchController {
 	@Autowired
 	private NoticeService noticeService;
 	
+	@Autowired
+	private MatchScheduleService matchScheduleService;
+	
 	//M01-3
 	@PostMapping("/search")
 	public ResponseEntity addSearch(@RequestBody Search search) throws SQLException {
@@ -197,7 +200,27 @@ public class SearchController {
 	public ResponseEntity completeSearch(@RequestBody Search search,
 			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {
+			//1-1. 매치 완료 시키기
 			searchService.completeSearch(search);
+			
+			//1-2. 일정 확정시키기
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			int matchScheduleId = search.getMatchSchedule().getMatchScheduleId();
+			searchCon.put("matchScheduleId", matchScheduleId);
+			matchScheduleService.confirmMatchSchedule(searchCon);
+			
+			//1-3. 홈팀 엔트리 등록
+			int homeTeamId = search.getTeamGiver().getTeamId();
+			searchCon.put("teamId", homeTeamId);
+			matchScheduleService.addEntry(searchCon);
+			
+			//1-4. 어웨이 엔트리 등록
+			int awayTeamId = search.getSearchReservations().get(0).getTeamTaker().getTeamId();
+			searchCon.replace("teamId", awayTeamId);
+			matchScheduleService.addEntry(searchCon);
+			
+			//1-5. 어웨이 팀 등록
+			matchScheduleService.addAwayTeam(searchCon);
 			
 //			//2. 알림 보낸다
 //			//2-1. 알림 보낼 때 필요한 정보 정리 & 확정자와 실패자에게 따로 알림을 보낸다.

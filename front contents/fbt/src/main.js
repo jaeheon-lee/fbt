@@ -24,7 +24,7 @@ Vue.prototype.$http = "http://localhost:8080";
 Vue.config.productionTip = false;
 
 // axios root 지정
-axios.defaults.baseURL = "http://localhost:7777";
+axios.defaults.baseURL = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/fbt";
 
 Vue.prototype.$axios = axios;
 

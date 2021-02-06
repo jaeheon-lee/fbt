@@ -22,6 +22,7 @@ public interface EmployService {
 	public void doApplyEmploy(EmployResult employRes) throws SQLException;
 	//FE07, FE08
 	public void updateResStatus(Employ employ) throws SQLException;
+	public void completeEmploy(Employ employ) throws SQLException;
 	//FE05
 	public void deleteEmploy(int employId) throws SQLException;
 	//FE06

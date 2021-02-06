@@ -172,8 +172,7 @@
 	<!-- S004: awayTeam 등록 -->
 	<update id="addAwayTeam" parameterType="hashMap">
 		UPDATE match_schedule
-		SET away_team_id = #{takerTeamId},
-		is_confirmed = 1
+		SET away_team_id = #{teamId}
 		WHERE match_schedule_id = #{matchScheduleId}
 	</update>
 	

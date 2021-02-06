@@ -187,7 +187,6 @@
 		`gender` = #{gender},
 		`born_date` = #{bornDate},
 		`area` = #{area},
-		`image` = #{image}
 		WHERE `email` = #{email}
 	</update>
 	

@@ -104,26 +104,27 @@ public class EmployServiceImpl implements EmployService {
 	
 	//FE07, FE08
 	@Override
-	@Transactional
 	public void updateResStatus(Employ employ) throws SQLException {
 		// 용병 신청 결과 상태 수정
 		List<EmployResult> employRess = employ.getEmployResults();
 		for(EmployResult employRes : employRess) {
-			employDAO.updateResStatus(employRes);
-		}
-		// 만일 용병 확정이면 해당 일정을 확정한다. + 만일 상대팀이 없다면, 상대팀을 자기팀으로 
-		EmployResult sampleRes = employ.getEmployResults().get(0);
-		if(sampleRes.getEmpResultStatus() == 2) {
-			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
-			searchCon.put("matchScheduleId", employ.getMatchSchedule().getMatchScheduleId());
-			// 상대팀 있는지 체크
-			if(employ.getMatchSchedule().getAwayTeam() == null) {
-				// 상대팀을 자기로
-				searchCon.put("teamId", employ.getMatchSchedule().getHomeTeam().getTeamId());
-			}
 			
-			matchScheduleDAO.confirmMatchSchedule(searchCon);
+			employDAO.updateResStatus(employRes);
+		} 
+	}
+	
+	@Override
+	public void completeEmploy(Employ employ) throws SQLException {
+		// 만일 용병 확정이면 해당 일정을 확정한다. + 만일 상대팀이 없다면, 상대팀을 자기팀으로
+		HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+		searchCon.put("matchScheduleId", employ.getMatchSchedule().getMatchScheduleId());
+		// 상대팀 있는지 체크
+		if(employ.getMatchSchedule().getAwayTeam() == null) {
+			// 상대팀을 자기로
+			searchCon.put("teamId", employ.getMatchSchedule().getHomeTeam().getTeamId());
 		}
+		
+		matchScheduleDAO.confirmMatchSchedule(searchCon);
 	}
 	
 	//FE05

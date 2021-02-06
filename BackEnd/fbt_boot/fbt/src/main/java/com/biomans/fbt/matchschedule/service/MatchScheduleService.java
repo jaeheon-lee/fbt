@@ -19,6 +19,7 @@ public interface MatchScheduleService {
 	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException;
 	// FV16
 	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;
+	public void addEntry(HashMap<String, Integer> searchCon) throws SQLException;
 	//FS07
 	public MatchSchedule showMatchScheduleResultByTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	// FS09
@@ -41,6 +42,8 @@ public interface MatchScheduleService {
 	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException;
 	//FS18
 	public void updateMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
+	//
+	public void addAwayTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	// V06-1: 일정 삭제 
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException;
 	

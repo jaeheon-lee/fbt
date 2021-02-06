@@ -91,7 +91,9 @@ public class EmployController {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("email", email);
 			searchCon.put("empResultStatus", empResultStatus);
+			System.out.println(searchCon);
 			List<Employ> list = employService.showAppliedEmployByUser(searchCon);
+			System.out.println(list);
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -139,11 +141,25 @@ public class EmployController {
 	@PutMapping("/employ-result/1")
 	public ResponseEntity updateResStatus(@RequestBody Employ employ) throws SQLException {
 		try {
+			System.out.println(employ.getEmployResults());
 			Boolean isUpdated = false;
 			try {
 				employService.updateResStatus(employ);
+				EmployResult sampleRes = employ.getEmployResults().get(0);
+				if(sampleRes.getEmpResultStatus() == 2) {
+					employService.completeEmploy(employ);
+					
+					HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+					int matchScheduleId = employ.getMatchSchedule().getMatchScheduleId();
+					int teamId = employ.getTeamGiver().getTeamId();
+					searchCon.put("matchScheduleId", matchScheduleId);
+					searchCon.put("teamId", teamId);
+					matchScheduleService.addEntry(searchCon);
+				}
+				
 				isUpdated = true;
 			}catch (Exception e) {
+				System.out.println(e);
 				isUpdated = false;
 			}
 			

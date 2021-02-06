@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+        /* footer 시작 */
+        footer {
+            width: 100%;
+            height: 200;
+            background-color: #191A1D;
+        }
+        footer *{
+            font-size:12px;
+        }
+
+        .footerWrap{
+            margin-left: 20px;
+            margin-right:20px;
+        }
+
+        .footerCon {
+            text-align: center;
+            margin-bottom:4px;
+
+        }
+
+        .footerCon>span {
+            color: white;
+        }
+
+        .footerIcon>img {
+            width: 40px;
+            height: 38px;
+        }
+
+        .footerIcon {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            margin-top:10px;
+        }
+
+        .footInfo {
+            width: 50px;
+            display: inline-block;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .footerWraper {
+            text-align: center;
+            width: 100%
+        }
+        /* footer 끝 */

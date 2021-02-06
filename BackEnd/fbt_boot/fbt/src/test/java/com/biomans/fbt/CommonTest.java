@@ -47,7 +47,7 @@ class CommonTest {
 		VoteMatch v = new VoteMatch();
 		v.setMatchScheduleId(1);
 		v.setTeamId(1);
-		List<VoteMatch> vlist = sqlSession.selectList(ns+"getVoteMatch", v);
+		List<VoteMatch> vlist = sqlSession.selectList(ns+"showVoteMatchInfoByTeam", v);
 		for(VoteMatch voteMatch : vlist) {
 			System.out.println(voteMatch);
 		}

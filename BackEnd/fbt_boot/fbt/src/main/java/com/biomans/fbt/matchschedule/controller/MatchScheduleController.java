@@ -77,6 +77,7 @@ public class MatchScheduleController {
 			searchCon.put("matchScheduleId", matchScheduleId);
 			searchCon.put("teamId", homeTeamId);
 			matchScheduleService.confirmMatchSchedule(searchCon);
+			matchScheduleService.addEntry(searchCon);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

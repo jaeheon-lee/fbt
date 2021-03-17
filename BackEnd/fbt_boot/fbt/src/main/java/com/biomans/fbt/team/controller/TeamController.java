@@ -56,9 +56,10 @@ public class TeamController {
 			@RequestPart(value="teamMember") TeamMember teamMember,
 			HttpServletRequest request) throws SQLException {
 		try {
-			String root = request.getSession().getServletContext().getRealPath("/").substring(0, 11);
-			String path = root + "front contents\\fbt\\src\\assets\\image\\emblem\\";
-			teamService.addTeam(team, file, path, teamMember);
+			String root = request.getSession().getServletContext().getRealPath("/");
+			System.out.println(root);
+//			String path = root + "front contents\\fbt\\src\\assets\\image\\emblem\\";
+//			teamService.addTeam(team, file, path, teamMember);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -101,15 +102,15 @@ public class TeamController {
 	
 	//FT06
 	@PutMapping("/team/1/{beforeUrl}")
-	public ResponseEntity addTeam(@RequestPart(value="file", required=false) MultipartFile file,
+	public ResponseEntity updateTeamInfo(@RequestPart(value="file", required=false) MultipartFile file,
 			@RequestPart(value="team") Team team,
 			@PathVariable String beforeUrl,
 			HttpServletRequest request) throws SQLException {
 		try {
-			String root = request.getSession().getServletContext().getRealPath("/");
-			System.out.println(root);
-			String path = root + "front contents\\fbt\\src\\assets\\image\\emblem\\";
-//			teamService.updateTeamInfo(team, file, beforeUrl, path);
+			String root = request.getSession().getServletContext().getRealPath("/");// E:\kjy\apache-tomcat-8.5.61\webapps\fbt\
+			root = root.substring(0, root.length() - 4);
+			String path = root + "emblem/";
+			teamService.updateTeamInfo(team, file, beforeUrl, path);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

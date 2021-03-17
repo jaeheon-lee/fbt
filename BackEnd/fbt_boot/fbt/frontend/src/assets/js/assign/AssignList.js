@@ -49,7 +49,6 @@ export default {
     },
     searchedAssigns: function() {
       this.assigns = this.searchedAssigns;
-      console.log(this.assigns);
     }
   },
   methods: {
@@ -81,11 +80,14 @@ export default {
       if (this.registeredStage != null) {
         // 등록 양도일 때 단계별 출력해야할 것 배분
         switch (this.registeredStage) {
-          case 2: // 양도 신청
+          case 2: // 인원파악수락
             reservationStatus = 0;
             break;
-          case 4: //양도 성공
+          case 3: // 인원파악중
             reservationStatus = 1;
+            break;
+          case 5: //양도 성공
+            reservationStatus = 2;
         }
       } else if (this.appliedStage != null) {
         // 신청 양도일 때 단계별 출력해야할 것 배분
@@ -93,11 +95,14 @@ export default {
           case 1: //양도 신청
             reservationStatus = 0;
             break;
-          case 2: //양도 거절
+          case 2: //인원파악 중
+            reservationStatus = 1;
+            break;
+          case 3: //양도 실패
             reservationStatus = -1;
             break;
-          case 3: //양도 수락
-            reservationStatus = 1;
+          case 4: // 양도 성공
+            reservationStatus = 2;
             break;
         }
       }
@@ -110,11 +115,11 @@ export default {
           this.assigns = response.data;
           if (this.assigns.length == 0) this.empty = true;
           // 양도완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
-          if (this.registeredStage == 4) {
+          if (this.registeredStage == 5) {
             for (let i = 0; i < this.assigns.length; i++) {
               let index = this.assigns[i].assignmentReservations
                 .map(x => x.reservationStatus)
-                .indexOf(1);
+                .indexOf(2);
               // eslint-disable-next-line prettier/prettier
               this.assigns[i].matchSchedule.homeTeam = this.assigns[i].assignmentReservations[index].teamTaker;
               // eslint-disable-next-line prettier/prettier
@@ -168,38 +173,46 @@ export default {
       assignmentRes.reservationStatus = 1;
       assign.assignmentReservations = [];
       assign.assignmentReservations.push(assignmentRes);
+      assign.matchSchedule.writer = JSON.parse(sessionStorage.getItem("userInfo")).nickName;
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       axios
-        .put("/assignment-reservation/1/", assign)
+        .put("/assignment-reservation/1/?teamName=" + teamName, assign)
         .then(() => {
-          this.refreshRegistered();
-          alert("양도신청을 수락했습니다.");
+          axios
+          .put("/assignment-reservation/2", assign)
+          .then(() => {
+            alert("인원파악신청을 수락하고 자동으로 투표를 생성했습니다.");
+          })
+          .catch(() => {
+            alert("인원파악신청 수락에 실패했습니다.");
+          })
+          .finally(() => {
+            this.refreshRegistered();
+          });
         })
-        .catch(() => {
-          alert("양도신청 수락에 실패했습니다.");
-          this.refreshRegistered();
-        })
-        .finally(() => {
-          let stage = 4;
-          this.$emit("change-registered-stage", stage);
-        });
+        .catch(() => {})
     },
     //FA09
-    refuseApply(assignmentRes, assign) {
+    refuseApply(assignmentRes, assign, i) {
+      let selectedAssign = assign;
       assignmentRes.reservationStatus = -1;
-      assign.assignmentReservations = [];
-      assign.assignmentReservations.push(assignmentRes);
+      selectedAssign.assignmentReservations = [];
+      selectedAssign.assignmentReservations.push(assignmentRes);
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       axios
-        .put("/assignment-reservation/1", assign)
+        .put("/assignment-reservation/1?teamName=" + teamName, selectedAssign)
         .then(() => {
           this.refreshRegistered();
-          alert("양도신청을 거절했습니다.");
+          if (i == 0) alert("인원파악신청을 거절했습니다.");
+          else alert("인원파악을 중단했습니다.");
         })
         .catch(() => {
-          alert("양도신청 거절에 실패했습니다.");
+          if (i == 0) alert("인원파악신청 거절에 실패했습니다.");
+          else alert("인원파악 중단에 실패했습니다.");
         });
     },
     // FA14
-    deleteAssignRes(assign) {
+    deleteAssignRes(assign, i) {
       let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
       let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       let msgTeamTakerId = assign.teamGiver.teamId;
@@ -219,10 +232,12 @@ export default {
         )
         .then(() => {
           this.refreshApplied();
-          alert("취소했습니다.");
+          if (i == 0) alert("취소했습니다.");
+          else alert("삭제했습니다.");
         })
         .catch(() => {
-          alert("취소에 실패했습니다.");
+          if (i == 0) alert("취소에 실패했습니다.");
+          else alert("삭제했습니다.");
         });
     },
     // FA03
@@ -271,9 +286,9 @@ export default {
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
-        return require("@/assets/image/emblem/" + team.emblem);
+        return this.$emblem + team.emblem;
       } else {
-        return require("@/assets/image/emblem/emptyFC.svg");
+        return this.$emblem + "emptyFC.svg";
       }
     },
     // 상세정보 창 여닫기
@@ -297,6 +312,7 @@ export default {
       else this.activeTeamInfo = j;
     },
     // DB 조정 후 등록 양도 업데이트
+    // DB 조정 후 등록 매치 업데이트
     refreshRegistered() {
       switch (this.registeredStage) {
         case 1:
@@ -306,9 +322,12 @@ export default {
           this.showRegisteredAssignAppliedByTeam();
           break;
         case 3:
-          this.showRegisteredAssignByTeam();
+          this.showRegisteredAssignAppliedByTeam();
           break;
         case 4:
+          this.showRegisteredAssignByTeam();
+          break;
+        case 5:
           this.showRegisteredAssignAppliedByTeam();
           break;
       }

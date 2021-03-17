@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.biomans.fbt.domain.Assignment;
+import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.Employ;
 import com.biomans.fbt.domain.Entry;
 import com.biomans.fbt.domain.MatchResult;
@@ -24,10 +26,13 @@ import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
+import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
+import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
+import com.biomans.fbt.teammember.service.TeamMemberService;
 import com.biomans.fbt.util.Attendance;
 import com.biomans.fbt.util.Filter;
 
@@ -40,17 +45,16 @@ class CommonTest {
 	private SqlSession sqlSession;
 	
 	@Autowired
-	private MatchScheduleService matchScheduleService;
+	private TeamMemberService teamMemberService;
+	
+	@Autowired
+	private MatchScheduleDAO matchScheduleDAO;
 
 	@Test
-	void contextLoads() throws ParseException {
-		VoteMatch v = new VoteMatch();
-		v.setMatchScheduleId(1);
-		v.setTeamId(1);
-		List<VoteMatch> vlist = sqlSession.selectList(ns+"showVoteMatchInfoByTeam", v);
-		for(VoteMatch voteMatch : vlist) {
-			System.out.println(voteMatch);
-		}
+	void contextLoads() throws ParseException, SQLException {
+		String a = "unnamed.jpg";
+		String[] as = a.split("\\.");
+		System.out.println(Arrays.toString(as));
 	}
 
 }

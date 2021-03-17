@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.Search;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.VoteMatch;
@@ -103,8 +104,9 @@ public class VoteMatchController {
 			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {			
 			VoteMatchResult voteMatchResult = voteMatch.getVoteMatchResult();
-			System.out.println(voteMatchResult);
-			int searchId =  voteMatchService.addAttendance(voteMatchResult, voteMatch);
+			HashMap<String, Integer> idMap =  voteMatchService.addAttendance(voteMatchResult, voteMatch);
+			
+			int searchId = idMap.get("searchId");
 			if(searchId != 0 ) {
 				NoticeFactor nf = new NoticeFactor();
 				nf.setType("fillNumber");
@@ -116,6 +118,20 @@ public class VoteMatchController {
 				//2-2. 알림을 보낸다.
 				noticeService.addNoticeByCase(nf);
 			}
+			
+			int assignmentId = idMap.get("assignmentId");
+			if(assignmentId != 0) {
+				NoticeFactor nf = new NoticeFactor();
+				nf.setType("fillNumber2");
+				nf.setTeamName(teamName);
+				nf.setVoteMatch(voteMatch);
+				Assignment assignment = new Assignment();
+				assignment.setAssignmentId(assignmentId);
+				nf.setAssign(assignment);
+				//2-2. 알림을 보낸다.
+				noticeService.addNoticeByCase(nf);
+			}
+			
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

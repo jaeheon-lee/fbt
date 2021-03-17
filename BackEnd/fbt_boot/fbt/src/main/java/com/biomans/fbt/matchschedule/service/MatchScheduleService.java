@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.biomans.fbt.domain.EmpScore;
+import com.biomans.fbt.domain.Entry;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
@@ -17,6 +18,8 @@ public interface MatchScheduleService {
 	public MatchSchedule showMatchScheduleByMatchScheduleId(int matchScheduleId) throws SQLException;
 	// FS02 
 	public List<MatchSchedule> showMatchSchduleByTeamPeriod(SearchKey searchKey) throws SQLException;
+	//
+	public MatchSchedule showConfirmedMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 	// FV16
 	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 	public void addEntry(HashMap<String, Integer> searchCon) throws SQLException;
@@ -46,19 +49,24 @@ public interface MatchScheduleService {
 	public void addAwayTeam(HashMap<String, Integer> searchCon) throws SQLException;
 	// V06-1: 일정 삭제 
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException;
-	
 	//S001: 일정 등록
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
+	//
+	public void doWait(Entry entry) throws SQLException;
 	// S002: 방금 동록한 일정 ID 출력
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException;
-	
-	
-	// S005-2: 등록된 개인 경기 일정 출력
-	;
-
 	// S009
 	public void addMatchResultCollection(MatchResultCollection matchResultCollection) throws SQLException;
+	public void updateTeamScoreDesc(TeamScore teamScore) throws SQLException;
+	public void updateEmpScoreDesc(EmpScore es) throws SQLException;
 	// S010
+	
+	// 대기를 참여로 바꾸기
+	public void joinEntry(Entry entry) throws SQLException;
+	// 참석취소하기
+	public void deleteEntry(int entryId) throws SQLException;
+	// 해당 팀, 일정의 엔트리 가져오기
+	public List<Entry> getEntryByTeamSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 	
 	
 	

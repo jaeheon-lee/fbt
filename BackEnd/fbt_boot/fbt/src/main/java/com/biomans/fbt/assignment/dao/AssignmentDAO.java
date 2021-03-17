@@ -3,9 +3,11 @@ package com.biomans.fbt.assignment.dao;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
+import com.biomans.fbt.util.Attendance;
 import com.biomans.fbt.util.Filter;
 
 public interface AssignmentDAO {
@@ -33,4 +35,10 @@ public interface AssignmentDAO {
 	public void updateAssignment(Assignment assignment) throws SQLException;
 	//A011
 	public void failAssign(HashMap<String, Integer> searchCon) throws SQLException;
+	//
+	public int checkAssignSuccessById(AssignmentReservation assignRes);
+	//
+	public Attendance checkMinNum(HashMap<String, String> searchCon) throws SQLException;
+	//
+	public void completeAssignment(HashMap<String, Integer> searchCon) throws SQLException;
 }

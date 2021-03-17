@@ -243,9 +243,9 @@ export default {
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
-        return require("@/assets/image/emblem/" + team.emblem);
+        return this.$emblem + team.emblem;
       } else {
-        return require("@/assets/image/emblem/emptyFC.svg");
+        return this.$emblem + "emptyFC.svg";
       }
     },
     // 상세정보 창 여닫기

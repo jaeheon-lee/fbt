@@ -75,7 +75,7 @@ export default {
         });
     },
     imageTrans(pic) {
-      return require("@/assets/image/emblem/" + pic);
+      return this.$emblem + pic;
     }
   }
 };

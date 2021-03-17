@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.biomans.fbt.assignment.dao.AssignmentDAO;
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
+import com.biomans.fbt.util.Attendance;
 import com.biomans.fbt.util.Filter;
 
 @Repository
@@ -93,5 +94,19 @@ final String ns = "AssignmentMapper.";
 	public void failAssign(HashMap<String, Integer> searchCon) throws SQLException {
 		sqlSession.update(ns+"failAssign", searchCon);
 	}
+
+	@Override
+	public int checkAssignSuccessById(AssignmentReservation assignRes) {
+		return sqlSession.selectOne(ns+"checkAssignSuccessById", assignRes);
+	}
 	
+	//
+	public Attendance checkMinNum(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectOne(ns+"checkMinNum", searchCon);
+	}
+	
+	//
+	public void completeAssignment(HashMap<String, Integer> searchCon) throws SQLException {
+		sqlSession.update(ns+"completeAssignment", searchCon);
+	}
 }

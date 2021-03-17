@@ -97,7 +97,7 @@
                 class="ma-0 pa-0"
                 :class="{ 'btn-on-purple': registeredStage == 2 }"
                 @click="registeredStage = 2"
-                >양도신청</v-btn
+                >인원파악신청</v-btn
               >
             </v-col>
             <v-col cols="2" class="ma-0 pa-0">
@@ -108,7 +108,7 @@
                 class="ma-0 pa-0"
                 :class="{ 'btn-on-purple': registeredStage == 3 }"
                 @click="registeredStage = 3"
-                >양도실패</v-btn
+                >인원파악 중</v-btn
               >
             </v-col>
             <v-col cols="2" class="ma-0 pa-0">
@@ -119,6 +119,17 @@
                 class="ma-0 pa-0"
                 :class="{ 'btn-on-purple': registeredStage == 4 }"
                 @click="registeredStage = 4"
+                >양도실패</v-btn
+              >
+            </v-col>
+            <v-col cols="2" class="ma-0 pa-0">
+              <v-btn
+                tile
+                dark
+                width="100%"
+                class="ma-0 pa-0"
+                :class="{ 'btn-on-purple': registeredStage == 5 }"
+                @click="registeredStage = 5"
                 >양도완료</v-btn
               >
             </v-col>
@@ -150,7 +161,7 @@
                 class="ma-0 pa-0"
                 :class="{ 'btn-on-purple': appliedStage == 2 }"
                 @click="appliedStage = 2"
-                >양도 신청 거절</v-btn
+                >인원 파악 중</v-btn
               >
             </v-col>
             <v-col cols="2" class="ma-0 pa-0">
@@ -161,7 +172,18 @@
                 class="ma-0 pa-0"
                 :class="{ 'btn-on-purple': appliedStage == 3 }"
                 @click="appliedStage = 3"
-                >양도 신청 수락</v-btn
+                >양도 실패</v-btn
+              >
+            </v-col>
+            <v-col cols="2" class="ma-0 pa-0">
+              <v-btn
+                tile
+                dark
+                width="100%"
+                class="ma-0 pa-0"
+                :class="{ 'btn-on-purple': appliedStage == 4 }"
+                @click="appliedStage = 4"
+                >양도 성공</v-btn
               >
             </v-col>
           </v-row>

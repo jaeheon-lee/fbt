@@ -47,6 +47,7 @@ public interface VoteMatchDAO {
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	//V03-5
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException;
+	public String checkByAssign(HashMap<String, String> searchCon) throws SQLException;
 	//V05-3, V06-1
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException;
 	//V011

@@ -194,7 +194,6 @@ export default {
   }),
   mounted() {
     // 네이버 로그인 후 다시 온 것을 체크
-    console.log(this.naverType);
     if (this.fromNaverLogin) {
       this.id = this.naverId;
       this.type = this.naverType;
@@ -345,7 +344,6 @@ export default {
       if (teams.length > 0) {
         for (let i = 0; i < teams.length; i++) {
           let teamId = teams[i].teamId;
-          console.log(teamId, urlInfo.teamId);
           if (teamId == urlInfo.teamId) {
             this.setTeamByUrl(teams[i], urlInfo);
             break;

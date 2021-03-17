@@ -39,6 +39,11 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 		return sqlSession.selectOne(ns+"showLatestMatchScheduleIdById", teamId);
 		
 	}
+	//
+	@Override
+	public MatchSchedule showConfirmedMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectOne("showConfirmedMatchSchedule", searchCon);
+	}
 	//S003
 	@Override
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
@@ -142,20 +147,20 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	
 	// S014
 	@Override
-	public Team getTeamScoreDesc(int teamId) throws SQLException {
-		return sqlSession.selectOne(ns+"getTeamScoreDesc", teamId);
+	public List<TeamScore> getTeamScores(int teamId) throws SQLException {
+		return sqlSession.selectList(ns+"getTeamScores", teamId);
 	}
 	
 	// S015
 	@Override
-	public void updateTeamScoreDesc(ScoreDescInput scoreDescInput) throws SQLException {
-		sqlSession.update(ns+"updateTeamScoreDesc", scoreDescInput);
+	public void updateTeamScoreDesc(Team team) throws SQLException {
+		sqlSession.update(ns+"updateTeamScoreDesc", team);
 	}
 	
 	// S016
 	@Override
-	public User getEmpScoreDesc(String email) throws SQLException {
-		return sqlSession.selectOne(ns+"getEmpScoreDesc", email);
+	public List<EmpScore> getEmpScores(String email) throws SQLException {
+		return sqlSession.selectList(ns+"getEmpScores", email);
 	}
 	
 	// S017
@@ -204,4 +209,21 @@ public class MatchScheduleDAOImpl implements MatchScheduleDAO{
 	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException {
 		return sqlSession.selectList(ns+"showFutureSchedule", teamId);
 	}
+	
+	//대기를 참여로 바꾸기
+	@Override
+	public void joinEntry(Entry entry) throws SQLException {
+		sqlSession.update("joinEntry", entry);
+	}
+	
+	// 참석취소하기
+	public void deleteEntry(int entryId) throws SQLException {
+		sqlSession.delete("deleteEntry", entryId);
+	}
+	
+	// 해당 팀, 일정의 엔트리 가져오기
+	public List<Entry> getEntryByTeamSchedule(HashMap<String, Integer> searchCon) throws SQLException {
+		return sqlSession.selectList("getEntryByTeamSchedule", searchCon);
+	}
+	
 }

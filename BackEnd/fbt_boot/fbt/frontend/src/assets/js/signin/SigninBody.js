@@ -96,7 +96,6 @@ export default {
     ]
   }),
   mounted() {
-    console.log(this.type);
     // input setting
     let today = new Date();
     let toyear = parseInt(today.getFullYear());

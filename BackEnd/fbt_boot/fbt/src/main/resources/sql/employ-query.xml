@@ -64,8 +64,8 @@
 				<result column="position" property="position"/>
 				<result column="main_foot" property="mainFoot"/>
 				<result column="area" property="area"/>
-				<result column="emp_ability" property="empAbility"/>
 				<result column="emp_manner" property="empManner"/>
+				<result column="emp_ability" property="empAbility"/>
 			</association>
 		</collection>
 	</resultMap>
@@ -98,7 +98,7 @@
 	<!-- 추가: 인원파악신청했을 때 불러올 데이터 -->
 	<sql id="showEmployFactorApplied">
 		er.employ_result_id, er.employ_id res_employ_id, er.email, er.emp_result_status,
-		u.position position, u.name, u.main_foot, u.area, u.emp_ability, u.emp_manner
+		u.position position, u.name, u.main_foot, u.area, u.emp_manner, u.emp_ability
 	</sql>
 	<!-- 추가: 인원파악신청했을 때 조인 테이블 -->
 	<sql id="showEmployJoinApplied">
@@ -152,6 +152,8 @@
 		<include refid="showEmployJoinBasic"/>
 		<include refid="showEmployJoinApplied"/>
 		<where>
+			m.start_time > sysdate() 
+			AND (m.is_confirmed != 1 OR m.is_confirmed is NULL)
 			<!-- 경기일 -->
 			<if test="date != null">
 				AND m.start_time LIKE "${date}%"

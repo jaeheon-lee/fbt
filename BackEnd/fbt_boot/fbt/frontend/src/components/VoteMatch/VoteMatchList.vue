@@ -210,8 +210,8 @@
         <v-col offset="2" cols="8">
           <wait-cancel-btn
             :vote="vote"
-            @do-vote="setVoteMatchResult"
-            @update-vote="setVoteMatchResult"
+            :awayVote="awayVote"
+            @refresh="refresh"
           ></wait-cancel-btn>
         </v-col>
       </v-row>
@@ -222,12 +222,12 @@
         </v-col>
       </v-row>
       <!-- 지인 | 명단보기 끝-->
-      <!-- 투표 명단보기 - 팀일정페이지 -->
+      <!-- 엔트리 보기 - 팀일정페이지 -->
       <v-row
         v-if="header.includes('schedule') && !vote.isEndMatch && !isByAssign"
       >
         <v-col class="py-0" offset="2" cols="8">
-          <member-list :vote="vote" :i="i" :awayVote="awayVote"></member-list>
+          <member-list :vote="vote" :i="i" :awayVote="awayVote" :header="header" @refresh="refresh"></member-list>
         </v-col>
       </v-row>
       <!-- 투표 명단보기 끝 -->

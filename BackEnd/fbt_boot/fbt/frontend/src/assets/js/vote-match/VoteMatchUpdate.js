@@ -110,7 +110,6 @@ export default {
     };
   },
   created() {
-    console.log(this.vote.matchSchedule);
     if (this.vote) {
       this.voteMatch = this.vote;
       this.matchSchedule = this.vote.matchSchedule;

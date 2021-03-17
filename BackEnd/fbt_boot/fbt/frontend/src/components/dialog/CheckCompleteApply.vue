@@ -58,15 +58,10 @@ export default {
     },
     // FA16
     completeAssign() {
-      this.selectedAssign = this.assign;
-      let teamId = this.selectedAssign.matchSchedule.homeTeam.teamId;
-      let index = this.selectedAssign.assignmentReservations.map(x => x.teamTaker.teamId).indexOf(teamId);
-      let targetRes = this.selectedAssign.assignmentReservations[index];
-      targetRes.reservationStatus = 2;
-      this.selectedAssign.assignmentReservations = [];
-      this.selectedAssign.assignmentReservations.push(targetRes);
+      console.log(1)
+      let teamName = JSON.parse(sessionStorage.getItem("userInfo")).teamName;
       this.$axios
-        .put("/assignment-reservation/1", this.selectedAssign)
+        .put("/assignment/3?teamName=" + teamName, this.assign)
         .then(() => {
           alert("양도가 확정됐습니다.");
         })

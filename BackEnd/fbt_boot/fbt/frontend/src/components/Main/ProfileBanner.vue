@@ -4,7 +4,7 @@
       <v-list-item height="64" justify-center pa-0>
         <v-list-item-avatar>
           <v-img
-            :src="require('@/assets/image/user/' + userInfo.image)"
+            :src="getImageUrl()"
             v-if="userInfo.image"
           />
           <v-icon v-else>mdi-account-circle</v-icon>
@@ -47,6 +47,9 @@ export default {
     logout() {
       sessionStorage.removeItem("userInfo");
       location.href = this.$http + "/loginSignin";
+    },
+    getImageUrl() {
+      return this.$user + this.userInfo.image;
     }
   }
 };

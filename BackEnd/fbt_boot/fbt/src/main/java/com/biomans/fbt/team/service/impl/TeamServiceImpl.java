@@ -73,9 +73,9 @@ public class TeamServiceImpl implements TeamService{
 		if(file != null) {
 			// 파일명 양식: teamName.확장자 
 			String rawFileName = file.getOriginalFilename();
-			int idx = rawFileName.indexOf(".");
-			String extension = rawFileName.substring(idx, rawFileName.length());
-			fileName = team.getTeamName() + extension;
+			String[] unit = rawFileName.split("\\.");
+			String extension = unit[unit.length-1];
+			fileName = team.getTeamName() + "." + extension;
 			try {
 				file.transferTo(new File(path+fileName)); //파일 생성
 			} catch (IllegalStateException | IOException e) {

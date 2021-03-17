@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biomans.fbt.assignment.dao.AssignmentDAO;
+import com.biomans.fbt.domain.AssignmentReservation;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.SearchReservation;
@@ -36,6 +38,9 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	
 	@Autowired
 	private SearchDAO searchDAO;
+	
+	@Autowired
+	private AssignmentDAO assignmentDAO;
 	
 
 // ============================================================================================================ //	
@@ -128,15 +133,17 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 	//V03-4
 	@Override
 	@Transactional
-	public int addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException {
+	public HashMap<String, Integer> addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException {
+		HashMap<String, Integer> idMap = new HashMap<String, Integer>();
+		
 		// FV05
 		voteMatchDAO.addAttendance(voteMatchResult);
-		int result = checkMinNum(voteMatch);
-		return result;
+		idMap.put("searchId", checkMinNumOfSearch(voteMatch));
+		idMap.put("assignmentId", checkMinNumOfApply(voteMatch));
+		return idMap;
 	}
 	//V03-5
-	@Override
-	public int checkMinNum(VoteMatch voteMatch) throws SQLException {
+	public int checkMinNumOfSearch(VoteMatch voteMatch) throws SQLException {
 		// 만일 상대방 찾기를 통해 투표를 하는 거라면
 		HashMap<String, String> searchCon = new HashMap<String, String>();
 		searchCon.put("voteMatchId", voteMatch.getVoteMatchId()+"");
@@ -160,10 +167,39 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 					teamTaker.setTeamId(voteMatch.getTeam().getTeamId());
 					searchRes.setTeamTaker(teamTaker);
 					searchDAO.updateResStatus(searchRes);
-					// 나머지 신청 매치 실패
-					searchDAO.failSearch(searchCon);
 					// 알림 보내기
 					return attendance.getSearchId();
+				}
+			}
+		}
+		return 0;
+	}
+	public int checkMinNumOfApply(VoteMatch voteMatch) throws SQLException {
+		// 만일 상대방 찾기를 통해 투표를 하는 거라면
+		HashMap<String, String> searchCon = new HashMap<String, String>();
+		searchCon.put("voteMatchId", voteMatch.getVoteMatchId()+"");
+		searchCon.put("matchScheduleId", voteMatch.getMatchSchedule().getMatchScheduleId()+"");
+		searchCon.put("takerTeamId", voteMatch.getTeam().getTeamId()+"");
+		String assignId = voteMatchDAO.checkByAssign(searchCon);
+		if(assignId != null) {
+			Attendance attendance = assignmentDAO.checkMinNum(searchCon);
+			// 맞다면 minNum을 넘기는 매번 확인
+			if(attendance != null) {
+				int minNumber = attendance.getMinNumber();
+				int totalNumber = attendance.getTotalFriend() + attendance.getTotalMember();
+				int resStatus = attendance.getReservationStatus();
+				if(minNumber <= totalNumber && resStatus != -1) {
+				// 넘겼다면
+					// 해당 신청 매치 인원파악 완료
+					AssignmentReservation ar = new AssignmentReservation();
+					ar.setAssignmentId(attendance.getAssignmentId());
+					ar.setReservationStatus(2);
+					Team teamTaker = new Team();
+					teamTaker.setTeamId(voteMatch.getTeam().getTeamId());
+					ar.setTeamTaker(teamTaker);
+					assignmentDAO.updateResStatus(ar);
+					
+					return attendance.getAssignmentId();
 				}
 			}
 		}

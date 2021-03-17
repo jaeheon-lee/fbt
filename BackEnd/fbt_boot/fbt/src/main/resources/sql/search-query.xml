@@ -156,11 +156,15 @@
 				</if>
 				<if test="reservationStatus == 2">
 					AND reservation_status = 2
+					AND due_date > sysdate() 
 				</if>
 			</if>
 			<if test="isApply == 1">
 				sr.reservation_status = #{reservationStatus}
 				AND sr.team_id_taker = #{teamIdTaker}
+				<if test="reservationStatus == 0">
+					AND due_date > sysdate()
+				</if>
 			</if>
 		</where>
 	</select>
@@ -190,7 +194,7 @@
 		<include refid="showSearchJoinApplied"/>
 		<where>
 		m.start_time > sysdate() 
-		<!-- AND sr.reservation_status != 3 -->
+		AND (m.is_confirmed != 1 OR m.is_confirmed is NULL)
 			<!-- 경기일 -->
 			<if test="date != null">
 				AND m.start_time LIKE "${date}%"

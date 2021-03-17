@@ -10,9 +10,6 @@ export default {
       teamInfo: {}
     };
   },
-  mounted() {
-    console.log(this.matchSchedule);
-  },
   methods: {
     // U03-2
     getInfoForWrite() {

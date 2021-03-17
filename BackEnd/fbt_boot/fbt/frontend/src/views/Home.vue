@@ -145,11 +145,11 @@ export default {
         })
         .catch(error => {
           console.log(error);
-          alert("이미지 변경엥 실패했습니다.");
+          alert("이미지 변경에 실패했습니다.");
         });
     },
     getImageUrl() {
-      return require("@/assets/image/user/" + this.user.image);
+      return this.$user + this.user.image;
     },
     moveToSearchTeam() {
       this.$router.push({

@@ -157,6 +157,26 @@
 		ORDER BY match_schedule_id DESC 
 		limit 1;
 	</select>
+	<!-- 확정된 일정 불러오기 -->
+	<select id="showConfirmedMatchSchedule" parameterType="hashMap" resultMap="matchScheduleRM">
+		SELECT
+		<include refid="matchScheduleColumn"/>,
+		<include refid="homeTeamColumn"/>,
+		<include refid="awayTeamColumn"/>,
+		<include refid="entryColumn"/>,
+		<include refid="entryTeamMemberColumn"/>
+		FROM match_schedule m
+		JOIN team t
+		ON m.home_team_id = t.team_id
+		LEFT OUTER JOIN team t2
+		ON m.away_team_id = t2.team_id
+		JOIN entry ent
+		ON m.match_schedule_id = ent.match_schedule_id
+		LEFT OUTER JOIN team_member tm
+		ON ent.team_member_id = tm.team_member_id
+		WHERE ent.team_id = #{teamId}
+		AND ent.match_schedule_id = #{matchScheduleId} 
+	</select>
 
 	<!-- S003: 일정 등록 -->
 	<insert id="addMatchSchedule" parameterType="matchSchedule">
@@ -443,19 +463,18 @@
 	</update>
 	
 	<!-- S014: 팀별 평균 매너, 실력, 부여받은 횟수 출력 -->
-	<select id="getTeamScoreDesc" parameterType="integer" resultType="team">
+	<select id="getTeamScores" parameterType="integer" resultType="teamScore">
 		SELECT
-		t.team_id, t.team_ability, t.team_manner,
-		count(ts.team_taker_id) totalRatedNum
-		FROM team t
-		LEFT OUTER JOIN team_score ts
-		ON t.team_id = ts.team_taker_id
-		WHERE t.team_id = #{value}
-		GROUP BY ts.team_taker_id
+		ts.manner_promise, ts.manner_contact, ts.manner_rule, ts.manner_body_fight, ts.manner_slang, 
+		ts.manner_smoking, ts.manner_uniform, ts.manner_payment,
+		ts.manner_arrangement, ts.manner_referee, ts.manner_tackle, ts.forward, ts.middle, 
+		ts.defence, ts.team_taker_id
+		FROM team_score ts
+		WHERE ts.team_taker_id = #{value}
 	</select>
 	
 	<!-- S015: 팀 평균 매너, 실력 수정 -->
-	<update id="updateTeamScoreDesc" parameterType="ScoreDescInput">
+	<update id="updateTeamScoreDesc" parameterType="team">
 		UPDATE team
 		SET team_ability = #{teamAbility},
 		team_manner = #{teamManner}
@@ -463,15 +482,13 @@
 	</update>
 	
 	<!-- S016: 개인별 평균 매너, 실력, 부여받은 횟수 출력 -->
-	<select id="getEmpScoreDesc" parameterType="string" resultType="user">
+	<select id="getEmpScores" parameterType="string" resultType="empScore">
 		SELECT
-		u.email, u.emp_ability, u.emp_manner,
-		count(es.emp_email) totalRatedNum
-		FROM user u
-		LEFT OUTER JOIN emp_score es
-		ON u.email = es.emp_email
-		WHERE u.email = #{value}
-		GROUP BY es.emp_email
+		emp_score_id, manner_promise, manner_contact, manner_rule, manner_body_fight, manner_slang, manner_smoking, 
+		manner_uniform, manner_payment, manner_arrangement, manner_referee, manner_tackle, forward, middle, defence, 
+		match_schedule_id, team_giver_id, emp_email
+		FROM emp_score
+		WHERE emp_email = #{email}
 	</select>
 	
 	<!-- S017: 개인 평균 매너, 실력 수정 -->
@@ -598,5 +615,51 @@
 		AND #{teamId} in (home_team_id, away_team_id)
 		ORDER BY start_time ASC
 		LIMIT 5
+	</select>
+	
+	<!-- 대기를 참여로 바꾸기 -->
+	<update id="joinEntry" parameterType="entry">
+		UPDATE entry
+		SET type = 0
+		WHERE entry_id = #{entryId}
+		AND team_member_id = #{teamMember.teamMemberId}
+	</update>
+	
+	<!-- 참석취소하기 -->
+	<delete id="deleteEntry" parameterType="integer">
+		DELETE FROM entry
+		WHERE entry_id = #{value}
+	</delete>
+	
+	<resultMap type="entry" id="entryRM">
+		<id column="entry_id" property="entryId"/>
+		<result column="attendance" property="attendance"/>
+		<result column="type" property="type"/>
+		<result column="match_score" property="matchScore"/>
+		<result column="goal" property="goal"/>
+		<result column="assist" property="assist"/>
+		<association property="teamMember" javaType="teamMember">
+			<id column="team_member_id" property="teamMemberId"/>
+			<result column="nick_name" property="nickName"/>
+		</association>
+		<association property="user" javaType="user">
+			<id column="email" property="email"/>
+		</association>
+		<association property="team" javaType="team">
+			<id column="team_id" property="teamId"/>
+		</association>
+	</resultMap>
+	
+	<!-- 해당 일정, 팀 엔트리 가져오기 -->
+	<select id="getEntryByTeamSchedule" parameterType="hashMap" resultMap="entryRM">
+		SELECT
+		ent.entry_id, ent.team_member_id, ent.match_schedule_id, ent.email, ent.team_id, 
+		attendance, type, match_score, goal, assist,
+		tm.nick_name
+		FROM entry ent
+		LEFT OUTER JOIN team_member tm
+		ON ent.team_member_id = tm.team_member_id
+		WHERE ent.team_id = #{teamId}
+		AND ent.match_schedule_id = #{matchScheduleId}
 	</select>
 </mapper>

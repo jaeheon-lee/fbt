@@ -51,6 +51,12 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		return matchScheduleDAO.showMatchSchduleByTeamPeriod(searchKey);
 	}
 	
+	//
+	@Override
+	public MatchSchedule showConfirmedMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException {
+		return matchScheduleDAO.showConfirmedMatchSchedule(searchCon);
+	}
+	
 	// FV16
 	@Override
 	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException {
@@ -153,75 +159,82 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		MatchResult matchResult = matchResultCollection.getMatchResult();
 		Boolean isHomeTeam = matchResultCollection.getIsHomeTeam();
 		
-		// 상태팀 점수 요약 입력
-		updateTeamScoreDesc(teamScore);
-		
-		// 용병 점수 요약 입력
-		updateEmpScoreDesc(empScores);
-		
 		// 2. matchRsult 입력
 		if(isHomeTeam == true) addMatchResult(matchResult);
 		
-		// 3. 각각 입력(for문 필요하면 사용)
-		addEntries(entries);
+		// 3. 각각 입력
+		for(Entry entry : entries) {
+			if(entry.getIsNew() != null) {
+				matchScheduleDAO.addEntry(entry);
+			} else {
+				matchScheduleDAO.updateEntry(entry);
+			}
+			
+			EmpScore empScore = entry.getEmpScore();
+			if(empScore != null) {
+				// 용병 점수 입력
+				addEmpScores(empScore);
+				// 용병 점수 통계값 갱신
+				updateEmpScoreDesc(empScore);
+			}
+		}
 		
-		addEmpScores(empScores);
-		
+		//5. 해당 경기 팀 매너/실력 점수 입력
 		if(teamScore != null) matchScheduleDAO.addTeamScore(teamScore);
+		
+		//4. 팀 매너/실력 평균 점수 갱신
+		updateTeamScoreDesc(teamScore);
 		
 	}
 	
 	public void updateTeamScoreDesc(TeamScore teamScore) throws SQLException {
 		int teamTakerId = teamScore.getTeamTaker().getTeamId();
 		if(teamTakerId != 0) {
-			Team teamScoreDesc = matchScheduleDAO.getTeamScoreDesc(teamTakerId);
-			double teamAbility = teamScoreDesc.getTeamAbility();
-			double teamManner= teamScoreDesc.getTeamManner();
-			int totalRatedNum = teamScoreDesc.getTotalRatedNum();
+			List<TeamScore> teamScores = matchScheduleDAO.getTeamScores(teamTakerId);
 			
-			double sumTeamAbility = teamAbility * totalRatedNum;
-			double sumTeamManner = teamManner * totalRatedNum;
-			sumTeamAbility += teamScore.getForward() + teamScore.getMiddle() + teamScore.getDefence();
-			sumTeamManner += teamScore.getMannerArrangement() + teamScore.getMannerBodyFight() +teamScore.getMannerContact()
-			+ teamScore.getMannerPayment() + teamScore.getMannerPromise() + teamScore.getMannerReferee() + teamScore.getMannerRule()
-			+ teamScore.getMannerSlang() + teamScore.getMannerSmoking() + teamScore.getMannerTackle() + teamScore.getMannerUniform();
+			double sumTeamAbility = 0;
+			double sumTeamManner = 0;
+			for(TeamScore ts : teamScores) {
+				sumTeamAbility += ts.getForward() + ts.getMiddle() + ts.getDefence();
+				sumTeamManner += ts.getMannerArrangement() + ts.getMannerBodyFight() +ts.getMannerContact()
+				+ ts.getMannerPayment() + ts.getMannerPromise() + ts.getMannerReferee() + ts.getMannerRule()
+				+ ts.getMannerSlang() + ts.getMannerSmoking() + ts.getMannerTackle() + ts.getMannerUniform();
+			} 
 			
-			double newTeamAbility = sumTeamAbility / (totalRatedNum + 3);
-			double newTeamManner = sumTeamManner / (totalRatedNum + 11);
+			double teamAbility = sumTeamAbility / (teamScores.size()*3);
+			double teamManner= sumTeamManner / (teamScores.size()*11);
 			
-			ScoreDescInput sdi = new ScoreDescInput();
-			sdi.setTeamId(teamTakerId);
-			sdi.setTeamAbility(newTeamAbility);
-			sdi.setTeamManner(newTeamManner);
-			matchScheduleDAO.updateTeamScoreDesc(sdi);
+			Team team = new Team();
+			team.setTeamId(teamTakerId);
+			team.setTeamAbility(teamAbility);
+			team.setTeamManner(teamManner);
+			matchScheduleDAO.updateTeamScoreDesc(team);
 		}
 	}
 	
-	public void updateEmpScoreDesc(List<EmpScore> empScores) throws SQLException {
-		if(empScores.size() > 0) {
-			for(EmpScore es : empScores) {
-				String takerEmail = es.getUser().getEmail();
-				User empScoreDesc = matchScheduleDAO.getEmpScoreDesc(takerEmail);
-				double empAbility = empScoreDesc.getEmpAbility();
-				double empManner = empScoreDesc.getEmpManner();
-				int totalRatedNum = empScoreDesc.getTotalRatedNum();
-				
-				double sumEmpAbility = empAbility * totalRatedNum;
-				double sumEmpManner = empManner * totalRatedNum;
-				sumEmpAbility += es.getForward() + es.getMiddle() + es.getDefence();
-				sumEmpManner += es.getMannerArrangement() + es.getMannerBodyFight() +es.getMannerContact()
-				+ es.getMannerPayment() + es.getMannerPromise() + es.getMannerReferee() + es.getMannerRule()
-				+ es.getMannerSlang() + es.getMannerSmoking() + es.getMannerTackle() + es.getMannerUniform();
-				
-				double newTeamAbility = sumEmpAbility / (totalRatedNum + 3);
-				double newTeamManner = sumEmpManner / (totalRatedNum + 11);
-				
-				ScoreDescInput sdi = new ScoreDescInput();
-				sdi.setEmail(takerEmail);
-				sdi.setEmpAbility(newTeamAbility);
-				sdi.setEmpManner(newTeamManner);
-				matchScheduleDAO.updateEmpScoreDesc(sdi);
+	public void updateEmpScoreDesc(EmpScore es) throws SQLException {
+		if(es != null) {
+			String takerEmail = es.getUser().getEmail();
+			List<EmpScore> ess = matchScheduleDAO.getEmpScores(takerEmail);
+			
+			double sumEmpAbility = 0;
+			double sumEmpManner = 0;
+			for(EmpScore es2 : ess) {
+				sumEmpAbility += es2.getForward() + es2.getMiddle() + es2.getDefence();
+				sumEmpManner += es2.getMannerArrangement() + es2.getMannerBodyFight() +es2.getMannerContact()
+				+ es2.getMannerPayment() + es2.getMannerPromise() + es2.getMannerReferee() + es2.getMannerRule()
+				+ es2.getMannerSlang() + es2.getMannerSmoking() + es2.getMannerTackle() + es2.getMannerUniform();
 			}
+			
+			double newTeamAbility = sumEmpAbility / (ess.size()*3);
+			double newTeamManner = sumEmpManner / (ess.size()*11);
+			
+			ScoreDescInput sdi = new ScoreDescInput();
+			sdi.setEmail(takerEmail);
+			sdi.setEmpAbility(newTeamAbility);
+			sdi.setEmpManner(newTeamManner);
+
+			matchScheduleDAO.updateEmpScoreDesc(sdi);
 		}
 	}
 	
@@ -251,11 +264,9 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		}
 	}
 	
-	public void addEmpScores(List<EmpScore> empScores) throws SQLException {
-		if(empScores.size() > 0) {
-			for(EmpScore empScore : empScores) {
-				matchScheduleDAO.addEmpScore(empScore);
-			}
+	public void addEmpScores(EmpScore empScore) throws SQLException {
+		if(empScore != null) {
+			matchScheduleDAO.addEmpScore(empScore);
 		}
 	}
 	
@@ -351,50 +362,29 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 			matchScheduleDAO.updateMatchResult(matchResult);
 		}
 		
-		// 2. 각각 입력(for문 필요하면 사용)
-		if(entries.size() > 0) {
-			for(Entry entry : entries) {
+		// 3. 각각 입력
+		for(Entry entry : entries) {
+			if(entry.getIsNew() != null) {
+				matchScheduleDAO.addEntry(entry);
+			} else {
 				matchScheduleDAO.updateEntry(entry);
 			}
-		}
-		if(empScores.size() > 0) {
-			for(EmpScore empScore : empScores) {
+			
+			EmpScore empScore = entry.getEmpScore();
+			if(empScore != null) {
+				empScore.setUser(entry.getUser());
+				// 용병 점수 입력
 				matchScheduleDAO.updateEmpScore(empScore);
+				// 용병 점수 통계값 갱신
+				updateEmpScoreDesc(empScore);
 			}
 		}
+		
+		//5. 해당 경기 팀 매너/실력 점수 입력
 		if(teamScore != null) matchScheduleDAO.updateTeamScore(teamScore);
 		
-		// 3. 평균 다시 계산
-		// teamScore
-		if(teamScore != null) {
-			int takerTeamId = teamScore.getTeamTaker().getTeamId();
-			AvgScore as = matchScheduleDAO.getAvgTeamScore(takerTeamId);
-			double teamAbility = (as.getForward() + as.getMiddle() + as.getDefence()) / 3;
-			double teamManner =  (as.getMannerArrangement() + as.getMannerBodyFight() +as.getMannerContact()
-			+ as.getMannerPayment() + as.getMannerPromise() + as.getMannerReferee() + as.getMannerRule()
-			+ as.getMannerSlang() + as.getMannerSmoking() + as.getMannerTackle() + as.getMannerUniform()) / 11;
-			ScoreDescInput sdi = new ScoreDescInput();
-			sdi.setTeamId(takerTeamId);
-			sdi.setTeamAbility(teamAbility);
-			sdi.setTeamManner(teamManner);
-			matchScheduleDAO.updateTeamScoreDesc(sdi);
-		}
-		// empScore
-		if(empScores.size() > 0) {
-			for(EmpScore empScore : empScores) {
-				String email = empScore.getUser().getEmail();
-				AvgScore as = matchScheduleDAO.getAvgEmpScore(email);
-				double empAbility = (as.getForward() + as.getMiddle() + as.getDefence())/3;
-				double empManner =  (as.getMannerArrangement() + as.getMannerBodyFight() +as.getMannerContact()
-				+ as.getMannerPayment() + as.getMannerPromise() + as.getMannerReferee() + as.getMannerRule()
-				+ as.getMannerSlang() + as.getMannerSmoking() + as.getMannerTackle() + as.getMannerUniform())/11;
-				ScoreDescInput sdi = new ScoreDescInput();
-				sdi.setEmail(email);
-				sdi.setEmpAbility(empAbility);
-				sdi.setEmpManner(empManner);
-				matchScheduleDAO.updateEmpScoreDesc(sdi);
-			}
-		}
+		//4. 팀 매너/실력 평균 점수 갱신
+		updateTeamScoreDesc(teamScore);
 	}
 	
 	// FS12
@@ -448,14 +438,18 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	
 	// FS15
 	@Override
+	@Transactional
 	public void addTeamScore(TeamScore teamScore) throws SQLException {
 		matchScheduleDAO.addTeamScore(teamScore);
+		updateTeamScoreDesc(teamScore);
 	}
 	
 	//FS16
 	@Override
+	@Transactional
 	public void updateTeamScore(TeamScore teamScore) throws SQLException {
 		matchScheduleDAO.updateTeamScore(teamScore);
+		updateTeamScoreDesc(teamScore);
 	}
 	
 	//FS17
@@ -476,6 +470,9 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 		matchScheduleDAO.addAwayTeam(searchCon);
 	}
 	
+	//
+	
+	
 	//V06-1: 일정 삭제
 	@Override
 	public void deleteMatchSchedule(int matchScheduleId) throws SQLException {
@@ -487,6 +484,26 @@ public class MatchScheduleServiceImpl implements MatchScheduleService {
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException {
 		matchScheduleDAO.addMatchSchedule(matchSchedule);
 		
+	}
+	
+	// 대기하기
+	public void doWait(Entry entry) throws SQLException {
+		matchScheduleDAO.addEntry(entry);
+	}
+
+	// 대기를 참여로 바꾸기
+	public void joinEntry(Entry entry) throws SQLException {
+		matchScheduleDAO.joinEntry(entry);
+	}
+	
+	// 참석취소하기
+	public void deleteEntry(int entryId) throws SQLException {
+		matchScheduleDAO.deleteEntry(entryId);
+	}
+	
+	// 해당 팀, 일정의 엔트리 가져오기
+	public List<Entry> getEntryByTeamSchedule(HashMap<String, Integer> searchCon) throws SQLException {
+		return matchScheduleDAO.getEntryByTeamSchedule(searchCon);
 	}
 	
 	// S002: 방금 동록한 일정 ID 출력

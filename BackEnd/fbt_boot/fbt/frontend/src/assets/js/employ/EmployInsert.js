@@ -240,7 +240,6 @@ export default {
         .get("/match-schedule/2/" + this.matchScheduleId)
         .then(response => {
           this.employ.matchSchedule = response.data;
-          console.log(this.employ.matchSchedule);
           this.updateDisabled = true;
           this.targetStadium =
             this.employ.matchSchedule.stadiumAddress +

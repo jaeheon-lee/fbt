@@ -84,7 +84,6 @@ export default {
     // ============== 제출====================== //
     //FS15
     submitTeamScore() {
-      console.log(this.teamScore);
       this.$axios
         .post("/match-schedule/3", this.teamScore)
         .then(() => {

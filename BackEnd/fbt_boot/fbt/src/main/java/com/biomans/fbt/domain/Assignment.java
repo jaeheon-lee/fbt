@@ -10,12 +10,15 @@ public class Assignment {
 	private String regDate;
 	private String dueDate;
 	private String content;
+	private int minNumber;
+	private int waitingTime;
 	private ArrayList<AssignmentReservation> assignmentReservations;
 	
 	public Assignment() {}
 
 	public Assignment(int assignmentId, Team teamGiver, MatchSchedule matchSchedule, TeamMember teamMember,
-			String regDate, String dueDate, String content, ArrayList<AssignmentReservation> assignmentReservations) {
+			String regDate, String dueDate, String content, int minNumber, int waitingTime,
+			ArrayList<AssignmentReservation> assignmentReservations) {
 		super();
 		this.assignmentId = assignmentId;
 		this.teamGiver = teamGiver;
@@ -24,6 +27,8 @@ public class Assignment {
 		this.regDate = regDate;
 		this.dueDate = dueDate;
 		this.content = content;
+		this.minNumber = minNumber;
+		this.waitingTime = waitingTime;
 		this.assignmentReservations = assignmentReservations;
 	}
 
@@ -83,6 +88,22 @@ public class Assignment {
 		this.content = content;
 	}
 
+	public int getMinNumber() {
+		return minNumber;
+	}
+
+	public void setMinNumber(int minNumber) {
+		this.minNumber = minNumber;
+	}
+
+	public int getWaitingTime() {
+		return waitingTime;
+	}
+
+	public void setWaitingTime(int waitingTime) {
+		this.waitingTime = waitingTime;
+	}
+
 	public ArrayList<AssignmentReservation> getAssignmentReservations() {
 		return assignmentReservations;
 	}
@@ -95,7 +116,10 @@ public class Assignment {
 	public String toString() {
 		return "Assignment [assignmentId=" + assignmentId + ", teamGiver=" + teamGiver + ", matchSchedule="
 				+ matchSchedule + ", teamMember=" + teamMember + ", regDate=" + regDate + ", dueDate=" + dueDate
-				+ ", content=" + content + ", assignmentReservations=" + assignmentReservations + "]";
+				+ ", content=" + content + ", minNumber=" + minNumber + ", waitingTime=" + waitingTime
+				+ ", assignmentReservations=" + assignmentReservations + "]";
 	}
+
+	
 	
 }

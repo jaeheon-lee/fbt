@@ -37,6 +37,7 @@ export default {
     navigatePage() {
       switch (this.type) {
         case "applyAssign":
+        case "fillNumber2":
           this.page = this.pageR;
           this.registeredStage = this.registeredStageR;
           break;

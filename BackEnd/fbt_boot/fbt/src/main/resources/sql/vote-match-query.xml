@@ -263,6 +263,15 @@
 		WHERE s.match_schedule_id = #{matchScheduleId}
 		AND sr.team_id_taker = #{takerTeamId}
 	</select>
+	<select id="checkByAssign" parameterType="hashMap" resultType="String">
+		SELECT
+		a.assignment_id
+		FROM assignment a
+		JOIN assignment_reservation ar
+		ON a.assignment_id = ar.assignment_id
+		WHERE a.match_schedule_id = #{matchScheduleId}
+		AND ar.team_id_taker = #{takerTeamId}
+	</select>
 	<!-- V05-3, V06-1: id로 투표 수정하기 -->
 	<update id="updateVoteMatch" parameterType="voteMatch">
 		UPDATE vote_match

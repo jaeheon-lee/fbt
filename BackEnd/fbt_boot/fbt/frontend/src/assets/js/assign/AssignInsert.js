@@ -49,7 +49,9 @@ export default {
         },
         regDate: null,
         dueDate: null,
-        content: null
+        content: null,
+        waitingTime: null,
+        minNumber: null
       },
       // 경기 불어올 때 받는 변수
       votes: [],
@@ -185,6 +187,14 @@ export default {
     },
     //
     checkValidation() {
+      if (!this.assignment.waitingTime) {
+        alert("대기가능시간을 입력해주세요");
+        return false;
+      }
+      if (!this.assignment.minNumber) {
+        alert("최소인원을 입력해주세요");
+        return false;
+      }
       if (!this.assignment.dueDate) {
         alert("마감 시간을 입력해주세요.");
         return false;

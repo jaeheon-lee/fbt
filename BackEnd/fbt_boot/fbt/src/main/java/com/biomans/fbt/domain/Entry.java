@@ -12,11 +12,13 @@ public class Entry {
 	private User user;
 	private Team team;
 	private EmpScore empScore;
+	private Boolean isNew;
 	
 	public Entry() {}
 
 	public Entry(int entryId, int attendance, int type, int matchScore, int goal, int assist,
-			MatchSchedule matchSchedule, TeamMember teamMember, User user, Team team, EmpScore empScore) {
+			MatchSchedule matchSchedule, TeamMember teamMember, User user, Team team, EmpScore empScore,
+			Boolean isNew) {
 		super();
 		this.entryId = entryId;
 		this.attendance = attendance;
@@ -29,6 +31,7 @@ public class Entry {
 		this.user = user;
 		this.team = team;
 		this.empScore = empScore;
+		this.isNew = isNew;
 	}
 
 	public int getEntryId() {
@@ -119,11 +122,20 @@ public class Entry {
 		this.empScore = empScore;
 	}
 
+	public Boolean getIsNew() {
+		return isNew;
+	}
+
+	public void setIsNew(Boolean isNew) {
+		this.isNew = isNew;
+	}
+
 	@Override
 	public String toString() {
 		return "Entry [entryId=" + entryId + ", attendance=" + attendance + ", type=" + type + ", matchScore="
 				+ matchScore + ", goal=" + goal + ", assist=" + assist + ", matchSchedule=" + matchSchedule
-				+ ", teamMember=" + teamMember + ", user=" + user + ", team=" + team + ", empScore=" + empScore + "]";
+				+ ", teamMember=" + teamMember + ", user=" + user + ", team=" + team + ", empScore=" + empScore
+				+ ", isNew=" + isNew + "]";
 	}
 
 	

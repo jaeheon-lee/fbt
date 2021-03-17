@@ -106,7 +106,9 @@
                   :isByAssign="isByAssign"
                   @refresh="showMatchScheduleInfoByRefresh"
                   @refresh-monthly="getEventFresh"
+                  v-if="loading == false"
                 ></vote-match-list>
+                <progress-circle v-else></progress-circle>
               </v-col>
             </v-row>
           </div>

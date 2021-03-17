@@ -203,7 +203,7 @@
             <!-- 신청 팀리스트 -->
             <v-row
               style="color:rgba(235, 255, 0,0.7)"
-              v-if="registeredStage == 2"
+              v-if="registeredStage == 2 || registeredStage == 3"
             >
               <v-col offset="2" cols="10" class="mt-0">
                 <span
@@ -215,7 +215,7 @@
               </v-col>
             </v-row>
             <!-- 팀리스트 본문 -->
-            <v-row v-if="registeredStage == 2">
+            <v-row v-if="registeredStage == 2 || registeredStage == 3">
               <v-col offset="2" cols="8">
                 <v-expand-transition>
                   <div id="match-info-detail" v-if="activeTeamList == i">
@@ -235,7 +235,7 @@
                         >매너</v-col
                       >
                       <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
-                        >양도</v-col
+                        >인원파악신청</v-col
                       >
                     </v-row>
                     <!-- 팀 리스트 라벨 끝 -->
@@ -276,11 +276,12 @@
                         <!-- 신청만 했다면 -->
                         <v-col
                           cols="3"
-                          v-if="
-                            registeredStage == 2 && res.reservationStatus == 0
-                          "
+                          v-if="registeredStage == 2"
                         >
-                          <v-row class="justify-center">
+                          <v-row
+                            class="justify-center"
+                            v-if="res.reservationStatus == 0"
+                          >
                             <v-btn
                               class="ma-0 pa-0 mr-2 justify-center"
                               elevation="2"
@@ -294,20 +295,37 @@
                               elevation="2"
                               small
                               color="#AD1457"
-                              @click.stop="refuseApply(res, assign)"
+                              @click.stop="refuseApply(res, assign, 0)"
                               >거절</v-btn
                             >
                           </v-row>
+                          <v-row
+                            class="justify-center"
+                            v-else-if="res.reservationStatus == 1"
+                          >
+                            <span>수락됨</span>
+                          </v-row>
+                          <v-row class="justify-center" v-else>
+                            <span>거절됨</span>
+                          </v-row>
                         </v-col>
-                        <!-- 거절됐다면 -->
-                        <v-col
-                          cols="3"
-                          v-if="
-                            registeredStage == 2 && res.reservationStatus == -1
-                          "
-                        >
-                          <v-row class="justify-center">
-                            거절됨
+                        <!-- 인원파악신청 중단 버튼 -->
+                        <v-col cols="3" v-if="registeredStage == 3">
+                          <v-row
+                            class="justify-center"
+                            v-if="res.reservationStatus != -1"
+                          >
+                            <v-btn
+                              class="ma-0 pa-0 justify-center"
+                              elevation="2"
+                              small
+                              color="#AD1457"
+                              @click="refuseApply(res, assign, 0)"
+                              >중단</v-btn
+                            >
+                          </v-row>
+                          <v-row class="justify-center" v-else>
+                            <span>거절됨</span>
                           </v-row>
                         </v-col>
                       </v-row>
@@ -351,9 +369,8 @@
                 </v-expand-transition>
               </v-col>
             </v-row>
-            <!-- 신청 팀리스트 끝 -->
             <!-- 완료팀 정보/연락처 -->
-            <div v-if="registeredStage == 4">
+            <div v-if="registeredStage == 5">
               <!-- 라벨 -->
               <v-row style="color:rgba(235, 255, 0,0.7)">
                 <v-col offset="2" cols="10">
@@ -381,6 +398,7 @@
               <!-- 본문 끝 -->
             </div>
             <!-- 완료팀 정보/연락처 끝-->
+            <!-- 신청 팀리스트 끝 -->
             <!-- 관리자 버튼 영역 -->
             <!-- 매치 검색 시 -->
             <v-row
@@ -430,7 +448,7 @@
                 small
                 color="#6920A3"
                 @click="deleteAssign(assign)"
-                v-if="registeredStage == 1"
+                v-if="registeredStage < 4"
                 >양도글삭제</v-btn
               >
               <v-btn
@@ -440,7 +458,7 @@
                 small
                 color="#6920A3"
                 @click="renewAssign(assign)"
-                v-if="registeredStage == 1"
+                v-if="registeredStage < 4"
                 >양도글 끌어올리기</v-btn
               >
               <v-btn
@@ -450,18 +468,27 @@
                 small
                 color="#6920A3"
                 @click="updateAssign(assign)"
-                v-if="registeredStage == 1 || registeredStage == 3"
+                v-if="registeredStage == 1 || registeredStage == 4"
                 >양도글 수정하기</v-btn
               >
               <v-btn
-                class="mr-7"
+                elevation="3"
+                width="20%"
+                small
+                color="#AD1457"
+                class="mr-5"
+                @click="deleteAssign(assign)"
+                v-if="registeredStage > 3"
+                >양도취소</v-btn
+              >
+              <v-btn
                 elevation="3"
                 width="20%"
                 small
                 color="#6920A3"
-                v-if="registeredStage > 2"
-                @click="completeAssign(assign)"
-                >확정하기</v-btn
+                @click="activeCheckComplete = true"
+                v-if="registeredStage == 5"
+                >양도 확정</v-btn
               >
             </v-row>
             <v-dialog v-model="activeCheckComplete">
@@ -480,7 +507,7 @@
                 small
                 color="#AD1457"
                 v-if="appliedStage == 1 && appliedStage != null"
-                @click="deleteAssignRes(assign)"
+                @click="deleteAssignRes(assign, 0)"
                 >양도신청 취소</v-btn
               >
               <!-- 투표 만들기 버튼: 2단계에서 -->
@@ -490,8 +517,8 @@
                 width="20%"
                 small
                 color="#6920A3"
-                v-if="appliedStage == 2"
-                @click="deleteAssignRes(assign)"
+                v-if="appliedStage > 2"
+                @click="deleteAssignRes(assign, 1)"
                 >목록 삭제</v-btn
               >
             </v-row>

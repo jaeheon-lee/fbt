@@ -90,7 +90,6 @@ public class UserController {
 	@PutMapping("/user/1")
 	public ResponseEntity updateUser(@RequestBody User user) throws SQLException {
 		try {
-			System.out.println(user);
 			userService.updateUser(user);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {

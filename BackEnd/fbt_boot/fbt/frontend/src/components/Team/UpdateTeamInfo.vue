@@ -440,9 +440,9 @@ export default {
     // 이미지 url 받아오기
     getImgUrl() {
       if (this.team.emblem) {
-        return require("@/assets/image/emblem/" + this.team.emblem);
+        return this.$emblem + this.team.emblem;
       } else {
-        return require("@/assets/image/emblem/emptyFC.svg");
+        return this.$emblem + "/emptyFC.svg";
       }
     }
   }

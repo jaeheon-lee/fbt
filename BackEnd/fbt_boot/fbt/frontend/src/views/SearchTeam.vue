@@ -331,12 +331,12 @@ export default {
         order: 0
       };
     },
-    // 엠블럼 이미지 가져오기
+   // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
-        return require("@/assets/image/emblem/" + team.emblem);
+        return this.$emblem + this.team.emblem;
       } else {
-        return require("@/assets/image/emblem/emptyFC.svg");
+        return this.$emblem + "emptyFC.svg";
       }
     },
     // 닉네임 창 여닫기

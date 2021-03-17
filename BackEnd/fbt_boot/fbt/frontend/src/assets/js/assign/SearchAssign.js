@@ -188,7 +188,6 @@ export default {
           for (let j = 0; j < response.data.length; j++) {
             this.controlAssignApplyBtn(response.data[j]);
           }
-          console.log(this.empty);
           this.isFirstSearch = true;
         })
         .catch(() => {
@@ -203,29 +202,34 @@ export default {
     // FA02
     // 마감 버튼 조절 메소드
     controlAssignApplyBtn(assign) {
-      // 마감조건 : 마감일이 지났거나 매치가 완료된 글 + 이미 신청하지 않은 글
-      let assignRes = assign.assignmentReservations;
-      // 마감일이 지났는지
-      let dueDate = new Date(assign.dueDate);
-      let today = new Date();
-      if (dueDate < today) {
-        this.whichBtnActive.push(2);
-        return;
-      }
-      // 매치가 완료됐는지 + 신청하지 않았는지
-      let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
-      for (let i = 0; i < assignRes.length; i++) {
-        // 매치가 완료됐다면
-        if (assignRes[i].reservationStatus == 2) {
+      try{
+        // 마감조건 : 마감일이 지났거나 매치가 완료된 글 + 이미 신청하지 않은 글
+        let assignRes = assign.assignmentReservations;
+        // 마감일이 지났는지
+        let dueDate = new Date(assign.dueDate);
+        let today = new Date();
+        if (dueDate < today) {
           this.whichBtnActive.push(2);
           return;
         }
-        if (assignRes[i].teamTaker.teamId == teamId) {
-          this.whichBtnActive.push(1);
-          return;
+        // 매치가 완료됐는지 + 신청하지 않았는지
+        let teamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+        for (let i = 0; i < assignRes.length; i++) {
+          // 매치가 완료됐다면
+          if (assignRes[i].reservationStatus == 3) {
+            this.whichBtnActive.push(2);
+            return;
+          }
+          if (assignRes[i].teamTaker.teamId == teamId) {
+            this.whichBtnActive.push(1);
+            return;
+          }
         }
+        this.whichBtnActive.push(0);
+      }catch(error) {
+        console.log(error);
       }
-      this.whichBtnActive.push(0);
+      
     },
     // 필터 초기화
     initFilter() {

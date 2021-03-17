@@ -99,6 +99,9 @@ public class VoteMatchDAOImpl implements VoteMatchDAO {
 	public String checkBySearch(HashMap<String, String> searchCon) throws SQLException {
 		return sqlSession.selectOne(ns+"checkBySearch", searchCon);
 	}
+	public String checkByAssign(HashMap<String, String> searchCon) throws SQLException {
+		return sqlSession.selectOne(ns+"checkByAssign", searchCon);
+	}
 	//V05-3, V06-1
 	@Override
 	public void updateVoteMatch(VoteMatch voteMatch) throws SQLException {

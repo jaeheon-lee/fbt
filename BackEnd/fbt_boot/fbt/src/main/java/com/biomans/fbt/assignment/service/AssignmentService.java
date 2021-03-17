@@ -3,9 +3,12 @@ package com.biomans.fbt.assignment.service;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.AssignmentReservation;
+import com.biomans.fbt.domain.Search;
+import com.biomans.fbt.domain.SearchReservation;
 import com.biomans.fbt.util.Filter;
 
 public interface AssignmentService {
@@ -21,6 +24,7 @@ public interface AssignmentService {
 	public void doApplyAssignment(AssignmentReservation assignmentRes) throws SQLException;
 	//FA08, FA09
 	public void updateResStatus(Assignment assignment) throws SQLException;
+	public Future<Integer> timeApplyFailure(Assignment assignment, AssignmentReservation assignRes) throws SQLException;
 	//FA08, FA09
 	public Assignment getAssignmentById(int assignmentId) throws SQLException;
 	//FA05, FA11
@@ -32,4 +36,6 @@ public interface AssignmentService {
 	//FA15
 	//A009
 	public void updateAssignment(Assignment assignment) throws SQLException;
+	//
+	public void completeAssignment(Assignment assignment, AssignmentReservation assignRes) throws SQLException;
 }

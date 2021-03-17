@@ -2,7 +2,9 @@ package com.biomans.fbt.teammember.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -90,9 +92,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 		String fileName = "";
 		if(file != null) {
 			String rawFileName = file.getOriginalFilename();
-			int idx = rawFileName.indexOf(".");
-			String extension = rawFileName.substring(idx, rawFileName.length());
-			fileName = user.getEmail() + extension;
+			String[] unit = rawFileName.split("\\.");
+			String extension = unit[unit.length-1];
+			fileName = user.getEmail() + "." + extension;
 			user.setImage(fileName);
 			try {
 				file.transferTo(new File(path+fileName)); //파일 생성

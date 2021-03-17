@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biomans.fbt.domain.EmpScore;
+import com.biomans.fbt.domain.Entry;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Team;
 import com.biomans.fbt.domain.TeamMember;
 import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.domain.User;
+import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
 import com.biomans.fbt.teammember.service.TeamMemberService;
 import com.biomans.fbt.util.MatchResultCollection;
@@ -62,6 +64,22 @@ public class MatchScheduleController {
 			searchKey.setEndTime(endTime);
 			List<MatchSchedule> list = matchScheduleService.showMatchSchduleByTeamPeriod(searchKey);
 			return new ResponseEntity(list,HttpStatus.OK);
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	//
+	@GetMapping("/match-schedule/10/{teamId}/{matchScheduleId}")
+	public ResponseEntity showConfirmedMatchSchedule(@PathVariable int teamId,
+			@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("teamId", teamId);
+			searchCon.put("matchScheduleId", matchScheduleId);
+			MatchSchedule matchSchedule = matchScheduleService.showConfirmedMatchSchedule(searchCon);
+			return new ResponseEntity(matchSchedule,HttpStatus.OK);
 		}catch(RuntimeException e) {
 			e.printStackTrace();
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -163,11 +181,12 @@ public class MatchScheduleController {
 	
 	// FS11
 	@PutMapping("/match-schedule/2")
-	public ResponseEntity confirmMatchSchedule(@RequestBody MatchResultCollection matchResultCollection) throws SQLException {
+	public ResponseEntity updateMatchResult(@RequestBody MatchResultCollection matchResultCollection) throws SQLException {
 		try {
 			matchScheduleService.updateMatchResult(matchResultCollection);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
+			e.printStackTrace();
 			System.out.println(e);
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
@@ -277,7 +296,7 @@ public class MatchScheduleController {
 	
 	//S001: 일정 등록
 	@PostMapping("/match-schedule")
-	public ResponseEntity searchTeams(@RequestBody MatchSchedule matchSchedule) throws SQLException {
+	public ResponseEntity addMatchSchedule(@RequestBody MatchSchedule matchSchedule) throws SQLException {
 		try {
 			matchScheduleService.addMatchSchedule(matchSchedule);
 			return new ResponseEntity(HttpStatus.OK);
@@ -286,6 +305,56 @@ public class MatchScheduleController {
 		}
 	}
 	
+	// 대기하기
+	@PostMapping("/match-schedule/4")
+	public ResponseEntity doWait(@RequestBody Entry entry) throws SQLException {
+		try {
+			matchScheduleService.doWait(entry);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 대기를 참여로 바꾸기
+	@PutMapping("/match-schedule/5")
+	public ResponseEntity joinEntry(@RequestBody Entry entry) throws SQLException {
+		try {
+			matchScheduleService.joinEntry(entry);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 참석취소하기
+	@DeleteMapping("/entry/{entryId}")
+	public ResponseEntity deleteEntry(@PathVariable int entryId) throws SQLException {
+		try {
+			matchScheduleService.deleteEntry(entryId);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 해당 일정, 팀의 엔트리 가져오기
+	@GetMapping("/entry/1/{teamId}/{matchScheduleId}")
+	public ResponseEntity getEntryByTeamSchedule(@PathVariable int teamId,
+			@PathVariable int matchScheduleId) throws SQLException {
+		try {
+			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
+			searchCon.put("teamId", teamId);
+			searchCon.put("matchScheduleId", matchScheduleId);
+			List<Entry> entries = matchScheduleService.getEntryByTeamSchedule(searchCon);
+			return new ResponseEntity(entries,HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+	}
 	
 
 }

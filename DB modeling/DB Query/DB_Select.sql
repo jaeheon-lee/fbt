@@ -18,7 +18,3 @@ select * from entry;
 select * from match_result;
 select * from notice;
 
-insert into employ_result(employ_id, email, emp_result_status)
-values(8, 'bioman6@gmail.com', 0);
-insert into employ_result(employ_id, email, emp_result_status)
-values(8, 'bioman7@gmail.com', 0);

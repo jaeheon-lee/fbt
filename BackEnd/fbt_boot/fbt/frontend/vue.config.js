@@ -15,5 +15,5 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
   },
-  // publicPath: "/fbt"
+  publicPath: "/fbt"
 }

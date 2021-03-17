@@ -38,8 +38,9 @@
 		<result column="born_date" property="bornDate"/>
 		<result column="area" property="area"/>
 		<result column="image" property="image"/>
-		<result column="emp_ability" property="empAbility"/>
 		<result column="emp_manner" property="empManner"/>
+		<result column="emp_ability" property="empAbility"/>
+		<result column="" property="empAbility"/>
 		<result column="total_emp_attend" property="totalEmpAttend"/>
 		<collection property="teamMembers" javaType="list" ofType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
@@ -98,7 +99,7 @@
 	<select id="showUserInfo" parameterType="string" resultMap="UserRM">
 		SELECT
 		u.email, u.name, u.phone_num, u.user_reg_date, u.recent_login, u.main_foot, u.position, u.height, u.image,
-		u.weight, u.was_pro, u.gender, u.born_date, u.area, u.image, u.api_key, u.api_type, u.emp_ability, u.emp_manner,
+		u.weight, u.was_pro, u.gender, u.born_date, u.area, u.image, u.api_key, u.api_type, u.emp_manner, u.emp_ability,
 		es.emp_score_id, es.emp_email, es.manner_promise, es.manner_contact, es.manner_rule, es.manner_body_fight, es.manner_slang, 
 		es.manner_smoking, es.manner_uniform, es.manner_payment,
 		es.manner_arrangement, es.manner_referee, es.manner_tackle, es.forward, es.middle, es.defence,

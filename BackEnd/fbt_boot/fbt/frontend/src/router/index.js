@@ -183,7 +183,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: "history",
-  // base: "/fbt",
+  base: "/fbt",
   routes
 });
 

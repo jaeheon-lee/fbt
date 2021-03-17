@@ -218,7 +218,7 @@ export default {
         });
     },
     getImageUrl() {
-      return require("@/assets/image/emblem/" + this.team.emblem);
+      return this.$emblem + this.team.emblem;
     },
     controlPastMatch() {
       if (this.activePastMatch) {

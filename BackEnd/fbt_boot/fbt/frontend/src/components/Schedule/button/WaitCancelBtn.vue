@@ -7,7 +7,7 @@
       color="#AD1457"
       class="mr-1"
       v-if="controlWaitBtn(vote)"
-      @click.stop="doVote(vote, 2)"
+      @click.stop="doWait(vote)"
       >대기하기</v-btn
     >
     <v-btn
@@ -16,7 +16,7 @@
       color="#AD1457"
       class="mr-1"
       v-else
-      @click.stop="cancelAttend(vote, 0)"
+      @click.stop="cancelAttend()"
       >참석취소하기</v-btn
     >
   </v-row>
@@ -26,42 +26,90 @@
 export default {
   name: "wait-cancel-btn",
   props: {
-    vote: Object
+    vote: Object,
+    awayVote: Object
   },
   data() {
     return {};
   },
   methods: {
     // 대기, 참석취소 버튼 관리
-    controlWaitBtn(vote) {
-      // 투표한 사람이 아무도 없으면 대기버튼
-      if (!vote.voteMatchResults) return true;
-      //2. 다음 로직 따른다
-      // eslint-disable-next-line prettier/prettier
+    /**
+     * 대기버튼 출력 조건
+     * 1) 자기 팀의 entry에 없다
+     */
+    controlWaitBtn() {
+      if (!this.vote || !this.awayVote) return false;
       let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
-      // 로그인한 사람이 투표했는지, 했으면 해당 인덱스를 안 했으면 -1 리턴
-      let index = -1;
-      if (vote.voteMatchResults.length > 0) {
-        index = vote.voteMatchResults
-          .map(x => x.teamMember.teamMemberId)
-          .indexOf(teamMemberId);
+      let entries = this.findMyTeamEntries();
+      for (let i=0;i<entries.length;i++) {
+        if (entries[i].teamMember && entries[i].teamMember.teamMemberId == teamMemberId) {
+          return false;
+        }
       }
-      // 참석을 눌렀는지
-      let attendance = -1;
-      if (index != -1) attendance = vote.voteMatchResults[index].attendance;
-      if (vote.voteMatchSetting.waiting == true && attendance != 1) {
-        // 대기 허용이고 참석을 누르지 않았다면 대기 버튼 출력
-        return true;
-      } else {
-        // 대기 불용이거나 참석을 누르지 않았다면 대기 버튼 숨기기
-        return false;
+      return true;
+    },
+    findMyTeamEntries() {
+      if (!this.awayVote) return this.vote.matchSchedule.entries;
+      let myTeamId = JSON.parse(sessionStorage.getItem("userInfo")).teamId;
+      let homeTeamId = this.vote.matchSchedule.homeTeam.teamId;
+      if (myTeamId == homeTeamId) return this.vote.matchSchedule.entries;
+      else return this.awayVote.matchSchedule.entries;
+    },
+
+    doWait(vote) {
+      let entry = this.setEntry(vote);
+      this.$axios
+        .post("/match-schedule/4", entry)
+        .then(() => {
+          alert("대기가 완료됐습니다.");
+        })
+        .catch(() => {
+          alert("대기에 실패했습니다.");
+        })
+        .finally(() => {
+          this.$emit("refresh");
+        })
+    },
+    setEntry(vote) {
+      let matchSchedule = vote.matchSchedule;
+      let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      let entry = {
+        teamMember: {
+          teamMemberId: userInfo.teamMemberId
+        },
+        matchSchedule: {
+          matchScheduleId: matchSchedule.matchScheduleId,
+        },
+        team: {
+          teamId: userInfo.teamId
+        },
+        type: 3
       }
+      return entry;
     },
-    doVote(vote, result) {
-      this.$emit("do-vote", vote, result);
+    cancelAttend() {
+      let entries = this.findMyTeamEntries();
+      let myEntryId = this.findMyEntry(entries);
+      this.$axios
+        .delete("/entry/" + myEntryId)
+        .then(() => {
+          alert("참석을 취석했습니다.");
+        })
+        .catch(() => {
+          alert("참석취소에 실패했습니다.");
+        })
+        .finally(() => {
+          this.$emit("refresh");
+        })
     },
-    cancelAttend(vote, result) {
-      this.$emit("update-vote", vote, result);
+    findMyEntry(entries) {
+      let teamMemberId = JSON.parse(sessionStorage.getItem("userInfo")).teamMemberId;
+      for(let i=0;i<entries.length;i++) {
+        if(entries[i].teamMember && entries[i].teamMember.teamMemberId == teamMemberId) {
+          return entries[i].entryId;
+        }
+      }
     }
   }
 };

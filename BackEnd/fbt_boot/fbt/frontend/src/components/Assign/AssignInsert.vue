@@ -356,14 +356,56 @@
           </v-row>
           <!-- 경기장타입, 샤워여부, 투표마감일 끝 -->
           <!-- 마감시간 -->
-          <!--  마감시간 Label-->
+          <!-- 대기가능시간, 최소인원, 마감시간 Label -->
           <v-row class="mx-0 px-0">
-            <v-col cols="4" class="text-left mx-0 px-0 pb-2">마감 시간*</v-col>
+            <v-col cols="4" class="text-left mx-0 px-0 pb-2">대기 가능 시간*</v-col>
+            <v-col cols="4" class="text-left mx-0 px-0 pb-2"
+                >상대편 최소 인원*</v-col
+              >
+              <v-col cols="4" class="text-left mx-0 px-0 pb-2">마감 시간*</v-col>
           </v-row>
-          <!-- 마감시간 Input -->
+          <!-- 대기가능시간, 최소인원, 마감시간 Input -->
           <v-row class="mx-0 px-0">
+            <!-- 대기가능시간 input -->
+              <v-col cols="4" class="text-left pa-0 px-1">
+                <v-row
+                  class="ma-0 pa-3"
+                  justify="center"
+                  style="border:2px solid #AD1457;border-radius:25px;"
+                >
+                  <v-col offset="2" cols="5" class="ma-0 pa-0">
+                    <input
+                      type="text"
+                      style="display:inline-block;width:100%;text-align:center;color:#ffffff"
+                      v-model="assignment.waitingTime"
+                    />
+                  </v-col>
+                  <v-col cols="3" class="ma-0 pa-0 text-center">
+                    시간
+                  </v-col>
+                </v-row>
+              </v-col>
+              <!-- 최소인원 input -->
+              <v-col cols="4" class="text-left pa-0 px-1">
+                <v-row
+                  class="ma-0 pa-3"
+                  justify="center"
+                  style="border:2px solid #AD1457;border-radius:25px;"
+                >
+                  <v-col offset="2" cols="5" class="ma-0 pa-0">
+                    <input
+                      type="text"
+                      style="display:inline-block;width:100%;text-align:center;color:#ffffff"
+                      v-model="assignment.minNumber"
+                    />
+                  </v-col>
+                  <v-col cols="3" class="ma-0 pa-0 text-center">
+                    명
+                  </v-col>
+                </v-row>
+              </v-col>
             <!-- 마감시간 input -->
-            <v-col cols="4" class="text-left pa-0">
+            <v-col cols="4" class="text-left pa-0 px-1">
               <v-row
                 class="ma-0 pa-3"
                 justify="center"

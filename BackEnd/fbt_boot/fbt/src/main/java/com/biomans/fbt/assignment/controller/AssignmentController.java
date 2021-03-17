@@ -141,52 +141,41 @@ public class AssignmentController {
 	
 	//FA08, FA09
 	@PutMapping("/assignment-reservation/1")
-	public ResponseEntity updateResStatus(@RequestBody Assignment assignment) throws SQLException {
+	public ResponseEntity updateResStatus(@RequestBody Assignment assignment,
+			@RequestParam(value="teamName") String teamName) throws SQLException {
 		try {
-			Boolean isUpdated = false;
+			AssignmentReservation assignRes = assignment.getAssignmentReservations().get(0);
+			assignmentService.updateResStatus(assignment); 
 			
-			try {
-				assignmentService.updateResStatus(assignment);
-				isUpdated = true;
-			} catch(Exception e) {
-				isUpdated = false;
-				System.out.println("수정에 실패");
-			}
+			//2. 알림 보낸다
+			//2-1. 알림 보낼 때 필요한 정보를 정리한다.
+			NoticeFactor nf = new NoticeFactor();
+			String type = "";
+			int status = assignRes.getReservationStatus();
+			if(status == 1) type = "acceptAssign";
+			else if(status == -1) type = "refuseAssign";
+			nf.setType(type);
+			nf.setTeamName(teamName);
+			nf.setAssign(assignment);
+			nf.setAssignRes(assignRes);
+			System.out.println(nf);
+			//2-2. 알림을 보낸다.
+			noticeService.addNoticeByCase(nf);
 			
-			if(isUpdated == true) {
-				AssignmentReservation assignmentRes = assignment.getAssignmentReservations().get(0);
-				//2. 알림 보낸다
-				//2-1. 알림 보낼 때 필요한 정보를 정리한다.
-				NoticeFactor nf = new NoticeFactor();
-				String type = ""; 
-				int status = assignmentRes.getReservationStatus();
-				if(status == 1) type = "acceptAssign";
-				else if(status == -1) type = "refuseAssign";
-				else type = "completeAssign";
-				nf.setType(type);
-				nf.setTeamName(assignment.getTeamGiver().getTeamName());
-				nf.setAssign(assignment);
-				nf.setAssignRes(assignmentRes);
-				//2-2. 알림을 보낸다.
-				noticeService.addNoticeByCase(nf);
-				//2-3. 양도 확정이면 실패된 팀들에게 알림을 보낸다
-				if(type.equals("completeAssign")) {
-					Assignment a = assignmentService.getAssignmentById(assignment.getAssignmentId());
-					List<AssignmentReservation> ars = a.getAssignmentReservations();
-					for(AssignmentReservation ar : ars) {
-						// 확정하기로한 팀이면 넘어간다.
-						if(assignmentRes.getTeamTaker().getTeamId() == ar.getTeamTaker().getTeamId()) continue;
-						NoticeFactor nf2 = new NoticeFactor();
-						String type2 = "failAssign"; 
-						nf2.setType(type2);
-						nf2.setTeamName(assignment.getTeamGiver().getTeamName());
-						nf2.setAssign(assignment);
-						nf2.setAssignRes(ar);
-						noticeService.addNoticeByCase(nf2);
-					}
-				}
-			}
-			
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//
+	@PutMapping("/assignment-reservation/2")
+	public ResponseEntity timerOn(@RequestBody Assignment assignment) throws SQLException {
+		try {
+			AssignmentReservation assingRes = assignment.getAssignmentReservations().get(0);
+			assignmentService.timeApplyFailure(assignment, assingRes);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -263,6 +252,20 @@ public class AssignmentController {
 	public ResponseEntity renewAssign(@RequestBody Assignment assignment) throws SQLException {
 		try {
 			assignmentService.updateAssignment(assignment);
+			return new ResponseEntity(HttpStatus.OK);
+		}catch(RuntimeException e) {
+			System.out.println(e);
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//
+	@PutMapping("/assignment/3")
+	public ResponseEntity completeAssign(@RequestBody Assignment assignment,
+			@RequestParam(value="teamName") String teamName) throws SQLException {
+		try {
+			AssignmentReservation assignRes = assignment.getAssignmentReservations().get(0);
+			assignmentService.completeAssignment(assignment, assignRes);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);

@@ -31,7 +31,7 @@
             >
               <v-img
                 :src="
-                  require('@/assets/image/emblem/' + notice.giverTeam.emblem)
+                  getEmbUrl(notice.giverTeam)
                 "
               ></v-img>
             </v-avatar>
@@ -95,6 +95,14 @@ export default {
     this.showNotices();
   },
   methods: {
+    // 엠블럼 이미지 가져오기
+    getEmbUrl(team) {
+      if (team) {
+        return this.$emblem + this.team.emblem;
+      } else {
+        return this.$emblem + "emptyFC.svg";
+      }
+    },
     //FN01
     showNotices() {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
@@ -161,7 +169,7 @@ export default {
             };
             break;
           case "acceptSearch":
-          case "refuseAssign":
+          case "acceptAssign":
           case "failAssign":
             this.setTeam(takerTeam);
             params = {
@@ -171,7 +179,7 @@ export default {
             };
             break;
           case "refuseSearch":
-          case "acceptAssign":
+          case "refuseAssign":
           case "failSearch":
             this.setTeam(takerTeam);
             params = {
@@ -181,6 +189,7 @@ export default {
             };
             break;
           case "fillNumber":
+          case "fillNumber2":
             this.setTeam(takerTeam);
             params = {
               type: pageCon,

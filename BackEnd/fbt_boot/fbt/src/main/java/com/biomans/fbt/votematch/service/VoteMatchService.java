@@ -18,9 +18,7 @@ public interface VoteMatchService {
 	//V01-6
 	public void addVoteMatchAndSetting(VoteMatch voteMatch) throws SQLException;
 	//V03-4
-	public int addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException;
-	//V03-5
-	public int checkMinNum(VoteMatch voteMatch) throws SQLException;
+	public HashMap<String, Integer> addAttendance(VoteMatchResult voteMatchResult, VoteMatch voteMatch) throws SQLException;
 	//V03-6
 	public void updateVoteMatchResult(VoteMatchResult voteMatchResult) throws SQLException;
 	//V05-3, V06-1

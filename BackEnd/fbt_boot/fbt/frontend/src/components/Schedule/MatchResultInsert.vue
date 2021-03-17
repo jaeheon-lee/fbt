@@ -42,8 +42,8 @@
                     v-model="matchResult.isSet"
                     v-if="isInnerMatch"
                   >
-                    <v-radio label="일반스코어" value="0" />
-                    <v-radio label="세트스코어" value="1" />
+                    <v-radio label="일반스코어" value = "0" />
+                    <v-radio label="세트스코어" value = "1" />
                   </v-radio-group>
                 </v-row>
                 <!-- 스코어 입력 본문 -->
@@ -135,7 +135,7 @@
                 <!-- 팀원 출결 표 바디-->
                 <v-row
                   class="ma-0 pa-0 mx-5 text-center"
-                  v-for="(teamMember, i) in teamMembersLoaded"
+                  v-for="(teamMember, i) in teamMembers"
                   :key="i"
                 >
                   <!-- 번호 -->
@@ -144,13 +144,13 @@
                   </v-col>
                   <!-- 닉네임 -->
                   <v-col cols="2">
-                    {{ teamMember.nickName }}
+                    {{ teamMember.teamMember.nickName }}
                   </v-col>
                   <!-- 출결 -->
                   <v-col cols="2">
                     <select
                       class="table-select"
-                      v-model="teamEntries[i].attendance"
+                      v-model="teamMember.attendance"
                     >
                       <option class="options" value="2">출석</option>
                       <option class="options" value="1">지각</option>
@@ -165,7 +165,7 @@
                       min="0"
                       max="10"
                       placeholder="0"
-                      v-model="teamEntries[i].matchScore"
+                      v-model="teamMember.matchScore"
                     />
                   </v-col>
                   <!-- 골 -->
@@ -175,7 +175,7 @@
                       type="number"
                       min="0"
                       placeholder="0"
-                      v-model="teamEntries[i].goal"
+                      v-model="teamMember.goal"
                     />
                   </v-col>
                   <!-- 도움 -->
@@ -185,7 +185,7 @@
                       type="number"
                       min="0"
                       placeholder="0"
-                      v-model="teamEntries[i].assist"
+                      v-model="teamMember.assist"
                     />
                   </v-col>
                 </v-row>
@@ -241,13 +241,13 @@
                     </v-col>
                     <!-- 이메일 -->
                     <v-col cols="3">
-                      {{ friendEmploy.email }}
+                      {{ friendEmploy.user.email }}
                     </v-col>
                     <!-- 출결 -->
                     <v-col cols="2">
                       <select
                         class="table-select"
-                        v-model="empEntries[i].attendance"
+                        v-model="friendEmploy.attendance"
                       >
                         <option class="options" value="2">출석</option>
                         <option class="options" value="1">지각</option>
@@ -262,7 +262,7 @@
                         min="0"
                         max="10"
                         placeholder="0"
-                        v-model="empEntries[i].matchScore"
+                        v-model="friendEmploy.matchScore"
                       />
                     </v-col>
                     <!-- 골 -->
@@ -272,7 +272,7 @@
                         type="number"
                         min="0"
                         placeholder="0"
-                        v-model="empEntries[i].goal"
+                        v-model="friendEmploy.goal"
                       />
                     </v-col>
                     <!-- 도움 -->
@@ -282,7 +282,7 @@
                         type="number"
                         min="0"
                         placeholder="0"
-                        v-model="empEntries[i].assist"
+                        v-model="friendEmploy.assist"
                       />
                     </v-col>
                   </v-row>
@@ -332,7 +332,7 @@
                         @click="toggleAbility(i)"
                         style="cursor:pointer;"
                       >
-                        {{ friendEmploy.email }}
+                        {{ friendEmploy.user.email }}
                         <v-icon v-if="abilityActive != i"
                           >mdi-chevron-right</v-icon
                         >
@@ -355,7 +355,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="tickLabels"
-                                v-model="empScores[i].forward"
+                                v-model="friendEmploy.empScore.forward"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -371,7 +371,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="tickLabels"
-                                v-model="empScores[i].middle"
+                                v-model="friendEmploy.empScore.middle"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -387,7 +387,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="tickLabels"
-                                v-model="empScores[i].defence"
+                                v-model="friendEmploy.empScore.defence"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -421,7 +421,7 @@
                         @click="toggleManner(i)"
                         style="cursor:pointer;"
                       >
-                        {{ friendEmploy.email }}
+                        {{ friendEmploy.user.email }}
                         <v-icon v-if="mannerActive != i"
                           >mdi-chevron-right</v-icon
                         >
@@ -444,7 +444,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerPromise"
+                                v-model="friendEmploy.empScore.mannerPromise"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -460,7 +460,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerContact"
+                                v-model="friendEmploy.empScore.mannerContact"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -476,7 +476,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerRule"
+                                v-model="friendEmploy.empScore.mannerRule"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -492,7 +492,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerBodyFight"
+                                v-model="friendEmploy.empScore.mannerBodyFight"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -508,7 +508,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerSlang"
+                                v-model="friendEmploy.empScore.mannerSlang"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -524,7 +524,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerSmoking"
+                                v-model="friendEmploy.empScore.mannerSmoking"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -540,7 +540,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerTackle"
+                                v-model="friendEmploy.empScore.mannerTackle"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -556,7 +556,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerReferee"
+                                v-model="friendEmploy.empScore.mannerReferee"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -572,7 +572,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerUniform"
+                                v-model="friendEmploy.empScore.mannerUniform"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -588,7 +588,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerPayment"
+                                v-model="friendEmploy.empScore.mannerPayment"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -604,7 +604,7 @@
                                 ticks="always"
                                 tick-size="5"
                                 :tick-labels="mannerLabels"
-                                v-model="empScores[i].mannerArrangement"
+                                v-model="friendEmploy.empScore.mannerArrangement"
                               ></v-slider>
                             </v-col>
                           </v-row>
@@ -1004,11 +1004,10 @@
               <v-col cols="1" class="ma-0 mt-2 mb-3 pa-0 text-center">
                 <v-btn
                   class="ma-0 ml-8 pa-0"
-                  :class="{ 'display-none': teamMemberAdded[i] }"
                   elevation="2"
                   color="#6920A3"
                   small
-                  @click.once="addTeamMember(teamMember, i)"
+                  @click="addTeamMember(teamMember)"
                   style="font-size: 0.65em"
                   >추가</v-btn
                 >

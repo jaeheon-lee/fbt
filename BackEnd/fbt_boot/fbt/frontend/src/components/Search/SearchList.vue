@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 <template>
   <div>
     <v-container fluid class="ma-0 pa-0">

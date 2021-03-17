@@ -6,7 +6,7 @@
 	<!-- T001: 타팀 정보 출력 -->
 	<select id="showOtherTeamInfo" parameterType="hashMap" resultMap="TeamInfoRM">
 		SELECT
-		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type, t.team_ability, t.team_manner,
+		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type, t.team_manner, t.team_ability,
 		t.emblem,
 		tm.team_member_id,
 		u.email, u.phone_num,
@@ -38,7 +38,7 @@
 	<!-- T003: 팀 기본 정보 -->
 	<select id="showTeamBasicInfo" parameterType="integer" resultType="team">
 		SELECT
-		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type, t.team_ability, t.team_manner,
+		t.team_id, t.team_name, t.area, t.uniform_color, t.uniform_type, t.team_manner, t.team_ability,
 		t.emblem
 		FROM team t
 		WHERE t.team_id = #{value}
@@ -90,6 +90,8 @@
 		<result column="team_reg_date" property="teamRegDate"/>
 		<result column="account" property="account"/>
 		<result column="bank" property="bank"/>
+		<result column="team_manner" property="teamManner"/>
+		<result column="team_ability" property="teamAbility"/>
 		<collection property="teamMembers" javaType="list" ofType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
 		</collection>
@@ -106,7 +108,7 @@
 	<select id="searchTeamsByFilter" parameterType="hashMap" resultMap="teamRM">
 		SELECT 
 		t.team_id, team_name, emblem, area, stadium_info, uniform_color, uniform_type, founding_date, 
-		team_reg_date, team_manner, team_ability,
+		team_reg_date,
 		tm.team_member_id
 		FROM team t
 		JOIN team_member tm
@@ -142,8 +144,8 @@
 		<result column="uniform_color" property="uniformColor"/>
 		<result column="uniform_type" property="uniformType"/>
 		<result column="founding_date" property="foundingDate"/>
-		<result column="team_ability" property="teamAbility"/>
 		<result column="team_manner" property="teamManner"/>
+		<result column="team_ability" property="teamAbility"/>
 		<collection property="teamMembers" javaType="list" ofType="teamMember">
 			<id column="team_member_id" property="teamMemberId"/>
 			<association property="user" javaType="user">

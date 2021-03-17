@@ -110,8 +110,10 @@ public class TeamMemberController {
 			@RequestPart(value="image", required=false) MultipartFile image,
 			HttpServletRequest request) throws SQLException {
 		try {
-			String root = request.getSession().getServletContext().getRealPath("/").substring(0, 11);
-			String path = root + "front contents\\fbt\\src\\assets\\image\\user\\";
+			String root = request.getSession().getServletContext().getRealPath("/"); // E:\kjy\apache-tomcat-8.5.61\webapps\fbt\
+			root = root.substring(0, root.length() - 4);
+			String path = root + "\\user\\";
+			System.out.println(path);
 			String imageName = teamMemberService.changeImg(user, image, path);
 			return new ResponseEntity(imageName, HttpStatus.OK);
 		}catch(RuntimeException e) {

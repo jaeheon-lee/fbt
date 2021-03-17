@@ -80,7 +80,6 @@ export default {
     },
     controlUpdateBtn: function() {
       let vote = this.votes[0];
-      console.log(vote);
       if (!vote) return false;
       if (!vote.isEndMatch) return false;
       if (vote.matchSchedule.entries[0].attendance == 0) return false;
@@ -254,6 +253,7 @@ export default {
     },
     //FS07
     showEndMatchInfoByTeam(matchScheduleId, teamId) {
+      this.loading = true;
       this.isEmp = false;
       if (!teamId) teamId = 0;
       axios
@@ -267,19 +267,22 @@ export default {
           // 리스트에 보낼 통에 담고
           this.votes = [];
           this.votes.push(vote);
-          // 화면 이동
-          location.href = "#matchInfo";
         })
         .catch(() => {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+            // 화면 이동
+            location.href = "#matchInfo";
+          }, 1000);
           // nativeEvent.stopPropagation();
         });
     },
     //FS13
     showEndMatchInfoByUser(matchScheduleId) {
+      this.loading = true;
       this.isEmp = true;
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       axios
@@ -302,24 +305,28 @@ export default {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+            // 화면 이동
+            location.href = "#matchInfo";
+          }, 1000);
           // nativeEvent.stopPropagation();
         });
     },
     //FS03
     showNotEndMatchInfo(matchScheduleId, teamId) {
+      this.loading = true;
       axios
-        .get("/vote-match/2/" + matchScheduleId + "/" + teamId)
+        .get("/match-schedule/10/" + teamId + "/" + matchScheduleId)
         .then(response => {
-          let vote = response.data;
+          let vote = {};
+          vote.matchSchedule = response.data;
           if (vote) {
             // 끝난 경기인지에 대한 정보 담고
             vote.isEndMatch = this.event.isEndMatch;
             // 리스트에 보낼 통에 담고
             this.votes = [];
             this.votes.push(vote);
-            // 화면 이동
-            location.href = "#matchInfo";
             this.isByAssign = false;
           } else {
             this.showOnlyMatchSchedule(matchScheduleId);
@@ -329,11 +336,16 @@ export default {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+            // 화면 이동
+            location.href = "#matchInfo";
+          }, 1000);
           // nativeEvent.stopPropagation();
         });
     },
     showOnlyMatchSchedule(matchScheduleId) {
+      this.loading = true;
       this.$axios
         .get("/match-schedule/2/" + matchScheduleId)
         .then(response => {
@@ -342,22 +354,26 @@ export default {
           this.votes = [];
           this.votes.push(vote);
           this.isByAssign = true;
-          // 화면 이동
-          location.href = "#matchInfo";
         })
         .catch(() => {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+            // 화면 이동
+            location.href = "#matchInfo";
+          }, 1000);
         });
     },
 
-    showAwayVoteMatchInfo(awayTeamId, matchSchedule) {
+    showAwayVoteMatchInfo(awayTeamId, matchScheduleId) {
+      this.loading = true;
       axios
-        .get("/vote-match/2/" + matchSchedule + "/" + awayTeamId)
+        .get("/match-schedule/10/" + awayTeamId + "/" + matchScheduleId)
         .then(response => {
-          this.awayVote = response.data;
+          this.awayVote = {};
+          this.awayVote.matchSchedule = response.data;
           // 끝난 경기인지에 대한 정보 담고
           this.awayVote.isEndMatch = this.event.isEndMatch;
         })
@@ -365,7 +381,11 @@ export default {
           this.errored = true;
         })
         .finally(() => {
-          this.loading = false;
+          setTimeout(() => {
+            this.loading = false;
+            // 화면 이동
+            location.href = "#matchInfo";
+          }, 1000);
           // nativeEvent.stopPropagation();
         });
     },
@@ -375,11 +395,13 @@ export default {
         // 용병이 작성 버튼을 눌렀으면
         this.infoActive = false;
         this.empWriteActive = true;
+        this.isUpdate = false;
         location.href = "#empMatchResult";
       } else {
         // 팀이 작성 버튼을 눌렀으면
         this.infoActive = false;
         this.writeActive = true;
+        this.isUpdate = false;
         location.href = "#matchResult";
       }
     },

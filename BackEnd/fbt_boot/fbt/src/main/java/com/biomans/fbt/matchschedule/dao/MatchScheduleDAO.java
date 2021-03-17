@@ -21,6 +21,8 @@ public interface MatchScheduleDAO {
 	public MatchSchedule showMatchScheduleByMatchScheduleId(int matchScheduleId) throws SQLException;
 	//S002
 	public int showLatestMatchScheduleIdById(int teamId) throws SQLException;
+	//
+	public MatchSchedule showConfirmedMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 	//S003
 	public void addMatchSchedule(MatchSchedule matchSchedule) throws SQLException;
 	//S004
@@ -53,11 +55,11 @@ public interface MatchScheduleDAO {
 	// S013
 	public void confirmMatchSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 	// S014
-	public Team getTeamScoreDesc(int teamId) throws SQLException;
+	public List<TeamScore> getTeamScores(int teamId) throws SQLException;
 	// S015
-	public void updateTeamScoreDesc(ScoreDescInput scoreDescInput) throws SQLException;
+	public void updateTeamScoreDesc(Team team) throws SQLException;
 	// S016
-	public User getEmpScoreDesc(String email) throws SQLException;
+	public List<EmpScore> getEmpScores(String email) throws SQLException;
 	// S017
 	public void updateEmpScoreDesc(ScoreDescInput scoreDescInput) throws SQLException;
 	// S018
@@ -73,5 +75,11 @@ public interface MatchScheduleDAO {
 	public AvgScore getAvgEmpScore(String email) throws SQLException;
 	// S022
 	public List<MatchSchedule> showFutureSchedule(int teamId) throws SQLException; 
+	// 대기를 참여로 바꾸기
+	public void joinEntry(Entry entry) throws SQLException;
+	// 참석취소하기
+	public void deleteEntry(int entryId) throws SQLException;
+	// 해당 팀, 일정의 엔트리 가져오기
+	public List<Entry> getEntryByTeamSchedule(HashMap<String, Integer> searchCon) throws SQLException;
 
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.biomans.fbt.assignment.dao.AssignmentDAO;
+import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.MatchSchedule;
 import com.biomans.fbt.domain.Notice;
 import com.biomans.fbt.domain.Search;
@@ -27,6 +29,9 @@ public class NoticeServiceImpl implements NoticeService {
 	
 	@Autowired
 	private SearchDAO searchDAO;
+	
+	@Autowired
+	private AssignmentDAO assignmentDAO;
 	
 	//Me01-2
 	@Override
@@ -139,13 +144,28 @@ public class NoticeServiceImpl implements NoticeService {
 			pageName = "search-fillNumber";
 			content = noticeFactor.getTeamName() + "이 ";
 			content += noticeFactor.getVoteMatch().getMatchSchedule().getStartTime().split(" ")[0]; 
-			content += "일자 경기 최소인원을 채웠습니다. 클릭하여 진행해주세요.";
+			content += "일자 매치 경기 최소인원을 채웠습니다. 클릭하여 진행해주세요.";
 			Search s = searchDAO.getSearchById(noticeFactor.getSearch().getSearchId());
 			noticeFactor.setSearch(s);
 			teamMemberId = noticeFactor.getSearch().getTeamMember().getTeamMemberId();
 			takerUser.setEmail(teamMemberId.split("-")[1]);
 			takerUsers.add(takerUser);
 			takerTeam = noticeFactor.getSearch().getTeamGiver();
+			break;
+			
+		case "fillNumber2": // 양도에서 인원수를 채웠다면
+			giverTeam = noticeFactor.getVoteMatch().getTeam();
+			pageName = "assign-fillNumber2h";
+			content = noticeFactor.getTeamName() + "이 ";
+			content += noticeFactor.getVoteMatch().getMatchSchedule().getStartTime().split(" ")[0]; 
+			content += "일자 양도 경기 최소인원을 채웠습니다. 클릭하여 진행해주세요.";
+			int assignmentId = noticeFactor.getAssign().getAssignmentId();
+			Assignment a = assignmentDAO.getAssignmentById(assignmentId);
+			noticeFactor.setAssign(a);
+			teamMemberId = noticeFactor.getAssign().getTeamMember().getTeamMemberId();
+			takerUser.setEmail(teamMemberId.split("-")[1]);
+			takerUsers.add(takerUser);
+			takerTeam = noticeFactor.getAssign().getTeamGiver();
 			break;
 			
 		case "completeSearch": // 매치 확정
@@ -189,19 +209,21 @@ public class NoticeServiceImpl implements NoticeService {
 			pageName = "assign-acceptAssign";
 			content = noticeFactor.getTeamName() + "에서 ";
 			content += noticeFactor.getAssign().getMatchSchedule().getStartTime().split(" ")[0]; 
-			content +="일자 경기에 양도신청수락을 했습니다. 클릭하여 확인해주세요.";
+			content +="일자 경기에 인원파악수락을 했습니다. 클릭하여 확인해주세요. ";
+			content += "해당 일정에 투표가 자동으로 생성됐습니다.";
 			teamMemberId = noticeFactor.getAssignRes().getTeamMember().getTeamMemberId();
 			takerUser.setEmail(teamMemberId.split("-")[1]);
 			takerUsers.add(takerUser);
 			takerTeam = noticeFactor.getAssignRes().getTeamTaker();
 			break;
-			
+		
 		case "refuseAssign":
 			giverTeam = noticeFactor.getAssign().getTeamGiver();
 			pageName = "assign-refuseAssign";
 			content = noticeFactor.getTeamName() + "에서 ";
 			content += noticeFactor.getAssign().getMatchSchedule().getStartTime().split(" ")[0]; 
-			content +="일자 경기에 양도신청거절을 했습니다. 클릭하여 확인해주세요.";
+			content += "일자 경기에 인원파악거절/중단을 했습니다. 클릭하여 확인해주세요. ";
+			content += "해당 경기에 생성된 투표는 삭제됩니다.";
 			teamMemberId = noticeFactor.getAssignRes().getTeamMember().getTeamMemberId();
 			takerUser.setEmail(teamMemberId.split("-")[1]);
 			takerUsers.add(takerUser);

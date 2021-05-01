@@ -221,7 +221,6 @@ public class VoteMatchServiceImpl implements VoteMatchService {
 		//투표수정이면 일정 수정까지 같이 한다.
 		if(type == 1) {
 			MatchSchedule matchSchedule = voteMatch.getMatchSchedule();
-			System.out.println(matchSchedule);
 			matchScheduleDAO.updateMatchSchedule(matchSchedule);
 		}
 		

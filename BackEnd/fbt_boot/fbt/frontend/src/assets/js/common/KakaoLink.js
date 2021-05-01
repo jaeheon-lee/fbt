@@ -76,12 +76,19 @@ export default {
           }
         ]
       });
-      window.location.reload();
+      if(this.updateVoteMatch) this.updateClose();
+      else this.close();
     },
 
+    // 수정 시 창닫기
+    updateClose() {
+      this.$router.push({
+        name: "voteMatchManager"
+      });
+    },
     // 그냥 창닫기
     close() {
-      window.location.reload();
+      this.updateClose();
     }
   }
 };

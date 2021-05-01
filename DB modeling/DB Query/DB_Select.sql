@@ -18,3 +18,5 @@ select * from entry;
 select * from match_result;
 select * from notice;
 
+select sysdate();
+select @@global.time_zone, @@session.time_zone,@@system_time_zone;

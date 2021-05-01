@@ -41,7 +41,6 @@ public class EmployServiceImpl implements EmployService {
 		int status = searchCon.get("status");
 		List<Employ> employs = employDAO.showRegisteredEmployByTeam(searchCon);
 		for(Employ emp : employs) {
-			System.out.println(emp.getEmployResults().get(0).getUser());
 			// 용병 모집 현황 삽입
 			setEmployDesc(emp);
 			

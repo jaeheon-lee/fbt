@@ -35,7 +35,7 @@ public class UserController {
 	private UserService userService;
 	
 	//FU01
-	@GetMapping("/user/4/{email}")
+	@GetMapping("/users/4/{email}")
 	public ResponseEntity showUserInfo(@PathVariable String email) throws SQLException {
 		try {
 			User user = userService.showUserInfo(email);
@@ -47,7 +47,7 @@ public class UserController {
 	}
 	
 	//FU02
-	@GetMapping("/user/5/{email}/{matchScheduleId}")
+	@GetMapping("/users/5/{email}/{matchScheduleId}")
 	public ResponseEntity showEmpScore(@PathVariable String email,
 			@PathVariable int matchScheduleId) throws SQLException {
 		try {
@@ -63,7 +63,7 @@ public class UserController {
 	}
 	
 	//FU03
-	@GetMapping("/user/6/{email}")
+	@GetMapping("/users/6/{email}")
 	public ResponseEntity showBelongedTeam(@PathVariable String email) throws SQLException {
 		try {
 			List<Team> list = userService.showBelongedTeam(email);
@@ -75,7 +75,7 @@ public class UserController {
 	}
 	
 	//FU04
-	@GetMapping("/user/7/{email}")
+	@GetMapping("/users/7/{email}")
 	public ResponseEntity getPass(@PathVariable String email) throws SQLException {
 		try {
 			String pass = userService.getPass(email);
@@ -87,7 +87,7 @@ public class UserController {
 	}
 	
 	//FU05
-	@PutMapping("/user/1")
+	@PutMapping("/users/1")
 	public ResponseEntity updateUser(@RequestBody User user) throws SQLException {
 		try {
 			userService.updateUser(user);
@@ -99,10 +99,9 @@ public class UserController {
 	}
 	
 	//FU06
-	@PostMapping("/user")
+	@PostMapping("/users")
 	public ResponseEntity addUser(@RequestBody User user) throws SQLException {
 		try {
-			System.out.println(user);
 			userService.addUser(user);
 			return new ResponseEntity(HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -112,7 +111,7 @@ public class UserController {
 	}
 	
 	//U002
-	@GetMapping("/user/1/{email}")
+	@GetMapping("/users/1/{email}")
 	public ResponseEntity showMembersByTeamIdName(@PathVariable String email) throws SQLException {
 		try {
 			return new ResponseEntity(userService.checkDuple(email), HttpStatus.OK);
@@ -123,14 +122,13 @@ public class UserController {
 	}
 	
 	//U003-1
-	@GetMapping("/user/2/{apiType}/{apiKey}")
+	@GetMapping("/users/2/{apiType}/{apiKey}")
 	public ResponseEntity LoginByApi(@PathVariable String apiType, 
 			@PathVariable String apiKey) throws SQLException {
 		try {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("apiType", apiType);
 			searchCon.put("apiKey", apiKey);
-			System.out.println(searchCon);
 			Session session = userService.LoginByApi(searchCon);
 			return new ResponseEntity(session, HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -140,7 +138,7 @@ public class UserController {
 	}
 	
 	//U003-2
-	@GetMapping("/user/3/{email}/{pass}")
+	@GetMapping("/users/3/{email}/{pass}")
 	public ResponseEntity LoginByEmail(@PathVariable String email, 
 			@PathVariable String pass) throws SQLException {
 		try {
@@ -156,7 +154,7 @@ public class UserController {
 	}
 	
 	//V04-1
-	@GetMapping("/user/1")
+	@GetMapping("/users/1")
 	public ResponseEntity searchFriend(@RequestParam(value="email") String email, 
 			@RequestParam(value="teamId") String teamId) throws SQLException {
 		try {

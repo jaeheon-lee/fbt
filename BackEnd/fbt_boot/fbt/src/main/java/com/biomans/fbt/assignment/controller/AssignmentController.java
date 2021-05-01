@@ -158,7 +158,6 @@ public class AssignmentController {
 			nf.setTeamName(teamName);
 			nf.setAssign(assignment);
 			nf.setAssignRes(assignRes);
-			System.out.println(nf);
 			//2-2. 알림을 보낸다.
 			noticeService.addNoticeByCase(nf);
 			

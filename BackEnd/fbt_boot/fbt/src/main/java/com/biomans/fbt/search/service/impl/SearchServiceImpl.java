@@ -193,7 +193,6 @@ public class SearchServiceImpl implements SearchService{
 			if(status != 3) { // 마감시간까지도 완료되지 않았다면
 				searchRes.setReservationStatus(-1);
 				searchDAO.updateResStatus(searchRes);
-				System.out.println("==================done====================");
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

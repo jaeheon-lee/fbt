@@ -267,7 +267,6 @@ public class SearchController {
 			HashMap<String, Integer> searchCon = new HashMap<String, Integer>();
 			searchCon.put("searchId", searchId);
 			searchCon.put("teamIdTaker", teamId);
-			System.out.println(searchCon);
 			searchService.deleteSeachRes(searchCon);
 			
 			Notice notice = new Notice();

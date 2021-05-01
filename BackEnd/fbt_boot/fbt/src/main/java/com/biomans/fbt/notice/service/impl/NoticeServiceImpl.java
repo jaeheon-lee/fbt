@@ -155,7 +155,7 @@ public class NoticeServiceImpl implements NoticeService {
 			
 		case "fillNumber2": // 양도에서 인원수를 채웠다면
 			giverTeam = noticeFactor.getVoteMatch().getTeam();
-			pageName = "assign-fillNumber2h";
+			pageName = "assign-fillNumber2";
 			content = noticeFactor.getTeamName() + "이 ";
 			content += noticeFactor.getVoteMatch().getMatchSchedule().getStartTime().split(" ")[0]; 
 			content += "일자 양도 경기 최소인원을 채웠습니다. 클릭하여 진행해주세요.";
@@ -263,7 +263,7 @@ public class NoticeServiceImpl implements NoticeService {
 			takerUsers.add(takerUser);
 			content = noticeFactor.getEmploy().getMatchSchedule().getStartTime().split(" ")[0];
 			content += "일자 경기에 용병신청이 있습니다.";
-			pageName = "employ-applyEmploy";
+			pageName = "employManager-applyEmploy";
 			break;
 			
 		case "acceptEmployApply":

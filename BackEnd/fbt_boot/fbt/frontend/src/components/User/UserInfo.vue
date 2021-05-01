@@ -286,7 +286,7 @@ export default {
     getUserInfo() {
       this.loading = true;
       this.$axios
-        .get("/user/4/" + this.email)
+        .get("/users/4/" + this.email)
         .then(response => {
           this.user = response.data;
           // 매너 점수 항목별 평균을 구한다

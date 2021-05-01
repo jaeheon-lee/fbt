@@ -10,12 +10,15 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.biomans.fbt.assignment.service.AssignmentService;
 import com.biomans.fbt.domain.Assignment;
 import com.biomans.fbt.domain.EmpScore;
 import com.biomans.fbt.domain.Employ;
@@ -30,6 +33,7 @@ import com.biomans.fbt.domain.TeamScore;
 import com.biomans.fbt.domain.User;
 import com.biomans.fbt.domain.VoteMatch;
 import com.biomans.fbt.domain.VoteMatchResult;
+import com.biomans.fbt.employ.service.EmployService;
 import com.biomans.fbt.matchschedule.dao.MatchScheduleDAO;
 import com.biomans.fbt.matchschedule.service.MatchScheduleService;
 import com.biomans.fbt.teammember.service.TeamMemberService;
@@ -49,12 +53,14 @@ class CommonTest {
 	
 	@Autowired
 	private MatchScheduleDAO matchScheduleDAO;
+	
+	@Autowired
+	private EmployService employService;
 
 	@Test
 	void contextLoads() throws ParseException, SQLException {
-		String a = "unnamed.jpg";
-		String[] as = a.split("\\.");
-		System.out.println(Arrays.toString(as));
+		int employid = 7;
+		employService.renewEmploy(employid);
 	}
 
 }

@@ -66,7 +66,7 @@ export default {
     showBelongedTeam() {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       this.$axios
-        .get("/user/6/" + email)
+        .get("/users/6/" + email)
         .then(response => {
           this.teams = response.data;
         })

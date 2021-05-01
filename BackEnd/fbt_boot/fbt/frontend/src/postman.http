@@ -1,1 +1,1 @@
-PUT http://localhost:7777/fbt/team-member/3
+GET http://localhost:7777/notice/1/bioman12@gmail.com

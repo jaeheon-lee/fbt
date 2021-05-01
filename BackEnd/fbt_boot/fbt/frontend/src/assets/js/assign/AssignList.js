@@ -115,7 +115,7 @@ export default {
           this.assigns = response.data;
           if (this.assigns.length == 0) this.empty = true;
           // 양도완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
-          if (this.registeredStage == 5) {
+          if (this.registeredStage == 5 || this.appliedStage == 4) {
             for (let i = 0; i < this.assigns.length; i++) {
               let index = this.assigns[i].assignmentReservations
                 .map(x => x.reservationStatus)

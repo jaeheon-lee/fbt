@@ -361,15 +361,13 @@ export default {
         })
         .then(() => {
           alert("팀 등록이 완료됐습니다.");
+          alert("팀이 만들어졌습니다. 다시 로그인해주세요");
+          sessionStorage.removeItem("userInfo");
+          location.href = this.$http + "/loginSignin";
         })
         .catch(error => {
           console.log(error);
           alert("팀 등록에 실패했습니다.");
-        })
-        .finally(() => {
-          alert("다시 로그인해주세요");
-          sessionStorage.removeItem("userInfo");
-          location.href = this.$http + "/loginSignin";
         })
     }
   }

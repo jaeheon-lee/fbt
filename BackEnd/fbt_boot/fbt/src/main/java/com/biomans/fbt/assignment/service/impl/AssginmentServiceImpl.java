@@ -133,7 +133,6 @@ public class AssginmentServiceImpl implements AssignmentService{
 			if(status != 3) { // 마감시간까지도 완료되지 않았다면
 				assignRes.setReservationStatus(-1);
 				assignmentDAO.updateResStatus(assignRes);
-				System.out.println("==================done====================");
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

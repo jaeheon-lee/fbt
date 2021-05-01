@@ -140,7 +140,8 @@ export default {
         for (let i = 0; i < vote.voteMatchResults.length; i++) {
           let user = vote.voteMatchResults[i].user;
           if (!user) continue;
-          if (user.email == email) {
+          let userEmail = user.email.split(" ")[0];
+          if (userEmail == email) {
             idx = i;
             break;
           }
@@ -293,7 +294,7 @@ export default {
     showEmpScore(matchScheduleId) {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       this.$axios
-        .get("/user/5/" + email + "/" + matchScheduleId)
+        .get("/users/5/" + email + "/" + matchScheduleId)
         .then(response => {
           this.empScores = response.data;
           for (let i = 0; i < this.empScores.length; i++) {
@@ -563,7 +564,7 @@ export default {
     },
     entryAttendFilter(value) {
       switch (value) {
-        case -1:
+        case 0:
           return "결석";
         case 1:
           return "지각";

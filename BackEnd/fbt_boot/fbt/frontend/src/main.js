@@ -18,31 +18,33 @@ Vue.component("last", Last);
 //Event Bus
 Vue.prototype.$EventBus = new Vue();
 
-//image url 전역 상수
-Vue.prototype.$emblem = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/emblem/";
-Vue.prototype.$user = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/user/";
+const url = "http://fbt.fbtogether.com";
+// const url = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com";
+// const url = "http://localhost:80";
 
-// Vue.prototype.$emblem = "http://localhost:8080/emblem/";
-// Vue.prototype.$user = "http://localhost:8080/user/";
+//image url 전역 상수
+Vue.prototype.$emblem = url + "/emblem/";
+Vue.prototype.$user = url + "/user/";
+
+// Vue.prototype.$emblem = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/emblem/";
+// Vue.prototype.$user = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/user/";
 
 // http root 지정
-// aws build
-Vue.prototype.$http = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/fbt";
-// local tomcat
-// Vue.prototype.$http = "http://localhost:8080/fbt";
+// aws build / local tomcat
+// Vue.prototype.$http = url + "/fbt";
+Vue.prototype.$http = url;
 //dev
 // Vue.prototype.$http = "http://localhost:8080";
 
 Vue.config.productionTip = false;
 
 // axios root 지정
-// aws build
-axios.defaults.baseURL = "http://ec2-18-220-155-106.us-east-2.compute.amazonaws.com:8080/fbt";
-// local tomcat
-// axios.defaults.baseURL = "http://localhost:8080/fbt";
+// aws build / local tomcat
+// axios.defaults.baseURL = url + "/fbt";
+axios.defaults.baseURL = url;
 // dev
-// axios.defaults.baseURL = "http://localhost:7777";
 Vue.prototype.$axios = axios; 
+// axios.defaults.baseURL = "http://localhost:7777";
 
 // moment 라이브러리 전역 설정
 Vue.use(VueMomentJS, moment);

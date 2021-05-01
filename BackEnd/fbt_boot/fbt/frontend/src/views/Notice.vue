@@ -98,7 +98,7 @@ export default {
     // 엠블럼 이미지 가져오기
     getEmbUrl(team) {
       if (team) {
-        return this.$emblem + this.team.emblem;
+        return this.$emblem + team.emblem;
       } else {
         return this.$emblem + "emptyFC.svg";
       }

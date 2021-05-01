@@ -173,7 +173,7 @@ export default {
       this.empty = false;
       this.$axios
         .get(
-          "/user/1?email=" +
+          "/users/1?email=" +
             this.inputEmail +
             "&teamId=" +
             JSON.parse(sessionStorage.getItem("userInfo")).teamId

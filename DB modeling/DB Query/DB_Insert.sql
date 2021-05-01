@@ -1,3 +1,5 @@
+
+
 -- api_category
 INSERT INTO api_category(api_type, api_name) VALUES(0, "email");
 INSERT INTO api_category(api_type, api_name) VALUES(1, "Kakao");
@@ -52,9 +54,9 @@ INSERT INTO team_member(team_member_id, member_reg_date, member_level, reg_statu
 -- match_schedule / vote_match / vote_match_setting / vote_match_result
 -- case 1
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('1', '2021-03-01 22:14:00', '2', '2', 'nick1', '2021-01-21 22:18:12', 'ㅇㅇ', NULL, '뚝섬한강공원 축구장1', '흙', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '1', '11:11', '1', NULL, NULL);
+VALUES('1', '2021-05-20 22:14:00', '2', '2', 'nick1', '2021-01-21 22:18:12', 'ㅇㅇ', NULL, '뚝섬한강공원 축구장1', '흙', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '1', '11:11', '1', NULL, NULL);
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('1', '1', '1', 'ㅋㅋ', '2021-02-28 22:14:00', '0', '2021-01-21 22:18:12', 'nick1');
+VALUES('1', '1', '1', 'ㅋㅋ', '2021-05-19 22:14:00', '0', '2021-01-21 22:18:12', 'nick1');
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('1', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1');
 insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
@@ -65,12 +67,14 @@ insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, t
 values('3', '1', '0', '1-bioman3@gmail.com', NULL);
 insert into vote_match_result(vote_match_result_id, vote_match_id, attendance, team_member_id, email) 
 values('4', '1', '1', NULL, 'bioman12@gmail.com');
+insert into notice(notice_id, giver_team_id, giver_email, taker_team_id, taker_email, vote_match_id, content, page_name, reg_date, is_read)
+values('1', '1', 'bioman1@gmail.com', NULL, 'bioman12@gmail.com', '1', 'bioman1님이 왕십리FC의 경기에 초청했습니다. 클릭하여 확인해주세요.', NULL, '2021-03-26 17:22:04', '0');
 -- case 2
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('2', '2021-02-28 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '1', 1, 1
+VALUES('2', '2021-05-21 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '1', 1, 1
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('2', '1', '2', 'ㅋㅋ', '2021-02-27 03:01:00', '0', '2021-01-22 03:02:04', 'nick1'
+VALUES('2', '1', '2', 'ㅋㅋ', '2021-05-20:01:00', '0', '2021-01-22 03:02:04', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('2', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
@@ -97,10 +101,10 @@ insert into entry(entry_id, team_member_id, match_schedule_id, email, team_id, a
 values(21, '1-bioman5@gmail.com', 2, NULL, 1, NULL, 0, NULL, NULL, NULL);
 -- case 3
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('3', '2021-03-15 04:40:00', '1', '1', 'nick1', '2021-01-22 04:41:08', 'dd', NULL, '뚝섬한강공원 축구장1', '흙', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '0', '5:5', '1', NULL, NULL
+VALUES('3', '2021-05-22 04:40:00', '1', '1', 'nick1', '2021-01-22 04:41:08', 'dd', NULL, '뚝섬한강공원 축구장1', '흙', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '0', '5:5', '1', NULL, NULL
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('3', '1', '3', 'zz', '2021-03-14 04:41:00', '1', '2021-01-22 04:41:08', 'nick1'
+VALUES('3', '1', '3', 'zz', '2021-05-21 04:41:00', '1', '2021-01-22 04:41:08', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('3', '0', '-1', '0', '0', '0', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
@@ -129,10 +133,10 @@ values('13', '4', '0', '1-bioman2@gmail.com', NULL);
 
 -- case 5
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('5', '2021-03-20 02:08:00', '2', '1', 'nick1', '2021-01-23 02:08:46', 'dasd', NULL, '뚝섬한강공원 축구장1', '잔디', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '0', '7:7', '1', NULL, NULL
+VALUES('5', '2021-05-24 02:08:00', '2', '1', 'nick1', '2021-01-23 02:08:46', 'dasd', NULL, '뚝섬한강공원 축구장1', '잔디', '서울 광진구 자양동 410-1', '127.076336885325', '37.5280242726795', '1', '0', '7:7', '1', NULL, NULL
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('5', '1', '5', 'cxczc', '2021-03-19 02:08:00', '1', '2021-01-23 02:08:46', 'nick1'
+VALUES('5', '1', '5', 'cxczc', '2021-05-23 02:08:00', '1', '2021-01-23 02:08:46', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('5', '0', '-1', '0', '0', '0', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
@@ -144,10 +148,10 @@ values('15', '5', '0', '1-bioman2@gmail.com', NULL);
 
 -- case 6
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('6', '2021-03-21 02:08:00', '2', '2', 'nick1', '2021-01-23 02:09:26', 'dsacxcxc', NULL, '중랑물재생센터', '인조잔디', '서울 성동구 용답동 246', '127.06281794528302', '37.55807696307835', '1', '1', '6:6', '1', NULL, NULL
+VALUES('6', '2021-05-25 02:08:00', '2', '2', 'nick1', '2021-01-23 02:09:26', 'dsacxcxc', NULL, '중랑물재생센터', '인조잔디', '서울 성동구 용답동 246', '127.06281794528302', '37.55807696307835', '1', '1', '6:6', '1', NULL, NULL
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('6', '1', '6', 'fhghgf', '2021-03-20 02:09:00', '1', '2021-01-23 02:09:26', 'nick1'
+VALUES('6', '1', '6', 'fhghgf', '2021-05-24 02:09:00', '1', '2021-01-23 02:09:26', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('6', '0', '-1', '0', '0', '0', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
@@ -159,58 +163,58 @@ values('17', '6', '0', '1-bioman2@gmail.com', NULL);
 
 -- case 7
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('7', '2021-02-28 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '2', NULL, NULL
+VALUES('7', '2021-05-26 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '2', NULL, NULL
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('7', '2', '7', 'ㅋㅋ', '2021-02-27 03:01:00', '1', '2021-01-22 03:02:04', 'nick1'
+VALUES('7', '2', '7', 'ㅋㅋ', '2021-05-25 03:01:00', '1', '2021-01-22 03:02:04', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('7', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
 );
 INSERT INTO search(search_id, team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date, content)
-VALUES('2', '2', '7', '2-bioman6@gmail.com', '2021-01-23 04:59:12', '1', '1', '2021-01-20 04:59:00', 'czcasd'
+VALUES('2', '2', '7', '2-bioman6@gmail.com', '2021-01-23 04:59:12', '1', '1', '2021-03-15 04:59:00', 'czcasd'
 );
 INSERT INTO assignment(assignment_id, team_id_giver, match_schedule_id, team_member_id, reg_date, due_date, content)
-VALUES('2', '2', '7', '2-bioman1@gmail.com', '2021-01-24 01:51:38', '2021-01-20 01:51:00', 'czxcasd'
+VALUES('2', '2', '7', '2-bioman1@gmail.com', '2021-01-24 01:51:38', '2021-03-15 01:51:00', 'czxcasd'
 );
 INSERT INTO employ(employ_id, team_id_giver, match_schedule_id, team_member_id, cost, req_number, content, reg_date, due_date)
-VALUES(2, 2, 7, '2-bioman1@gmail.com', 1, 1 , 'dsd', '2021-01-20 01:51:00', '2021-01-20 : 01:51:00'
+VALUES(2, 2, 7, '2-bioman1@gmail.com', 1, 1 , 'dsd', '2021-01-20 01:51:00', '2021-03-15 : 01:51:00'
 );
 
 -- case 8
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('8', '2021-02-27 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '2', NULL, NULL
+VALUES('8', '2021-05-27 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '2', NULL, NULL
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('8', '2', '8', 'ㅋㅋ', '2021-02-26 03:01:00', '1', '2021-01-22 03:02:04', 'nick1'
+VALUES('8', '2', '8', 'ㅋㅋ', '2021-05-26 03:01:00', '1', '2021-01-22 03:02:04', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('8', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
 );
 INSERT INTO search(search_id, team_id_giver, match_schedule_id, team_member_id, search_reg_date, waiting_time, min_number, due_date, content)
-VALUES('3', '2', '8', '2-bioman6@gmail.com', '2021-01-23 04:59:12', '1', '1', '2021-02-26 04:59:00', 'czcasd'
+VALUES('3', '2', '8', '2-bioman6@gmail.com', '2021-01-23 04:59:12', '1', '1', '2021-04-26 04:59:00', 'czcasd'
 );
 INSERT INTO search_reservation(search_res_id, search_id, team_id_taker, team_member_id, reservation_status)
 VALUES(1, 3, 1, '1-bioman1@gmail.com', 0
 );
 INSERT INTO assignment(assignment_id, team_id_giver, match_schedule_id, team_member_id, reg_date, due_date, content)
-VALUES('3', '2', '8', '2-bioman1@gmail.com', '2021-01-24 01:51:38', '2021-02-26 01:51:00', 'czxcasd'
+VALUES('3', '2', '8', '2-bioman1@gmail.com', '2021-01-24 01:51:38', '2021-05-26 01:51:00', 'czxcasd'
 );
 INSERT INTO assignment_reservation(assignment_res_id, assignment_id, team_member_id, team_id_taker, reservation_status)
 VALUES(1, 3, '1-bioman1@gmail.com', 1, 0
 );
 INSERT INTO employ(employ_id, team_id_giver, match_schedule_id, team_member_id, cost, req_number, content, reg_date, due_date)
-VALUES(3, 2, 8, '2-bioman1@gmail.com', 1, 1 , 'dsd', '2021-01-20 01:51:00', '2021-02-26 : 01:51:00'
+VALUES(3, 2, 8, '2-bioman1@gmail.com', 1, 1 , 'dsd', '2021-01-20 01:51:00', '2021-04-26 : 01:51:00'
 );
 INSERT INTO employ_result(employ_result_id, employ_id, email, emp_result_status)
 VALUES(1, 3, 'bioman1@gmail.com', 0);
 
 -- case9
 INSERT INTO match_schedule(match_schedule_id, start_time, duration, cost, writer, reg_date, home_content, away_content, stadium_name, stadium_type, stadium_address, stadium_x, stadium_y, stadium_parking, stadium_shower, match_type, home_team_id, away_team_id, is_confirmed)
-VALUES('9', '2021-02-26 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '2', NULL, NULL
+VALUES('9', '2021-05-28 03:01:00', '2', '1', 'nick1', '2021-01-22 03:02:04', 'ㅇㅇ', NULL, '중랑 물재생센터축구장', '인조잔디', '서울 성동구 용답동 245', '127.061798169733', '37.5566485196523', '1', '0', '5:5', '2', NULL, NULL
 );
 INSERT INTO vote_match(vote_match_id, team_id, match_schedule_id, memo, due_date, vote_status, vote_reg_date, writer)
-VALUES('9', '2', '9', 'ㅋㅋ', '2021-02-25 03:01:00', '1', '2021-01-22 03:02:04', 'nick1'
+VALUES('9', '2', '9', 'ㅋㅋ', '2021-05-27 03:01:00', '1', '2021-01-22 03:02:04', 'nick1'
 );
 INSERT INTO vote_match_setting(vote_match_id, type, cancel_number, is_first, waiting, friend_emp, self_min_number, self_max_number, emp_due_date, emp_min_number, away_min_number, away_due_date, assign_cost, emp_cost, search_cost)
 VALUES('9', '0', '-1', '1', '1', '1', '-1', '-1', NULL, '-1', '-1', NULL, '-1', '-1', '-1'
@@ -228,7 +232,7 @@ INSERT INTO assignment_reservation(assignment_res_id, assignment_id, team_member
 VALUES(2, 4, '3-bioman1@gmail.com', 3, 2
 );
 INSERT INTO employ(employ_id, team_id_giver, match_schedule_id, team_member_id, cost, req_number, content, reg_date, due_date)
-VALUES(4, 2, 9, '2-bioman1@gmail.com', 1, 1 , 'dsd', '2021-01-20 01:51:00', '2021-02-25 : 01:51:00'
+VALUES(4, 2, 9, '2-bioman1@gmail.com', 1, 1 , 'dsd', '2021-01-20 01:51:00', '2021-04-27 : 01:51:00'
 );
 INSERT INTO employ_result(employ_result_id, employ_id, email, emp_result_status)
 VALUES(2, 4, 'bioman2@gmail.com', 2);

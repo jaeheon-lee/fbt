@@ -219,7 +219,7 @@ export default {
         return false;
       }
       this.$axios
-        .get("/user/3/" + this.email + "/" + this.pass)
+        .get("/users/3/" + this.email + "/" + this.pass)
         .then(response => {
           this.user = response.data;
           // 소셜로그인 했는데 회원이 아니라면
@@ -240,7 +240,7 @@ export default {
     // 소셜을 통한 FBT 로그인
     apiLogin() {
       this.$axios
-        .get("/user/2/" + this.type + "/" + this.id)
+        .get("/users/2/" + this.type + "/" + this.id)
         .then(response => {
           this.user = response.data;
           // 소셜로그인 했는데 회원이 아니라면

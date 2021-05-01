@@ -146,6 +146,48 @@
                       >
                     </v-row>
                     <!--경기타입비용주차 끝-->
+                    <!-- 대기시간, 최소인원 -->
+                      <!--  대기시간, 최소인원  라벨-->
+                      <v-row class="mx-0 px-0">
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          >대기시간</v-col
+                        >
+                        <v-col
+                          cols="4"
+                          class="textc-left mx-0 pl-2 pr-1 px-0 pb-2"
+                          style="padding-left:2px;padding-right:2px;"
+                          >최소인원</v-col
+                        >
+                      </v-row>
+                      <!--  대기시간, 최소인원  라벨 끝-->
+                      <!-- 대기시간, 최소인원 본문 -->
+                      <v-row class="mx-0 px-0">
+                        <!-- 대기시간 -->
+                        <v-col cols="4" class="pa-0 pr-1"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{ assign.waitingTime }} 시간</v-row
+                          ></v-col
+                        >
+                        <!-- 최소인원 -->
+                        <v-col
+                          cols="4"
+                          class="py-0"
+                          style="padding-left:2px;padding-right:2px;"
+                          ><v-row
+                            class="ma-0 pa-3"
+                            justify="center"
+                            style="border:2px solid #AD1457;border-radius:25px;"
+                            >{{ assign.minNumber }} 명
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                      <!--대기시간, 최소인원 끝-->
+                      <!-- 대기시간, 최소인원 끝 -->
                     <!--내용-->
                     <!-- 내용 라벨 -->
                     <v-row class="mx-0 px-0">
@@ -222,7 +264,7 @@
                     <!--팀 리스트 라벨-->
                     <v-row class="mx-0 px-0 text-center">
                       <v-col cols="1"></v-col>
-                      <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
+                      <v-col cols="2" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >팀명</v-col
                       >
                       <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
@@ -234,7 +276,7 @@
                       <v-col cols="1" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >매너</v-col
                       >
-                      <v-col cols="3" class="mx-0 pl-2 pr-1 px-0 pb-2"
+                      <v-col cols="4" class="mx-0 pl-2 pr-1 px-0 pb-2"
                         >인원파악신청</v-col
                       >
                     </v-row>
@@ -261,7 +303,7 @@
                           </v-icon>
                         </v-col>
                         <!-- 팀명 -->
-                        <v-col cols="3">{{ res.teamTaker.teamName }}</v-col>
+                        <v-col cols="2">{{ res.teamTaker.teamName }}</v-col>
                         <!-- 활동지역 -->
                         <v-col cols="3">{{ res.teamTaker.area }}</v-col>
                         <!-- 실력 -->
@@ -275,7 +317,7 @@
                         <!-- 인원파악신청|거절 버튼 -->
                         <!-- 신청만 했다면 -->
                         <v-col
-                          cols="3"
+                          cols="4"
                           v-if="registeredStage == 2"
                         >
                           <v-row

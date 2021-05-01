@@ -91,9 +91,7 @@ public class EmployController {
 			HashMap<String, String> searchCon = new HashMap<String, String>();
 			searchCon.put("email", email);
 			searchCon.put("empResultStatus", empResultStatus);
-			System.out.println(searchCon);
 			List<Employ> list = employService.showAppliedEmployByUser(searchCon);
-			System.out.println(list);
 			return new ResponseEntity(list, HttpStatus.OK);
 		}catch(RuntimeException e) {
 			System.out.println(e);
@@ -117,7 +115,6 @@ public class EmployController {
 	@PostMapping("/employ-result")
 	public ResponseEntity doApplyEmploy(@RequestBody Employ employ) throws SQLException {
 		try {
-			System.out.println(employ);
 			EmployResult employRes = employ.getEmployResults().get(0);
 			employService.doApplyEmploy(employRes);
 			
@@ -141,7 +138,6 @@ public class EmployController {
 	@PutMapping("/employ-result/1")
 	public ResponseEntity updateResStatus(@RequestBody Employ employ) throws SQLException {
 		try {
-			System.out.println(employ.getEmployResults());
 			Boolean isUpdated = false;
 			try {
 				employService.updateResStatus(employ);

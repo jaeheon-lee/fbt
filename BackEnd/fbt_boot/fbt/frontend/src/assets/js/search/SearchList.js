@@ -117,7 +117,7 @@ export default {
           this.searches = response.data;
           if (this.searches.length == 0) this.empty = true;
           // 매치완료 출력이면 awayTeam을 완료 팀으로 임시로 대체한다
-          if (this.registeredStage == 5) {
+          if (this.registeredStage == 5 || this.appliedStage == 4) {
             for (let i = 0; i < this.searches.length; i++) {
               let index = this.searches[i].searchReservations
                 .map(x => x.reservationStatus)

@@ -120,7 +120,7 @@
 				AND s.search_id NOT IN (
 					SELECT search_id 
 					FROM search_reservation 
-					WHERE reservation_status = 2
+					WHERE reservation_status > 1
 				)
 				AND sysdate() > due_date
 			</if>
@@ -141,7 +141,7 @@
 					AND s.search_id NOT IN (
 						SELECT search_id 
 						FROM search_reservation
-						WHERE reservation_status = 3
+						WHERE reservation_status > 1
 					)
 					AND due_date > sysdate() 
 				</if>
@@ -150,7 +150,7 @@
 					AND s.search_id NOT IN (
 						SELECT search_id 
 						FROM search_reservation
-						WHERE reservation_status = 3
+						WHERE reservation_status > 1
 					)
 					AND due_date > sysdate() 
 				</if>

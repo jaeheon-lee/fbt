@@ -8,6 +8,8 @@ export default {
       // Assign VO 받기 위한 정보
       assignment: {
         assignmentId: null,
+        waitingTime: null,
+        minNumber: null,
         regDate: null,
         dueDate: null,
         content: null

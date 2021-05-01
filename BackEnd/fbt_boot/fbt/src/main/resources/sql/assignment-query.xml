@@ -125,7 +125,7 @@
 				AND a.assignment_id NOT IN (
 					SELECT assignment_id 
 					FROM assignment_reservation 
-					WHERE reservation_status = 2
+					WHERE reservation_status > 1
 				)
 				AND sysdate() > due_date
 			</if>
@@ -146,7 +146,7 @@
 						AND a.assignment_id NOT IN (
 							SELECT assignment_id 
 							FROM assignment_reservation
-							WHERE reservation_status = 3
+							WHERE reservation_status > 1
 						)
 						AND due_date > sysdate()
 					</if>
@@ -155,7 +155,7 @@
 						AND a.assignment_id NOT IN (
 							SELECT assignment_id 
 							FROM assignment_reservation
-							WHERE reservation_status = 3
+							WHERE reservation_status > 1
 						) 
 						AND due_date > sysdate() 
 					</if>
@@ -282,7 +282,9 @@
 	<update id="updateAssignment" parameterType="assignment">
 		UPDATE assignment
 		SET
-		reg_date = #{regDate},
+		reg_date = sysdate(),
+		waiting_time = #{waitingTime},
+		min_number = #{minNumber},
 		due_date = #{dueDate},
 		content = #{content}
 		WHERE assignment_id = #{assignmentId};

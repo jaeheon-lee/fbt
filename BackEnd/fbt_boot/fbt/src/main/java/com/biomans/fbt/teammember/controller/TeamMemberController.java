@@ -111,9 +111,8 @@ public class TeamMemberController {
 			HttpServletRequest request) throws SQLException {
 		try {
 			String root = request.getSession().getServletContext().getRealPath("/"); // E:\kjy\apache-tomcat-8.5.61\webapps\fbt\
-			root = root.substring(0, root.length() - 4);
-			String path = root + "\\user\\";
-			System.out.println(path);
+			root = root.substring(0, root.length() - 5);
+			String path = root + "user/";
 			String imageName = teamMemberService.changeImg(user, image, path);
 			return new ResponseEntity(imageName, HttpStatus.OK);
 		}catch(RuntimeException e) {
@@ -121,8 +120,6 @@ public class TeamMemberController {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	
 	
 	//TM002-2
 	@GetMapping("/team-member/1/{teamId}/{name}")

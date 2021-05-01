@@ -71,16 +71,7 @@ public class TeamServiceImpl implements TeamService{
 		String fileName = "";
 		// 파일 업로드 & 저장
 		if(file != null) {
-			// 파일명 양식: teamName.확장자 
-			String rawFileName = file.getOriginalFilename();
-			String[] unit = rawFileName.split("\\.");
-			String extension = unit[unit.length-1];
-			fileName = team.getTeamName() + "." + extension;
-			try {
-				file.transferTo(new File(path+fileName)); //파일 생성
-			} catch (IllegalStateException | IOException e) {
-				System.out.println(e);
-			}
+			addEmblem(file, fileName, team, path);
 		}
 		// emblem 지정
 		team.setEmblem(fileName);
@@ -96,6 +87,20 @@ public class TeamServiceImpl implements TeamService{
 		teamMember.setTeamMemberId(teamMemberId);
 		//본인을 팀원, 구단주로 등록
 		teamMemberDAO.addTeamMember(teamMember);
+	}
+	
+	public void addEmblem(MultipartFile file, String fileName, Team team, String path) {
+		// 파일명 양식: teamName.확장자 
+		String rawFileName = file.getOriginalFilename();
+		String[] unit = rawFileName.split("\\.");
+		String extension = unit[unit.length-1];
+		fileName = team.getTeamName() + "." + extension;
+		team.setEmblem(fileName);
+		try {
+			file.transferTo(new File(path+fileName)); //파일 생성
+		} catch (IllegalStateException | IOException e) {
+			System.out.println(e);
+		}
 	}
 	
 	//FT03
@@ -129,16 +134,7 @@ public class TeamServiceImpl implements TeamService{
 			if(img.exists() && !beforeUrl.equals("emptyFC.svg")) img.delete();
 			// 기본이미지로 수정인지, 다른 이미지로 수정인지 확인한다
 			if(file != null) { // 다른 이미지라면 파일명을 양식(teamName.확장자)대로 하고 새로운 파일을 생성한다
-				String rawFileName = file.getOriginalFilename();
-				int idx = rawFileName.indexOf(".");
-				String extension = rawFileName.substring(idx, rawFileName.length());
-				fileName = team.getTeamName() + extension;
-				team.setEmblem(fileName);
-				try {
-					file.transferTo(new File(path+fileName)); //파일 생성
-				} catch (IllegalStateException | IOException e) {
-					System.out.println(e);
-				}
+				addEmblem(file, fileName, team, path);
 			}
 			// 기본이미지라면 null로 받아왔기 때문에 그냥 넘어간다
 		}

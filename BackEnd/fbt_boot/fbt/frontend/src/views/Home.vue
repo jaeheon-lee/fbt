@@ -114,7 +114,7 @@ export default {
     //FU01
     showUserInfo() {
       this.$axios
-        .get("/user/4/" + this.userInfo.email)
+        .get("/users/4/" + this.userInfo.email)
         .then(response => {
           this.user = response.data;
         })

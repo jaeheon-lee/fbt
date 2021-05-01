@@ -136,7 +136,7 @@ export default {
     checkDuple() {
       if (this.user.email) {
         this.$axios
-          .get("/user/1/" + this.user.email)
+          .get("/users/1/" + this.user.email)
           .then(response => {
             if (this.user.email == response.data) {
               this.emailDuple = true;
@@ -151,7 +151,7 @@ export default {
     showUserInfo() {
       let email = JSON.parse(sessionStorage.getItem("userInfo")).email;
       this.$axios
-        .get("/user/4/" + email)
+        .get("/users/4/" + email)
         .then(response => {
           this.user = response.data;
           let bornDate = this.user.bornDate.split("-");
@@ -174,7 +174,7 @@ export default {
     updateUser() {
       this.dataHandle();
       this.$axios
-        .put("/user/1", this.user)
+        .put("/users/1", this.user)
         .then(() => {
           alert("정보를 수정했습니다.");
         })
